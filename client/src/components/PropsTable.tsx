@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -8,8 +10,20 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import ConfidenceBar from "./ConfidenceBar";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 interface Prop {
   id: string;
@@ -25,9 +39,87 @@ interface Prop {
 
 interface PropsTableProps {
   props: Prop[];
+  userId: number;
 }
 
-export default function PropsTable({ props }: PropsTableProps) {
+interface User {
+  id: number;
+  bankroll: string;
+  kellyMultiplier: string;
+}
+
+export default function PropsTable({ props, userId }: PropsTableProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProp, setSelectedProp] = useState<Prop | null>(null);
+  const [betAmount, setBetAmount] = useState("");
+  const { toast } = useToast();
+
+  const { data: user, isLoading: userLoading } = useQuery<User>({
+    queryKey: ['/api/user', userId],
+  });
+
+  const placeBetMutation = useMutation({
+    mutationFn: async (data: { propId: number; amount: number; odds: number }) => {
+      return await apiRequest("POST", `/api/bets/${userId}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/bets', userId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user', userId] });
+      toast({
+        title: "Bet Placed",
+        description: "Your bet has been placed successfully!",
+      });
+      setIsModalOpen(false);
+      setBetAmount("");
+      setSelectedProp(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to place bet",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleOpenModal = (prop: Prop) => {
+    if (userLoading || !user) {
+      toast({
+        title: "Loading",
+        description: "Please wait while we load your account data...",
+      });
+      return;
+    }
+    
+    setSelectedProp(prop);
+    // Calculate Kelly-suggested bet amount (simplified)
+    const bankroll = parseFloat(user.bankroll ?? "0");
+    const suggestedAmount = Math.max(5, bankroll * 0.02); // 2% of bankroll minimum $5
+    setBetAmount(suggestedAmount.toFixed(2));
+    setIsModalOpen(true);
+  };
+
+  const handlePlaceBet = () => {
+    if (!selectedProp || !betAmount) return;
+    
+    const amount = parseFloat(betAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid bet amount greater than $0",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const odds = 1.91; // Simplified - would be calculated from prop data
+    placeBetMutation.mutate({
+      propId: parseInt(selectedProp.id),
+      amount,
+      odds,
+    });
+  };
+
   return (
     <div className="border rounded-lg">
       <Table>
@@ -81,17 +173,88 @@ export default function PropsTable({ props }: PropsTableProps) {
               <TableCell className="text-right">
                 <Button
                   size="sm"
-                  variant="ghost"
-                  onClick={() => console.log('Add prop:', prop.id)}
-                  data-testid={`button-add-prop-${prop.id}`}
+                  variant="default"
+                  onClick={() => handleOpenModal(prop)}
+                  data-testid={`button-place-bet-${prop.id}`}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-4 w-4 mr-1" />
+                  Bet
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent data-testid="dialog-place-bet">
+          <DialogHeader>
+            <DialogTitle>Place Bet</DialogTitle>
+            <DialogDescription>
+              Enter your bet amount to place this bet
+            </DialogDescription>
+          </DialogHeader>
+          {selectedProp && (
+            <div className="space-y-4">
+              <div className="p-4 bg-muted rounded-md space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Player:</span>
+                  <span className="font-medium">{selectedProp.player}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Prop:</span>
+                  <span className="font-medium">
+                    {selectedProp.direction === 'over' ? 'Over' : 'Under'} {selectedProp.line} {selectedProp.stat}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Confidence:</span>
+                  <span className="font-mono font-bold">{selectedProp.confidence}%</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bet-amount">Bet Amount ($)</Label>
+                <Input
+                  id="bet-amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={betAmount}
+                  onChange={(e) => setBetAmount(e.target.value)}
+                  data-testid="input-bet-amount"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Suggested: ${betAmount} (based on Kelly Criterion)
+                </p>
+              </div>
+              <div className="p-3 bg-muted rounded-md">
+                <div className="flex justify-between text-sm">
+                  <span>Potential Return:</span>
+                  <span className="font-mono font-bold text-green-600 dark:text-green-400">
+                    ${(parseFloat(betAmount || "0") * 1.91).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsModalOpen(false)}
+              data-testid="button-cancel-bet"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePlaceBet}
+              disabled={placeBetMutation.isPending || !betAmount || parseFloat(betAmount) <= 0}
+              data-testid="button-confirm-bet"
+            >
+              {placeBetMutation.isPending ? "Placing..." : "Place Bet"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

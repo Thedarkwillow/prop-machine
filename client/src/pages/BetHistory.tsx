@@ -56,11 +56,11 @@ export default function BetHistory() {
   const [selectedDateRange, setSelectedDateRange] = useState('all');
 
   const { data: bets = [], isLoading } = useQuery<BetWithProp[]>({
-    queryKey: [`/api/bets/${USER_ID}`],
+    queryKey: ['/api/bets', USER_ID],
   });
 
   const { data: user } = useQuery({
-    queryKey: [`/api/user/${USER_ID}`],
+    queryKey: ['/api/user', USER_ID],
   });
 
   // Filter bets

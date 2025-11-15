@@ -331,7 +331,7 @@ export default function Dashboard() {
                   Loading props...
                 </div>
               ) : filteredProps.length > 0 ? (
-                <PropsTable props={filteredProps} />
+                <PropsTable props={filteredProps} userId={USER_ID} />
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   No props found matching your criteria
