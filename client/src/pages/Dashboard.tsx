@@ -23,12 +23,25 @@ import { useToast } from "@/hooks/use-toast";
 
 const USER_ID = 1; // Default user ID
 
+// Sport-specific stat types
+const SPORT_STATS: Record<string, string[]> = {
+  NHL: ['SOG', 'Points', 'Goals', 'Assists', 'Saves'],
+  NBA: ['Points', 'Rebounds', 'Assists', 'Threes'],
+  NFL: ['Pass Yards', 'Rush Yards', 'Receptions', 'Pass TDs'],
+  MLB: ['Hits', 'Strikeouts', 'Total Bases', 'Runs + RBIs'],
+};
+
 export default function Dashboard() {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSport, setSelectedSport] = useState('NHL');
   const [selectedStat, setSelectedStat] = useState('all');
+
+  // Reset stat filter when sport changes
+  useEffect(() => {
+    setSelectedStat('all');
+  }, [selectedSport]);
 
   // Fetch dashboard data
   const { data: dashboardData, isLoading: dashboardLoading, isError: dashboardError } = useQuery({
@@ -294,11 +307,11 @@ export default function Dashboard() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Stats</SelectItem>
-                      <SelectItem value="SOG">SOG</SelectItem>
-                      <SelectItem value="Points">Points</SelectItem>
-                      <SelectItem value="Goals">Goals</SelectItem>
-                      <SelectItem value="Assists">Assists</SelectItem>
-                      <SelectItem value="Saves">Saves</SelectItem>
+                      {SPORT_STATS[selectedSport]?.map((stat) => (
+                        <SelectItem key={stat} value={stat}>
+                          {stat}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <div className="relative">
