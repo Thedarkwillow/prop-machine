@@ -86,6 +86,52 @@ export default function Performance() {
     { name: 'Neutral CLV', value: neutralCLV, fill: 'hsl(var(--muted))' },
   ].filter(item => item.value > 0);
 
+  // Calculate stat-type performance
+  type StatTypeStats = {
+    statType: string;
+    totalBets: number;
+    wins: number;
+    losses: number;
+    winRate: number;
+    totalWagered: number;
+    totalReturns: number;
+    roi: number;
+  };
+
+  const statTypeMap = new Map<string, BetWithProp[]>();
+  bets.forEach(bet => {
+    if (bet.prop?.stat) {
+      const existing = statTypeMap.get(bet.prop.stat) || [];
+      statTypeMap.set(bet.prop.stat, [...existing, bet]);
+    }
+  });
+
+  const statTypeStats: StatTypeStats[] = Array.from(statTypeMap.entries())
+    .map(([statType, statBets]) => {
+      const settledBets = statBets.filter(b => b.status !== 'pending');
+      const wins = settledBets.filter(b => b.status === 'won').length;
+      const losses = settledBets.filter(b => b.status === 'lost').length;
+      const totalWagered = settledBets.reduce((sum, b) => sum + parseFloat(b.amount), 0);
+      const totalReturns = settledBets.reduce((sum, b) => {
+        if (b.status === 'won') return sum + parseFloat(b.potentialReturn);
+        if (b.status === 'pushed') return sum + parseFloat(b.amount);
+        return sum;
+      }, 0);
+
+      return {
+        statType,
+        totalBets: statBets.length,
+        wins,
+        losses,
+        winRate: settledBets.length > 0 ? (wins / settledBets.length) * 100 : 0,
+        totalWagered,
+        totalReturns,
+        roi: totalWagered > 0 ? ((totalReturns - totalWagered) / totalWagered) * 100 : 0,
+      };
+    })
+    .filter(stat => stat.wins + stat.losses > 0) // Only show stat types with settled bets
+    .sort((a, b) => b.roi - a.roi); // Sort by ROI descending
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full" data-testid="loading-performance">
@@ -196,6 +242,56 @@ export default function Performance() {
                     </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Stat-Type Performance Analysis */}
+          {statTypeStats.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle data-testid="title-stat-type-table">Stat-Type Performance Analysis</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead data-testid="header-stat-type">Stat Type</TableHead>
+                      <TableHead data-testid="header-stat-bets">Bets</TableHead>
+                      <TableHead data-testid="header-stat-record">Record</TableHead>
+                      <TableHead data-testid="header-stat-win-rate">Win Rate</TableHead>
+                      <TableHead data-testid="header-stat-roi">ROI</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {statTypeStats.map((stat) => (
+                      <TableRow key={stat.statType} data-testid={`row-stat-${stat.statType.toLowerCase().replace(/\s+/g, '-')}`}>
+                        <TableCell className="font-medium" data-testid={`text-stat-type-${stat.statType.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {stat.statType}
+                        </TableCell>
+                        <TableCell data-testid={`text-stat-bets-${stat.statType.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {stat.totalBets}
+                        </TableCell>
+                        <TableCell data-testid={`text-stat-record-${stat.statType.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {stat.wins}-{stat.losses}
+                        </TableCell>
+                        <TableCell data-testid={`text-stat-win-rate-${stat.statType.toLowerCase().replace(/\s+/g, '-')}`}>
+                          <span className={stat.winRate >= 52.4 ? 'text-green-600 dark:text-green-400' : ''}>
+                            {stat.winRate.toFixed(1)}%
+                          </span>
+                        </TableCell>
+                        <TableCell data-testid={`text-stat-roi-${stat.statType.toLowerCase().replace(/\s+/g, '-')}`}>
+                          <span className={stat.roi > 0 ? 'text-green-600 dark:text-green-400' : stat.roi < 0 ? 'text-red-600 dark:text-red-400' : ''}>
+                            {stat.roi > 0 ? '+' : ''}{stat.roi.toFixed(1)}%
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <p className="text-xs text-muted-foreground mt-4">
+                  Sorted by ROI descending. Identifies which prop types (SOG, Points, Assists, etc.) deliver the best returns.
+                </p>
               </CardContent>
             </Card>
           )}
