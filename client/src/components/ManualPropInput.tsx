@@ -68,7 +68,8 @@ export default function ManualPropInput() {
 
   const analyzeMutation = useMutation({
     mutationFn: async (data: ManualPropFormData) => {
-      return await apiRequest("/api/props/analyze", "POST", data);
+      const res = await apiRequest("POST", "/api/props/analyze", data);
+      return await res.json();
     },
     onSuccess: (data) => {
       setResult(data);
