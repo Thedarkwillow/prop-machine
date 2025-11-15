@@ -27,7 +27,7 @@ export interface IStorage {
   // Bets
   getBet(betId: number): Promise<Bet | undefined>;
   getBetsByUser(userId: number): Promise<Bet[]>;
-  getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]>;
+  getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop; slip?: Slip })[]>;
   createBet(bet: InsertBet): Promise<Bet>;
   placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }>;
   updateBetStatus(betId: number, status: string, closingLine?: string, clv?: string): Promise<Bet>;
@@ -275,7 +275,7 @@ class MemStorage implements IStorage {
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
 import { users, props, slips, bets, performanceSnapshots } from "@shared/schema";
-import { eq, and, desc, gte, sql } from "drizzle-orm";
+import { eq, and, desc, gte, sql, inArray } from "drizzle-orm";
 
 class DbStorage implements IStorage {
   // User management
@@ -362,30 +362,49 @@ class DbStorage implements IStorage {
     return await db.select().from(bets).where(eq(bets.userId, userId));
   }
 
-  async getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]> {
-    const userBets = await db
-      .select()
-      .from(bets)
-      .where(eq(bets.userId, userId))
-      .orderBy(desc(bets.createdAt));
-
-    // Fetch all unique prop IDs
-    const propIds = [...new Set(userBets.map(b => b.propId).filter((id): id is number => id !== null))];
-    
-    const propsMap = new Map<number, Prop>();
-    if (propIds.length > 0) {
-      const propsData = await db
+  async getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop; slip?: Slip })[]> {
+    try {
+      const userBets = await db
         .select()
-        .from(props)
-        .where(sql`${props.id} = ANY(${propIds})`);
-      
-      propsData.forEach(p => propsMap.set(p.id, p));
-    }
+        .from(bets)
+        .where(eq(bets.userId, userId))
+        .orderBy(desc(bets.createdAt));
 
-    return userBets.map(bet => ({
-      ...bet,
-      prop: bet.propId ? propsMap.get(bet.propId) : undefined,
-    }));
+      // Fetch all unique prop IDs
+      const propIds = [...new Set(userBets.map(b => b.propId).filter((id): id is number => id !== null))];
+      
+      const propsMap = new Map<number, Prop>();
+      if (propIds.length > 0) {
+        const propsData = await db
+          .select()
+          .from(props)
+          .where(inArray(props.id, propIds));
+        
+        propsData.forEach(p => propsMap.set(p.id, p));
+      }
+
+      // Fetch all unique slip IDs
+      const slipIds = [...new Set(userBets.map(b => b.slipId).filter((id): id is number => id !== null))];
+      
+      const slipsMap = new Map<number, Slip>();
+      if (slipIds.length > 0) {
+        const slipsData = await db
+          .select()
+          .from(slips)
+          .where(inArray(slips.id, slipIds));
+        
+        slipsData.forEach(s => slipsMap.set(s.id, s));
+      }
+
+      return userBets.map(bet => ({
+        ...bet,
+        prop: bet.propId ? propsMap.get(bet.propId) : undefined,
+        slip: bet.slipId ? slipsMap.get(bet.slipId) : undefined,
+      }));
+    } catch (error) {
+      console.error("Error fetching bets with props:", error);
+      throw error;
+    }
   }
 
   async createBet(bet: InsertBet): Promise<Bet> {

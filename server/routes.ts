@@ -288,6 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(bets);
     } catch (error) {
+      console.error("Error in /api/bets/:userId:", error);
       if (error instanceof ZodError) {
         return res.status(400).json({ error: "Invalid request", details: error.errors });
       }

@@ -46,6 +46,13 @@ type BetWithProp = {
     line: string;
     direction: "over" | "under";
   };
+  slip?: {
+    id: number;
+    title: string;
+    picks: any[];
+    confidence: number;
+    platform: string;
+  };
 };
 
 export default function BetHistory() {
@@ -65,8 +72,31 @@ export default function BetHistory() {
 
   // Filter bets
   const filteredBets = bets.filter((bet) => {
-    const matchesSearch = bet.prop?.player?.toLowerCase().includes(searchQuery.toLowerCase()) ?? true;
-    const matchesSport = selectedSport === 'all' || bet.prop?.sport === selectedSport;
+    // For slip-based bets, search in slip picks
+    let matchesSearch = true;
+    if (searchQuery) {
+      if (bet.slip) {
+        matchesSearch = bet.slip.picks.some((pick: any) => 
+          pick.player?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      } else {
+        matchesSearch = bet.prop?.player?.toLowerCase().includes(searchQuery.toLowerCase()) ?? true;
+      }
+    }
+    
+    // For slip-based bets, check sport across all picks
+    let matchesSport = true;
+    if (selectedSport !== 'all') {
+      if (bet.slip) {
+        // Check if any pick matches the sport (defensive: allow undefined sport)
+        matchesSport = bet.slip.picks.some((pick: any) => 
+          pick.sport === selectedSport || !pick.sport
+        );
+      } else {
+        matchesSport = bet.prop?.sport === selectedSport;
+      }
+    }
+    
     const matchesOutcome = selectedOutcome === 'all' || bet.status === selectedOutcome;
     
     // Date range filtering
@@ -234,45 +264,67 @@ export default function BetHistory() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredBets.map((bet) => (
-                      <TableRow key={bet.id} data-testid={`row-bet-${bet.id}`}>
-                        <TableCell className="font-medium" data-testid={`text-date-${bet.id}`}>
-                          {format(new Date(bet.createdAt), "MMM d, h:mm a")}
-                        </TableCell>
-                        <TableCell data-testid={`text-player-${bet.id}`}>
-                          {bet.prop?.player || "-"}
-                        </TableCell>
-                        <TableCell data-testid={`text-sport-${bet.id}`}>
-                          <Badge variant="outline">{bet.prop?.sport || "-"}</Badge>
-                        </TableCell>
-                        <TableCell data-testid={`text-stat-${bet.id}`}>
-                          {bet.prop?.stat || "-"}
-                        </TableCell>
-                        <TableCell className="text-right font-mono" data-testid={`text-line-${bet.id}`}>
-                          {bet.prop?.line || "-"}
-                        </TableCell>
-                        <TableCell data-testid={`text-direction-${bet.id}`}>
-                          <Badge variant={bet.prop?.direction === "over" ? "default" : "secondary"}>
-                            {bet.prop?.direction === "over" ? "O" : "U"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right font-mono" data-testid={`text-amount-${bet.id}`}>
-                          ${parseFloat(bet.amount).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-mono" data-testid={`text-odds-${bet.id}`}>
-                          {parseFloat(bet.odds).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-mono" data-testid={`text-return-${bet.id}`}>
-                          ${parseFloat(bet.potentialReturn).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {getStatusBadge(bet.status)}
-                        </TableCell>
-                        <TableCell className="text-right font-mono" data-testid={`text-clv-${bet.id}`}>
-                          {getClvDisplay(bet.clv, bet.status)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {filteredBets.map((bet) => {
+                      const isParlay = bet.slip && bet.slip.picks && bet.slip.picks.length > 1;
+                      const pickCount = bet.slip?.picks?.length || 1;
+                      
+                      return (
+                        <TableRow key={bet.id} data-testid={`row-bet-${bet.id}`}>
+                          <TableCell className="font-medium" data-testid={`text-date-${bet.id}`}>
+                            {format(new Date(bet.createdAt), "MMM d, h:mm a")}
+                          </TableCell>
+                          <TableCell data-testid={`text-player-${bet.id}`}>
+                            {isParlay ? (
+                              <div className="flex items-center gap-2">
+                                <Badge variant="default">{pickCount}-Pick Parlay</Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {bet.slip.picks.map((p: any) => p.player).join(", ").slice(0, 30)}...
+                                </span>
+                              </div>
+                            ) : (
+                              bet.prop?.player || "-"
+                            )}
+                          </TableCell>
+                          <TableCell data-testid={`text-sport-${bet.id}`}>
+                            {isParlay ? (
+                              <Badge variant="outline">Multi</Badge>
+                            ) : (
+                              <Badge variant="outline">{bet.prop?.sport || "-"}</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell data-testid={`text-stat-${bet.id}`}>
+                            {isParlay ? `${pickCount} picks` : (bet.prop?.stat || "-")}
+                          </TableCell>
+                          <TableCell className="text-right font-mono" data-testid={`text-line-${bet.id}`}>
+                            {isParlay ? "-" : (bet.prop?.line || "-")}
+                          </TableCell>
+                          <TableCell data-testid={`text-direction-${bet.id}`}>
+                            {isParlay ? (
+                              <Badge variant="secondary">Mix</Badge>
+                            ) : (
+                              <Badge variant={bet.prop?.direction === "over" ? "default" : "secondary"}>
+                                {bet.prop?.direction === "over" ? "O" : "U"}
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right font-mono" data-testid={`text-amount-${bet.id}`}>
+                            ${parseFloat(bet.amount).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-mono" data-testid={`text-odds-${bet.id}`}>
+                            {parseFloat(bet.odds).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-mono" data-testid={`text-return-${bet.id}`}>
+                            ${parseFloat(bet.potentialReturn).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {getStatusBadge(bet.status)}
+                          </TableCell>
+                          <TableCell className="text-right font-mono" data-testid={`text-clv-${bet.id}`}>
+                            {getClvDisplay(bet.clv, bet.status)}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
