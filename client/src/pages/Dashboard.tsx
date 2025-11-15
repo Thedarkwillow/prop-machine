@@ -16,149 +16,162 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Filter, Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
-//todo: remove mock functionality
-const MOCK_SLIPS = [
-  {
-    title: "Safe Grind",
-    type: 'conservative' as const,
-    picks: [
-      { player: 'Connor McDavid', stat: 'SOG', line: 3.5, direction: 'over' as const, confidence: 87 },
-      { player: 'Auston Matthews', stat: 'Points', line: 1.5, direction: 'over' as const, confidence: 82 },
-      { player: 'Igor Shesterkin', stat: 'Saves', line: 30.5, direction: 'over' as const, confidence: 78 }
-    ],
-    confidence: 82,
-    suggestedBet: 8.50,
-    potentialReturn: 34.00,
-    platform: "PrizePicks"
-  },
-  {
-    title: "Value Play",
-    type: 'balanced' as const,
-    picks: [
-      { player: 'Nathan MacKinnon', stat: 'SOG', line: 4.5, direction: 'over' as const, confidence: 76 },
-      { player: 'Cale Makar', stat: 'Points', line: 1.5, direction: 'over' as const, confidence: 72 },
-      { player: 'Matthew Tkachuk', stat: 'Hits', line: 3.5, direction: 'over' as const, confidence: 68 },
-      { player: 'Jack Hughes', stat: 'SOG', line: 3.5, direction: 'over' as const, confidence: 70 }
-    ],
-    confidence: 71,
-    suggestedBet: 6.00,
-    potentialReturn: 60.00,
-    platform: "Underdog"
-  },
-  {
-    title: "Moonshot",
-    type: 'aggressive' as const,
-    picks: [
-      { player: 'Leon Draisaitl', stat: 'Points', line: 1.5, direction: 'over' as const, confidence: 65 },
-      { player: 'Artemi Panarin', stat: 'SOG', line: 3.5, direction: 'over' as const, confidence: 62 },
-      { player: 'David Pastrnak', stat: 'Goals', line: 0.5, direction: 'over' as const, confidence: 58 },
-      { player: 'Quinn Hughes', stat: 'Points', line: 1.5, direction: 'over' as const, confidence: 60 },
-      { player: 'Andrei Vasilevskiy', stat: 'Saves', line: 28.5, direction: 'over' as const, confidence: 63 }
-    ],
-    confidence: 61,
-    suggestedBet: 2.00,
-    potentialReturn: 50.00,
-    platform: "PrizePicks"
-  }
-];
-
-const MOCK_PROPS = [
-  {
-    id: '1',
-    player: 'Connor McDavid',
-    team: 'EDM',
-    stat: 'SOG',
-    line: 3.5,
-    confidence: 87,
-    ev: 8.2,
-    platform: 'PrizePicks'
-  },
-  {
-    id: '2',
-    player: 'Auston Matthews',
-    team: 'TOR',
-    stat: 'Points',
-    line: 1.5,
-    confidence: 78,
-    ev: 6.1,
-    platform: 'Underdog'
-  },
-  {
-    id: '3',
-    player: 'Igor Shesterkin',
-    team: 'NYR',
-    stat: 'Saves',
-    line: 30.5,
-    confidence: 81,
-    ev: 7.4,
-    platform: 'PrizePicks'
-  },
-  {
-    id: '4',
-    player: 'Nathan MacKinnon',
-    team: 'COL',
-    stat: 'SOG',
-    line: 4.5,
-    confidence: 65,
-    ev: 3.2,
-    platform: 'Underdog'
-  },
-  {
-    id: '5',
-    player: 'Leon Draisaitl',
-    team: 'EDM',
-    stat: 'Points',
-    line: 1.5,
-    confidence: 72,
-    ev: 4.8,
-    platform: 'PrizePicks'
-  },
-  {
-    id: '6',
-    player: 'Cale Makar',
-    team: 'COL',
-    stat: 'Points',
-    line: 1.5,
-    confidence: 74,
-    ev: 5.3,
-    platform: 'Underdog'
-  }
-];
-
-const MOCK_BANKROLL_DATA = [
-  { date: 'Mon', value: 100 },
-  { date: 'Tue', value: 105 },
-  { date: 'Wed', value: 98 },
-  { date: 'Thu', value: 112 },
-  { date: 'Fri', value: 118 },
-  { date: 'Sat', value: 127 },
-  { date: 'Sun', value: 125 }
-];
-
-const MOCK_WINRATE_DATA = [
-  { date: 'Mon', value: 50 },
-  { date: 'Tue', value: 52 },
-  { date: 'Wed', value: 48 },
-  { date: 'Thu', value: 55 },
-  { date: 'Fri', value: 58 },
-  { date: 'Sat', value: 57 },
-  { date: 'Sun', value: 58 }
-];
-
-const MOCK_WEEK1_GOALS = [
-  { label: 'Win Rate', target: '50%+', current: '58.2%', achieved: true },
-  { label: 'CLV Positive', target: '55%+', current: '62.1%', achieved: true },
-  { label: 'Kelly Sizing', target: '100%', current: '95.2%', achieved: false },
-  { label: 'Daily Tracking', target: '7 days', current: '3 days', achieved: false }
-];
+const USER_ID = 1; // Default user ID
 
 export default function Dashboard() {
+  const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSport, setSelectedSport] = useState('NHL');
   const [selectedStat, setSelectedStat] = useState('all');
+
+  // Fetch dashboard data
+  const { data: dashboardData, isLoading: dashboardLoading, isError: dashboardError } = useQuery({
+    queryKey: ['/api/dashboard', USER_ID],
+  });
+
+  // Fetch props
+  const { data: props = [], isLoading: propsLoading, isError: propsError } = useQuery({
+    queryKey: ['/api/props', selectedSport],
+  });
+
+  // Fetch performance history
+  const { data: performanceHistory = [], isLoading: perfLoading, isError: perfError } = useQuery({
+    queryKey: ['/api/performance', USER_ID, 'history'],
+  });
+
+  // Show error toasts
+  useEffect(() => {
+    if (dashboardError) {
+      toast({
+        variant: "destructive",
+        title: "Error loading dashboard",
+        description: "Failed to fetch dashboard data. Please refresh the page.",
+      });
+    }
+  }, [dashboardError, toast]);
+
+  useEffect(() => {
+    if (propsError) {
+      toast({
+        variant: "destructive",
+        title: "Error loading props",
+        description: "Failed to fetch props feed. Some data may be unavailable.",
+      });
+    }
+  }, [propsError, toast]);
+
+  useEffect(() => {
+    if (perfError) {
+      toast({
+        variant: "destructive",
+        title: "Error loading performance data",
+        description: "Failed to fetch performance history. Charts may be unavailable.",
+      });
+    }
+  }, [perfError, toast]);
+
+  if (dashboardLoading || propsLoading || perfLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg font-medium">Loading dashboard...</div>
+          <p className="text-sm text-muted-foreground mt-2">Fetching your betting data</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg font-medium text-destructive">Failed to load dashboard</div>
+          <p className="text-sm text-muted-foreground mt-2">Please refresh the page</p>
+        </div>
+      </div>
+    );
+  }
+
+  const user = dashboardData?.user;
+  const metrics = dashboardData?.metrics || {};
+  const pendingSlips = dashboardData?.pendingSlips || [];
+  const week1Progress = dashboardData?.week1Progress || { betsPlaced: 0, targetBets: 20 };
+
+  // Transform performance history for charts
+  const bankrollData = performanceHistory.map((snapshot: any) => ({
+    date: new Date(snapshot.date).toLocaleDateString('en-US', { weekday: 'short' }),
+    value: parseFloat(snapshot.bankroll),
+  }));
+
+  const winRateData = performanceHistory.map((snapshot: any) => ({
+    date: new Date(snapshot.date).toLocaleDateString('en-US', { weekday: 'short' }),
+    value: parseFloat(snapshot.winRate),
+  }));
+
+  // Transform slips for SlipCard component
+  const transformedSlips = pendingSlips.map((slip: any) => ({
+    title: slip.title,
+    type: slip.type,
+    picks: slip.picks,
+    confidence: slip.confidence,
+    suggestedBet: parseFloat(slip.suggestedBet),
+    potentialReturn: parseFloat(slip.potentialReturn),
+    platform: slip.platform,
+  }));
+
+  // Transform props for PropsTable component
+  const transformedProps = props.map((prop: any) => ({
+    id: prop.id.toString(),
+    player: prop.player,
+    team: prop.team,
+    stat: prop.stat,
+    line: parseFloat(prop.line),
+    confidence: prop.confidence,
+    ev: parseFloat(prop.ev),
+    platform: prop.platform,
+  }));
+
+  // Filter props by search query and stat type
+  const filteredProps = transformedProps.filter((prop: any) => {
+    const matchesSearch = prop.player.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStat = selectedStat === 'all' || prop.stat === selectedStat;
+    return matchesSearch && matchesStat;
+  });
+
+  // Week 1 goals calculation
+  const week1Goals = [
+    {
+      label: 'Win Rate',
+      target: '50%+',
+      current: `${metrics.winRate}%`,
+      achieved: parseFloat(metrics.winRate || 0) >= 50,
+    },
+    {
+      label: 'CLV Positive',
+      target: '55%+',
+      current: `${metrics.avgClv >= 0 ? '+' : ''}${metrics.avgClv}%`,
+      achieved: parseFloat(metrics.avgClv || 0) >= 0,
+    },
+    {
+      label: 'Bets Placed',
+      target: '20 bets',
+      current: `${week1Progress.betsPlaced} bets`,
+      achieved: week1Progress.betsPlaced >= 20,
+    },
+    {
+      label: 'ROI',
+      target: '5%+',
+      current: `${metrics.roi >= 0 ? '+' : ''}${metrics.roi}%`,
+      achieved: parseFloat(metrics.roi || 0) >= 5,
+    },
+  ];
+
+  const currentDay = Math.min(Math.ceil(week1Progress.betsPlaced / 3), 7);
 
   return (
     <div className="flex h-screen bg-background">
@@ -183,7 +196,7 @@ export default function Dashboard() {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader
-          bankroll={127.50}
+          bankroll={parseFloat(user?.bankroll || 0)}
           alertCount={3}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         />
@@ -192,43 +205,67 @@ export default function Dashboard() {
           <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-[1600px] mx-auto">
             {/* Week 1 Progress Banner */}
             <Week1Progress
-              day={3}
-              betsPlaced={12}
-              goals={MOCK_WEEK1_GOALS}
+              day={currentDay}
+              betsPlaced={week1Progress.betsPlaced}
+              goals={week1Goals}
             />
 
             {/* Hero Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <MetricCard label="Bankroll" value="$127.50" change={27.5} mono />
-              <MetricCard label="Win Rate" value={58.2} suffix="%" change={8.2} />
-              <MetricCard label="CLV" value="+2.8" suffix="%" change={12.5} />
-              <MetricCard label="ROI" value={7.4} suffix="%" change={-1.2} />
+              <MetricCard
+                label="Bankroll"
+                value={`$${parseFloat(user?.bankroll || 0).toFixed(2)}`}
+                change={27.5}
+                mono
+              />
+              <MetricCard
+                label="Win Rate"
+                value={parseFloat(metrics.winRate || 0).toFixed(1)}
+                suffix="%"
+                change={8.2}
+              />
+              <MetricCard
+                label="CLV"
+                value={`${metrics.avgClv >= 0 ? '+' : ''}${parseFloat(metrics.avgClv || 0).toFixed(1)}`}
+                suffix="%"
+                change={12.5}
+              />
+              <MetricCard
+                label="ROI"
+                value={parseFloat(metrics.roi || 0).toFixed(1)}
+                suffix="%"
+                change={-1.2}
+              />
             </div>
 
             {/* Top Slips Section */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold">Top Slips</h2>
-                <Badge variant="secondary">3 New Today</Badge>
+            {transformedSlips.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold">Top Slips</h2>
+                  <Badge variant="secondary">{transformedSlips.length} New Today</Badge>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {transformedSlips.map((slip: any, i: number) => (
+                    <SlipCard key={i} {...slip} />
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {MOCK_SLIPS.map((slip, i) => (
-                  <SlipCard key={i} {...slip} />
-                ))}
-              </div>
-            </div>
+            )}
 
             {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <PerformanceChart
-                title="Bankroll Growth"
-                data={MOCK_BANKROLL_DATA}
-              />
-              <PerformanceChart
-                title="Win Rate Trend"
-                data={MOCK_WINRATE_DATA}
-              />
-            </div>
+            {bankrollData.length > 0 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <PerformanceChart
+                  title="Bankroll Growth"
+                  data={bankrollData}
+                />
+                <PerformanceChart
+                  title="Win Rate Trend"
+                  data={winRateData}
+                />
+              </div>
+            )}
 
             {/* Props Feed */}
             <div>
@@ -271,7 +308,17 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              <PropsTable props={MOCK_PROPS} />
+              {propsLoading ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Loading props...
+                </div>
+              ) : filteredProps.length > 0 ? (
+                <PropsTable props={filteredProps} />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  No props found matching your criteria
+                </div>
+              )}
             </div>
           </div>
         </main>
