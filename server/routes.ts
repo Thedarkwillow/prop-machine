@@ -320,18 +320,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { betId } = betIdParamSchema.parse(req.params);
       const validatedBody = settleBetSchema.parse(req.body);
       
+      // Fetch bet to get propId and openingLine
+      const existingBet = await storage.getBet(betId);
+      
+      if (!existingBet) {
+        return res.status(404).json({ error: "Bet not found" });
+      }
+      
+      let closingLine = validatedBody.closingLine;
+      let clv = validatedBody.clv;
+      
+      // Auto-calculate CLV from currentLine if bet has a propId
+      if (existingBet.propId) {
+        const allProps = await storage.getAllActiveProps();
+        const prop = allProps.find(p => p.id === existingBet.propId);
+        
+        if (prop && prop.currentLine) {
+          // Use currentLine as closingLine
+          closingLine = prop.currentLine;
+          
+          // Calculate CLV: difference between opening and closing line
+          // Use opening line from bet (or fallback to prop line)
+          const openingLineNum = existingBet.openingLine ? parseFloat(existingBet.openingLine) : parseFloat(prop.line);
+          const closingLineNum = parseFloat(prop.currentLine);
+          const delta = closingLineNum - openingLineNum;
+          
+          // For "over" bets: positive delta = favorable (line went up after bet placed)
+          // For "under" bets: negative delta = favorable (line went down after bet placed)
+          // Use prop direction as bets don't currently store direction
+          const favorableMultiplier = prop.direction === 'over' ? 1 : -1;
+          clv = (delta * favorableMultiplier).toFixed(2);
+        }
+      }
+      
       const bet = await storage.updateBetStatus(
         betId,
         validatedBody.status,
-        validatedBody.closingLine,
-        validatedBody.clv
+        closingLine,
+        clv
       );
       
       if (!bet) {
         return res.status(404).json({ error: "Bet not found" });
       }
       
-      // Update bankroll if won
+      // Update bankroll based on outcome
       if (validatedBody.status === "won") {
         const user = await storage.getUser(bet.userId);
         if (!user) {
@@ -342,6 +375,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const returnAmount = parseFloat(bet.potentialReturn);
         const newBankroll = (currentBankroll + returnAmount).toFixed(2);
         await storage.updateBankroll(bet.userId, newBankroll);
+      } else if (validatedBody.status === "lost") {
+        // Bankroll already deducted when bet was placed, no adjustment needed
+      } else if (validatedBody.status === "pushed") {
+        // Return original stake
+        const user = await storage.getUser(bet.userId);
+        if (user) {
+          const currentBankroll = parseFloat(user.bankroll);
+          const stakeReturn = parseFloat(bet.amount);
+          const newBankroll = (currentBankroll + stakeReturn).toFixed(2);
+          await storage.updateBankroll(bet.userId, newBankroll);
+        }
       }
       
       res.json(bet);

@@ -25,6 +25,7 @@ export interface IStorage {
   updateSlipStatus(slipId: number, status: string): Promise<Slip>;
   
   // Bets
+  getBet(betId: number): Promise<Bet | undefined>;
   getBetsByUser(userId: number): Promise<Bet[]>;
   getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]>;
   createBet(bet: InsertBet): Promise<Bet>;
@@ -130,6 +131,10 @@ class MemStorage implements IStorage {
     if (!slip) throw new Error("Slip not found");
     slip.status = status as any;
     return slip;
+  }
+
+  async getBet(betId: number): Promise<Bet | undefined> {
+    return this.bets.get(betId);
   }
 
   async getBetsByUser(userId: number): Promise<Bet[]> {
