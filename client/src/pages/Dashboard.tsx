@@ -211,7 +211,7 @@ export default function Dashboard() {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader
-          bankroll={parseFloat(user?.bankroll || 0)}
+          bankroll={parseFloat(user?.bankroll ?? "0")}
           alertCount={3}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         />
@@ -229,7 +229,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard
                 label="Bankroll"
-                value={`$${parseFloat(user?.bankroll || 0).toFixed(2)}`}
+                value={`$${parseFloat(user?.bankroll ?? "0").toFixed(2)}`}
                 change={27.5}
                 mono
               />

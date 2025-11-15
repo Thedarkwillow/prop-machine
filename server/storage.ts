@@ -25,6 +25,7 @@ export interface IStorage {
   
   // Bets
   getBetsByUser(userId: number): Promise<Bet[]>;
+  getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]>;
   createBet(bet: InsertBet): Promise<Bet>;
   placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }>;
   updateBetStatus(betId: number, status: string, closingLine?: string, clv?: string): Promise<Bet>;
@@ -128,6 +129,18 @@ class MemStorage implements IStorage {
 
   async getBetsByUser(userId: number): Promise<Bet[]> {
     return Array.from(this.bets.values()).filter(b => b.userId === userId);
+  }
+
+  async getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]> {
+    const userBets = Array.from(this.bets.values()).filter(b => b.userId === userId);
+    
+    return userBets.map(bet => {
+      const prop = bet.propId ? this.props.get(bet.propId) : undefined;
+      return {
+        ...bet,
+        prop,
+      };
+    }).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Most recent first
   }
 
   async createBet(bet: InsertBet): Promise<Bet> {

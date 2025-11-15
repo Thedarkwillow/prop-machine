@@ -1,22 +1,19 @@
-import { BarChart3, TrendingUp, Activity, Settings, Target, Sparkles } from "lucide-react";
+import { BarChart3, TrendingUp, Activity, Settings, Target, Sparkles, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { Link, useLocation } from "wouter";
 
-interface SidebarProps {
-  currentPage?: string;
-}
-
-export default function Sidebar({ currentPage = 'dashboard' }: SidebarProps) {
-  const [activePage, setActivePage] = useState(currentPage);
+export default function Sidebar() {
+  const [location] = useLocation();
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'slips', label: 'Slips', icon: Sparkles, badge: 3 },
-    { id: 'props', label: 'Props Feed', icon: Target },
-    { id: 'performance', label: 'Performance', icon: TrendingUp },
-    { id: 'models', label: 'Models', icon: Activity },
-    { id: 'settings', label: 'Settings', icon: Settings }
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, path: '/' },
+    { id: 'history', label: 'Bet History', icon: History, path: '/history' },
+    { id: 'slips', label: 'Slips', icon: Sparkles, badge: 3, path: '/slips' },
+    { id: 'props', label: 'Props Feed', icon: Target, path: '/props' },
+    { id: 'performance', label: 'Performance', icon: TrendingUp, path: '/performance' },
+    { id: 'models', label: 'Models', icon: Activity, path: '/models' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' }
   ];
 
   return (
@@ -36,27 +33,24 @@ export default function Sidebar({ currentPage = 'dashboard' }: SidebarProps) {
       <nav className="flex-1 p-4 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activePage === item.id;
+          const isActive = location === item.path;
           
           return (
-            <Button
-              key={item.id}
-              variant={isActive ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => {
-                setActivePage(item.id);
-                console.log('Navigate to:', item.id);
-              }}
-              data-testid={`nav-${item.id}`}
-            >
-              <Icon className="h-4 w-4 mr-3" />
-              {item.label}
-              {item.badge && (
-                <Badge variant="destructive" className="ml-auto">
-                  {item.badge}
-                </Badge>
-              )}
-            </Button>
+            <Link key={item.id} href={item.path}>
+              <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className="w-full justify-start"
+                data-testid={`nav-${item.id}`}
+              >
+                <Icon className="h-4 w-4 mr-3" />
+                {item.label}
+                {item.badge && (
+                  <Badge variant="destructive" className="ml-auto">
+                    {item.badge}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
           );
         })}
       </nav>

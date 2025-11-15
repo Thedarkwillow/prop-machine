@@ -207,7 +207,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (week1) {
         bets = await storage.getWeek1Bets(userId);
       } else {
-        bets = await storage.getBetsByUser(userId);
+        // Return bets with joined prop information for bet history display
+        bets = await storage.getBetsWithProps(userId);
       }
       res.json(bets);
     } catch (error) {
