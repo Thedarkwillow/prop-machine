@@ -17,6 +17,7 @@ interface Prop {
   team: string;
   stat: string;
   line: number;
+  direction: string;
   confidence: number;
   ev: number;
   platform: string;
@@ -33,8 +34,7 @@ export default function PropsTable({ props }: PropsTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Player</TableHead>
-            <TableHead>Stat</TableHead>
-            <TableHead className="text-right">Line</TableHead>
+            <TableHead>Prop</TableHead>
             <TableHead>Confidence</TableHead>
             <TableHead className="text-right">EV</TableHead>
             <TableHead>Platform</TableHead>
@@ -51,10 +51,15 @@ export default function PropsTable({ props }: PropsTableProps) {
                 </div>
               </TableCell>
               <TableCell>
-                <Badge variant="outline">{prop.stat}</Badge>
-              </TableCell>
-              <TableCell className="text-right font-mono font-medium">
-                {prop.line}
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <Badge variant={prop.direction === 'over' ? 'default' : 'secondary'} className="text-xs">
+                      {prop.direction === 'over' ? 'O' : 'U'}
+                    </Badge>
+                    <span className="font-mono font-medium">{prop.line}</span>
+                    <Badge variant="outline" className="text-xs">{prop.stat}</Badge>
+                  </div>
+                </div>
               </TableCell>
               <TableCell>
                 <div className="w-32">

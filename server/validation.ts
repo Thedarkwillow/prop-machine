@@ -52,3 +52,14 @@ export const queryParamsSlipStatusSchema = z.object({
 export const queryParamsDaysSchema = z.object({
   days: z.string().regex(/^\d+$/).transform(Number).optional(),
 });
+
+export const analyzePropSchema = z.object({
+  sport: z.enum(["NHL", "NBA", "NFL", "MLB"]),
+  player: z.string().min(1),
+  team: z.string().min(1),
+  opponent: z.string().min(1),
+  stat: z.string().min(1),
+  line: z.string(),
+  direction: z.enum(["over", "under"]),
+  platform: z.string().min(1),
+});

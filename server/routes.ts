@@ -14,6 +14,7 @@ import {
   betIdParamSchema,
   slipIdParamSchema,
   propIdParamSchema,
+  analyzePropSchema,
 } from "./validation";
 import { ZodError } from "zod";
 
@@ -79,6 +80,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid prop data", details: error.errors });
       }
       res.status(500).json({ error: "Failed to create prop" });
+    }
+  });
+
+  app.post("/api/props/analyze", async (req, res) => {
+    try {
+      const validatedData = analyzePropSchema.parse(req.body);
+      
+      // ML-powered analysis simulation
+      // In production, this would call the ML model
+      const baseConfidence = Math.floor(Math.random() * 30) + 55; // 55-85 range
+      const lineFactor = parseFloat(validatedData.line);
+      
+      // Adjust confidence based on sport, stat type, and line value
+      let confidenceAdjustment = 0;
+      if (validatedData.sport === "NHL" && validatedData.stat === "SOG") {
+        confidenceAdjustment = 5;
+        // Lower lines are easier to hit for overs, harder for unders
+        if (validatedData.direction === "over" && lineFactor < 4) {
+          confidenceAdjustment += 3;
+        } else if (validatedData.direction === "under" && lineFactor > 5) {
+          confidenceAdjustment += 2;
+        }
+      } else if (validatedData.sport === "NBA" && validatedData.stat === "Points") {
+        confidenceAdjustment = 3;
+        if (validatedData.direction === "over" && lineFactor < 20) {
+          confidenceAdjustment += 2;
+        }
+      } else if (validatedData.stat === "Goals" || validatedData.stat === "Assists") {
+        // Goals and assists are harder to predict
+        confidenceAdjustment = -2;
+      }
+      
+      const confidence = Math.min(95, Math.max(45, baseConfidence + confidenceAdjustment));
+      
+      // Calculate EV (Expected Value) based on confidence and implied probability
+      const modelProbability = confidence / 100;
+      // Platform odds vary, but typically around 1.8-2.0 for props
+      const platformOdds = 1.9;
+      const impliedProbability = 1 / platformOdds;
+      
+      // EV = (Model Probability × Payout) - (1 - Model Probability)
+      // Simplified: EV% = ((Model Prob - Implied Prob) / Implied Prob) × 100
+      const ev = ((modelProbability - impliedProbability) / impliedProbability) * 100;
+      
+      res.json({
+        confidence,
+        ev: parseFloat(ev.toFixed(2)),
+        modelProbability: parseFloat(modelProbability.toFixed(4)),
+        sport: validatedData.sport,
+        player: validatedData.player,
+        team: validatedData.team,
+        opponent: validatedData.opponent,
+        stat: validatedData.stat,
+        line: validatedData.line,
+        direction: validatedData.direction,
+        platform: validatedData.platform,
+      });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ error: "Invalid prop data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to analyze prop" });
     }
   });
 

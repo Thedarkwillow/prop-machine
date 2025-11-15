@@ -5,6 +5,7 @@ import SlipCard from "@/components/SlipCard";
 import PropsTable from "@/components/PropsTable";
 import Week1Progress from "@/components/Week1Progress";
 import PerformanceChart from "@/components/PerformanceChart";
+import ManualPropInput from "@/components/ManualPropInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -131,6 +132,7 @@ export default function Dashboard() {
     team: prop.team,
     stat: prop.stat,
     line: parseFloat(prop.line),
+    direction: prop.direction,
     confidence: prop.confidence,
     ev: parseFloat(prop.ev),
     platform: prop.platform,
@@ -269,9 +271,12 @@ export default function Dashboard() {
 
             {/* Props Feed */}
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold">Live Props Feed</h2>
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col gap-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Live Props Feed</h2>
+                  <ManualPropInput />
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
                   <Select value={selectedSport} onValueChange={setSelectedSport}>
                     <SelectTrigger className="w-32" data-testid="select-sport">
                       <SelectValue />
