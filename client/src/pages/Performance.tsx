@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { Bet, Prop } from '@shared/schema';
 
 const USER_ID = 1;
@@ -74,6 +74,18 @@ export default function Performance() {
     'ROI %': parseFloat(stat.roi.toFixed(1)),
   }));
 
+  // Calculate CLV distribution
+  const settledBetsWithClv = bets.filter(b => b.status !== 'pending' && b.clv !== null);
+  const positiveCLV = settledBetsWithClv.filter(b => parseFloat(b.clv!) > 0).length;
+  const negativeCLV = settledBetsWithClv.filter(b => parseFloat(b.clv!) < 0).length;
+  const neutralCLV = settledBetsWithClv.filter(b => parseFloat(b.clv!) === 0).length;
+  
+  const clvDistributionData = [
+    { name: 'Positive CLV', value: positiveCLV, fill: 'hsl(var(--chart-1))' },
+    { name: 'Negative CLV', value: negativeCLV, fill: 'hsl(var(--chart-5))' },
+    { name: 'Neutral CLV', value: neutralCLV, fill: 'hsl(var(--muted))' },
+  ].filter(item => item.value > 0);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full" data-testid="loading-performance">
@@ -118,6 +130,75 @@ export default function Performance() {
               </ResponsiveContainer>
             </CardContent>
           </Card>
+
+          {/* CLV Distribution Chart */}
+          {settledBetsWithClv.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle data-testid="title-clv-chart">Closing Line Value Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="w-full md:w-1/2">
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie
+                          data={clvDistributionData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, value, percent }) => 
+                            `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
+                          }
+                          outerRadius={80}
+                          dataKey="value"
+                        >
+                          {clvDistributionData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex flex-col gap-4 w-full md:w-1/2">
+                    <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-2">CLV Summary</h3>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Positive CLV Bets:</span>
+                          <span className="font-medium text-green-600 dark:text-green-400" data-testid="text-positive-clv">
+                            {positiveCLV} ({settledBetsWithClv.length > 0 ? ((positiveCLV / settledBetsWithClv.length) * 100).toFixed(1) : 0}%)
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Negative CLV Bets:</span>
+                          <span className="font-medium text-red-600 dark:text-red-400" data-testid="text-negative-clv">
+                            {negativeCLV} ({settledBetsWithClv.length > 0 ? ((negativeCLV / settledBetsWithClv.length) * 100).toFixed(1) : 0}%)
+                          </span>
+                        </div>
+                        {neutralCLV > 0 && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Neutral CLV Bets:</span>
+                            <span className="font-medium text-muted-foreground" data-testid="text-neutral-clv">
+                              {neutralCLV} ({settledBetsWithClv.length > 0 ? ((neutralCLV / settledBetsWithClv.length) * 100).toFixed(1) : 0}%)
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center border-t pt-2">
+                          <span className="text-sm font-medium">Total Bets with CLV:</span>
+                          <span className="font-bold" data-testid="text-total-clv">{settledBetsWithClv.length}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Positive CLV indicates the line moved in your favor after placing the bet, suggesting edge over the closing market.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Performance Table */}
           <Card>
