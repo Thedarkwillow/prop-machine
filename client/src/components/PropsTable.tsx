@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown } from "lucide-react";
 import ConfidenceBar from "./ConfidenceBar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -31,10 +31,17 @@ interface Prop {
   team: string;
   stat: string;
   line: number;
+  currentLine?: number | null;
   direction: string;
   confidence: number;
   ev: number;
   platform: string;
+}
+
+interface LineMovement {
+  delta: number;
+  isFavorable: boolean;
+  hasMovement: boolean;
 }
 
 interface PropsTableProps {
@@ -46,6 +53,17 @@ interface User {
   id: number;
   bankroll: string;
   kellyMultiplier: string;
+}
+
+function getLineMovement(prop: Prop): LineMovement {
+  if (prop.currentLine === null || prop.currentLine === undefined || prop.currentLine === prop.line) {
+    return { delta: 0, isFavorable: false, hasMovement: false };
+  }
+  
+  const delta = prop.currentLine - prop.line;
+  const isFavorable = prop.direction === 'over' ? delta > 0 : delta < 0;
+  
+  return { delta, isFavorable, hasMovement: true };
 }
 
 export default function PropsTable({ props, userId }: PropsTableProps) {
@@ -148,7 +166,27 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
                     <Badge variant={prop.direction === 'over' ? 'default' : 'secondary'} className="text-xs">
                       {prop.direction === 'over' ? 'O' : 'U'}
                     </Badge>
-                    <span className="font-mono font-medium">{prop.line}</span>
+                    <div className="flex items-center gap-1">
+                      <span className="font-mono font-medium">{prop.line}</span>
+                      {(() => {
+                        const movement = getLineMovement(prop);
+                        if (!movement.hasMovement) return null;
+                        const Icon = movement.delta > 0 ? TrendingUp : TrendingDown;
+                        return (
+                          <div 
+                            className={`flex items-center gap-0.5 text-xs ${
+                              movement.isFavorable 
+                                ? 'text-green-600 dark:text-green-400' 
+                                : 'text-red-600 dark:text-red-400'
+                            }`}
+                            data-testid={`line-movement-${prop.id}`}
+                          >
+                            <Icon className="h-3 w-3" />
+                            <span className="font-mono">{movement.delta > 0 ? '+' : ''}{movement.delta.toFixed(1)}</span>
+                          </div>
+                        );
+                      })()}
+                    </div>
                     <Badge variant="outline" className="text-xs">{prop.stat}</Badge>
                   </div>
                 </div>

@@ -24,7 +24,8 @@ export const props = pgTable("props", {
   team: text("team").notNull(),
   opponent: text("opponent").notNull(),
   stat: text("stat").notNull(), // SOG, Points, Goals, Assists, etc.
-  line: decimal("line", { precision: 5, scale: 1 }).notNull(),
+  line: decimal("line", { precision: 5, scale: 1 }).notNull(), // Opening line
+  currentLine: decimal("current_line", { precision: 5, scale: 1 }), // Current line for movement tracking
   direction: text("direction", { enum: ["over", "under"] }).notNull(),
   platform: text("platform").notNull(), // PrizePicks, Underdog, etc.
   confidence: integer("confidence").notNull(), // 0-100

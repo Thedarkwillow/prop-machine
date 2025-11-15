@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertPropSchema, insertSlipSchema, insertBetSchema } from "@shared/schema";
+import { insertPropSchema, insertSlipSchema, insertBetSchema, type Prop } from "@shared/schema";
 import {
   updateBankrollSchema,
   updateSlipStatusSchema,
@@ -17,6 +17,27 @@ import {
   analyzePropSchema,
 } from "./validation";
 import { ZodError } from "zod";
+
+function transformPropForAPI(prop: Prop) {
+  return {
+    id: prop.id,
+    sport: prop.sport,
+    player: prop.player,
+    team: prop.team,
+    opponent: prop.opponent,
+    stat: prop.stat,
+    line: Number(prop.line),
+    currentLine: prop.currentLine ? Number(prop.currentLine) : null,
+    direction: prop.direction,
+    platform: prop.platform,
+    confidence: prop.confidence,
+    ev: Number(prop.ev),
+    modelProbability: Number(prop.modelProbability),
+    gameTime: prop.gameTime,
+    isActive: prop.isActive,
+    createdAt: prop.createdAt,
+  };
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
@@ -61,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedQuery = queryParamsSportSchema.parse(req.query);
       const props = await storage.getActiveProps(validatedQuery.sport);
-      res.json(props);
+      res.json(props.map(transformPropForAPI));
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ error: "Invalid query parameters", details: error.errors });
@@ -75,7 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { sport } = req.params;
       const props = await storage.getActiveProps(sport as any);
-      res.json(props);
+      res.json(props.map(transformPropForAPI));
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch props" });
     }

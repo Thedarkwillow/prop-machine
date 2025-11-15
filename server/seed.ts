@@ -28,6 +28,7 @@ export async function seedDatabase() {
         opponent: "TOR",
         stat: "SOG",
         line: "3.5",
+        currentLine: "4.0", // Line moved up
         direction: "over",
         platform: "PrizePicks",
         confidence: 87,
@@ -58,6 +59,7 @@ export async function seedDatabase() {
         opponent: "BOS",
         stat: "Saves",
         line: "30.5",
+        currentLine: "29.5", // Line moved down
         direction: "over",
         platform: "PrizePicks",
         confidence: 81,
@@ -119,6 +121,7 @@ export async function seedDatabase() {
         opponent: "PHI",
         stat: "SOG",
         line: "3.5",
+        currentLine: "3.0", // Line moved down (favorable for under)
         direction: "under",
         platform: "PrizePicks",
         confidence: 82,
