@@ -10,6 +10,7 @@ import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
 import BuildSlip from "@/pages/BuildSlip";
 import NotFound from "@/pages/not-found";
+import { useHighConfidenceNotifications } from "@/hooks/use-high-confidence-notifications";
 
 function Router() {
   return (
@@ -23,11 +24,11 @@ function Router() {
   );
 }
 
-function Navigation() {
+function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
   const [location] = useLocation();
   
   const navItems = [
-    { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard" },
+    { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard", badge: highConfidenceCount },
     { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
     { path: "/history", label: "Bet History", icon: History, testId: "nav-history" },
     { path: "/performance", label: "Performance", icon: TrendingUp, testId: "nav-performance" },
@@ -46,11 +47,19 @@ function Navigation() {
               <Button
                 variant={location === item.path ? "default" : "ghost"}
                 size="sm"
-                className="gap-2"
+                className="gap-2 relative"
                 data-testid={item.testId}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
+                {item.badge && item.badge > 0 && (
+                  <span 
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium"
+                    data-testid={`badge-${item.testId}`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
               </Button>
             </Link>
           ))}
@@ -60,18 +69,27 @@ function Navigation() {
   );
 }
 
+function AppContent() {
+  // Call notification hook inside QueryClientProvider (stable, mounts once)
+  const { highConfidenceCount } = useHighConfidenceNotifications('NHL');
+  
+  return (
+    <TooltipProvider>
+      <div className="flex flex-col h-screen">
+        <Navigation highConfidenceCount={highConfidenceCount} />
+        <main className="flex-1 overflow-auto">
+          <Router />
+        </main>
+      </div>
+      <Toaster />
+    </TooltipProvider>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <div className="flex flex-col h-screen">
-          <Navigation />
-          <main className="flex-1 overflow-auto">
-            <Router />
-          </main>
-        </div>
-        <Toaster />
-      </TooltipProvider>
+      <AppContent />
     </QueryClientProvider>
   );
 }

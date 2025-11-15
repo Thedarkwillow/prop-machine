@@ -38,6 +38,11 @@ export default function Dashboard() {
   const [selectedSport, setSelectedSport] = useState('NHL');
   const [selectedStat, setSelectedStat] = useState('all');
 
+  // Set page title
+  useEffect(() => {
+    document.title = 'PickFinder - AI Sports Betting Intelligence';
+  }, []);
+
   // Reset stat filter when sport changes
   useEffect(() => {
     setSelectedStat('all');

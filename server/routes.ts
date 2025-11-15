@@ -295,9 +295,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/bets", async (req, res) => {
+  app.post("/api/bets/:userId", async (req, res) => {
     try {
-      const validatedBet = insertBetSchema.parse(req.body);
+      const { userId } = userIdParamSchema.parse(req.params);
+      
+      // Calculate potential return from amount and odds
+      const amount = parseFloat(req.body.amount);
+      const odds = parseFloat(req.body.odds);
+      const potentialReturn = (amount * odds).toFixed(2);
+      
+      // Merge userId from path with bet data from body
+      const betData = {
+        ...req.body,
+        userId,
+        potentialReturn,
+        // Convert numeric openingLine to string for decimal field
+        openingLine: req.body.openingLine ? String(req.body.openingLine) : undefined,
+      };
+      
+      const validatedBet = insertBetSchema.parse(betData);
       
       // Atomically validate bankroll and place bet
       const result = await storage.placeBetWithBankrollCheck(validatedBet);
@@ -347,8 +363,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // For "over" bets: positive delta = favorable (line went up after bet placed)
           // For "under" bets: negative delta = favorable (line went down after bet placed)
-          // Use prop direction as bets don't currently store direction
-          const favorableMultiplier = prop.direction === 'over' ? 1 : -1;
+          // Use bet's direction (snapshotted at bet time) for accurate historical CLV
+          // Fallback to prop direction for legacy bets without direction field
+          const direction = existingBet.direction || prop.direction;
+          const favorableMultiplier = direction === 'over' ? 1 : -1;
           clv = (delta * favorableMultiplier).toFixed(2);
         }
       }

@@ -69,6 +69,7 @@ export const bets = pgTable("bets", {
   odds: decimal("odds", { precision: 6, scale: 2 }).notNull(),
   potentialReturn: decimal("potential_return", { precision: 10, scale: 2 }).notNull(),
   status: text("status", { enum: ["pending", "won", "lost", "pushed"] }).notNull().default("pending"),
+  direction: text("direction", { enum: ["over", "under"] }), // Snapshot of prop direction at bet time
   openingLine: decimal("opening_line", { precision: 5, scale: 1 }),
   closingLine: decimal("closing_line", { precision: 5, scale: 1 }),
   clv: decimal("clv", { precision: 5, scale: 2 }), // Closing line value

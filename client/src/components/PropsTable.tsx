@@ -77,7 +77,13 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
   });
 
   const placeBetMutation = useMutation({
-    mutationFn: async (data: { propId: number; amount: number; odds: number }) => {
+    mutationFn: async (data: { 
+      propId: number; 
+      amount: number; 
+      odds: number; 
+      direction: string;
+      openingLine: number;
+    }) => {
       return await apiRequest("POST", `/api/bets/${userId}`, data);
     },
     onSuccess: () => {
@@ -135,6 +141,8 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
       propId: parseInt(selectedProp.id),
       amount,
       odds,
+      direction: selectedProp.direction, // Snapshot prop direction at bet time
+      openingLine: selectedProp.line, // Snapshot opening line at bet time
     });
   };
 
