@@ -70,6 +70,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Path parameter version for TanStack Query's default fetcher
+  app.get("/api/props/:sport", async (req, res) => {
+    try {
+      const { sport } = req.params;
+      const props = await storage.getActiveProps(sport as any);
+      res.json(props);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch props" });
+    }
+  });
+
   app.post("/api/props", async (req, res) => {
     try {
       const validatedProp = insertPropSchema.parse(req.body);
@@ -193,6 +204,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid request", details: error.errors });
       }
       res.status(500).json({ error: "Failed to update slip" });
+    }
+  });
+
+  // Generate daily slips
+  app.post("/api/slips/generate/:userId", async (req, res) => {
+    try {
+      const { userId } = userIdParamSchema.parse(req.params);
+      
+      // Get user for bankroll and Kelly multiplier
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Get all active props
+      const allProps = await storage.getAllActiveProps();
+      
+      // Import slip generator
+      const { generateDailySlips, formatSlip, RISK_PROFILES } = await import('./slipGenerator');
+      
+      // Generate slips
+      const slips = generateDailySlips(allProps);
+      const bankroll = parseFloat(user.bankroll);
+      const kellyMultiplier = parseFloat(user.kellyMultiplier);
+
+      // Format and return slips
+      const formattedSlips = {
+        conservative: slips.conservative.length > 0 
+          ? formatSlip(slips.conservative, RISK_PROFILES.conservative, bankroll, kellyMultiplier)
+          : null,
+        balanced: slips.balanced.length > 0
+          ? formatSlip(slips.balanced, RISK_PROFILES.balanced, bankroll, kellyMultiplier)
+          : null,
+        aggressive: slips.aggressive.length > 0
+          ? formatSlip(slips.aggressive, RISK_PROFILES.aggressive, bankroll, kellyMultiplier)
+          : null,
+      };
+
+      res.json(formattedSlips);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ error: "Invalid request", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to generate slips" });
     }
   });
 

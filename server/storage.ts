@@ -14,6 +14,7 @@ export interface IStorage {
   
   // Props
   getActiveProps(sport?: string): Promise<Prop[]>;
+  getAllActiveProps(): Promise<Prop[]>;
   createProp(prop: InsertProp): Promise<Prop>;
   deactivateProp(propId: number): Promise<void>;
   
@@ -81,6 +82,10 @@ class MemStorage implements IStorage {
       return allProps.filter(p => p.sport === sport);
     }
     return allProps;
+  }
+
+  async getAllActiveProps(): Promise<Prop[]> {
+    return Array.from(this.props.values()).filter(p => p.isActive);
   }
 
   async createProp(prop: InsertProp): Promise<Prop> {

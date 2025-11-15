@@ -4,16 +4,18 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, History, TrendingUp } from "lucide-react";
+import { LayoutDashboard, History, TrendingUp, Plus } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
+import BuildSlip from "@/pages/BuildSlip";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/build-slip" component={BuildSlip} />
       <Route path="/history" component={BetHistory} />
       <Route path="/performance" component={Performance} />
       <Route component={NotFound} />
@@ -26,6 +28,7 @@ function Navigation() {
   
   const navItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard" },
+    { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
     { path: "/history", label: "Bet History", icon: History, testId: "nav-history" },
     { path: "/performance", label: "Performance", icon: TrendingUp, testId: "nav-performance" },
   ];

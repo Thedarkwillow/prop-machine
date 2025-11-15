@@ -203,7 +203,12 @@ export function detectCorrelations(props: Prop[]): CorrelationWarning[] {
   const relatedStats: Record<string, [string, string][]> = {
     'NHL': [['points', 'goals'], ['points', 'assists'], ['sog', 'goals']],
     'NBA': [['points', 'rebounds'], ['points', 'assists'], ['assists', 'rebounds']],
-    'NFL': [['pass-yards', 'pass-tds'], ['rush-yards', 'receptions'], ['receptions', 'rec-yards']],
+    'NFL': [
+      ['pass-yards', 'pass-tds'],
+      ['rush-yards', 'rush-attempts'],
+      ['rush-yards', 'rush-tds'],
+      ['receptions', 'rec-yards']
+    ],
     'MLB': [['hits', 'total-bases'], ['strikeouts', 'pitcher-wins'], ['runs-rbis', 'hits']],
   };
 
