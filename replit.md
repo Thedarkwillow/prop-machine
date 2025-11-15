@@ -4,6 +4,18 @@
 
 PickFinder is an AI-powered sports betting intelligence platform that helps users make informed betting decisions through ML-driven prop analysis, confidence scoring, and Kelly criterion-based bankroll management. The platform focuses on NHL props (with support for NBA, NFL, MLB) and provides automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's edge over time.
 
+## Recent Changes
+
+**November 15, 2025 - Complete Multi-Leg Parlay Tracking Implementation**
+- Implemented slip-based bet placement workflow for parlay tracking
+- Fixed critical /api/bets endpoint crash (inArray usage for Drizzle queries)
+- Fixed apiRequest parameter order bug in queryClient
+- Added sport field to slip picks array for proper filtering
+- Updated bet history to display both single-prop bets and multi-leg parlays
+- Enhanced backend storage to fetch both props and slips for comprehensive bet history
+- Added atomic bankroll updates via placeBetWithBankrollCheck transaction
+- Verified complete end-to-end functionality through comprehensive testing
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -76,13 +88,20 @@ Preferred communication style: Simple, everyday language.
 
 *Slips Table*
 - Pre-generated betting slips categorized by risk type (conservative, balanced, aggressive)
-- JSONB field stores array of prop IDs with details for flexibility
-- Tracks suggested bet amount (Kelly-calculated), status, and timestamps
+- JSONB `picks` field stores complete array of prop details for multi-leg parlays:
+  - Each pick includes: propId, player, team, sport, stat, line, direction, confidence
+  - Enables full tracking of parlay legs without JOIN queries
+  - Sport field supports cross-sport filtering in bet history
+- Tracks suggested bet amount (Kelly-calculated), potential return, status, and timestamps
 
 *Bets Table*
-- Individual bet records linking to props with outcome tracking
+- Individual bet records with dual tracking: single props OR multi-leg parlays
+- Single bets: link to props via `propId`, `slipId` is null
+- Parlay bets: link to slips via `slipId`, `propId` is null
+- Slip reference provides access to complete picks array for parlay tracking
 - Captures closing line value (CLV) for model validation
 - Status lifecycle: pending → won/lost/pushed
+- Atomic bankroll updates via transaction in `placeBetWithBankrollCheck`
 
 *Performance Snapshots Table*
 - Time-series tracking of key metrics: win rate, ROI, CLV%, total bets
