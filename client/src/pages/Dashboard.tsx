@@ -208,7 +208,7 @@ export default function Dashboard() {
             {/* Top Slips Section */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold">Top AI Slips</h2>
+                <h2 className="text-2xl font-bold">Top Slips</h2>
                 <Badge variant="secondary">3 New Today</Badge>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

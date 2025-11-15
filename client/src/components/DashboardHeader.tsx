@@ -39,7 +39,7 @@ export default function DashboardHeader({ bankroll, alertCount, onMenuClick }: D
 
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">AI</span>
+            <span className="text-primary-foreground font-bold text-sm">PF</span>
           </div>
           <span className="font-bold text-lg hidden sm:inline">PickFinder</span>
         </div>

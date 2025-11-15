@@ -12,7 +12,7 @@ export default function Sidebar({ currentPage = 'dashboard' }: SidebarProps) {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'slips', label: 'AI Slips', icon: Sparkles, badge: 3 },
+    { id: 'slips', label: 'Slips', icon: Sparkles, badge: 3 },
     { id: 'props', label: 'Props Feed', icon: Target },
     { id: 'performance', label: 'Performance', icon: TrendingUp },
     { id: 'models', label: 'Models', icon: Activity },
@@ -24,11 +24,11 @@ export default function Sidebar({ currentPage = 'dashboard' }: SidebarProps) {
       <div className="p-6 border-b">
         <div className="flex items-center gap-2">
           <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">AI</span>
+            <span className="text-primary-foreground font-bold">PF</span>
           </div>
           <div>
             <h1 className="font-bold text-lg">PickFinder</h1>
-            <p className="text-xs text-muted-foreground">NHL Props AI</p>
+            <p className="text-xs text-muted-foreground">NHL Props</p>
           </div>
         </div>
       </div>
