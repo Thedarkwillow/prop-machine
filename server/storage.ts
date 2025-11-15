@@ -26,6 +26,7 @@ export interface IStorage {
   // Bets
   getBetsByUser(userId: number): Promise<Bet[]>;
   createBet(bet: InsertBet): Promise<Bet>;
+  placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }>;
   updateBetStatus(betId: number, status: string, closingLine?: string, clv?: string): Promise<Bet>;
   getWeek1Bets(userId: number): Promise<Bet[]>;
   
@@ -48,6 +49,9 @@ class MemStorage implements IStorage {
   private slipIdCounter = 1;
   private betIdCounter = 1;
   private snapshotIdCounter = 1;
+
+  // Mutex for atomic bet placement per user
+  private userLocks: Map<number, Promise<void>> = new Map();
 
   async getUser(userId: number): Promise<User | undefined> {
     return this.users.get(userId);
@@ -134,6 +138,66 @@ class MemStorage implements IStorage {
     };
     this.bets.set(newBet.id, newBet);
     return newBet;
+  }
+
+  async placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }> {
+    const userId = bet.userId;
+    
+    // Chain this operation onto any existing operation for this user
+    const operation = async (): Promise<{ success: true; bet: Bet } | { success: false; error: string }> => {
+      const user = this.users.get(userId);
+      if (!user) {
+        return { success: false, error: "User not found" };
+      }
+
+      const currentBankroll = parseFloat(user.bankroll);
+      const betAmount = parseFloat(bet.amount);
+
+      if (betAmount <= 0) {
+        return { success: false, error: "Bet amount must be greater than zero" };
+      }
+
+      if (betAmount > currentBankroll) {
+        return { 
+          success: false, 
+          error: `Insufficient bankroll: bet amount $${betAmount.toFixed(2)} exceeds available $${currentBankroll.toFixed(2)}` 
+        };
+      }
+
+      // Create bet and update bankroll atomically
+      const newBet: Bet = {
+        id: this.betIdCounter++,
+        ...bet,
+        createdAt: new Date(),
+      };
+      this.bets.set(newBet.id, newBet);
+      
+      // Update bankroll using the existing method
+      await this.updateBankroll(userId, (currentBankroll - betAmount).toFixed(2));
+      
+      return { success: true, bet: newBet };
+    };
+
+    // Get existing lock or create resolved promise
+    const previousLock = this.userLocks.get(userId) || Promise.resolve();
+    
+    // Chain the new operation and store it
+    const newLock = previousLock.then(operation).catch((error) => {
+      // Convert any thrown errors to result format
+      return { success: false, error: error.message || "Unknown error occurred" };
+    });
+    
+    this.userLocks.set(userId, newLock as any);
+    
+    // Wait for our operation to complete
+    const result = await newLock;
+    
+    // Clean up lock if this was the last operation
+    if (this.userLocks.get(userId) === newLock) {
+      this.userLocks.delete(userId);
+    }
+    
+    return result;
   }
 
   async updateBetStatus(

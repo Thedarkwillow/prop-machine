@@ -221,16 +221,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/bets", async (req, res) => {
     try {
       const validatedBet = insertBetSchema.parse(req.body);
-      const bet = await storage.createBet(validatedBet);
       
-      // Update user bankroll
-      const user = await storage.getUser(validatedBet.userId);
-      if (user) {
-        const newBankroll = (parseFloat(user.bankroll) - parseFloat(validatedBet.amount)).toFixed(2);
-        await storage.updateBankroll(validatedBet.userId, newBankroll);
+      // Atomically validate bankroll and place bet
+      const result = await storage.placeBetWithBankrollCheck(validatedBet);
+      
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
       }
       
-      res.json(bet);
+      res.json(result.bet);
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ error: "Invalid bet data", details: error.errors });
