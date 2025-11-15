@@ -272,4 +272,243 @@ class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation using Drizzle ORM
+import { db } from "./db";
+import { users, props, slips, bets, performanceSnapshots } from "@shared/schema";
+import { eq, and, desc, gte, sql } from "drizzle-orm";
+
+class DbStorage implements IStorage {
+  // User management
+  async getUser(userId: number): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    return result[0];
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db.insert(users).values(user).returning();
+    return result[0];
+  }
+
+  async updateBankroll(userId: number, newBankroll: string): Promise<User> {
+    const result = await db
+      .update(users)
+      .set({ bankroll: newBankroll })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    if (!result[0]) throw new Error("User not found");
+    return result[0];
+  }
+
+  // Props
+  async getActiveProps(sport?: string): Promise<Prop[]> {
+    if (sport) {
+      return await db
+        .select()
+        .from(props)
+        .where(and(eq(props.isActive, true), eq(props.sport, sport)));
+    }
+    return await db.select().from(props).where(eq(props.isActive, true));
+  }
+
+  async getAllActiveProps(): Promise<Prop[]> {
+    return await db.select().from(props).where(eq(props.isActive, true));
+  }
+
+  async createProp(prop: InsertProp): Promise<Prop> {
+    const result = await db.insert(props).values(prop).returning();
+    return result[0];
+  }
+
+  async deactivateProp(propId: number): Promise<void> {
+    await db.update(props).set({ isActive: false }).where(eq(props.id, propId));
+  }
+
+  // Slips
+  async getSlipsByUser(userId: number): Promise<Slip[]> {
+    return await db.select().from(slips).where(eq(slips.userId, userId));
+  }
+
+  async getPendingSlips(userId: number): Promise<Slip[]> {
+    return await db
+      .select()
+      .from(slips)
+      .where(and(eq(slips.userId, userId), eq(slips.status, "pending")));
+  }
+
+  async createSlip(slip: InsertSlip): Promise<Slip> {
+    const result = await db.insert(slips).values(slip).returning();
+    return result[0];
+  }
+
+  async updateSlipStatus(slipId: number, status: string): Promise<Slip> {
+    const result = await db
+      .update(slips)
+      .set({ status: status as any })
+      .where(eq(slips.id, slipId))
+      .returning();
+    
+    if (!result[0]) throw new Error("Slip not found");
+    return result[0];
+  }
+
+  // Bets
+  async getBet(betId: number): Promise<Bet | undefined> {
+    const result = await db.select().from(bets).where(eq(bets.id, betId)).limit(1);
+    return result[0];
+  }
+
+  async getBetsByUser(userId: number): Promise<Bet[]> {
+    return await db.select().from(bets).where(eq(bets.userId, userId));
+  }
+
+  async getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]> {
+    const userBets = await db
+      .select()
+      .from(bets)
+      .where(eq(bets.userId, userId))
+      .orderBy(desc(bets.createdAt));
+
+    // Fetch all unique prop IDs
+    const propIds = [...new Set(userBets.map(b => b.propId).filter((id): id is number => id !== null))];
+    
+    const propsMap = new Map<number, Prop>();
+    if (propIds.length > 0) {
+      const propsData = await db
+        .select()
+        .from(props)
+        .where(sql`${props.id} = ANY(${propIds})`);
+      
+      propsData.forEach(p => propsMap.set(p.id, p));
+    }
+
+    return userBets.map(bet => ({
+      ...bet,
+      prop: bet.propId ? propsMap.get(bet.propId) : undefined,
+    }));
+  }
+
+  async createBet(bet: InsertBet): Promise<Bet> {
+    const result = await db.insert(bets).values(bet).returning();
+    return result[0];
+  }
+
+  async placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }> {
+    try {
+      const result = await db.transaction(async (tx) => {
+        // Get user and lock row
+        const userResult = await tx
+          .select()
+          .from(users)
+          .where(eq(users.id, bet.userId))
+          .for('update')
+          .limit(1);
+
+        if (!userResult[0]) {
+          return { success: false as const, error: "User not found" };
+        }
+
+        const user = userResult[0];
+        const currentBankroll = parseFloat(user.bankroll);
+        const betAmount = parseFloat(bet.amount);
+
+        if (betAmount <= 0) {
+          return { success: false as const, error: "Bet amount must be greater than zero" };
+        }
+
+        if (betAmount > currentBankroll) {
+          return { 
+            success: false as const, 
+            error: `Insufficient bankroll: bet amount $${betAmount.toFixed(2)} exceeds available $${currentBankroll.toFixed(2)}` 
+          };
+        }
+
+        // Create bet
+        const newBet = await tx.insert(bets).values(bet).returning();
+
+        // Update bankroll
+        await tx
+          .update(users)
+          .set({ bankroll: (currentBankroll - betAmount).toFixed(2) })
+          .where(eq(users.id, bet.userId));
+
+        return { success: true as const, bet: newBet[0] };
+      });
+
+      return result;
+    } catch (error: any) {
+      return { success: false, error: error.message || "Unknown error occurred" };
+    }
+  }
+
+  async updateBetStatus(
+    betId: number,
+    status: string,
+    closingLine?: string,
+    clv?: string
+  ): Promise<Bet> {
+    const updateData: any = {
+      status: status as any,
+      settledAt: new Date(),
+    };
+    
+    if (closingLine) updateData.closingLine = closingLine;
+    if (clv) updateData.clv = clv;
+
+    const result = await db
+      .update(bets)
+      .set(updateData)
+      .where(eq(bets.id, betId))
+      .returning();
+    
+    if (!result[0]) throw new Error("Bet not found");
+    return result[0];
+  }
+
+  async getWeek1Bets(userId: number): Promise<Bet[]> {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    return await db
+      .select()
+      .from(bets)
+      .where(and(eq(bets.userId, userId), gte(bets.createdAt, oneWeekAgo)));
+  }
+
+  // Performance
+  async getLatestSnapshot(userId: number): Promise<PerformanceSnapshot | undefined> {
+    const result = await db
+      .select()
+      .from(performanceSnapshots)
+      .where(eq(performanceSnapshots.userId, userId))
+      .orderBy(desc(performanceSnapshots.date))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async createSnapshot(snapshot: InsertPerformanceSnapshot): Promise<PerformanceSnapshot> {
+    const result = await db.insert(performanceSnapshots).values(snapshot).returning();
+    return result[0];
+  }
+
+  async getSnapshotHistory(userId: number, days: number): Promise<PerformanceSnapshot[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    return await db
+      .select()
+      .from(performanceSnapshots)
+      .where(and(
+        eq(performanceSnapshots.userId, userId),
+        gte(performanceSnapshots.date, cutoffDate)
+      ))
+      .orderBy(performanceSnapshots.date);
+  }
+}
+
+// Use database storage
+export const storage = new DbStorage();
+
+// Keep MemStorage for reference/testing
+// export const storage = new MemStorage();
