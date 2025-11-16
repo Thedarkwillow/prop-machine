@@ -7,7 +7,11 @@ import type {
   DataFeed, InsertDataFeed,
   GameEvent, InsertGameEvent,
   ProviderLimit, InsertProviderLimit,
-  Model, InsertModel
+  Model, InsertModel,
+  WeatherData, InsertWeatherData,
+  NotificationPreferences, InsertNotificationPreferences,
+  Notification, InsertNotification,
+  AnalyticsSnapshot, InsertAnalyticsSnapshot
 } from "@shared/schema";
 
 export interface IStorage {
@@ -66,6 +70,23 @@ export interface IStorage {
   createModel(model: InsertModel): Promise<Model>;
   getActiveModel(sport: string): Promise<Model | undefined>;
   getAllModels(): Promise<Model[]>;
+  
+  // Weather data
+  createWeatherData(weather: InsertWeatherData): Promise<WeatherData>;
+  getWeatherDataByGameId(gameId: string): Promise<WeatherData | undefined>;
+  
+  // Notifications
+  createNotificationPreferences(prefs: InsertNotificationPreferences): Promise<NotificationPreferences>;
+  getNotificationPreferences(userId: string): Promise<NotificationPreferences | undefined>;
+  updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences>;
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  getUserNotifications(userId: string, limit?: number): Promise<Notification[]>;
+  markNotificationAsRead(notificationId: number): Promise<void>;
+  
+  // Analytics
+  createAnalyticsSnapshot(snapshot: InsertAnalyticsSnapshot): Promise<AnalyticsSnapshot>;
+  getLatestAnalytics(userId: string): Promise<AnalyticsSnapshot | undefined>;
+  getAnalyticsHistory(userId: string, days: number): Promise<AnalyticsSnapshot[]>;
 }
 
 // In-memory storage implementation
@@ -80,6 +101,11 @@ class MemStorage implements IStorage {
   private gameEventsByGameId: Map<string, GameEvent> = new Map();
   private providerLimits: Map<string, ProviderLimit> = new Map();
   private models: Map<number, Model> = new Map();
+  private weatherData: Map<number, WeatherData> = new Map();
+  private weatherDataByGameId: Map<string, WeatherData> = new Map();
+  private notificationPreferences: Map<string, NotificationPreferences> = new Map();
+  private notifications: Map<number, Notification> = new Map();
+  private analyticsSnapshots: Map<number, AnalyticsSnapshot> = new Map();
   
   private propIdCounter = 1;
   private slipIdCounter = 1;
@@ -89,6 +115,10 @@ class MemStorage implements IStorage {
   private gameEventIdCounter = 1;
   private providerLimitIdCounter = 1;
   private modelIdCounter = 1;
+  private weatherDataIdCounter = 1;
+  private notificationPreferencesIdCounter = 1;
+  private notificationIdCounter = 1;
+  private analyticsSnapshotIdCounter = 1;
 
   // Mutex for atomic bet placement per user
   private userLocks: Map<string, Promise<void>> = new Map();
@@ -535,11 +565,110 @@ class MemStorage implements IStorage {
   async getAllModels(): Promise<Model[]> {
     return Array.from(this.models.values());
   }
+
+  // Weather data
+  async createWeatherData(weather: InsertWeatherData): Promise<WeatherData> {
+    const newWeatherData: WeatherData = {
+      id: this.weatherDataIdCounter++,
+      ...weather,
+      createdAt: new Date(),
+    };
+    this.weatherData.set(newWeatherData.id, newWeatherData);
+    this.weatherDataByGameId.set(newWeatherData.gameId, newWeatherData);
+    return newWeatherData;
+  }
+
+  async getWeatherDataByGameId(gameId: string): Promise<WeatherData | undefined> {
+    return this.weatherDataByGameId.get(gameId);
+  }
+
+  // Notifications
+  async createNotificationPreferences(prefs: InsertNotificationPreferences): Promise<NotificationPreferences> {
+    const newPrefs: NotificationPreferences = {
+      id: this.notificationPreferencesIdCounter++,
+      ...prefs,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.notificationPreferences.set(newPrefs.userId, newPrefs);
+    return newPrefs;
+  }
+
+  async getNotificationPreferences(userId: string): Promise<NotificationPreferences | undefined> {
+    return this.notificationPreferences.get(userId);
+  }
+
+  async updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences> {
+    const existingPrefs = this.notificationPreferences.get(userId);
+    if (!existingPrefs) throw new Error("Notification preferences not found");
+    
+    const updatedPrefs: NotificationPreferences = {
+      ...existingPrefs,
+      ...prefs,
+      updatedAt: new Date(),
+    };
+    this.notificationPreferences.set(userId, updatedPrefs);
+    return updatedPrefs;
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const newNotification: Notification = {
+      id: this.notificationIdCounter++,
+      ...notification,
+      createdAt: new Date(),
+    };
+    this.notifications.set(newNotification.id, newNotification);
+    return newNotification;
+  }
+
+  async getUserNotifications(userId: string, limit?: number): Promise<Notification[]> {
+    const userNotifications = Array.from(this.notifications.values())
+      .filter(n => n.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    if (limit) {
+      return userNotifications.slice(0, limit);
+    }
+    return userNotifications;
+  }
+
+  async markNotificationAsRead(notificationId: number): Promise<void> {
+    const notification = this.notifications.get(notificationId);
+    if (notification) {
+      notification.isRead = true;
+    }
+  }
+
+  // Analytics
+  async createAnalyticsSnapshot(snapshot: InsertAnalyticsSnapshot): Promise<AnalyticsSnapshot> {
+    const newSnapshot: AnalyticsSnapshot = {
+      id: this.analyticsSnapshotIdCounter++,
+      ...snapshot,
+      createdAt: new Date(),
+    };
+    this.analyticsSnapshots.set(newSnapshot.id, newSnapshot);
+    return newSnapshot;
+  }
+
+  async getLatestAnalytics(userId: string): Promise<AnalyticsSnapshot | undefined> {
+    const userSnapshots = Array.from(this.analyticsSnapshots.values())
+      .filter(s => s.userId === userId)
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
+    return userSnapshots[0];
+  }
+
+  async getAnalyticsHistory(userId: string, days: number): Promise<AnalyticsSnapshot[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    return Array.from(this.analyticsSnapshots.values())
+      .filter(s => s.userId === userId && s.date >= cutoffDate)
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+  }
 }
 
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
-import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models } from "@shared/schema";
+import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots } from "@shared/schema";
 import { eq, and, desc, gte, sql, inArray, or } from "drizzle-orm";
 
 class DbStorage implements IStorage {
@@ -1038,6 +1167,108 @@ class DbStorage implements IStorage {
 
   async getAllModels(): Promise<Model[]> {
     return await db.select().from(models);
+  }
+
+  // Weather data
+  async createWeatherData(weather: InsertWeatherData): Promise<WeatherData> {
+    const result = await db.insert(weatherData).values(weather).returning();
+    return result[0];
+  }
+
+  async getWeatherDataByGameId(gameId: string): Promise<WeatherData | undefined> {
+    const result = await db
+      .select()
+      .from(weatherData)
+      .where(eq(weatherData.gameId, gameId))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  // Notifications
+  async createNotificationPreferences(prefs: InsertNotificationPreferences): Promise<NotificationPreferences> {
+    const result = await db.insert(notificationPreferences).values(prefs).returning();
+    return result[0];
+  }
+
+  async getNotificationPreferences(userId: string): Promise<NotificationPreferences | undefined> {
+    const result = await db
+      .select()
+      .from(notificationPreferences)
+      .where(eq(notificationPreferences.userId, userId))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences> {
+    const result = await db
+      .update(notificationPreferences)
+      .set({
+        ...prefs,
+        updatedAt: new Date(),
+      })
+      .where(eq(notificationPreferences.userId, userId))
+      .returning();
+    
+    if (!result[0]) throw new Error("Notification preferences not found");
+    return result[0];
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const result = await db.insert(notifications).values(notification).returning();
+    return result[0];
+  }
+
+  async getUserNotifications(userId: string, limit?: number): Promise<Notification[]> {
+    const query = db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+    
+    if (limit) {
+      return await query.limit(limit);
+    }
+    return await query;
+  }
+
+  async markNotificationAsRead(notificationId: number): Promise<void> {
+    await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, notificationId));
+  }
+
+  // Analytics
+  async createAnalyticsSnapshot(snapshot: InsertAnalyticsSnapshot): Promise<AnalyticsSnapshot> {
+    const result = await db.insert(analyticsSnapshots).values(snapshot).returning();
+    return result[0];
+  }
+
+  async getLatestAnalytics(userId: string): Promise<AnalyticsSnapshot | undefined> {
+    const result = await db
+      .select()
+      .from(analyticsSnapshots)
+      .where(eq(analyticsSnapshots.userId, userId))
+      .orderBy(desc(analyticsSnapshots.date))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async getAnalyticsHistory(userId: string, days: number): Promise<AnalyticsSnapshot[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    return await db
+      .select()
+      .from(analyticsSnapshots)
+      .where(and(
+        eq(analyticsSnapshots.userId, userId),
+        gte(analyticsSnapshots.date, cutoffDate)
+      ))
+      .orderBy(analyticsSnapshots.date);
   }
 }
 
