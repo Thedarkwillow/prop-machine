@@ -150,7 +150,14 @@ export class IntegrationClient {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        let errorBody = '';
+        try {
+          const errorData = await response.json();
+          errorBody = JSON.stringify(errorData);
+        } catch {
+          errorBody = response.statusText;
+        }
+        throw new Error(`HTTP ${response.status}: ${errorBody}`);
       }
 
       await this.incrementRateLimit();
