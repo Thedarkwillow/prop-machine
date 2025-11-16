@@ -78,7 +78,7 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
   const { user } = useAuth();
   
   const baseNavItems = [
-    { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard", badge: highConfidenceCount },
+    { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard", badge: highConfidenceCount > 0 ? highConfidenceCount : undefined },
     { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
     { path: "/history", label: "Bet History", icon: History, testId: "nav-history" },
     { path: "/performance", label: "Performance", icon: TrendingUp, testId: "nav-performance" },
