@@ -19,6 +19,8 @@ import {
 import { ZodError } from "zod";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { adminRoutes } from "./adminRoutes";
+import { createNotificationRoutes } from "./notificationRoutes";
+import { createAnalyticsRoutes } from "./analyticsRoutes";
 
 function transformPropForAPI(prop: Prop) {
   return {
@@ -456,6 +458,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Failed to fetch dashboard data" });
     }
   });
+
+  // Notification routes (requires authentication)
+  app.use("/api/notifications", isAuthenticated, createNotificationRoutes(storage));
+  
+  // Analytics routes (requires authentication)
+  app.use("/api/analytics", isAuthenticated, createAnalyticsRoutes(storage));
 
   // Admin routes (protected by authentication in production)
   app.use("/api/admin", adminRoutes());

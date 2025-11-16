@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const updateNotificationPreferencesSchema = z.object({
+  emailEnabled: z.boolean().optional(),
+  newPropsEnabled: z.boolean().optional(),
+  highConfidenceOnly: z.boolean().optional(),
+  minConfidence: z.number().min(0).max(100).optional(),
+  sports: z.array(z.string()).optional(),
+  platforms: z.array(z.string()).optional(),
+});
+
 // Path params validation
 export const userIdParamSchema = z.object({
   userId: z.string().regex(/^\d+$/, "User ID must be a number").transform(Number),

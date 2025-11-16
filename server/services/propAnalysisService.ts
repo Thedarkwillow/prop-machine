@@ -157,29 +157,34 @@ export class PropAnalysisService {
 
     if (input.sport === 'NFL' && input.gameId && input.gameTime && this.weatherService) {
       try {
-        await this.weatherService.fetchAndStoreWeather(input.gameId, input.team, input.gameTime);
+        const weatherDataResult = await this.weatherService.fetchAndStoreWeather(input.gameId, input.team, input.gameTime);
         
-        const weatherData = await this.weatherService.getWeatherForGame(input.gameId);
-        
-        if (weatherData) {
-          const weatherImpact = this.weatherService.analyzeWeatherImpact(
-            weatherData,
-            input.stat,
-            'unknown'
-          );
+        if (weatherDataResult) {
+          const weatherData = await this.weatherService.getWeatherForGame(input.gameId);
+          
+          if (weatherData) {
+            const weatherImpact = this.weatherService.analyzeWeatherImpact(
+              weatherData,
+              input.stat,
+              'unknown'
+            );
 
-          baseConfidence = Math.max(0, Math.min(100, baseConfidence + Math.round(weatherImpact.overallImpact / 2)));
-          
-          reasoning.push(...weatherImpact.reasoning);
-          
-          if (weatherData.isDome) {
-            reasoning.push("Indoor stadium - stable playing conditions");
-          } else {
-            reasoning.push(`Weather conditions factored into confidence score`);
+            baseConfidence = Math.max(0, Math.min(100, baseConfidence + Math.round(weatherImpact.overallImpact / 2)));
+            
+            reasoning.push(...weatherImpact.reasoning);
+            
+            if (weatherData.isDome) {
+              reasoning.push("Indoor stadium - stable playing conditions");
+            } else {
+              reasoning.push(`Weather conditions factored into confidence score`);
+            }
           }
+        } else {
+          reasoning.push("Weather data unavailable for this game");
         }
       } catch (error) {
         console.error("Error fetching weather data:", error);
+        reasoning.push("Weather analysis unavailable");
       }
     }
 

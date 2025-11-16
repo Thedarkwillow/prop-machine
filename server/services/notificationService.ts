@@ -75,7 +75,8 @@ export class NotificationService {
   }
 
   private async getAllActiveUserPreferences(): Promise<NotificationPreferences[]> {
-    return [];
+    const allPrefs = await this.storage.getAllNotificationPreferences();
+    return allPrefs.filter(pref => pref.newPropsEnabled || pref.highConfidenceOnly);
   }
 
   private filterPropsForUser(props: Prop[], prefs: NotificationPreferences): Prop[] {
@@ -170,7 +171,7 @@ export class NotificationService {
     });
   }
 
-  async updatePreferences(userId: string, updates: Partial<NotificationPreferences>): Promise<NotificationPreferences> {
+  async updatePreferences(userId: string, updates: any): Promise<NotificationPreferences> {
     return await this.storage.updateNotificationPreferences(userId, updates);
   }
 }

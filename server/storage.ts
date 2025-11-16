@@ -78,6 +78,7 @@ export interface IStorage {
   // Notifications
   createNotificationPreferences(prefs: InsertNotificationPreferences): Promise<NotificationPreferences>;
   getNotificationPreferences(userId: string): Promise<NotificationPreferences | undefined>;
+  getAllNotificationPreferences(): Promise<NotificationPreferences[]>;
   updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences>;
   createNotification(notification: InsertNotification): Promise<Notification>;
   getUserNotifications(userId: string, limit?: number): Promise<Notification[]>;
@@ -596,6 +597,10 @@ class MemStorage implements IStorage {
 
   async getNotificationPreferences(userId: string): Promise<NotificationPreferences | undefined> {
     return this.notificationPreferences.get(userId);
+  }
+
+  async getAllNotificationPreferences(): Promise<NotificationPreferences[]> {
+    return Array.from(this.notificationPreferences.values());
   }
 
   async updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences> {
@@ -1199,6 +1204,10 @@ class DbStorage implements IStorage {
       .limit(1);
     
     return result[0];
+  }
+
+  async getAllNotificationPreferences(): Promise<NotificationPreferences[]> {
+    return await db.select().from(notificationPreferences);
   }
 
   async updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences> {
