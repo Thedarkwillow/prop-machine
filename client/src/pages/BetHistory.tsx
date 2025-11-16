@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { format, subDays, startOfDay } from "date-fns";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,6 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Table,
   TableBody,
   TableCell,
@@ -20,7 +27,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search } from "lucide-react";
+import { Search, Check, X, Minus, MoreVertical } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 const USER_ID = 1;
 
@@ -56,6 +65,7 @@ type BetWithProp = {
 };
 
 export default function BetHistory() {
+  const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSport, setSelectedSport] = useState('all');
@@ -68,6 +78,37 @@ export default function BetHistory() {
 
   const { data: user } = useQuery({
     queryKey: ['/api/user', USER_ID],
+  });
+
+  // Mutation for settling bets
+  const settleBetMutation = useMutation({
+    mutationFn: async ({ betId, outcome }: { betId: number; outcome: 'won' | 'lost' | 'pushed' }) => {
+      return await apiRequest('PATCH', `/api/bets/${betId}/settle`, { status: outcome });
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/bets', USER_ID] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user', USER_ID] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard', USER_ID] });
+      
+      const outcomeLabels = { won: 'Won', lost: 'Lost', pushed: 'Pushed' };
+      const bankrollChange = data.bankrollChange || 0;
+      
+      toast({
+        title: `Bet Settled: ${outcomeLabels[variables.outcome]}`,
+        description: bankrollChange > 0 
+          ? `Bankroll updated: +$${bankrollChange.toFixed(2)}`
+          : variables.outcome === 'lost'
+          ? 'Better luck next time!'
+          : 'Bet amount refunded',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Failed to settle bet",
+        description: error.message || "An error occurred while settling the bet",
+      });
+    },
   });
 
   // Filter bets
@@ -261,6 +302,7 @@ export default function BetHistory() {
                       <TableHead className="text-right">Return</TableHead>
                       <TableHead className="text-center">Status</TableHead>
                       <TableHead className="text-right">CLV</TableHead>
+                      <TableHead className="text-center">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -321,6 +363,47 @@ export default function BetHistory() {
                           </TableCell>
                           <TableCell className="text-right font-mono" data-testid={`text-clv-${bet.id}`}>
                             {getClvDisplay(bet.clv, bet.status)}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {bet.status === 'pending' ? (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    data-testid={`button-settle-${bet.id}`}
+                                    disabled={settleBetMutation.isPending}
+                                  >
+                                    <MoreVertical className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem 
+                                    onClick={() => settleBetMutation.mutate({ betId: bet.id, outcome: 'won' })}
+                                    data-testid={`action-won-${bet.id}`}
+                                  >
+                                    <Check className="h-4 w-4 mr-2 text-green-600" />
+                                    Mark as Won
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem 
+                                    onClick={() => settleBetMutation.mutate({ betId: bet.id, outcome: 'lost' })}
+                                    data-testid={`action-lost-${bet.id}`}
+                                  >
+                                    <X className="h-4 w-4 mr-2 text-red-600" />
+                                    Mark as Lost
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem 
+                                    onClick={() => settleBetMutation.mutate({ betId: bet.id, outcome: 'pushed' })}
+                                    data-testid={`action-pushed-${bet.id}`}
+                                  >
+                                    <Minus className="h-4 w-4 mr-2 text-gray-600" />
+                                    Mark as Pushed
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">Settled</span>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
