@@ -23,6 +23,12 @@ import { useToast } from "@/hooks/use-toast";
 
 const USER_ID = 1; // Default user ID
 
+// Helper to format numbers without unnecessary decimals (50.0 → 50, 75.5 → 75.5)
+const formatNumber = (value: number, decimals: number = 1): string => {
+  const fixed = value.toFixed(decimals);
+  return parseFloat(fixed).toString();
+};
+
 // Sport-specific stat types
 const SPORT_STATS: Record<string, string[]> = {
   NHL: ['SOG', 'Points', 'Goals', 'Assists', 'Saves'],
@@ -240,19 +246,19 @@ export default function Dashboard() {
               />
               <MetricCard
                 label="Win Rate"
-                value={parseFloat(metrics.winRate || 0).toFixed(1)}
+                value={formatNumber(parseFloat(metrics.winRate || 0))}
                 suffix="%"
                 change={8.2}
               />
               <MetricCard
                 label="CLV"
-                value={`${metrics.avgClv >= 0 ? '+' : ''}${parseFloat(metrics.avgClv || 0).toFixed(1)}`}
+                value={`${metrics.avgClv >= 0 ? '+' : ''}${formatNumber(parseFloat(metrics.avgClv || 0))}`}
                 suffix="%"
                 change={12.5}
               />
               <MetricCard
                 label="ROI"
-                value={parseFloat(metrics.roi || 0).toFixed(1)}
+                value={formatNumber(parseFloat(metrics.roi || 0))}
                 suffix="%"
                 change={-1.2}
               />

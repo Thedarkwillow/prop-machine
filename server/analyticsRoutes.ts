@@ -6,6 +6,35 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   const router = Router();
   const analyticsService = new AnalyticsService(storage);
 
+  router.get("/overview", async (req: any, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Fetch all analytics data
+      const [overview, bySport, byPlatform, confidenceBrackets] = await Promise.all([
+        analyticsService.getLatestAnalytics(userId),
+        analyticsService.getSportBreakdown(userId),
+        analyticsService.getPlatformComparison(userId),
+        analyticsService.getConfidenceAccuracy(userId),
+      ]);
+
+      res.json({
+        overview: overview || { totalBets: 0, winRate: 0, roi: 0, avgClv: 0, currentStreak: { type: 'none', count: 0 } },
+        bySport: bySport || [],
+        byPlatform: byPlatform || [],
+        confidenceBrackets: confidenceBrackets || {},
+        trends: [], // Trends data can be fetched separately if needed
+      });
+    } catch (error) {
+      console.error("Error getting analytics overview:", error);
+      res.status(500).json({ error: "Failed to get analytics overview" });
+    }
+  });
+
   router.post("/snapshot", async (req: any, res) => {
     if (!req.user) {
       return res.status(401).json({ error: "Not authenticated" });

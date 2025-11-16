@@ -9,10 +9,9 @@ export default function Sidebar() {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, path: '/' },
     { id: 'history', label: 'Bet History', icon: History, path: '/history' },
-    { id: 'slips', label: 'Slips', icon: Sparkles, badge: 3, path: '/slips' },
+    { id: 'slips', label: 'Slips', icon: Sparkles, path: '/slips' },
     { id: 'props', label: 'Props Feed', icon: Target, path: '/props' },
     { id: 'performance', label: 'Performance', icon: TrendingUp, path: '/performance' },
-    { id: 'models', label: 'Models', icon: Activity, path: '/models' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' }
   ];
 
