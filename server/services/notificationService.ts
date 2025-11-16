@@ -8,9 +8,10 @@ export class NotificationService {
     if (!props || props.length === 0) return;
 
     try {
-      const userPreferences = await this.getAllActiveUserPreferences();
+      const allPreferences = await this.storage.getAllNotificationPreferences();
+      const newPropsUsers = allPreferences.filter(pref => pref.newPropsEnabled);
 
-      for (const prefs of userPreferences) {
+      for (const prefs of newPropsUsers) {
         const relevantProps = this.filterPropsForUser(props, prefs);
         
         if (relevantProps.length > 0) {
@@ -24,11 +25,10 @@ export class NotificationService {
 
   async notifyHighConfidenceProp(prop: Prop): Promise<void> {
     try {
-      const userPreferences = await this.getAllActiveUserPreferences();
+      const allPreferences = await this.storage.getAllNotificationPreferences();
+      const highConfidenceUsers = allPreferences.filter(pref => pref.highConfidenceOnly);
 
-      for (const prefs of userPreferences) {
-        if (!prefs.highConfidenceOnly) continue;
-        
+      for (const prefs of highConfidenceUsers) {
         if (prop.confidence >= prefs.minConfidence) {
           const shouldNotify = this.shouldNotifyForProp(prop, prefs);
           
@@ -74,10 +74,6 @@ export class NotificationService {
     }
   }
 
-  private async getAllActiveUserPreferences(): Promise<NotificationPreferences[]> {
-    const allPrefs = await this.storage.getAllNotificationPreferences();
-    return allPrefs.filter(pref => pref.newPropsEnabled || pref.highConfidenceOnly);
-  }
 
   private filterPropsForUser(props: Prop[], prefs: NotificationPreferences): Prop[] {
     const allowedSports = prefs.sports as string[];

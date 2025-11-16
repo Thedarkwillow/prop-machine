@@ -5,8 +5,8 @@ export const updateNotificationPreferencesSchema = z.object({
   newPropsEnabled: z.boolean().optional(),
   highConfidenceOnly: z.boolean().optional(),
   minConfidence: z.number().min(0).max(100).optional(),
-  sports: z.array(z.string()).optional(),
-  platforms: z.array(z.string()).optional(),
+  sports: z.array(z.string()).min(1, "Sports array cannot be empty").optional(),
+  platforms: z.array(z.string()).min(1, "Platforms array cannot be empty").optional(),
 });
 
 // Path params validation

@@ -163,10 +163,11 @@ export class PropAnalysisService {
           const weatherData = await this.weatherService.getWeatherForGame(input.gameId);
           
           if (weatherData) {
+            const position = this.inferPositionFromStat(input.stat);
             const weatherImpact = this.weatherService.analyzeWeatherImpact(
               weatherData,
               input.stat,
-              'unknown'
+              position
             );
 
             baseConfidence = Math.max(0, Math.min(100, baseConfidence + Math.round(weatherImpact.overallImpact / 2)));
@@ -231,6 +232,28 @@ export class PropAnalysisService {
       direction: input.direction,
       platform: input.platform,
     };
+  }
+
+  private inferPositionFromStat(stat: string): string {
+    const lowerStat = stat.toLowerCase();
+    
+    if (lowerStat.includes('passing') || lowerStat.includes('completions') || lowerStat.includes('attempts')) {
+      return 'QB';
+    }
+    
+    if (lowerStat.includes('rushing') || lowerStat.includes('carries')) {
+      return 'RB';
+    }
+    
+    if (lowerStat.includes('receiving') || lowerStat.includes('receptions') || lowerStat.includes('targets')) {
+      return 'WR';
+    }
+    
+    if (lowerStat.includes('field goal') || lowerStat.includes('extra point')) {
+      return 'K';
+    }
+    
+    return 'FLEX';
   }
 }
 

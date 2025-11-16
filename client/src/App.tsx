@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings } from "lucide-react";
+import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3 } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
@@ -12,8 +12,11 @@ import BuildSlip from "@/pages/BuildSlip";
 import Admin from "@/pages/admin";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
+import NotificationSettings from "@/pages/NotificationSettings";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import { useHighConfidenceNotifications } from "@/hooks/use-high-confidence-notifications";
 import { useAuth } from "@/hooks/useAuth";
+import { NotificationBell } from "@/components/NotificationBell";
 
 // Admin route guard - only admins can access
 function AdminRoute() {
@@ -60,6 +63,8 @@ function Router() {
           <Route path="/build-slip" component={BuildSlip} />
           <Route path="/history" component={BetHistory} />
           <Route path="/performance" component={Performance} />
+          <Route path="/analytics" component={AnalyticsDashboard} />
+          <Route path="/settings/notifications" component={NotificationSettings} />
           <Route path="/admin" component={AdminRoute} />
         </>
       )}
@@ -77,6 +82,7 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
     { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
     { path: "/history", label: "Bet History", icon: History, testId: "nav-history" },
     { path: "/performance", label: "Performance", icon: TrendingUp, testId: "nav-performance" },
+    { path: "/analytics", label: "Analytics", icon: BarChart3, testId: "nav-analytics" },
   ];
   
   // Only show admin link to admin users
@@ -121,6 +127,7 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {user && <NotificationBell />}
           {user && (
             <span className="text-sm text-muted-foreground" data-testid="text-user-email">
               {user.email || 'User'}
