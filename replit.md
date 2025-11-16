@@ -6,14 +6,21 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
 
 ## Recent Changes
 
-**November 16, 2025 - Multi-Platform Prop Integration & Period Support**
+**November 16, 2025 - Multi-Platform Prop Integration & Data-Safety System**
 - **Multi-Platform Prop Fetching:** Integrated PrizePicks and Underdog Fantasy APIs
   - Created `prizepicksClient` for fetching props from PrizePicks API (`api.prizepicks.com/projections`)
   - Created `underdogClient` for fetching props from Underdog API (`api.underdogfantasy.com/v1/appearances`)
   - Built unified `propRefreshService` coordinating fetches across multiple platforms
-  - Admin endpoint `/api/admin/props/refresh` for multi-platform prop refresh
+  - Admin endpoint `/api/admin/props/refresh` for multi-platform prop refresh with RBAC protection
   - Supports NBA, NFL, NHL, MLB across both platforms
   - Automatic ML analysis and confidence scoring for all fetched props
+- **Production-Grade Data Safety System:** Guarantees active props remain available during refreshes
+  - **Strategy:** Capture old prop IDs BEFORE inserting, then deactivate ONLY those specific IDs
+  - Added `getActivePropIdsBySportAndPlatform()` to query existing props before changes
+  - Added `deactivateSpecificProps(propIds)` to target only pre-existing props
+  - **Guarantees:** API failures, zero props fetched, all validation failures, and all insertion failures preserve existing active props
+  - Newly inserted props are never deactivated (not in captured oldPropIds array)
+  - Architect-verified production-ready implementation
 - **Quarter/Period Prop Support:** Extended schema for quarter and half-specific props
   - Added `period` field to props table: `full_game`, `1Q`, `1H`, `2H`, `4Q`
   - PrizePicks supports quarter-specific props (e.g., "Points 1Q", "Rebounds 2H")
@@ -23,6 +30,11 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
   - Combo stats: PTS+AST, PTS+REB, PTS+REB+AST, REB+AST, Rush+Rec Yards
   - Platform-specific stat normalization across PrizePicks, Underdog, The Odds API
   - Fantasy points, anytime touchdowns, pitcher strikeouts, and more
+- **Slip Confidence Score Display:** Enhanced slip builder UI
+  - Overall confidence badge showing average of all selected props
+  - Dynamically updates as props are added/removed
+  - Displays "{slipConfidence}% Confidence" next to slip title
+  - Provides at-a-glance quality assessment of parlay construction
 - **The Odds API Status:** Free tier limitation documented
   - Player props require paid subscription ($50-100/month)
   - Standard markets (h2h, spreads, totals) supported on free tier
