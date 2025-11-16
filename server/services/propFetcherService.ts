@@ -21,12 +21,20 @@ const SPORT_KEY_MAP: { [key: string]: string } = {
 };
 
 const STAT_TYPE_MAP: { [key: string]: string } = {
+  // NBA stats
   'player_points': 'Points',
   'player_rebounds': 'Rebounds',
   'player_assists': 'Assists',
   'player_threes': '3PM',
   'player_blocks': 'Blocks',
   'player_steals': 'Steals',
+  // NFL stats
+  'player_pass_yds': 'Pass Yards',
+  'player_pass_tds': 'Pass TDs',
+  'player_rush_yds': 'Rush Yards',
+  'player_receptions': 'Receptions',
+  'player_reception_yds': 'Rec Yards',
+  'player_anytime_td': 'Anytime TD',
 };
 
 export class PropFetcherService {
