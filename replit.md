@@ -6,6 +6,21 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
 
 ## Recent Changes
 
+**November 16, 2025 - Admin Role-Based Access Control (RBAC) Implementation**
+- **Security Fix:** Implemented complete admin role-based access control
+  - Added `isAdmin` boolean field to users table schema (defaults to false)
+  - Created `requireAdmin` middleware for backend admin route protection (checks auth + isAdmin flag)
+  - Added AdminRoute guard component for frontend route protection (redirects non-admins)
+  - Admin navigation link only visible to users with isAdmin: true
+  - Seed user (seed-user-1) marked as admin in seed data for testing
+- **Storage Switch:** Migrated to in-memory MemStorage due to disabled Neon database endpoint
+  - Session store uses in-memory storage (sessions persist until restart)
+  - All user data, props, slips, bets stored in memory
+  - Graceful error handling for database unavailability during auth
+- **Testing:** Verified complete RBAC system with end-to-end Playwright tests
+  - Admin users can access /admin and see admin navigation
+  - Non-admin users redirected from /admin and cannot see admin nav link
+
 **November 15, 2025 - Complete Multi-Leg Parlay Tracking Implementation**
 - Implemented slip-based bet placement workflow for parlay tracking
 - Fixed critical /api/bets endpoint crash (inArray usage for Drizzle queries)
@@ -61,11 +76,18 @@ Preferred communication style: Simple, everyday language.
 
 **Data Access Layer**
 - Abstraction through `IStorage` interface defined in `/server/storage.ts`
-- Currently implements in-memory storage (`MemStorage` class) for development
+- **Currently using in-memory storage (`MemStorage`)** due to disabled Neon database endpoint
+  - All data persists in memory until server restart
+  - No data persistence across restarts
 - Designed for easy migration to database-backed storage (Drizzle ORM configured for PostgreSQL)
+- Switch to `DbStorage` when database endpoint is re-enabled
 
 **Seeding Strategy**
-- Database seeding via `/server/seed.ts` creates default user and sample NHL props
+- Database seeding via `/server/seed.ts` creates default admin user and sample props
+- Default seed user (seed-user-1) has admin privileges (isAdmin: true)
+- Creates 28 sample props across NHL, NBA, NFL, MLB
+- Creates 3 sample slips (conservative, balanced, aggressive)
+- Creates 4 sample bets for performance tracking
 - Idempotent seeding (checks for existing data before insertion)
 
 ### Data Storage Solutions
@@ -80,6 +102,7 @@ Preferred communication style: Simple, everyday language.
 *Users Table*
 - Tracks bankroll (current and initial), Kelly sizing multiplier, and risk tolerance
 - Decimal precision for financial values (10,2 for bankroll, 3,2 for Kelly multiplier)
+- **isAdmin field:** Boolean flag for admin role-based access control (defaults to false)
 
 *Props Table*
 - Stores ML-analyzed betting propositions with sport, player, team, opponent, stat type
@@ -113,15 +136,32 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication and Authorization
 
-**Current Implementation**
-- No authentication system implemented
-- Single default user (userId: 1) hardcoded in frontend
-- All API routes assume authenticated user context
+**Replit Auth Integration**
+- Multi-user authentication via Replit OAuth (openid-client with Passport.js)
+- Session-based authentication with in-memory session store (memorystore)
+  - Sessions persist until server restart
+  - Falls back from PostgreSQL session store when database unavailable
+- User data synced on login via `/server/replitAuth.ts`
+- String-based user IDs (varchar) to support OAuth sub claims
 
-**Future Considerations**
-- Session-based authentication likely given express-session dependencies
-- connect-pg-simple for PostgreSQL-backed session storage
-- User isolation will require userId-based query filtering
+**Role-Based Access Control (RBAC)**
+- **Admin Role System:**
+  - `isAdmin` boolean field on users table (defaults to false)
+  - Backend: `requireAdmin` middleware protects all `/api/admin/*` routes
+    - Checks authentication AND user.isAdmin flag
+    - Returns 403 Forbidden if user is not admin
+  - Frontend: `AdminRoute` guard component prevents non-admin access
+    - Redirects non-admins from /admin to dashboard
+    - Admin navigation link only visible to admins (user?.isAdmin === true)
+- **Seed Admin User:** seed-user-1 (seed@example.com) has admin privileges for testing
+- **New Users:** Default to non-admin role (isAdmin: false)
+
+**Admin Capabilities**
+- Manual settlement triggers for pending bets
+- Integration API testing (NBA, Odds, Scoreboard APIs)
+- Prop rescoring across all active props
+- System statistics dashboard
+- All admin actions logged and protected by RBAC
 
 ### External Dependencies
 
