@@ -376,8 +376,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await storage.settleBetWithBankrollUpdate(
         betId,
         validatedBody.status,
-        closingLine,
-        clv
+        closingLine || undefined,
+        clv || undefined
       );
       
       if (!result.success) {
@@ -389,10 +389,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bankrollChange: result.bankrollChange 
       });
     } catch (error) {
+      console.error("Error settling bet:", error);
       if (error instanceof ZodError) {
         return res.status(400).json({ error: "Invalid request", details: error.errors });
       }
-      res.status(500).json({ error: "Failed to settle bet" });
+      res.status(500).json({ error: "Failed to settle bet", details: error instanceof Error ? error.message : String(error) });
     }
   });
 

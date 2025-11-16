@@ -365,7 +365,7 @@ export default function BetHistory() {
                             {getClvDisplay(bet.clv, bet.status)}
                           </TableCell>
                           <TableCell className="text-center">
-                            {bet.status === 'pending' ? (
+                            {bet.status.toLowerCase() === 'pending' ? (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button 

@@ -245,7 +245,7 @@ class MemStorage implements IStorage {
       }
 
       // Check if bet is already settled
-      if (bet.status !== 'pending') {
+      if (bet.status.toLowerCase() !== 'pending') {
         return { success: false, error: `Bet already settled with status: ${bet.status}` };
       }
 
@@ -560,6 +560,90 @@ class DbStorage implements IStorage {
     
     if (!result[0]) throw new Error("Bet not found");
     return result[0];
+  }
+
+  async settleBetWithBankrollUpdate(
+    betId: number,
+    outcome: 'won' | 'lost' | 'pushed',
+    closingLine?: string,
+    clv?: string
+  ): Promise<{ success: true; bet: Bet; bankrollChange: number } | { success: false; error: string }> {
+    try {
+      const result = await db.transaction(async (tx) => {
+        // Fetch bet
+        const betResult = await tx
+          .select()
+          .from(bets)
+          .where(eq(bets.id, betId))
+          .limit(1);
+        
+        const bet = betResult[0];
+        if (!bet) {
+          throw new Error("Bet not found");
+        }
+
+        // Check if already settled
+        if (bet.status.toLowerCase() !== 'pending') {
+          throw new Error(`Bet already settled with status: ${bet.status}`);
+        }
+
+        // Fetch user
+        const userResult = await tx
+          .select()
+          .from(users)
+          .where(eq(users.id, bet.userId))
+          .limit(1);
+        
+        const user = userResult[0];
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        const currentBankroll = parseFloat(user.bankroll);
+        const betAmount = parseFloat(bet.amount);
+        const potentialReturn = parseFloat(bet.potentialReturn || '0');
+        
+        let bankrollChange = 0;
+        let newBankroll = currentBankroll;
+
+        // Calculate bankroll change based on outcome
+        if (outcome === 'won') {
+          bankrollChange = potentialReturn;
+          newBankroll = currentBankroll + potentialReturn;
+        } else if (outcome === 'pushed') {
+          bankrollChange = betAmount;
+          newBankroll = currentBankroll + betAmount;
+        }
+        // For 'lost', bankroll stays the same
+
+        // Update bet status
+        const updateData: any = {
+          status: outcome,
+          settledAt: new Date(),
+        };
+        
+        if (closingLine) updateData.closingLine = closingLine;
+        if (clv) updateData.clv = clv;
+
+        const updatedBet = await tx
+          .update(bets)
+          .set(updateData)
+          .where(eq(bets.id, betId))
+          .returning();
+
+        // Update bankroll
+        await tx
+          .update(users)
+          .set({ bankroll: newBankroll.toFixed(2) })
+          .where(eq(users.id, bet.userId));
+
+        return { bet: updatedBet[0], bankrollChange };
+      });
+
+      return { success: true, ...result };
+    } catch (error: any) {
+      return { success: false, error: error.message || "Unknown error occurred" };
+    }
   }
 
   async getWeek1Bets(userId: number): Promise<Bet[]> {
