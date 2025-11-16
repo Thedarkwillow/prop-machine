@@ -372,42 +372,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      const bet = await storage.updateBetStatus(
+      // Atomically settle bet and update bankroll
+      const result = await storage.settleBetWithBankrollUpdate(
         betId,
         validatedBody.status,
         closingLine,
         clv
       );
       
-      if (!bet) {
-        return res.status(404).json({ error: "Bet not found" });
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
       }
       
-      // Update bankroll based on outcome
-      if (validatedBody.status === "won") {
-        const user = await storage.getUser(bet.userId);
-        if (!user) {
-          return res.status(404).json({ error: "User not found" });
-        }
-        
-        const currentBankroll = parseFloat(user.bankroll);
-        const returnAmount = parseFloat(bet.potentialReturn);
-        const newBankroll = (currentBankroll + returnAmount).toFixed(2);
-        await storage.updateBankroll(bet.userId, newBankroll);
-      } else if (validatedBody.status === "lost") {
-        // Bankroll already deducted when bet was placed, no adjustment needed
-      } else if (validatedBody.status === "pushed") {
-        // Return original stake
-        const user = await storage.getUser(bet.userId);
-        if (user) {
-          const currentBankroll = parseFloat(user.bankroll);
-          const stakeReturn = parseFloat(bet.amount);
-          const newBankroll = (currentBankroll + stakeReturn).toFixed(2);
-          await storage.updateBankroll(bet.userId, newBankroll);
-        }
-      }
-      
-      res.json(bet);
+      res.json({ 
+        bet: result.bet, 
+        bankrollChange: result.bankrollChange 
+      });
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ error: "Invalid request", details: error.errors });
