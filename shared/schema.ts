@@ -176,20 +176,102 @@ export const insertModelSchema = createInsertSchema(models).omit({ id: true, cre
 export type InsertModel = z.infer<typeof insertModelSchema>;
 export type Model = typeof models.$inferSelect;
 
-// Provider limits for rate limiting
-export const providerLimits = pgTable("provider_limits", {
+// Notification preferences for users
+export const notificationPreferences = pgTable("notification_preferences", {
   id: serial("id").primaryKey(),
-  provider: text("provider").notNull().unique(),
-  requestsPerMinute: integer("requests_per_minute").notNull(),
-  requestsPerHour: integer("requests_per_hour").notNull(),
-  requestsPerDay: integer("requests_per_day").notNull(),
-  currentMinute: integer("current_minute").notNull().default(0),
-  currentHour: integer("current_hour").notNull().default(0),
-  currentDay: integer("current_day").notNull().default(0),
-  lastReset: timestamp("last_reset").defaultNow().notNull(),
+  userId: varchar("user_id").notNull().unique(),
+  emailEnabled: boolean("email_enabled").notNull().default(false),
+  newPropsEnabled: boolean("new_props_enabled").notNull().default(true),
+  highConfidenceOnly: boolean("high_confidence_only").notNull().default(false), // Only notify for props >70% confidence
+  minConfidence: integer("min_confidence").notNull().default(65), // Minimum confidence threshold
+  sports: jsonb("sports").notNull().default(sql`'["NHL","NBA","NFL","MLB"]'`), // Sports to receive notifications for
+  platforms: jsonb("platforms").notNull().default(sql`'["PrizePicks","Underdog"]'`), // Platforms to receive notifications for
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertProviderLimitSchema = createInsertSchema(providerLimits).omit({ id: true, lastReset: true, updatedAt: true });
+export const insertNotificationPreferencesSchema = createInsertSchema(notificationPreferences).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertNotificationPreferences = z.infer<typeof insertNotificationPreferencesSchema>;
+export type NotificationPreferences = typeof notificationPreferences.$inferSelect;
+
+// Notifications sent to users
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  type: text("type", { enum: ["new_props", "high_confidence_prop", "bet_settled", "performance_alert"] }).notNull(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  propIds: jsonb("prop_ids"), // Related props for new_props notifications
+  isRead: boolean("is_read").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({ id: true, createdAt: true });
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
+
+// Weather data for NFL games
+export const weatherData = pgTable("weather_data", {
+  id: serial("id").primaryKey(),
+  gameId: text("game_id").notNull().unique(), // Links to gameEvents
+  stadium: text("stadium").notNull(),
+  latitude: decimal("latitude", { precision: 10, scale: 6 }).notNull(),
+  longitude: decimal("longitude", { precision: 10, scale: 6 }).notNull(),
+  temperature: decimal("temperature", { precision: 5, scale: 2 }), // Fahrenheit
+  windSpeed: decimal("wind_speed", { precision: 5, scale: 2 }), // mph
+  windGusts: decimal("wind_gusts", { precision: 5, scale: 2 }), // mph
+  precipitation: decimal("precipitation", { precision: 5, scale: 2 }), // inches
+  humidity: integer("humidity"), // percentage
+  visibility: decimal("visibility", { precision: 5, scale: 2 }), // miles
+  conditions: text("conditions"), // clear, cloudy, rain, snow, etc.
+  isDome: boolean("is_dome").notNull().default(false), // Indoor stadium flag
+  forecastTime: timestamp("forecast_time").notNull(), // When forecast was fetched
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertWeatherDataSchema = createInsertSchema(weatherData).omit({ id: true, createdAt: true });
+export type InsertWeatherData = z.infer<typeof insertWeatherDataSchema>;
+export type WeatherData = typeof weatherData.$inferSelect;
+
+// Provider limits tracking
+export const providerLimits = pgTable("provider_limits", {
+  id: serial("id").primaryKey(),
+  provider: text("provider").notNull().unique(), // balldontlie, oddsapi, openmeteo, etc.
+  callsToday: integer("calls_today").notNull().default(0),
+  lastCallAt: timestamp("last_call_at"),
+  dailyLimit: integer("daily_limit"), // null = unlimited
+  rateLimitPerMinute: integer("rate_limit_per_minute"),
+  resetAt: timestamp("reset_at"), // When daily counter resets
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertProviderLimitSchema = createInsertSchema(providerLimits).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertProviderLimit = z.infer<typeof insertProviderLimitSchema>;
 export type ProviderLimit = typeof providerLimits.$inferSelect;
+
+// Advanced analytics tracking
+export const analyticsSnapshots = pgTable("analytics_snapshots", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  date: timestamp("date").notNull(),
+  // Platform performance breakdown
+  platformStats: jsonb("platform_stats"), // {prizepicks: {wins: 10, losses: 5}, underdog: {...}}
+  // Sport-specific performance
+  sportStats: jsonb("sport_stats"), // {NHL: {wins: 5, roi: 15.2}, NBA: {...}}
+  // Confidence accuracy tracking
+  confidenceBrackets: jsonb("confidence_brackets"), // {60-70: {predicted: 65, actual: 62}, 70-80: {...}}
+  // Trend analysis
+  hotStreak: integer("hot_streak").notNull().default(0), // Consecutive wins
+  coldStreak: integer("cold_streak").notNull().default(0), // Consecutive losses
+  bestSport: text("best_sport"), // Sport with highest ROI
+  bestPlatform: text("best_platform"), // Platform with highest win rate
+  // Time-based patterns
+  bestTimeOfWeek: text("best_time_of_week"), // Day of week with best performance
+  avgBetSize: decimal("avg_bet_size", { precision: 10, scale: 2 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAnalyticsSnapshotSchema = createInsertSchema(analyticsSnapshots).omit({ id: true, createdAt: true });
+export type InsertAnalyticsSnapshot = z.infer<typeof insertAnalyticsSnapshotSchema>;
+export type AnalyticsSnapshot = typeof analyticsSnapshots.$inferSelect;
