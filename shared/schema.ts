@@ -1,18 +1,37 @@
-import { pgTable, text, serial, integer, decimal, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, decimal, timestamp, boolean, jsonb, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { sql } from 'drizzle-orm';
 
-// User settings and bankroll
+// Session storage table for Replit Auth
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User settings and bankroll (updated for Replit Auth)
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
   bankroll: decimal("bankroll", { precision: 10, scale: 2 }).notNull().default("100.00"),
   initialBankroll: decimal("initial_bankroll", { precision: 10, scale: 2 }).notNull().default("100.00"),
   kellySizing: decimal("kelly_sizing", { precision: 3, scale: 2 }).notNull().default("0.125"), // 1/8 Kelly for micro bankroll
   riskTolerance: text("risk_tolerance", { enum: ["conservative", "balanced", "aggressive"] }).notNull().default("balanced"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export const upsertUserSchema = createInsertSchema(users);
+export type UpsertUser = z.infer<typeof upsertUserSchema>;
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
@@ -43,7 +62,7 @@ export type Prop = typeof props.$inferSelect;
 // Generated slips
 export const slips = pgTable("slips", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   type: text("type", { enum: ["conservative", "balanced", "aggressive"] }).notNull(),
   title: text("title").notNull(),
   picks: jsonb("picks").notNull(), // Array of prop IDs with details
@@ -62,7 +81,7 @@ export type Slip = typeof slips.$inferSelect;
 // Individual bets placed
 export const bets = pgTable("bets", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   slipId: integer("slip_id"),
   propId: integer("prop_id"),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
@@ -84,7 +103,7 @@ export type Bet = typeof bets.$inferSelect;
 // Performance snapshots for tracking
 export const performanceSnapshots = pgTable("performance_snapshots", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   date: timestamp("date").notNull(),
   bankroll: decimal("bankroll", { precision: 10, scale: 2 }).notNull(),
   totalBets: integer("total_bets").notNull(),
@@ -101,3 +120,74 @@ export const performanceSnapshots = pgTable("performance_snapshots", {
 export const insertPerformanceSnapshotSchema = createInsertSchema(performanceSnapshots).omit({ id: true, createdAt: true });
 export type InsertPerformanceSnapshot = z.infer<typeof insertPerformanceSnapshotSchema>;
 export type PerformanceSnapshot = typeof performanceSnapshots.$inferSelect;
+
+// Data feeds for storing raw API responses
+export const dataFeeds = pgTable("data_feeds", {
+  id: serial("id").primaryKey(),
+  provider: text("provider").notNull(), // balldontlie, oddsapi, prizepicks, underdog, scoreboard
+  endpoint: text("endpoint").notNull(),
+  response: jsonb("response").notNull(),
+  etag: text("etag"),
+  lastModified: text("last_modified"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertDataFeedSchema = createInsertSchema(dataFeeds).omit({ id: true, createdAt: true });
+export type InsertDataFeed = z.infer<typeof insertDataFeedSchema>;
+export type DataFeed = typeof dataFeeds.$inferSelect;
+
+// Game events for tracking actual game results
+export const gameEvents = pgTable("game_events", {
+  id: serial("id").primaryKey(),
+  sport: text("sport").notNull(),
+  gameId: text("game_id").notNull().unique(), // External game ID from data provider
+  homeTeam: text("home_team").notNull(),
+  awayTeam: text("away_team").notNull(),
+  gameTime: timestamp("game_time").notNull(),
+  status: text("status", { enum: ["scheduled", "in_progress", "final", "postponed"] }).notNull().default("scheduled"),
+  homeScore: integer("home_score"),
+  awayScore: integer("away_score"),
+  playerStats: jsonb("player_stats"), // Detailed player statistics
+  finalizedAt: timestamp("finalized_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertGameEventSchema = createInsertSchema(gameEvents).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertGameEvent = z.infer<typeof insertGameEventSchema>;
+export type GameEvent = typeof gameEvents.$inferSelect;
+
+// ML models for versioning
+export const models = pgTable("models", {
+  id: serial("id").primaryKey(),
+  version: text("version").notNull().unique(),
+  sport: text("sport").notNull(),
+  modelType: text("model_type").notNull(), // gradient_boosting, statistical, etc.
+  artifact: jsonb("artifact"), // Model weights/parameters
+  performance: jsonb("performance"), // Accuracy metrics
+  isActive: boolean("is_active").notNull().default(false),
+  trainedAt: timestamp("trained_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertModelSchema = createInsertSchema(models).omit({ id: true, createdAt: true });
+export type InsertModel = z.infer<typeof insertModelSchema>;
+export type Model = typeof models.$inferSelect;
+
+// Provider limits for rate limiting
+export const providerLimits = pgTable("provider_limits", {
+  id: serial("id").primaryKey(),
+  provider: text("provider").notNull().unique(),
+  requestsPerMinute: integer("requests_per_minute").notNull(),
+  requestsPerHour: integer("requests_per_hour").notNull(),
+  requestsPerDay: integer("requests_per_day").notNull(),
+  currentMinute: integer("current_minute").notNull().default(0),
+  currentHour: integer("current_hour").notNull().default(0),
+  currentDay: integer("current_day").notNull().default(0),
+  lastReset: timestamp("last_reset").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertProviderLimitSchema = createInsertSchema(providerLimits).omit({ id: true, lastReset: true, updatedAt: true });
+export type InsertProviderLimit = z.infer<typeof insertProviderLimitSchema>;
+export type ProviderLimit = typeof providerLimits.$inferSelect;

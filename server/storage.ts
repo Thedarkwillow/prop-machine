@@ -1,16 +1,21 @@
 import type {
-  User, InsertUser,
+  User, InsertUser, UpsertUser,
   Prop, InsertProp,
   Slip, InsertSlip,
   Bet, InsertBet,
-  PerformanceSnapshot, InsertPerformanceSnapshot
+  PerformanceSnapshot, InsertPerformanceSnapshot,
+  DataFeed, InsertDataFeed,
+  GameEvent, InsertGameEvent,
+  ProviderLimit, InsertProviderLimit,
+  Model, InsertModel
 } from "@shared/schema";
 
 export interface IStorage {
-  // User management
-  getUser(userId: number): Promise<User | undefined>;
+  // User management (required for Replit Auth)
+  getUser(userId: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   createUser(user: InsertUser): Promise<User>;
-  updateBankroll(userId: number, newBankroll: string): Promise<User>;
+  updateBankroll(userId: string, newBankroll: string): Promise<User>;
   
   // Props
   getActiveProps(sport?: string): Promise<Prop[]>;
@@ -19,59 +24,101 @@ export interface IStorage {
   deactivateProp(propId: number): Promise<void>;
   
   // Slips
-  getSlipsByUser(userId: number): Promise<Slip[]>;
-  getPendingSlips(userId: number): Promise<Slip[]>;
+  getSlipsByUser(userId: string): Promise<Slip[]>;
+  getPendingSlips(userId: string): Promise<Slip[]>;
   createSlip(slip: InsertSlip): Promise<Slip>;
   updateSlipStatus(slipId: number, status: string): Promise<Slip>;
   
   // Bets
   getBet(betId: number): Promise<Bet | undefined>;
-  getBetsByUser(userId: number): Promise<Bet[]>;
-  getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop; slip?: Slip })[]>;
+  getBetsByUser(userId: string): Promise<Bet[]>;
+  getBetsWithProps(userId: string): Promise<(Bet & { prop?: Prop; slip?: Slip })[]>;
   createBet(bet: InsertBet): Promise<Bet>;
   placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }>;
   settleBetWithBankrollUpdate(betId: number, outcome: 'won' | 'lost' | 'pushed', closingLine?: string, clv?: string): Promise<{ success: true; bet: Bet; bankrollChange: number } | { success: false; error: string }>;
   updateBetStatus(betId: number, status: string, closingLine?: string, clv?: string): Promise<Bet>;
-  getWeek1Bets(userId: number): Promise<Bet[]>;
+  getWeek1Bets(userId: string): Promise<Bet[]>;
   
   // Performance
-  getLatestSnapshot(userId: number): Promise<PerformanceSnapshot | undefined>;
+  getLatestSnapshot(userId: string): Promise<PerformanceSnapshot | undefined>;
   createSnapshot(snapshot: InsertPerformanceSnapshot): Promise<PerformanceSnapshot>;
-  getSnapshotHistory(userId: number, days: number): Promise<PerformanceSnapshot[]>;
+  getSnapshotHistory(userId: string, days: number): Promise<PerformanceSnapshot[]>;
+  
+  // Data feeds
+  createDataFeed(feed: InsertDataFeed): Promise<DataFeed>;
+  getDataFeeds(provider: string, endpoint: string): Promise<DataFeed[]>;
+  
+  // Game events
+  createGameEvent(event: InsertGameEvent): Promise<GameEvent>;
+  updateGameEvent(gameId: string, event: Partial<InsertGameEvent>): Promise<GameEvent>;
+  getGameEvent(gameId: string): Promise<GameEvent | undefined>;
+  getPendingGames(sport?: string): Promise<GameEvent[]>;
+  
+  // Provider limits
+  createProviderLimit(limit: InsertProviderLimit): Promise<ProviderLimit>;
+  updateProviderLimit(provider: string, updates: Partial<Omit<ProviderLimit, 'id' | 'provider'>>): Promise<ProviderLimit>;
+  getProviderLimit(provider: string): Promise<ProviderLimit | undefined>;
+  
+  // Models
+  createModel(model: InsertModel): Promise<Model>;
+  getActiveModel(sport: string): Promise<Model | undefined>;
+  getAllModels(): Promise<Model[]>;
 }
 
 // In-memory storage implementation
 class MemStorage implements IStorage {
-  private users: Map<number, User> = new Map();
+  private users: Map<string, User> = new Map();
   private props: Map<number, Prop> = new Map();
   private slips: Map<number, Slip> = new Map();
   private bets: Map<number, Bet> = new Map();
   private snapshots: Map<number, PerformanceSnapshot> = new Map();
+  private dataFeeds: Map<number, DataFeed> = new Map();
+  private gameEvents: Map<number, GameEvent> = new Map();
+  private gameEventsByGameId: Map<string, GameEvent> = new Map();
+  private providerLimits: Map<string, ProviderLimit> = new Map();
+  private models: Map<number, Model> = new Map();
   
-  private userIdCounter = 1;
   private propIdCounter = 1;
   private slipIdCounter = 1;
   private betIdCounter = 1;
   private snapshotIdCounter = 1;
+  private dataFeedIdCounter = 1;
+  private gameEventIdCounter = 1;
+  private providerLimitIdCounter = 1;
+  private modelIdCounter = 1;
 
   // Mutex for atomic bet placement per user
-  private userLocks: Map<number, Promise<void>> = new Map();
+  private userLocks: Map<string, Promise<void>> = new Map();
 
-  async getUser(userId: number): Promise<User | undefined> {
+  async getUser(userId: string): Promise<User | undefined> {
     return this.users.get(userId);
   }
 
-  async createUser(user: InsertUser): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existingUser = userData.id ? this.users.get(userData.id) : undefined;
     const newUser: User = {
-      id: this.userIdCounter++,
-      ...user,
-      createdAt: new Date(),
+      ...existingUser,
+      ...userData,
+      id: userData.id || crypto.randomUUID(),
+      createdAt: existingUser?.createdAt || new Date(),
+      updatedAt: new Date(),
     };
     this.users.set(newUser.id, newUser);
     return newUser;
   }
 
-  async updateBankroll(userId: number, newBankroll: string): Promise<User> {
+  async createUser(user: InsertUser): Promise<User> {
+    const newUser: User = {
+      id: crypto.randomUUID(),
+      ...user,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.users.set(newUser.id, newUser);
+    return newUser;
+  }
+
+  async updateBankroll(userId: string, newBankroll: string): Promise<User> {
     const user = this.users.get(userId);
     if (!user) throw new Error("User not found");
     user.bankroll = newBankroll;
@@ -107,11 +154,11 @@ class MemStorage implements IStorage {
     }
   }
 
-  async getSlipsByUser(userId: number): Promise<Slip[]> {
+  async getSlipsByUser(userId: string): Promise<Slip[]> {
     return Array.from(this.slips.values()).filter(s => s.userId === userId);
   }
 
-  async getPendingSlips(userId: number): Promise<Slip[]> {
+  async getPendingSlips(userId: string): Promise<Slip[]> {
     return Array.from(this.slips.values()).filter(
       s => s.userId === userId && s.status === "pending"
     );
@@ -138,11 +185,11 @@ class MemStorage implements IStorage {
     return this.bets.get(betId);
   }
 
-  async getBetsByUser(userId: number): Promise<Bet[]> {
+  async getBetsByUser(userId: string): Promise<Bet[]> {
     return Array.from(this.bets.values()).filter(b => b.userId === userId);
   }
 
-  async getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop })[]> {
+  async getBetsWithProps(userId: string): Promise<(Bet & { prop?: Prop })[]> {
     const userBets = Array.from(this.bets.values()).filter(b => b.userId === userId);
     
     return userBets.map(bet => {
@@ -316,7 +363,7 @@ class MemStorage implements IStorage {
     return bet;
   }
 
-  async getWeek1Bets(userId: number): Promise<Bet[]> {
+  async getWeek1Bets(userId: string): Promise<Bet[]> {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     return Array.from(this.bets.values()).filter(
@@ -324,7 +371,7 @@ class MemStorage implements IStorage {
     );
   }
 
-  async getLatestSnapshot(userId: number): Promise<PerformanceSnapshot | undefined> {
+  async getLatestSnapshot(userId: string): Promise<PerformanceSnapshot | undefined> {
     const userSnapshots = Array.from(this.snapshots.values())
       .filter(s => s.userId === userId)
       .sort((a, b) => b.date.getTime() - a.date.getTime());
@@ -341,25 +388,144 @@ class MemStorage implements IStorage {
     return newSnapshot;
   }
 
-  async getSnapshotHistory(userId: number, days: number): Promise<PerformanceSnapshot[]> {
+  async getSnapshotHistory(userId: string, days: number): Promise<PerformanceSnapshot[]> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     return Array.from(this.snapshots.values())
       .filter(s => s.userId === userId && s.date >= cutoffDate)
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
+
+  async createDataFeed(feed: InsertDataFeed): Promise<DataFeed> {
+    const newFeed: DataFeed = {
+      id: this.dataFeedIdCounter++,
+      ...feed,
+      createdAt: new Date(),
+    };
+    this.dataFeeds.set(newFeed.id, newFeed);
+    return newFeed;
+  }
+
+  async getDataFeeds(provider: string, endpoint: string): Promise<DataFeed[]> {
+    return Array.from(this.dataFeeds.values()).filter(
+      f => f.provider === provider && f.endpoint === endpoint
+    );
+  }
+
+  async createGameEvent(event: InsertGameEvent): Promise<GameEvent> {
+    const newEvent: GameEvent = {
+      id: this.gameEventIdCounter++,
+      ...event,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.gameEvents.set(newEvent.id, newEvent);
+    this.gameEventsByGameId.set(newEvent.gameId, newEvent);
+    return newEvent;
+  }
+
+  async updateGameEvent(gameId: string, event: Partial<InsertGameEvent>): Promise<GameEvent> {
+    const existingEvent = this.gameEventsByGameId.get(gameId);
+    if (!existingEvent) throw new Error("Game event not found");
+    
+    const updatedEvent: GameEvent = {
+      ...existingEvent,
+      ...event,
+      updatedAt: new Date(),
+    };
+    this.gameEvents.set(updatedEvent.id, updatedEvent);
+    this.gameEventsByGameId.set(updatedEvent.gameId, updatedEvent);
+    return updatedEvent;
+  }
+
+  async getGameEvent(gameId: string): Promise<GameEvent | undefined> {
+    return this.gameEventsByGameId.get(gameId);
+  }
+
+  async getPendingGames(sport?: string): Promise<GameEvent[]> {
+    const allEvents = Array.from(this.gameEvents.values()).filter(
+      e => e.status === "scheduled" || e.status === "in_progress"
+    );
+    if (sport) {
+      return allEvents.filter(e => e.sport === sport);
+    }
+    return allEvents;
+  }
+
+  async createProviderLimit(limit: InsertProviderLimit): Promise<ProviderLimit> {
+    const newLimit: ProviderLimit = {
+      id: this.providerLimitIdCounter++,
+      ...limit,
+      lastReset: new Date(),
+      updatedAt: new Date(),
+    };
+    this.providerLimits.set(newLimit.provider, newLimit);
+    return newLimit;
+  }
+
+  async updateProviderLimit(provider: string, updates: Partial<Omit<ProviderLimit, 'id' | 'provider'>>): Promise<ProviderLimit> {
+    const existingLimit = this.providerLimits.get(provider);
+    if (!existingLimit) throw new Error("Provider limit not found");
+    
+    const updatedLimit: ProviderLimit = {
+      ...existingLimit,
+      ...updates,
+      updatedAt: new Date(),
+    };
+    this.providerLimits.set(provider, updatedLimit);
+    return updatedLimit;
+  }
+
+  async getProviderLimit(provider: string): Promise<ProviderLimit | undefined> {
+    return this.providerLimits.get(provider);
+  }
+
+  async createModel(model: InsertModel): Promise<Model> {
+    const newModel: Model = {
+      id: this.modelIdCounter++,
+      ...model,
+      createdAt: new Date(),
+    };
+    this.models.set(newModel.id, newModel);
+    return newModel;
+  }
+
+  async getActiveModel(sport: string): Promise<Model | undefined> {
+    return Array.from(this.models.values()).find(
+      m => m.sport === sport && m.isActive
+    );
+  }
+
+  async getAllModels(): Promise<Model[]> {
+    return Array.from(this.models.values());
+  }
 }
 
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
-import { users, props, slips, bets, performanceSnapshots } from "@shared/schema";
-import { eq, and, desc, gte, sql, inArray } from "drizzle-orm";
+import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models } from "@shared/schema";
+import { eq, and, desc, gte, sql, inArray, or } from "drizzle-orm";
 
 class DbStorage implements IStorage {
   // User management
-  async getUser(userId: number): Promise<User | undefined> {
+  async getUser(userId: string): Promise<User | undefined> {
     const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     return result[0];
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
   }
 
   async createUser(user: InsertUser): Promise<User> {
@@ -367,7 +533,7 @@ class DbStorage implements IStorage {
     return result[0];
   }
 
-  async updateBankroll(userId: number, newBankroll: string): Promise<User> {
+  async updateBankroll(userId: string, newBankroll: string): Promise<User> {
     const result = await db
       .update(users)
       .set({ bankroll: newBankroll })
@@ -403,11 +569,11 @@ class DbStorage implements IStorage {
   }
 
   // Slips
-  async getSlipsByUser(userId: number): Promise<Slip[]> {
+  async getSlipsByUser(userId: string): Promise<Slip[]> {
     return await db.select().from(slips).where(eq(slips.userId, userId));
   }
 
-  async getPendingSlips(userId: number): Promise<Slip[]> {
+  async getPendingSlips(userId: string): Promise<Slip[]> {
     return await db
       .select()
       .from(slips)
@@ -436,11 +602,11 @@ class DbStorage implements IStorage {
     return result[0];
   }
 
-  async getBetsByUser(userId: number): Promise<Bet[]> {
+  async getBetsByUser(userId: string): Promise<Bet[]> {
     return await db.select().from(bets).where(eq(bets.userId, userId));
   }
 
-  async getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop; slip?: Slip })[]> {
+  async getBetsWithProps(userId: string): Promise<(Bet & { prop?: Prop; slip?: Slip })[]> {
     try {
       const userBets = await db
         .select()
@@ -646,7 +812,7 @@ class DbStorage implements IStorage {
     }
   }
 
-  async getWeek1Bets(userId: number): Promise<Bet[]> {
+  async getWeek1Bets(userId: string): Promise<Bet[]> {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     
@@ -657,7 +823,7 @@ class DbStorage implements IStorage {
   }
 
   // Performance
-  async getLatestSnapshot(userId: number): Promise<PerformanceSnapshot | undefined> {
+  async getLatestSnapshot(userId: string): Promise<PerformanceSnapshot | undefined> {
     const result = await db
       .select()
       .from(performanceSnapshots)
@@ -673,7 +839,7 @@ class DbStorage implements IStorage {
     return result[0];
   }
 
-  async getSnapshotHistory(userId: number, days: number): Promise<PerformanceSnapshot[]> {
+  async getSnapshotHistory(userId: string, days: number): Promise<PerformanceSnapshot[]> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     
@@ -685,6 +851,115 @@ class DbStorage implements IStorage {
         gte(performanceSnapshots.date, cutoffDate)
       ))
       .orderBy(performanceSnapshots.date);
+  }
+
+  // Data feeds
+  async createDataFeed(feed: InsertDataFeed): Promise<DataFeed> {
+    const result = await db.insert(dataFeeds).values(feed).returning();
+    return result[0];
+  }
+
+  async getDataFeeds(provider: string, endpoint: string): Promise<DataFeed[]> {
+    return await db
+      .select()
+      .from(dataFeeds)
+      .where(and(eq(dataFeeds.provider, provider), eq(dataFeeds.endpoint, endpoint)));
+  }
+
+  // Game events
+  async createGameEvent(event: InsertGameEvent): Promise<GameEvent> {
+    const result = await db.insert(gameEvents).values(event).returning();
+    return result[0];
+  }
+
+  async updateGameEvent(gameId: string, event: Partial<InsertGameEvent>): Promise<GameEvent> {
+    const result = await db
+      .update(gameEvents)
+      .set({
+        ...event,
+        updatedAt: new Date(),
+      })
+      .where(eq(gameEvents.gameId, gameId))
+      .returning();
+    
+    if (!result[0]) throw new Error("Game event not found");
+    return result[0];
+  }
+
+  async getGameEvent(gameId: string): Promise<GameEvent | undefined> {
+    const result = await db
+      .select()
+      .from(gameEvents)
+      .where(eq(gameEvents.gameId, gameId))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async getPendingGames(sport?: string): Promise<GameEvent[]> {
+    if (sport) {
+      return await db
+        .select()
+        .from(gameEvents)
+        .where(and(
+          eq(gameEvents.sport, sport),
+          or(eq(gameEvents.status, "scheduled"), eq(gameEvents.status, "in_progress"))
+        ));
+    }
+    return await db
+      .select()
+      .from(gameEvents)
+      .where(or(eq(gameEvents.status, "scheduled"), eq(gameEvents.status, "in_progress")));
+  }
+
+  // Provider limits
+  async createProviderLimit(limit: InsertProviderLimit): Promise<ProviderLimit> {
+    const result = await db.insert(providerLimits).values(limit).returning();
+    return result[0];
+  }
+
+  async updateProviderLimit(provider: string, updates: Partial<Omit<ProviderLimit, 'id' | 'provider'>>): Promise<ProviderLimit> {
+    const result = await db
+      .update(providerLimits)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(providerLimits.provider, provider))
+      .returning();
+    
+    if (!result[0]) throw new Error("Provider limit not found");
+    return result[0];
+  }
+
+  async getProviderLimit(provider: string): Promise<ProviderLimit | undefined> {
+    const result = await db
+      .select()
+      .from(providerLimits)
+      .where(eq(providerLimits.provider, provider))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  // Models
+  async createModel(model: InsertModel): Promise<Model> {
+    const result = await db.insert(models).values(model).returning();
+    return result[0];
+  }
+
+  async getActiveModel(sport: string): Promise<Model | undefined> {
+    const result = await db
+      .select()
+      .from(models)
+      .where(and(eq(models.sport, sport), eq(models.isActive, true)))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async getAllModels(): Promise<Model[]> {
+    return await db.select().from(models);
   }
 }
 

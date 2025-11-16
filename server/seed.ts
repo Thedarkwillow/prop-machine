@@ -2,19 +2,28 @@ import { storage } from "./storage";
 
 export async function seedDatabase() {
   try {
+    const seedUserId = "seed-user-1"; // Deterministic string ID for seed data
+    
     // Check if user already exists
-    const existingUser = await storage.getUser(1);
+    const existingUser = await storage.getUser(seedUserId);
     if (existingUser) {
       console.log("Database already seeded");
       return;
     }
 
-    // Create default user
-    const user = await storage.createUser({
-      bankroll: "127.50",
+    // Create default user using upsertUser
+    const user = await storage.upsertUser({
+      id: seedUserId,
+      email: "seed@example.com",
+      firstName: "Seed",
+      lastName: "User",
+      profileImageUrl: null,
+      bankroll: "175.10",
       initialBankroll: "100.00",
       kellySizing: "0.125", // 1/8 Kelly for micro bankroll
       riskTolerance: "balanced",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     console.log("Created default user:", user.id);
