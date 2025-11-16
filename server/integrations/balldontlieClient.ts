@@ -79,6 +79,38 @@ interface GamesResponse {
   };
 }
 
+interface Player {
+  id: number;
+  first_name: string;
+  last_name: string;
+  position: string;
+  height: string;
+  weight: string;
+  jersey_number: string;
+  college: string;
+  country: string;
+  draft_year: number;
+  draft_round: number;
+  draft_number: number;
+  team: {
+    id: number;
+    abbreviation: string;
+    name: string;
+    full_name: string;
+    city: string;
+    conference: string;
+    division: string;
+  };
+}
+
+interface PlayersResponse {
+  data: Player[];
+  meta: {
+    next_cursor?: number;
+    per_page: number;
+  };
+}
+
 export class BalldontlieClient extends IntegrationClient {
   constructor() {
     super(
@@ -125,6 +157,18 @@ export class BalldontlieClient extends IntegrationClient {
 
   async getGame(gameId: number): Promise<Game> {
     const response = await this.get<Game>(`/games/${gameId}`);
+    return response.data;
+  }
+
+  async searchPlayers(playerName: string): Promise<PlayersResponse> {
+    const response = await this.get<PlayersResponse>(
+      `/players?search=${encodeURIComponent(playerName)}&per_page=25`
+    );
+    return response.data;
+  }
+
+  async getPlayer(playerId: number): Promise<Player> {
+    const response = await this.get<Player>(`/players/${playerId}`);
     return response.data;
   }
 

@@ -3,6 +3,7 @@ import { settlementService } from "./services/settlementService";
 import { balldontlieClient } from "./integrations/balldontlieClient";
 import { modelScorer } from "./ml/modelScorer";
 import { storage } from "./storage";
+import { propFetcherService } from "./services/propFetcherService";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
@@ -60,6 +61,36 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error("Settlement error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Fetch and analyze props from The Odds API
+  router.post("/props/fetch", async (req, res) => {
+    try {
+      const { sport } = req.body;
+      const targetSport = sport || 'NBA';
+      
+      console.log(`Fetching props for ${targetSport}...`);
+      const result = await propFetcherService.fetchAndAnalyzeProps(targetSport);
+      
+      res.json({
+        success: result.success,
+        sport: result.sport,
+        summary: {
+          propsFetched: result.propsFetched,
+          propsCreated: result.propsCreated,
+          propsSkipped: result.propsSkipped,
+          errorCount: result.errors.length,
+        },
+        errors: result.errors.slice(0, 10),
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Prop fetch error:", error);
       res.status(500).json({
         success: false,
         error: err.message,
