@@ -1,5 +1,7 @@
 import { balldontlieClient } from "../integrations/balldontlieClient";
 import { modelScorer } from "../ml/modelScorer";
+import { WeatherService } from "./weatherService";
+import type { IStorage } from "../storage";
 
 interface PropAnalysisInput {
   sport: string;
@@ -10,6 +12,8 @@ interface PropAnalysisInput {
   line: string;
   direction: 'over' | 'under';
   platform: string;
+  gameId?: string;
+  gameTime?: Date;
 }
 
 interface PropAnalysisResult {
@@ -28,6 +32,14 @@ interface PropAnalysisResult {
 }
 
 export class PropAnalysisService {
+  private weatherService: WeatherService | null = null;
+
+  constructor(storage?: IStorage) {
+    if (storage) {
+      this.weatherService = new WeatherService(storage);
+    }
+  }
+
   private statMapping: { [key: string]: keyof typeof this.extractStatValue } = {
     'Points': 'pts',
     'Rebounds': 'reb',
@@ -130,18 +142,46 @@ export class PropAnalysisService {
     return total / games.length;
   }
 
-  private handleNonNBAProps(input: PropAnalysisInput, line: number): PropAnalysisResult {
-    const baseConfidence = 65;
+  private async handleNonNBAProps(input: PropAnalysisInput, line: number): Promise<PropAnalysisResult> {
+    let baseConfidence = 65;
     const modelProbability = 0.60;
     const platformOdds = 1.9;
     const impliedProbability = 1 / platformOdds;
-    const ev = ((modelProbability - impliedProbability) / impliedProbability) * 100;
+    let ev = ((modelProbability - impliedProbability) / impliedProbability) * 100;
 
     const reasoning = [
       `${input.sport} data not yet integrated with live stats`,
       `Using baseline analysis for ${input.stat} ${input.direction} ${line}`,
       `Moderate confidence play, manual research recommended`,
     ];
+
+    if (input.sport === 'NFL' && input.gameId && input.gameTime && this.weatherService) {
+      try {
+        await this.weatherService.fetchAndStoreWeather(input.gameId, input.team, input.gameTime);
+        
+        const weatherData = await this.weatherService.getWeatherForGame(input.gameId);
+        
+        if (weatherData) {
+          const weatherImpact = this.weatherService.analyzeWeatherImpact(
+            weatherData,
+            input.stat,
+            'unknown'
+          );
+
+          baseConfidence = Math.max(0, Math.min(100, baseConfidence + Math.round(weatherImpact.overallImpact / 2)));
+          
+          reasoning.push(...weatherImpact.reasoning);
+          
+          if (weatherData.isDome) {
+            reasoning.push("Indoor stadium - stable playing conditions");
+          } else {
+            reasoning.push(`Weather conditions factored into confidence score`);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    }
 
     return {
       confidence: baseConfidence,
@@ -187,6 +227,10 @@ export class PropAnalysisService {
       platform: input.platform,
     };
   }
+}
+
+export function createPropAnalysisService(storage?: IStorage): PropAnalysisService {
+  return new PropAnalysisService(storage);
 }
 
 export const propAnalysisService = new PropAnalysisService();
