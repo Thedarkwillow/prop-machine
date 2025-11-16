@@ -30,7 +30,7 @@ const STAT_TYPE_MAP: { [key: string]: string } = {
 export class PropFetcherService {
   async fetchAndAnalyzeProps(sport: string = 'NBA'): Promise<FetchResult> {
     const result: FetchResult = {
-      success: true,
+      success: false,
       propsFetched: 0,
       propsCreated: 0,
       propsSkipped: 0,
@@ -39,7 +39,6 @@ export class PropFetcherService {
     };
 
     if (!process.env.ODDS_API_KEY) {
-      result.success = false;
       result.errors.push('ODDS_API_KEY environment variable not set');
       return result;
     }
@@ -48,7 +47,16 @@ export class PropFetcherService {
       const sportKey = SPORT_KEY_MAP[sport] || SPORT_KEY_MAP['NBA'];
       console.log(`Fetching props for ${sport} (${sportKey})...`);
 
-      const response = await oddsApiClient.getPlayerProps(sportKey);
+      // NOTE: Player props (player_points, player_rebounds, etc.) require a PAID Odds API subscription
+      // The free tier only supports standard markets (h2h, spreads, totals)
+      // For now, return a helpful error message
+      result.errors.push(
+        'The Odds API free tier does not support player prop markets. Player props (player_points, player_rebounds, etc.) require a paid subscription. Visit https://the-odds-api.com/liveapi/guides/v4/#overview to upgrade your API tier.'
+      );
+      return result;
+
+      // Uncomment this when you have a paid API subscription:
+      // const response = await oddsApiClient.getPlayerProps(sportKey);
 
       if (!response.data || response.data.length === 0) {
         console.log(`No games found for ${sport}`);
