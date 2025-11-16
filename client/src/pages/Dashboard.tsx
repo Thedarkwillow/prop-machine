@@ -223,7 +223,6 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader
           bankroll={parseFloat(user?.bankroll ?? "0")}
-          alertCount={3}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         />
 

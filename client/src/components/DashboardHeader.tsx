@@ -1,6 +1,5 @@
-import { Bell, Menu, Moon, Sun } from "lucide-react";
+import { Menu, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { NotificationBell } from "./NotificationBell";
 
 interface DashboardHeaderProps {
   bankroll: number;
-  alertCount: number;
   onMenuClick?: () => void;
 }
 
-export default function DashboardHeader({ bankroll, alertCount, onMenuClick }: DashboardHeaderProps) {
+export default function DashboardHeader({ bankroll, onMenuClick }: DashboardHeaderProps) {
   const [darkMode, setDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
@@ -54,25 +53,7 @@ export default function DashboardHeader({ bankroll, alertCount, onMenuClick }: D
             </span>
           </div>
 
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              data-testid="button-alerts"
-              onClick={() => console.log('Alerts clicked')}
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
-            {alertCount > 0 && (
-              <Badge
-                className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                variant="destructive"
-                data-testid="badge-alert-count"
-              >
-                {alertCount}
-              </Badge>
-            )}
-          </div>
+          <NotificationBell />
 
           <Button
             variant="ghost"
