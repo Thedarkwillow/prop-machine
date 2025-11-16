@@ -22,6 +22,7 @@ export interface IStorage {
   getAllActiveProps(): Promise<Prop[]>;
   createProp(prop: InsertProp): Promise<Prop>;
   deactivateProp(propId: number): Promise<void>;
+  deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
   
   // Slips
   getSlipsByUser(userId: string): Promise<Slip[]>;
@@ -152,6 +153,17 @@ class MemStorage implements IStorage {
     if (prop) {
       prop.isActive = false;
     }
+  }
+
+  async deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number> {
+    let count = 0;
+    for (const prop of this.props.values()) {
+      if (prop.sport === sport && prop.platform === platform && prop.isActive) {
+        prop.isActive = false;
+        count++;
+      }
+    }
+    return count;
   }
 
   async getSlipsByUser(userId: string): Promise<Slip[]> {
@@ -566,6 +578,20 @@ class DbStorage implements IStorage {
 
   async deactivateProp(propId: number): Promise<void> {
     await db.update(props).set({ isActive: false }).where(eq(props.id, propId));
+  }
+
+  async deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number> {
+    const result = await db
+      .update(props)
+      .set({ isActive: false })
+      .where(and(
+        eq(props.sport, sport),
+        eq(props.platform, platform),
+        eq(props.isActive, true)
+      ))
+      .returning({ id: props.id });
+    
+    return result.length;
   }
 
   // Slips

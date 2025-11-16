@@ -47,6 +47,7 @@ export const props = pgTable("props", {
   line: decimal("line", { precision: 5, scale: 1 }).notNull(), // Opening line
   currentLine: decimal("current_line", { precision: 5, scale: 1 }), // Current line for movement tracking
   direction: text("direction", { enum: ["over", "under"] }).notNull(),
+  period: text("period", { enum: ["full_game", "1Q", "1H", "2H", "4Q"] }).notNull().default("full_game"), // Game period for NBA/NFL
   platform: text("platform").notNull(), // PrizePicks, Underdog, etc.
   confidence: integer("confidence").notNull(), // 0-100
   ev: decimal("ev", { precision: 5, scale: 2 }).notNull(), // Expected value %

@@ -4,6 +4,7 @@ import { balldontlieClient } from "./integrations/balldontlieClient";
 import { modelScorer } from "./ml/modelScorer";
 import { storage } from "./storage";
 import { propFetcherService } from "./services/propFetcherService";
+import { propRefreshService } from "./services/propRefreshService";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
@@ -96,6 +97,42 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error("Prop fetch error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Multi-platform prop refresh from PrizePicks and Underdog
+  router.post("/props/refresh", async (req, res) => {
+    try {
+      const { sports } = req.body;
+      const targetSports = sports || ['NBA', 'NFL', 'NHL'];
+      
+      console.log(`Starting multi-platform prop refresh for: ${targetSports.join(', ')}`);
+      const result = await propRefreshService.refreshAllPlatforms(targetSports);
+      
+      res.json({
+        success: result.success,
+        summary: {
+          totalPropsFetched: result.totalPropsFetched,
+          totalPropsCreated: result.totalPropsCreated,
+          totalErrors: result.totalErrors,
+        },
+        results: result.results.map(r => ({
+          platform: r.platform,
+          sport: r.sport,
+          propsFetched: r.propsFetched,
+          propsCreated: r.propsCreated,
+          propsSkipped: r.propsSkipped,
+          errorCount: r.errors.length,
+          errors: r.errors.slice(0, 5),
+        })),
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Prop refresh error:", error);
       res.status(500).json({
         success: false,
         error: err.message,

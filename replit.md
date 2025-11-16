@@ -6,6 +6,28 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
 
 ## Recent Changes
 
+**November 16, 2025 - Multi-Platform Prop Integration & Period Support**
+- **Multi-Platform Prop Fetching:** Integrated PrizePicks and Underdog Fantasy APIs
+  - Created `prizepicksClient` for fetching props from PrizePicks API (`api.prizepicks.com/projections`)
+  - Created `underdogClient` for fetching props from Underdog API (`api.underdogfantasy.com/v1/appearances`)
+  - Built unified `propRefreshService` coordinating fetches across multiple platforms
+  - Admin endpoint `/api/admin/props/refresh` for multi-platform prop refresh
+  - Supports NBA, NFL, NHL, MLB across both platforms
+  - Automatic ML analysis and confidence scoring for all fetched props
+- **Quarter/Period Prop Support:** Extended schema for quarter and half-specific props
+  - Added `period` field to props table: `full_game`, `1Q`, `1H`, `2H`, `4Q`
+  - PrizePicks supports quarter-specific props (e.g., "Points 1Q", "Rebounds 2H")
+  - Underdog primarily full-game props
+  - Schema migration completed via `npm run db:push`
+- **Expanded Stat Type Support:** Comprehensive stat mapping for all platforms
+  - Combo stats: PTS+AST, PTS+REB, PTS+REB+AST, REB+AST, Rush+Rec Yards
+  - Platform-specific stat normalization across PrizePicks, Underdog, The Odds API
+  - Fantasy points, anytime touchdowns, pitcher strikeouts, and more
+- **The Odds API Status:** Free tier limitation documented
+  - Player props require paid subscription ($50-100/month)
+  - Standard markets (h2h, spreads, totals) supported on free tier
+  - Code ready to activate when upgraded (uncomment in propFetcherService.ts)
+
 **November 16, 2025 - Real ML Model Integration & Database Migration**
 - **Database Migration:** Created fresh PostgreSQL database and migrated to persistent DbStorage
   - Successfully created new Neon PostgreSQL database after old endpoint disabled
@@ -18,15 +40,7 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
   - Uses `modelScorer` to generate confidence scores (0-100) with detailed reasoning arrays
   - Calculates expected value (EV%) and model probability (decimal) for each prop
   - Fully functional for manual prop analysis via admin interface
-- **Automated Prop Fetching:** Built `propFetcherService` for live prop data from The Odds API
-  - Integrated The Odds API client for real-time sports betting data
-  - Created admin endpoint `/api/admin/props/fetch` for manual prop fetching
-  - **API Tier Limitation Discovered:** Free tier does not support player prop markets
-    - Player props (player_points, player_rebounds, etc.) require paid subscription
-    - Standard markets (h2h, spreads, totals) are supported on free tier
-    - Service provides clear error messaging about tier limitation
-    - Code ready to activate when upgraded to paid tier (uncomment block in propFetcherService.ts)
-- **Admin Role-Based Access Control:** Complete RBAC implementation (from previous session)
+- **Admin Role-Based Access Control:** Complete RBAC implementation
   - Backend: `requireAdmin` middleware protects all `/api/admin/*` routes
   - Frontend: AdminRoute guard component prevents non-admin access
   - Seed user (seed-user-1) has admin privileges for testing
