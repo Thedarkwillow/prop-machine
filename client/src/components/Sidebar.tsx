@@ -12,7 +12,7 @@ export default function Sidebar() {
     { id: 'slips', label: 'Slips', icon: Sparkles, path: '/slips' },
     { id: 'props', label: 'Props Feed', icon: Target, path: '/props' },
     { id: 'performance', label: 'Performance', icon: TrendingUp, path: '/performance' },
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' }
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings/notifications' }
   ];
 
   return (
