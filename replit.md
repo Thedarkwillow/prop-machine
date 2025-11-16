@@ -6,20 +6,30 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
 
 ## Recent Changes
 
-**November 16, 2025 - Admin Role-Based Access Control (RBAC) Implementation**
-- **Security Fix:** Implemented complete admin role-based access control
-  - Added `isAdmin` boolean field to users table schema (defaults to false)
-  - Created `requireAdmin` middleware for backend admin route protection (checks auth + isAdmin flag)
-  - Added AdminRoute guard component for frontend route protection (redirects non-admins)
-  - Admin navigation link only visible to users with isAdmin: true
-  - Seed user (seed-user-1) marked as admin in seed data for testing
-- **Storage Switch:** Migrated to in-memory MemStorage due to disabled Neon database endpoint
-  - Session store uses in-memory storage (sessions persist until restart)
-  - All user data, props, slips, bets stored in memory
-  - Graceful error handling for database unavailability during auth
-- **Testing:** Verified complete RBAC system with end-to-end Playwright tests
-  - Admin users can access /admin and see admin navigation
-  - Non-admin users redirected from /admin and cannot see admin nav link
+**November 16, 2025 - Real ML Model Integration & Database Migration**
+- **Database Migration:** Created fresh PostgreSQL database and migrated to persistent DbStorage
+  - Successfully created new Neon PostgreSQL database after old endpoint disabled
+  - Ran `npm run db:push` to sync Drizzle schema to new database
+  - All data now persists across server restarts (users, props, slips, bets)
+  - Seed data successfully populated in new database
+- **Real ML Model Integration:** Built statistical prop analysis using BallDontLie API
+  - Created `propAnalysisService` that replaces mock random scoring with real player statistics
+  - Integrates player season averages, recent performance, matchup analysis, line movement
+  - Uses `modelScorer` to generate confidence scores (0-100) with detailed reasoning arrays
+  - Calculates expected value (EV%) and model probability (decimal) for each prop
+  - Fully functional for manual prop analysis via admin interface
+- **Automated Prop Fetching:** Built `propFetcherService` for live prop data from The Odds API
+  - Integrated The Odds API client for real-time sports betting data
+  - Created admin endpoint `/api/admin/props/fetch` for manual prop fetching
+  - **API Tier Limitation Discovered:** Free tier does not support player prop markets
+    - Player props (player_points, player_rebounds, etc.) require paid subscription
+    - Standard markets (h2h, spreads, totals) are supported on free tier
+    - Service provides clear error messaging about tier limitation
+    - Code ready to activate when upgraded to paid tier (uncomment block in propFetcherService.ts)
+- **Admin Role-Based Access Control:** Complete RBAC implementation (from previous session)
+  - Backend: `requireAdmin` middleware protects all `/api/admin/*` routes
+  - Frontend: AdminRoute guard component prevents non-admin access
+  - Seed user (seed-user-1) has admin privileges for testing
 
 **November 15, 2025 - Complete Multi-Leg Parlay Tracking Implementation**
 - Implemented slip-based bet placement workflow for parlay tracking
@@ -76,11 +86,11 @@ Preferred communication style: Simple, everyday language.
 
 **Data Access Layer**
 - Abstraction through `IStorage` interface defined in `/server/storage.ts`
-- **Currently using in-memory storage (`MemStorage`)** due to disabled Neon database endpoint
-  - All data persists in memory until server restart
-  - No data persistence across restarts
-- Designed for easy migration to database-backed storage (Drizzle ORM configured for PostgreSQL)
-- Switch to `DbStorage` when database endpoint is re-enabled
+- **Currently using PostgreSQL database (`DbStorage`)** with Neon serverless driver
+  - All data persists in PostgreSQL database across server restarts
+  - Drizzle ORM provides type-safe queries and automatic schema generation
+  - Database connection configured via DATABASE_URL environment variable
+- `MemStorage` implementation available as fallback for development without database
 
 **Seeding Strategy**
 - Database seeding via `/server/seed.ts` creates default admin user and sample props

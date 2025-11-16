@@ -77,16 +77,21 @@ export function adminRoutes(): Router {
       console.log(`Fetching props for ${targetSport}...`);
       const result = await propFetcherService.fetchAndAnalyzeProps(targetSport);
       
+      // Always return 200 if the request was processed successfully
+      // tierLimited flag indicates if feature is unavailable due to API tier restrictions
       res.json({
         success: result.success,
+        tierLimited: result.tierLimited || false,
         sport: result.sport,
         summary: {
           propsFetched: result.propsFetched,
           propsCreated: result.propsCreated,
           propsSkipped: result.propsSkipped,
           errorCount: result.errors.length,
+          warningCount: result.warnings?.length || 0,
         },
         errors: result.errors.slice(0, 10),
+        warnings: result.warnings || [],
       });
     } catch (error) {
       const err = error as Error;

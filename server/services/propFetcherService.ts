@@ -4,10 +4,12 @@ import { storage } from "../storage";
 
 interface FetchResult {
   success: boolean;
+  tierLimited?: boolean; // Indicates if results are limited due to API tier restrictions
   propsFetched: number;
   propsCreated: number;
   propsSkipped: number;
   errors: string[];
+  warnings?: string[];
   sport: string;
 }
 
@@ -47,19 +49,13 @@ export class PropFetcherService {
       const sportKey = SPORT_KEY_MAP[sport] || SPORT_KEY_MAP['NBA'];
       console.log(`Fetching props for ${sport} (${sportKey})...`);
 
-      // NOTE: Player props (player_points, player_rebounds, etc.) require a PAID Odds API subscription
-      // The free tier only supports standard markets (h2h, spreads, totals)
-      // For now, return a helpful error message
-      result.errors.push(
-        'The Odds API free tier does not support player prop markets. Player props (player_points, player_rebounds, etc.) require a paid subscription. Visit https://the-odds-api.com/liveapi/guides/v4/#overview to upgrade your API tier.'
-      );
-      return result;
-
-      // Uncomment this when you have a paid API subscription:
-      // const response = await oddsApiClient.getPlayerProps(sportKey);
+      // Attempt to fetch player props from The Odds API
+      // NOTE: Player props require a paid API tier. Free tier will return a tier limitation error.
+      const response = await oddsApiClient.getPlayerProps(sportKey);
 
       if (!response.data || response.data.length === 0) {
         console.log(`No games found for ${sport}`);
+        result.success = true;
         return result;
       }
 
@@ -138,11 +134,26 @@ Prop Fetch Summary for ${sport}:
 - Errors: ${result.errors.length}
       `);
 
+      result.success = true;
       return result;
 
     } catch (error) {
       const err = error as Error;
-      console.error('Error fetching props:', error);
+      console.error('Error fetching props:', err.message);
+      
+      // Detect tier limitation errors from The Odds API
+      if (err.message.includes('INVALID_MARKET') || 
+          err.message.includes('Markets not supported')) {
+        console.log('Detected tier limitation: Player props require paid API subscription');
+        result.success = false;
+        result.tierLimited = true;
+        result.errors.push(
+          'Automated prop fetching is unavailable. The Odds API free tier does not support player prop markets. Player props (player_points, player_rebounds, etc.) require a paid subscription. Upgrade your API tier at https://the-odds-api.com/liveapi/guides/v4/#overview to enable automated prop fetching.'
+        );
+        return result;
+      }
+      
+      // Other API errors
       result.success = false;
       result.errors.push(`API error: ${err.message}`);
       return result;
