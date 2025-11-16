@@ -1,5 +1,6 @@
 import type { IStorage } from "../storage";
 import type { InsertNotification, Prop, NotificationPreferences } from "@shared/schema";
+import { discordNotificationService } from "./discordNotificationService";
 
 export class NotificationService {
   constructor(private storage: IStorage) {}
@@ -42,7 +43,7 @@ export class NotificationService {
     }
   }
 
-  async notifyBetSettled(userId: string, betResult: { player: string; stat: string; outcome: string; profit: string }): Promise<void> {
+  async notifyBetSettled(userId: string, betResult: { player: string; stat: string; outcome: string; profit: string; betId?: number }): Promise<void> {
     try {
       const notification: InsertNotification = {
         userId,
@@ -53,6 +54,19 @@ export class NotificationService {
       };
 
       await this.storage.createNotification(notification);
+      
+      // Also send Discord notification if bet data available
+      if (betResult.betId) {
+        const bet = await this.storage.getBet(betResult.betId);
+        if (bet) {
+          await discordNotificationService.notifyBetSettlement(
+            userId,
+            bet,
+            betResult.outcome as 'won' | 'lost' | 'pushed',
+            parseFloat(betResult.profit)
+          );
+        }
+      }
     } catch (error) {
       console.error("Error sending bet settled notification:", error);
     }
@@ -126,6 +140,9 @@ export class NotificationService {
     };
 
     await this.storage.createNotification(notification);
+    
+    // Also send Discord notification
+    await discordNotificationService.notifyNewProps(userId, props);
   }
 
   private async createHighConfidenceNotification(userId: string, prop: Prop): Promise<void> {

@@ -459,6 +459,196 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Prop Comparison routes
+  app.get("/api/prop-comparison/:player/:stat", isAuthenticated, async (req, res) => {
+    try {
+      const { player, stat } = req.params;
+      const { propComparisonService } = await import("./services/propComparisonService");
+      const comparison = await propComparisonService.comparePropsAcrossPlatforms(player, stat);
+      res.json(comparison || { message: "No props found for this player/stat" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to compare props" });
+    }
+  });
+
+  app.get("/api/prop-comparison/player/:playerName", isAuthenticated, async (req, res) => {
+    try {
+      const { playerName } = req.params;
+      const { propComparisonService } = await import("./services/propComparisonService");
+      const comparisons = await propComparisonService.getBestLinesForPlayer(playerName);
+      res.json(comparisons);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get player lines" });
+    }
+  });
+
+  app.get("/api/prop-comparison/arbitrage", isAuthenticated, async (req, res) => {
+    try {
+      const { propComparisonService } = await import("./services/propComparisonService");
+      const opportunities = await propComparisonService.findArbitrageOpportunities();
+      res.json(opportunities);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to find arbitrage opportunities" });
+    }
+  });
+
+  // Player Comparison routes
+  app.get("/api/player-comparison/:player1/:player2", isAuthenticated, async (req, res) => {
+    try {
+      const { player1, player2 } = req.params;
+      const { playerComparisonService } = await import("./services/playerComparisonService");
+      const comparison = await playerComparisonService.comparePlayers(player1, player2);
+      res.json(comparison);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to compare players" });
+    }
+  });
+
+  app.get("/api/player-details/:playerName", isAuthenticated, async (req, res) => {
+    try {
+      const { playerName } = req.params;
+      const { playerComparisonService } = await import("./services/playerComparisonService");
+      const details = await playerComparisonService.getPlayerDetails(playerName);
+      res.json(details);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get player details" });
+    }
+  });
+
+  // Live Scoreboard routes
+  app.get("/api/scoreboard/:sport", isAuthenticated, async (req, res) => {
+    try {
+      const { sport } = req.params;
+      const { liveScoreboardService } = await import("./services/liveScoreboardService");
+      const scores = await liveScoreboardService.getLiveScores(sport);
+      res.json(scores);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch live scores" });
+    }
+  });
+
+  app.get("/api/scoreboard", isAuthenticated, async (req, res) => {
+    try {
+      const { liveScoreboardService } = await import("./services/liveScoreboardService");
+      const allScores = await liveScoreboardService.getAllLiveScores();
+      res.json(allScores);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch all scores" });
+    }
+  });
+
+  app.get("/api/scoreboard/live-games/:sport?", isAuthenticated, async (req, res) => {
+    try {
+      const { sport } = req.params;
+      const { liveScoreboardService } = await import("./services/liveScoreboardService");
+      const liveGames = await liveScoreboardService.getInProgressGames(sport);
+      res.json(liveGames);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch live games" });
+    }
+  });
+
+  // Line Movement routes
+  app.get("/api/line-movements/:propId", isAuthenticated, async (req, res) => {
+    try {
+      const propId = parseInt(req.params.propId);
+      const { lineMovementService } = await import("./services/lineMovementService");
+      const movements = await lineMovementService.getPropLineHistory(propId);
+      res.json(movements);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch line movements" });
+    }
+  });
+
+  app.get("/api/line-movements/:propId/analysis", isAuthenticated, async (req, res) => {
+    try {
+      const propId = parseInt(req.params.propId);
+      const { lineMovementService } = await import("./services/lineMovementService");
+      const analysis = await lineMovementService.analyzeMovement(propId);
+      res.json(analysis);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze line movement" });
+    }
+  });
+
+  app.get("/api/line-movements/recent/:minutes", isAuthenticated, async (req, res) => {
+    try {
+      const minutes = parseInt(req.params.minutes);
+      const { lineMovementService } = await import("./services/lineMovementService");
+      const movements = await lineMovementService.getRecentMovements(minutes);
+      res.json(movements);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch recent movements" });
+    }
+  });
+
+  // Discord Settings routes
+  app.get("/api/discord/settings", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      const settings = await storage.getDiscordSettings(userId);
+      res.json(settings || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch Discord settings" });
+    }
+  });
+
+  app.post("/api/discord/settings", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      const { webhookUrl, enabled, notifyNewProps, notifyLineMovements, notifyBetSettlement, minConfidence } = req.body;
+      
+      const existing = await storage.getDiscordSettings(userId);
+      
+      if (existing) {
+        const updated = await storage.updateDiscordSettings(userId, {
+          webhookUrl,
+          enabled,
+          notifyNewProps,
+          notifyLineMovements,
+          notifyBetSettlement,
+          minConfidence,
+        });
+        res.json(updated);
+      } else {
+        const created = await storage.createDiscordSettings({
+          userId,
+          webhookUrl,
+          enabled: enabled ?? true,
+          notifyNewProps: notifyNewProps ?? true,
+          notifyLineMovements: notifyLineMovements ?? true,
+          notifyBetSettlement: notifyBetSettlement ?? true,
+          minConfidence: minConfidence ?? 70,
+        });
+        res.json(created);
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to save Discord settings" });
+    }
+  });
+
+  app.delete("/api/discord/settings", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      
+      await storage.deleteDiscordSettings(userId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete Discord settings" });
+    }
+  });
+
   // Notification routes (requires authentication)
   app.use("/api/notifications", isAuthenticated, createNotificationRoutes(storage));
   
