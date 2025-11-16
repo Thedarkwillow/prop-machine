@@ -30,6 +30,7 @@ export interface IStorage {
   getBetsWithProps(userId: number): Promise<(Bet & { prop?: Prop; slip?: Slip })[]>;
   createBet(bet: InsertBet): Promise<Bet>;
   placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }>;
+  settleBetWithBankrollUpdate(betId: number, outcome: 'won' | 'lost' | 'pushed', closingLine?: string, clv?: string): Promise<{ success: true; bet: Bet; bankrollChange: number } | { success: false; error: string }>;
   updateBetStatus(betId: number, status: string, closingLine?: string, clv?: string): Promise<Bet>;
   getWeek1Bets(userId: number): Promise<Bet[]>;
   
@@ -207,6 +208,83 @@ class MemStorage implements IStorage {
     // Chain the new operation and store it
     const newLock = previousLock.then(operation).catch((error) => {
       // Convert any thrown errors to result format
+      return { success: false, error: error.message || "Unknown error occurred" };
+    });
+    
+    this.userLocks.set(userId, newLock as any);
+    
+    // Wait for our operation to complete
+    const result = await newLock;
+    
+    // Clean up lock if this was the last operation
+    if (this.userLocks.get(userId) === newLock) {
+      this.userLocks.delete(userId);
+    }
+    
+    return result;
+  }
+
+  async settleBetWithBankrollUpdate(
+    betId: number, 
+    outcome: 'won' | 'lost' | 'pushed',
+    closingLine?: string,
+    clv?: string
+  ): Promise<{ success: true; bet: Bet; bankrollChange: number } | { success: false; error: string }> {
+    const bet = this.bets.get(betId);
+    if (!bet) {
+      return { success: false, error: "Bet not found" };
+    }
+
+    const userId = bet.userId;
+    
+    // Chain this operation onto any existing operation for this user
+    const operation = async (): Promise<{ success: true; bet: Bet; bankrollChange: number } | { success: false; error: string }> => {
+      const user = this.users.get(userId);
+      if (!user) {
+        return { success: false, error: "User not found" };
+      }
+
+      // Check if bet is already settled
+      if (bet.status !== 'pending') {
+        return { success: false, error: `Bet already settled with status: ${bet.status}` };
+      }
+
+      const currentBankroll = parseFloat(user.bankroll);
+      const betAmount = parseFloat(bet.amount);
+      const potentialReturn = parseFloat(bet.potentialReturn || '0');
+      
+      let bankrollChange = 0;
+      let newBankroll = currentBankroll;
+
+      // Calculate bankroll change based on outcome
+      if (outcome === 'won') {
+        // Add the full potential return (includes original stake)
+        bankrollChange = potentialReturn;
+        newBankroll = currentBankroll + potentialReturn;
+      } else if (outcome === 'pushed') {
+        // Refund the original bet amount
+        bankrollChange = betAmount;
+        newBankroll = currentBankroll + betAmount;
+      }
+      // For 'lost', bankroll stays the same (already deducted when placed)
+
+      // Update bet status atomically with bankroll
+      bet.status = outcome;
+      if (closingLine) bet.closingLine = closingLine;
+      if (clv) bet.clv = clv;
+      bet.settledAt = new Date();
+      
+      // Update bankroll
+      await this.updateBankroll(userId, newBankroll.toFixed(2));
+      
+      return { success: true, bet, bankrollChange };
+    };
+
+    // Get existing lock or create resolved promise
+    const previousLock = this.userLocks.get(userId) || Promise.resolve();
+    
+    // Chain the new operation and store it
+    const newLock = previousLock.then(operation).catch((error) => {
       return { success: false, error: error.message || "Unknown error occurred" };
     });
     
