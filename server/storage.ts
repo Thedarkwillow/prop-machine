@@ -20,9 +20,11 @@ export interface IStorage {
   // Props
   getActiveProps(sport?: string): Promise<Prop[]>;
   getAllActiveProps(): Promise<Prop[]>;
+  getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]>;
   createProp(prop: InsertProp): Promise<Prop>;
   deactivateProp(propId: number): Promise<void>;
   deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
+  deactivateSpecificProps(propIds: number[]): Promise<number>;
   
   // Slips
   getSlipsByUser(userId: string): Promise<Slip[]>;
@@ -155,10 +157,32 @@ class MemStorage implements IStorage {
     }
   }
 
+  async getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]> {
+    const ids: number[] = [];
+    for (const prop of this.props.values()) {
+      if (prop.sport === sport && prop.platform === platform && prop.isActive) {
+        ids.push(prop.id);
+      }
+    }
+    return ids;
+  }
+
   async deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number> {
     let count = 0;
     for (const prop of this.props.values()) {
       if (prop.sport === sport && prop.platform === platform && prop.isActive) {
+        prop.isActive = false;
+        count++;
+      }
+    }
+    return count;
+  }
+
+  async deactivateSpecificProps(propIds: number[]): Promise<number> {
+    let count = 0;
+    for (const id of propIds) {
+      const prop = this.props.get(id);
+      if (prop && prop.isActive) {
         prop.isActive = false;
         count++;
       }
@@ -580,6 +604,19 @@ class DbStorage implements IStorage {
     await db.update(props).set({ isActive: false }).where(eq(props.id, propId));
   }
 
+  async getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]> {
+    const result = await db
+      .select({ id: props.id })
+      .from(props)
+      .where(and(
+        eq(props.sport, sport),
+        eq(props.platform, platform),
+        eq(props.isActive, true)
+      ));
+    
+    return result.map(r => r.id);
+  }
+
   async deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number> {
     const result = await db
       .update(props)
@@ -587,6 +624,21 @@ class DbStorage implements IStorage {
       .where(and(
         eq(props.sport, sport),
         eq(props.platform, platform),
+        eq(props.isActive, true)
+      ))
+      .returning({ id: props.id });
+    
+    return result.length;
+  }
+
+  async deactivateSpecificProps(propIds: number[]): Promise<number> {
+    if (propIds.length === 0) return 0;
+    
+    const result = await db
+      .update(props)
+      .set({ isActive: false })
+      .where(and(
+        inArray(props.id, propIds),
         eq(props.isActive, true)
       ))
       .returning({ id: props.id });
