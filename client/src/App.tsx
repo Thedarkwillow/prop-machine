@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3 } from "lucide-react";
+import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3, GitCompare, Users, Activity, MessageSquare } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
@@ -14,6 +14,10 @@ import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
 import NotificationSettings from "@/pages/NotificationSettings";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import PropComparison from "@/pages/PropComparison";
+import PlayerComparison from "@/pages/PlayerComparison";
+import LiveScoreboard from "@/pages/LiveScoreboard";
+import DiscordSettings from "@/pages/DiscordSettings";
 import { useHighConfidenceNotifications } from "@/hooks/use-high-confidence-notifications";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -64,7 +68,11 @@ function Router() {
           <Route path="/history" component={BetHistory} />
           <Route path="/performance" component={Performance} />
           <Route path="/analytics" component={AnalyticsDashboard} />
+          <Route path="/prop-comparison" component={PropComparison} />
+          <Route path="/player-comparison" component={PlayerComparison} />
+          <Route path="/scoreboard" component={LiveScoreboard} />
           <Route path="/settings/notifications" component={NotificationSettings} />
+          <Route path="/settings/discord" component={DiscordSettings} />
           <Route path="/admin" component={AdminRoute} />
         </>
       )}
@@ -80,8 +88,9 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
   const baseNavItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard", badge: highConfidenceCount > 0 ? highConfidenceCount : undefined },
     { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
-    { path: "/history", label: "Bet History", icon: History, testId: "nav-history" },
-    { path: "/performance", label: "Performance", icon: TrendingUp, testId: "nav-performance" },
+    { path: "/scoreboard", label: "Live Scores", icon: Activity, testId: "nav-scoreboard" },
+    { path: "/prop-comparison", label: "Prop Compare", icon: GitCompare, testId: "nav-prop-comparison" },
+    { path: "/player-comparison", label: "Player Compare", icon: Users, testId: "nav-player-comparison" },
     { path: "/analytics", label: "Analytics", icon: BarChart3, testId: "nav-analytics" },
   ];
   
