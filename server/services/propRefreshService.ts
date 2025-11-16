@@ -52,6 +52,8 @@ export class PropRefreshService {
 
       console.log(`Found ${normalizedProps.length} props from PrizePicks`);
       
+      // Stage-then-commit strategy: deactivate old props BEFORE inserting new ones
+      // But only after we confirm at least one prop can be validated
       let deactivated = false;
 
       for (const rawProp of normalizedProps) {
@@ -78,10 +80,10 @@ export class PropRefreshService {
             ? (rawProp.period as "full_game" | "1Q" | "1H" | "2H" | "4Q")
             : 'full_game';
 
-          // Deactivate old props before first insert (after validation succeeds)
+          // Deactivate old props once, after first successful validation but BEFORE insert
           if (!deactivated) {
             const deactivatedCount = await storage.deactivatePropsBySportAndPlatform(sport, 'PrizePicks');
-            console.log(`Deactivated ${deactivatedCount} existing PrizePicks ${sport} props before inserting new props`);
+            console.log(`Deactivated ${deactivatedCount} old PrizePicks ${sport} props before inserting new ones`);
             deactivated = true;
           }
 
@@ -115,6 +117,10 @@ export class PropRefreshService {
           result.propsSkipped++;
           result.errors.push(`${rawProp.player}: ${err.message}`);
         }
+      }
+
+      if (!deactivated) {
+        console.log(`No props validated for PrizePicks ${sport}, keeping existing props active`);
       }
 
       result.success = true;
@@ -157,6 +163,8 @@ export class PropRefreshService {
 
       console.log(`Found ${normalizedProps.length} props from Underdog`);
       
+      // Stage-then-commit strategy: deactivate old props BEFORE inserting new ones
+      // But only after we confirm at least one prop can be validated
       let deactivated = false;
 
       for (const rawProp of normalizedProps) {
@@ -181,10 +189,10 @@ export class PropRefreshService {
             ? (rawProp.period as "full_game" | "1Q" | "1H" | "2H" | "4Q")
             : 'full_game';
 
-          // Deactivate old props before first insert (after validation succeeds)
+          // Deactivate old props once, after first successful validation but BEFORE insert
           if (!deactivated) {
             const deactivatedCount = await storage.deactivatePropsBySportAndPlatform(sport, 'Underdog');
-            console.log(`Deactivated ${deactivatedCount} existing Underdog ${sport} props before inserting new props`);
+            console.log(`Deactivated ${deactivatedCount} old Underdog ${sport} props before inserting new ones`);
             deactivated = true;
           }
 
@@ -217,6 +225,10 @@ export class PropRefreshService {
           result.propsSkipped++;
           result.errors.push(`${rawProp.player}: ${err.message}`);
         }
+      }
+
+      if (!deactivated) {
+        console.log(`No props validated for Underdog ${sport}, keeping existing props active`);
       }
 
       result.success = true;

@@ -39,6 +39,11 @@ export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilder
   // Detect correlations in current slip
   const warnings = detectCorrelations(selectedProps);
 
+  // Calculate overall slip confidence (average of all selected props)
+  const slipConfidence = selectedProps.length > 0
+    ? Math.round(selectedProps.reduce((sum, p) => sum + p.confidence, 0) / selectedProps.length)
+    : 0;
+
   const getSeverityColor = (severity: CorrelationWarning['severity']) => {
     switch (severity) {
       case 'high':
@@ -75,8 +80,15 @@ export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilder
       {/* Current Slip */}
       <Card data-testid="card-slip-builder">
         <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-4">
-          <div>
-            <CardTitle>Your Slip</CardTitle>
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <CardTitle>Your Slip</CardTitle>
+              {selectedProps.length > 0 && (
+                <Badge variant="default" data-testid="badge-slip-confidence">
+                  {slipConfidence}% Confidence
+                </Badge>
+              )}
+            </div>
             <CardDescription>
               {selectedProps.length === 0 ? 'Add props to build your slip' : `${selectedProps.length} ${selectedProps.length === 1 ? 'prop' : 'props'} selected`}
             </CardDescription>
