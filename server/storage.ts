@@ -963,8 +963,11 @@ class DbStorage implements IStorage {
   }
 }
 
-// Use database storage
-export const storage = new DbStorage();
+// Use in-memory storage since database endpoint is disabled
+// Switch back to DbStorage when database is available
+export const storage = new MemStorage();
+// export const storage = new DbStorage();
 
-// Keep MemStorage for reference/testing
-// export const storage = new MemStorage();
+// Export flag to indicate if we have DATABASE_URL configured
+// This doesn't guarantee the DB is accessible, just that it's configured
+export const isDatabaseConfigured = !!process.env.DATABASE_URL;

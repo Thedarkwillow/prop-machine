@@ -5,7 +5,7 @@ import passport from "passport";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
-import connectPg from "connect-pg-simple";
+import createMemoryStore from "memorystore";
 import { storage } from "./storage";
 
 const getOidcConfig = memoize(
@@ -20,13 +20,15 @@ const getOidcConfig = memoize(
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
+  
+  // Always use in-memory session store for now (database endpoint is disabled)
+  // This avoids session store failures during auth callback
+  const MemoryStore = createMemoryStore(session);
+  const sessionStore = new MemoryStore({
+    checkPeriod: sessionTtl,
   });
+  console.log("Using in-memory session store (sessions will be lost on restart)");
+  
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
@@ -53,13 +55,19 @@ function updateUserSession(
 async function upsertUser(
   claims: any,
 ) {
-  await storage.upsertUser({
-    id: claims["sub"],
-    email: claims["email"],
-    firstName: claims["first_name"],
-    lastName: claims["last_name"],
-    profileImageUrl: claims["profile_image_url"],
-  });
+  try {
+    await storage.upsertUser({
+      id: claims["sub"],
+      email: claims["email"],
+      firstName: claims["first_name"],
+      lastName: claims["last_name"],
+      profileImageUrl: claims["profile_image_url"],
+    });
+  } catch (error) {
+    // Log error but don't fail auth if database is unavailable
+    // User will be created on first API call that succeeds
+    console.warn("Failed to upsert user in database during auth callback:", error);
+  }
 }
 
 export async function setupAuth(app: Express) {
