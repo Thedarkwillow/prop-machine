@@ -39,7 +39,7 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
       <div className="container mx-auto flex items-center gap-2 p-4">
         <div className="flex items-center gap-2 mr-6">
           <TrendingUp className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold" data-testid="text-app-name">PickFinder</span>
+          <span className="text-xl font-bold" data-testid="text-app-name">Prop Machine</span>
         </div>
         <div className="flex gap-2">
           {navItems.map((item) => (

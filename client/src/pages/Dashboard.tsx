@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   // Set page title
   useEffect(() => {
-    document.title = 'PickFinder - AI Sports Betting Intelligence';
+    document.title = 'Prop Machine - AI Sports Betting Intelligence';
   }, []);
 
   // Reset stat filter when sport changes

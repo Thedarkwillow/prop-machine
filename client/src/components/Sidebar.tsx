@@ -21,10 +21,10 @@ export default function Sidebar() {
       <div className="p-6 border-b">
         <div className="flex items-center gap-2">
           <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">PF</span>
+            <span className="text-primary-foreground font-bold">PM</span>
           </div>
           <div>
-            <h1 className="font-bold text-lg">PickFinder</h1>
+            <h1 className="font-bold text-lg">Prop Machine</h1>
             <p className="text-xs text-muted-foreground">NHL Props</p>
           </div>
         </div>

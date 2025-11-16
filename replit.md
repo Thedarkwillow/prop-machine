@@ -2,7 +2,7 @@
 
 ## Overview
 
-PickFinder is an AI-powered sports betting intelligence platform that helps users make informed betting decisions through ML-driven prop analysis, confidence scoring, and Kelly criterion-based bankroll management. The platform focuses on NHL props (with support for NBA, NFL, MLB) and provides automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's edge over time.
+Prop Machine is an AI-powered sports betting intelligence platform that helps users make informed betting decisions through ML-driven prop analysis, confidence scoring, and Kelly criterion-based bankroll management. The platform focuses on NHL props (with support for NBA, NFL, MLB) and provides automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's edge over time.
 
 ## Recent Changes
 
