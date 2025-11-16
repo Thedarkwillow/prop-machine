@@ -46,7 +46,7 @@ export class DiscordNotificationService {
     if (qualifyingProps.length === 0) return;
 
     const embeds: DiscordEmbed[] = qualifyingProps.slice(0, 10).map(prop => ({
-      title: `🎯 New ${prop.sport} Prop`,
+      title: `New ${prop.sport} Prop`,
       color: this.getColorByConfidence(prop.confidence),
       fields: [
         { name: 'Player', value: prop.player, inline: true },
@@ -79,7 +79,7 @@ export class DiscordNotificationService {
     if (!isSteamMove) return; // Only notify on significant moves
 
     const embed: DiscordEmbed = {
-      title: `📈 ${isSteamMove ? 'STEAM MOVE' : 'Line Movement'}`,
+      title: `${isSteamMove ? 'STEAM MOVE' : 'Line Movement'}`,
       description: `${prop.player} - ${prop.stat}`,
       color: movement > 0 ? 0x00ff00 : 0xff0000, // Green up, red down
       fields: [
@@ -105,11 +105,10 @@ export class DiscordNotificationService {
       return;
     }
 
-    const emoji = outcome === 'won' ? '✅' : outcome === 'lost' ? '❌' : '↩️';
     const color = outcome === 'won' ? 0x00ff00 : outcome === 'lost' ? 0xff0000 : 0xffa500;
 
     const embed: DiscordEmbed = {
-      title: `${emoji} Bet ${outcome.toUpperCase()}`,
+      title: `Bet ${outcome.toUpperCase()}`,
       color,
       fields: [
         { name: 'Amount', value: `$${parseFloat(bet.amount).toFixed(2)}`, inline: true },

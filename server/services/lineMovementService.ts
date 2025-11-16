@@ -19,7 +19,8 @@ export class LineMovementService {
       
       await storage.createLineMovement(movement);
       
-      console.log(`[Line Movement] ${prop.player} ${prop.stat} ${prop.direction}: ${currentLine} → ${newLine} (${movement.movement > 0 ? '+' : ''}${movement.movement})`);
+      const movementValue = parseFloat(movement.movement);
+      console.log(`[Line Movement] ${prop.player} ${prop.stat} ${prop.direction}: ${currentLine} → ${newLine} (${movementValue > 0 ? '+' : ''}${movementValue.toFixed(1)})`);
     }
   }
 
