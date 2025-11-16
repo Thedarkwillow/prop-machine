@@ -275,3 +275,36 @@ export const analyticsSnapshots = pgTable("analytics_snapshots", {
 export const insertAnalyticsSnapshotSchema = createInsertSchema(analyticsSnapshots).omit({ id: true, createdAt: true });
 export type InsertAnalyticsSnapshot = z.infer<typeof insertAnalyticsSnapshotSchema>;
 export type AnalyticsSnapshot = typeof analyticsSnapshots.$inferSelect;
+
+// Line movement tracking for props
+export const lineMovements = pgTable("line_movements", {
+  id: serial("id").primaryKey(),
+  propId: integer("prop_id").notNull(),
+  platform: text("platform").notNull(),
+  oldLine: decimal("old_line", { precision: 5, scale: 1 }).notNull(),
+  newLine: decimal("new_line", { precision: 5, scale: 1 }).notNull(),
+  movement: decimal("movement", { precision: 5, scale: 1 }).notNull(), // Difference (+ or -)
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export const insertLineMovementSchema = createInsertSchema(lineMovements).omit({ id: true, timestamp: true });
+export type InsertLineMovement = z.infer<typeof insertLineMovementSchema>;
+export type LineMovement = typeof lineMovements.$inferSelect;
+
+// Discord webhook settings for users
+export const discordSettings = pgTable("discord_settings", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().unique(),
+  webhookUrl: text("webhook_url").notNull(),
+  enabled: boolean("enabled").notNull().default(true),
+  notifyNewProps: boolean("notify_new_props").notNull().default(true),
+  notifyLineMovements: boolean("notify_line_movements").notNull().default(true),
+  notifyBetSettlement: boolean("notify_bet_settlement").notNull().default(true),
+  minConfidence: integer("min_confidence").notNull().default(70),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertDiscordSettingsSchema = createInsertSchema(discordSettings).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertDiscordSettings = z.infer<typeof insertDiscordSettingsSchema>;
+export type DiscordSettings = typeof discordSettings.$inferSelect;

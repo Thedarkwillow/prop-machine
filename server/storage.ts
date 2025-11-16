@@ -11,7 +11,9 @@ import type {
   WeatherData, InsertWeatherData,
   NotificationPreferences, InsertNotificationPreferences,
   Notification, InsertNotification,
-  AnalyticsSnapshot, InsertAnalyticsSnapshot
+  AnalyticsSnapshot, InsertAnalyticsSnapshot,
+  LineMovement, InsertLineMovement,
+  DiscordSettings, InsertDiscordSettings
 } from "@shared/schema";
 
 export interface IStorage {
@@ -88,6 +90,17 @@ export interface IStorage {
   createAnalyticsSnapshot(snapshot: InsertAnalyticsSnapshot): Promise<AnalyticsSnapshot>;
   getLatestAnalytics(userId: string): Promise<AnalyticsSnapshot | undefined>;
   getAnalyticsHistory(userId: string, days: number): Promise<AnalyticsSnapshot[]>;
+  
+  // Line movements
+  createLineMovement(movement: InsertLineMovement): Promise<LineMovement>;
+  getLineMovements(propId: number): Promise<LineMovement[]>;
+  getRecentLineMovements(minutes: number): Promise<LineMovement[]>;
+  
+  // Discord settings
+  createDiscordSettings(settings: InsertDiscordSettings): Promise<DiscordSettings>;
+  getDiscordSettings(userId: string): Promise<DiscordSettings | undefined>;
+  updateDiscordSettings(userId: string, settings: Partial<InsertDiscordSettings>): Promise<DiscordSettings>;
+  deleteDiscordSettings(userId: string): Promise<void>;
 }
 
 // In-memory storage implementation
@@ -669,11 +682,41 @@ class MemStorage implements IStorage {
       .filter(s => s.userId === userId && s.date >= cutoffDate)
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
+
+  // Line movements (in-memory not used, stubs for interface)
+  async createLineMovement(movement: InsertLineMovement): Promise<LineMovement> {
+    throw new Error("Line movements not implemented in MemStorage");
+  }
+
+  async getLineMovements(propId: number): Promise<LineMovement[]> {
+    return [];
+  }
+
+  async getRecentLineMovements(minutes: number): Promise<LineMovement[]> {
+    return [];
+  }
+
+  // Discord settings (in-memory not used, stubs for interface)
+  async createDiscordSettings(settings: InsertDiscordSettings): Promise<DiscordSettings> {
+    throw new Error("Discord settings not implemented in MemStorage");
+  }
+
+  async getDiscordSettings(userId: string): Promise<DiscordSettings | undefined> {
+    return undefined;
+  }
+
+  async updateDiscordSettings(userId: string, settings: Partial<InsertDiscordSettings>): Promise<DiscordSettings> {
+    throw new Error("Discord settings not implemented in MemStorage");
+  }
+
+  async deleteDiscordSettings(userId: string): Promise<void> {
+    return;
+  }
 }
 
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
-import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots } from "@shared/schema";
+import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings } from "@shared/schema";
 import { eq, and, desc, gte, sql, inArray, or } from "drizzle-orm";
 
 class DbStorage implements IStorage {
@@ -1278,6 +1321,65 @@ class DbStorage implements IStorage {
         gte(analyticsSnapshots.date, cutoffDate)
       ))
       .orderBy(analyticsSnapshots.date);
+  }
+
+  // Line movements
+  async createLineMovement(movement: InsertLineMovement): Promise<LineMovement> {
+    const result = await db.insert(lineMovements).values(movement).returning();
+    return result[0];
+  }
+
+  async getLineMovements(propId: number): Promise<LineMovement[]> {
+    return await db
+      .select()
+      .from(lineMovements)
+      .where(eq(lineMovements.propId, propId))
+      .orderBy(lineMovements.timestamp);
+  }
+
+  async getRecentLineMovements(minutes: number): Promise<LineMovement[]> {
+    const cutoffTime = new Date();
+    cutoffTime.setMinutes(cutoffTime.getMinutes() - minutes);
+    
+    return await db
+      .select()
+      .from(lineMovements)
+      .where(gte(lineMovements.timestamp, cutoffTime))
+      .orderBy(desc(lineMovements.timestamp));
+  }
+
+  // Discord settings
+  async createDiscordSettings(settings: InsertDiscordSettings): Promise<DiscordSettings> {
+    const result = await db.insert(discordSettings).values(settings).returning();
+    return result[0];
+  }
+
+  async getDiscordSettings(userId: string): Promise<DiscordSettings | undefined> {
+    const result = await db
+      .select()
+      .from(discordSettings)
+      .where(eq(discordSettings.userId, userId))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async updateDiscordSettings(userId: string, settings: Partial<InsertDiscordSettings>): Promise<DiscordSettings> {
+    const result = await db
+      .update(discordSettings)
+      .set({
+        ...settings,
+        updatedAt: new Date(),
+      })
+      .where(eq(discordSettings.userId, userId))
+      .returning();
+    
+    if (!result[0]) throw new Error("Discord settings not found");
+    return result[0];
+  }
+
+  async deleteDiscordSettings(userId: string): Promise<void> {
+    await db.delete(discordSettings).where(eq(discordSettings.userId, userId));
   }
 }
 
