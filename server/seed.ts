@@ -11,7 +11,7 @@ export async function seedDatabase() {
       return;
     }
 
-    // Create default user using upsertUser
+    // Create default user using upsertUser (with admin privileges)
     const user = await storage.upsertUser({
       id: seedUserId,
       email: "seed@example.com",
@@ -22,6 +22,7 @@ export async function seedDatabase() {
       initialBankroll: "100.00",
       kellySizing: "0.125", // 1/8 Kelly for micro bankroll
       riskTolerance: "balanced",
+      isAdmin: true, // Seed user has admin privileges
       createdAt: new Date(),
       updatedAt: new Date(),
     });

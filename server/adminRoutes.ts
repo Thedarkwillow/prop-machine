@@ -3,24 +3,47 @@ import { settlementService } from "./services/settlementService";
 import { balldontlieClient } from "./integrations/balldontlieClient";
 import { modelScorer } from "./ml/modelScorer";
 import { storage } from "./storage";
-import { isAuthenticated } from "./replitAuth";
 
-// Admin middleware - require authentication for all admin routes
-function requireAuth(req: any, res: any, next: any) {
+// Admin middleware - require authentication AND admin role
+async function requireAdmin(req: any, res: any, next: any) {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     return res.status(401).json({
       success: false,
       error: "Authentication required for admin access",
     });
   }
-  next();
+  
+  try {
+    const userId = req.user?.claims?.sub;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid user session",
+      });
+    }
+    
+    const user = await storage.getUser(userId);
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: "Admin privileges required",
+      });
+    }
+    
+    next();
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: "Failed to verify admin status",
+    });
+  }
 }
 
 export function adminRoutes(): Router {
   const router = Router();
   
-  // Apply authentication to ALL admin routes
-  router.use(requireAuth);
+  // Apply admin role check to ALL admin routes
+  router.use(requireAdmin);
 
   // Manual settlement trigger
   router.post("/settlement/run", async (req, res) => {

@@ -25,6 +25,7 @@ export const users = pgTable("users", {
   initialBankroll: decimal("initial_bankroll", { precision: 10, scale: 2 }).notNull().default("100.00"),
   kellySizing: decimal("kelly_sizing", { precision: 3, scale: 2 }).notNull().default("0.125"), // 1/8 Kelly for micro bankroll
   riskTolerance: text("risk_tolerance", { enum: ["conservative", "balanced", "aggressive"] }).notNull().default("balanced"),
+  isAdmin: boolean("is_admin").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

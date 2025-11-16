@@ -1,18 +1,41 @@
-import { Switch, Route, Link, useLocation } from "wouter";
+import { Switch, Route, Link, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, History, TrendingUp, Plus, LogOut } from "lucide-react";
+import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
 import BuildSlip from "@/pages/BuildSlip";
+import Admin from "@/pages/admin";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
 import { useHighConfidenceNotifications } from "@/hooks/use-high-confidence-notifications";
 import { useAuth } from "@/hooks/useAuth";
+
+// Admin route guard - only admins can access
+function AdminRoute() {
+  const { user, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg font-medium">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Redirect non-admins to dashboard
+  if (!user?.isAdmin) {
+    return <Redirect to="/" />;
+  }
+  
+  return <Admin />;
+}
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -37,6 +60,7 @@ function Router() {
           <Route path="/build-slip" component={BuildSlip} />
           <Route path="/history" component={BetHistory} />
           <Route path="/performance" component={Performance} />
+          <Route path="/admin" component={AdminRoute} />
         </>
       )}
       <Route component={NotFound} />
@@ -48,12 +72,17 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
   const [location] = useLocation();
   const { user } = useAuth();
   
-  const navItems = [
+  const baseNavItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard", badge: highConfidenceCount },
     { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
     { path: "/history", label: "Bet History", icon: History, testId: "nav-history" },
     { path: "/performance", label: "Performance", icon: TrendingUp, testId: "nav-performance" },
   ];
+  
+  // Only show admin link to admin users
+  const navItems = user?.isAdmin 
+    ? [...baseNavItems, { path: "/admin", label: "Admin", icon: Settings, testId: "nav-admin" }]
+    : baseNavItems;
 
   const handleLogout = () => {
     window.location.href = "/api/logout";
