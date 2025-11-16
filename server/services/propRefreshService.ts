@@ -239,11 +239,135 @@ export class PropRefreshService {
     }
   }
 
+  async refreshFromOddsApi(sport: string = 'NBA'): Promise<RefreshResult> {
+    const result: RefreshResult = {
+      success: false,
+      platform: 'The Odds API',
+      sport,
+      propsFetched: 0,
+      propsCreated: 0,
+      propsSkipped: 0,
+      errors: [],
+      timestamp: new Date(),
+    };
+
+    if (!process.env.ODDS_API_KEY) {
+      result.errors.push('ODDS_API_KEY not configured');
+      return result;
+    }
+
+    try {
+      console.log(`Fetching props from The Odds API for ${sport}...`);
+
+      const sportKeyMap: { [key: string]: string } = {
+        'NBA': 'basketball_nba',
+        'NHL': 'icehockey_nhl',
+        'NFL': 'americanfootball_nfl',
+        'MLB': 'baseball_mlb',
+      };
+
+      const sportKey = sportKeyMap[sport];
+      if (!sportKey) {
+        result.errors.push(`Sport ${sport} not supported by The Odds API`);
+        return result;
+      }
+
+      const response = await oddsApiClient.getPlayerProps(sportKey);
+      
+      if (!response.data || response.data.length === 0) {
+        console.log(`No games found on The Odds API for ${sport}`);
+        result.success = true;
+        return result;
+      }
+
+      const normalizedProps = oddsApiClient.normalizeToProps(response.data, sport);
+      result.propsFetched = normalizedProps.length;
+
+      console.log(`Found ${normalizedProps.length} props from The Odds API`);
+      
+      const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'The Odds API');
+      console.log(`Found ${oldPropIds.length} existing active The Odds API ${sport} props to replace`);
+
+      for (const rawProp of normalizedProps) {
+        try {
+          const analysisInput = {
+            sport,
+            player: rawProp.player,
+            team: rawProp.team,
+            opponent: rawProp.opponent,
+            stat: rawProp.stat,
+            line: rawProp.line,
+            direction: rawProp.direction,
+            platform: 'The Odds API',
+          };
+
+          const analysis = await propAnalysisService.analyzeProp(analysisInput);
+
+          const gameTime = rawProp.gameTime instanceof Date 
+            ? rawProp.gameTime 
+            : new Date(rawProp.gameTime);
+
+          await storage.createProp({
+            sport,
+            player: rawProp.player,
+            team: rawProp.team,
+            opponent: rawProp.opponent,
+            stat: rawProp.stat,
+            line: rawProp.line,
+            currentLine: rawProp.line,
+            direction: rawProp.direction,
+            period: 'full_game',
+            platform: 'The Odds API',
+            confidence: analysis.confidence,
+            ev: analysis.ev.toString(),
+            modelProbability: analysis.modelProbability.toString(),
+            gameTime,
+            isActive: true,
+          });
+
+          result.propsCreated++;
+
+          if (result.propsCreated % 25 === 0) {
+            console.log(`Created ${result.propsCreated} The Odds API props...`);
+          }
+
+        } catch (error) {
+          const err = error as Error;
+          result.propsSkipped++;
+          result.errors.push(`${rawProp.player}: ${err.message}`);
+        }
+      }
+
+      if (result.propsCreated > 0 && oldPropIds.length > 0) {
+        const deactivatedCount = await storage.deactivateSpecificProps(oldPropIds);
+        console.log(`Deactivated ${deactivatedCount} old The Odds API ${sport} props after successfully creating ${result.propsCreated} new props`);
+      } else if (result.propsCreated === 0) {
+        console.log(`No props created for The Odds API ${sport}, keeping ${oldPropIds.length} existing props active`);
+      }
+
+      result.success = true;
+      console.log(`The Odds API ${sport}: Created ${result.propsCreated}/${result.propsFetched} props`);
+      return result;
+
+    } catch (error) {
+      const err = error as Error;
+      console.error('The Odds API fetch error:', err.message);
+      
+      if (err.message.includes('INVALID_MARKET') || err.message.includes('Markets not supported')) {
+        result.errors.push('Player props require paid API tier. Free tier detected.');
+      } else {
+        result.errors.push(`API error: ${err.message}`);
+      }
+      
+      return result;
+    }
+  }
+
   async refreshAllPlatforms(sports: string[] = ['NBA', 'NFL', 'NHL']): Promise<MultiPlatformRefreshResult> {
     const results: RefreshResult[] = [];
     
     console.log(`Starting multi-platform prop refresh for: ${sports.join(', ')}`);
-    console.log(`Platforms: PrizePicks, Underdog`);
+    console.log(`Platforms: PrizePicks, Underdog, The Odds API`);
 
     // Fetch from all platforms for each sport
     for (const sport of sports) {
@@ -252,6 +376,9 @@ export class PropRefreshService {
 
       const underdogResult = await this.refreshFromUnderdog(sport);
       results.push(underdogResult);
+
+      const oddsApiResult = await this.refreshFromOddsApi(sport);
+      results.push(oddsApiResult);
     }
 
     const totalPropsFetched = results.reduce((sum, r) => sum + r.propsFetched, 0);
