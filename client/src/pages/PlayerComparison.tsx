@@ -32,11 +32,210 @@ export default function PlayerComparison() {
     return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
 
-  const getDiffColor = (diff: number) => {
-    if (diff > 1) return "text-green-600 dark:text-green-400";
-    if (diff < -1) return "text-red-600 dark:text-red-400";
-    return "text-muted-foreground";
-  };
+  const renderNBAStats = (playerStats: any) => (
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <div className="text-sm text-muted-foreground">PPG</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.ppg.toFixed(1)}</div>
+      </div>
+      <div>
+        <div className="text-sm text-muted-foreground">RPG</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.rpg.toFixed(1)}</div>
+      </div>
+      <div>
+        <div className="text-sm text-muted-foreground">APG</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.apg.toFixed(1)}</div>
+      </div>
+      <div>
+        <div className="text-sm text-muted-foreground">FG%</div>
+        <div className="text-2xl font-bold font-mono">{(playerStats.fg_pct * 100).toFixed(1)}%</div>
+      </div>
+    </div>
+  );
+
+  const renderNHLStats = (playerStats: any) => (
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <div className="text-sm text-muted-foreground">Goals</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.goals}</div>
+      </div>
+      <div>
+        <div className="text-sm text-muted-foreground">Assists</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.assists}</div>
+      </div>
+      <div>
+        <div className="text-sm text-muted-foreground">Points</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.points}</div>
+      </div>
+      <div>
+        <div className="text-sm text-muted-foreground">+/-</div>
+        <div className="text-2xl font-bold font-mono">{playerStats.plusMinus > 0 ? '+' : ''}{playerStats.plusMinus}</div>
+      </div>
+    </div>
+  );
+
+  const renderNFLStats = (playerStats: any) => (
+    <div className="grid grid-cols-2 gap-4">
+      {(playerStats.passingYards > 0) && (
+        <>
+          <div>
+            <div className="text-sm text-muted-foreground">Pass Yds</div>
+            <div className="text-2xl font-bold font-mono">{playerStats.passingYards || 0}</div>
+          </div>
+          <div>
+            <div className="text-sm text-muted-foreground">Pass TDs</div>
+            <div className="text-2xl font-bold font-mono">{playerStats.passingTDs || 0}</div>
+          </div>
+        </>
+      )}
+      {(playerStats.rushingYards > 0) && (
+        <>
+          <div>
+            <div className="text-sm text-muted-foreground">Rush Yds</div>
+            <div className="text-2xl font-bold font-mono">{playerStats.rushingYards || 0}</div>
+          </div>
+          <div>
+            <div className="text-sm text-muted-foreground">Rush TDs</div>
+            <div className="text-2xl font-bold font-mono">{playerStats.rushingTDs || 0}</div>
+          </div>
+        </>
+      )}
+      {(playerStats.receivingYards > 0) && (
+        <>
+          <div>
+            <div className="text-sm text-muted-foreground">Rec Yds</div>
+            <div className="text-2xl font-bold font-mono">{playerStats.receivingYards || 0}</div>
+          </div>
+          <div>
+            <div className="text-sm text-muted-foreground">Rec TDs</div>
+            <div className="text-2xl font-bold font-mono">{playerStats.receivingTDs || 0}</div>
+          </div>
+        </>
+      )}
+      {(playerStats.passingYards === 0 && playerStats.rushingYards === 0 && playerStats.receivingYards === 0) && (
+        <div className="col-span-2 text-center text-muted-foreground">
+          No statistics available for this player
+        </div>
+      )}
+    </div>
+  );
+
+  const renderNBAComparison = (comp: any) => (
+    <>
+      <div className="flex items-center justify-between p-3 rounded-md border">
+        <div className="flex items-center gap-2">
+          {getDiffIcon(comp.ppgDiff)}
+          <span className="font-medium">Points Per Game</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span className="font-mono">{comparison.player1.stats.ppg.toFixed(1)}</span>
+          <Badge variant="secondary">
+            {comp.ppgDiff > 0 ? '+' : ''}{comp.ppgDiff.toFixed(1)}
+          </Badge>
+          <span className="font-mono">{comparison.player2.stats.ppg.toFixed(1)}</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between p-3 rounded-md border">
+        <div className="flex items-center gap-2">
+          {getDiffIcon(comp.rpgDiff)}
+          <span className="font-medium">Rebounds Per Game</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span className="font-mono">{comparison.player1.stats.rpg.toFixed(1)}</span>
+          <Badge variant="secondary">
+            {comp.rpgDiff > 0 ? '+' : ''}{comp.rpgDiff.toFixed(1)}
+          </Badge>
+          <span className="font-mono">{comparison.player2.stats.rpg.toFixed(1)}</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between p-3 rounded-md border">
+        <div className="flex items-center gap-2">
+          {getDiffIcon(comp.apgDiff)}
+          <span className="font-medium">Assists Per Game</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span className="font-mono">{comparison.player1.stats.apg.toFixed(1)}</span>
+          <Badge variant="secondary">
+            {comp.apgDiff > 0 ? '+' : ''}{comp.apgDiff.toFixed(1)}
+          </Badge>
+          <span className="font-mono">{comparison.player2.stats.apg.toFixed(1)}</span>
+        </div>
+      </div>
+    </>
+  );
+
+  const renderNHLComparison = (comp: any) => (
+    <>
+      <div className="flex items-center justify-between p-3 rounded-md border">
+        <div className="flex items-center gap-2">
+          {getDiffIcon(comp.goalsDiff)}
+          <span className="font-medium">Goals</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span className="font-mono">{comparison.player1.stats.goals}</span>
+          <Badge variant="secondary">
+            {comp.goalsDiff > 0 ? '+' : ''}{comp.goalsDiff}
+          </Badge>
+          <span className="font-mono">{comparison.player2.stats.goals}</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between p-3 rounded-md border">
+        <div className="flex items-center gap-2">
+          {getDiffIcon(comp.assistsDiff)}
+          <span className="font-medium">Assists</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span className="font-mono">{comparison.player1.stats.assists}</span>
+          <Badge variant="secondary">
+            {comp.assistsDiff > 0 ? '+' : ''}{comp.assistsDiff}
+          </Badge>
+          <span className="font-mono">{comparison.player2.stats.assists}</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between p-3 rounded-md border">
+        <div className="flex items-center gap-2">
+          {getDiffIcon(comp.pointsDiff)}
+          <span className="font-medium">Total Points</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span className="font-mono">{comparison.player1.stats.points}</span>
+          <Badge variant="secondary">
+            {comp.pointsDiff > 0 ? '+' : ''}{comp.pointsDiff}
+          </Badge>
+          <span className="font-mono">{comparison.player2.stats.points}</span>
+        </div>
+      </div>
+    </>
+  );
+
+  const renderNFLComparison = (comp: any) => (
+    <>
+      {comp.betterPasser && (
+        <div className="flex items-center justify-between p-3 rounded-md border">
+          <span className="font-medium">Passing</span>
+          <Badge variant={comp.betterPasser === 'player1' ? 'default' : 'secondary'}>
+            {comp.betterPasser === 'player1' ? comparison.player1.name : comparison.player2.name} leads
+          </Badge>
+        </div>
+      )}
+      {comp.betterRusher && (
+        <div className="flex items-center justify-between p-3 rounded-md border">
+          <span className="font-medium">Rushing</span>
+          <Badge variant={comp.betterRusher === 'player1' ? 'default' : 'secondary'}>
+            {comp.betterRusher === 'player1' ? comparison.player1.name : comparison.player2.name} leads
+          </Badge>
+        </div>
+      )}
+      {comp.betterReceiver && (
+        <div className="flex items-center justify-between p-3 rounded-md border">
+          <span className="font-medium">Receiving</span>
+          <Badge variant={comp.betterReceiver === 'player1' ? 'default' : 'secondary'}>
+            {comp.betterReceiver === 'player1' ? comparison.player1.name : comparison.player2.name} leads
+          </Badge>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div className="container mx-auto p-6 max-w-7xl space-y-6">
@@ -117,24 +316,9 @@ export default function PlayerComparison() {
                 <CardDescription>{comparison.player1.team}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground">PPG</div>
-                    <div className="text-2xl font-bold font-mono">{comparison.player1.stats.ppg.toFixed(1)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">RPG</div>
-                    <div className="text-2xl font-bold font-mono">{comparison.player1.stats.rpg.toFixed(1)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">APG</div>
-                    <div className="text-2xl font-bold font-mono">{comparison.player1.stats.apg.toFixed(1)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">FG%</div>
-                    <div className="text-2xl font-bold font-mono">{(comparison.player1.stats.fg_pct * 100).toFixed(1)}%</div>
-                  </div>
-                </div>
+                {comparison.sport === "NBA" && renderNBAStats(comparison.player1.stats)}
+                {comparison.sport === "NHL" && renderNHLStats(comparison.player1.stats)}
+                {comparison.sport === "NFL" && renderNFLStats(comparison.player1.stats)}
                 <div className="pt-2 border-t">
                   <div className="text-sm text-muted-foreground">Games Played</div>
                   <div className="text-lg font-semibold">{comparison.player1.stats.gamesPlayed}</div>
@@ -148,24 +332,9 @@ export default function PlayerComparison() {
                 <CardDescription>{comparison.player2.team}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground">PPG</div>
-                    <div className="text-2xl font-bold font-mono">{comparison.player2.stats.ppg.toFixed(1)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">RPG</div>
-                    <div className="text-2xl font-bold font-mono">{comparison.player2.stats.rpg.toFixed(1)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">APG</div>
-                    <div className="text-2xl font-bold font-mono">{comparison.player2.stats.apg.toFixed(1)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">FG%</div>
-                    <div className="text-2xl font-bold font-mono">{(comparison.player2.stats.fg_pct * 100).toFixed(1)}%</div>
-                  </div>
-                </div>
+                {comparison.sport === "NBA" && renderNBAStats(comparison.player2.stats)}
+                {comparison.sport === "NHL" && renderNHLStats(comparison.player2.stats)}
+                {comparison.sport === "NFL" && renderNFLStats(comparison.player2.stats)}
                 <div className="pt-2 border-t">
                   <div className="text-sm text-muted-foreground">Games Played</div>
                   <div className="text-lg font-semibold">{comparison.player2.stats.gamesPlayed}</div>
@@ -180,47 +349,9 @@ export default function PlayerComparison() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-md border">
-                  <div className="flex items-center gap-2">
-                    {getDiffIcon(comparison.comparison.ppgDiff)}
-                    <span className="font-medium">Points Per Game</span>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <span className="font-mono">{comparison.player1.stats.ppg.toFixed(1)}</span>
-                    <Badge variant="secondary">
-                      {comparison.comparison.ppgDiff > 0 ? '+' : ''}{comparison.comparison.ppgDiff.toFixed(1)}
-                    </Badge>
-                    <span className="font-mono">{comparison.player2.stats.ppg.toFixed(1)}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-md border">
-                  <div className="flex items-center gap-2">
-                    {getDiffIcon(comparison.comparison.rpgDiff)}
-                    <span className="font-medium">Rebounds Per Game</span>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <span className="font-mono">{comparison.player1.stats.rpg.toFixed(1)}</span>
-                    <Badge variant="secondary">
-                      {comparison.comparison.rpgDiff > 0 ? '+' : ''}{comparison.comparison.rpgDiff.toFixed(1)}
-                    </Badge>
-                    <span className="font-mono">{comparison.player2.stats.rpg.toFixed(1)}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-md border">
-                  <div className="flex items-center gap-2">
-                    {getDiffIcon(comparison.comparison.apgDiff)}
-                    <span className="font-medium">Assists Per Game</span>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <span className="font-mono">{comparison.player1.stats.apg.toFixed(1)}</span>
-                    <Badge variant="secondary">
-                      {comparison.comparison.apgDiff > 0 ? '+' : ''}{comparison.comparison.apgDiff.toFixed(1)}
-                    </Badge>
-                    <span className="font-mono">{comparison.player2.stats.apg.toFixed(1)}</span>
-                  </div>
-                </div>
+                {comparison.sport === "NBA" && renderNBAComparison(comparison.comparison)}
+                {comparison.sport === "NHL" && renderNHLComparison(comparison.comparison)}
+                {comparison.sport === "NFL" && renderNFLComparison(comparison.comparison)}
               </div>
             </CardContent>
           </Card>
