@@ -16,6 +16,16 @@ import type {
   DiscordSettings, InsertDiscordSettings
 } from "@shared/schema";
 
+// Extended prop type with line movement data
+export type PropWithLineMovement = Prop & {
+  latestLineMovement?: {
+    oldLine: string;
+    newLine: string;
+    movement: string;
+    timestamp: Date;
+  } | null;
+};
+
 export interface IStorage {
   // User management (required for Replit Auth)
   getUser(userId: string): Promise<User | undefined>;
@@ -25,6 +35,7 @@ export interface IStorage {
   
   // Props
   getActiveProps(sport?: string): Promise<Prop[]>;
+  getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]>;
   getAllActiveProps(): Promise<Prop[]>;
   getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]>;
   createProp(prop: InsertProp): Promise<Prop>;
@@ -178,6 +189,12 @@ class MemStorage implements IStorage {
       return allProps.filter(p => p.sport === sport);
     }
     return allProps;
+  }
+
+  async getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]> {
+    // MemStorage doesn't track line movements, so just return props without movement data
+    const props = await this.getActiveProps(sport);
+    return props.map(prop => ({ ...prop, latestLineMovement: null }));
   }
 
   async getAllActiveProps(): Promise<Prop[]> {
@@ -766,6 +783,59 @@ class DbStorage implements IStorage {
         .where(and(eq(props.isActive, true), eq(props.sport, sport)));
     }
     return await db.select().from(props).where(eq(props.isActive, true));
+  }
+
+  async getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]> {
+    // Get active props
+    const activeProps = await this.getActiveProps(sport);
+    
+    if (activeProps.length === 0) {
+      return [];
+    }
+
+    // Get all prop IDs
+    const propIds = activeProps.map(p => p.id);
+    
+    // Get latest line movement for each prop using a subquery
+    // This selects the most recent line movement per propId
+    const latestMovementsQuery = db
+      .select({
+        propId: lineMovements.propId,
+        oldLine: lineMovements.oldLine,
+        newLine: lineMovements.newLine,
+        movement: lineMovements.movement,
+        timestamp: lineMovements.timestamp,
+      })
+      .from(lineMovements)
+      .where(inArray(lineMovements.propId, propIds))
+      .orderBy(desc(lineMovements.timestamp));
+    
+    const allMovements = await latestMovementsQuery;
+    
+    // Group movements by propId and keep only the latest
+    const latestMovementsMap = new Map<number, {
+      oldLine: string;
+      newLine: string;
+      movement: string;
+      timestamp: Date;
+    }>();
+    
+    for (const movement of allMovements) {
+      if (!latestMovementsMap.has(movement.propId)) {
+        latestMovementsMap.set(movement.propId, {
+          oldLine: movement.oldLine,
+          newLine: movement.newLine,
+          movement: movement.movement,
+          timestamp: movement.timestamp,
+        });
+      }
+    }
+    
+    // Combine props with their latest line movement
+    return activeProps.map(prop => ({
+      ...prop,
+      latestLineMovement: latestMovementsMap.get(prop.id) || null,
+    }));
   }
 
   async getAllActiveProps(): Promise<Prop[]> {

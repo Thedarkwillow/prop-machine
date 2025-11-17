@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage, type PropWithLineMovement } from "./storage";
 import { insertPropSchema, insertSlipSchema, insertBetSchema, type Prop } from "@shared/schema";
 import {
   updateBankrollSchema,
@@ -22,8 +22,8 @@ import { adminRoutes } from "./adminRoutes";
 import { createNotificationRoutes } from "./notificationRoutes";
 import { createAnalyticsRoutes } from "./analyticsRoutes";
 
-function transformPropForAPI(prop: Prop) {
-  return {
+function transformPropForAPI(prop: Prop | PropWithLineMovement) {
+  const baseProp = {
     id: prop.id,
     sport: prop.sport,
     player: prop.player,
@@ -41,6 +41,21 @@ function transformPropForAPI(prop: Prop) {
     isActive: prop.isActive,
     createdAt: prop.createdAt,
   };
+
+  // Add line movement data if available
+  if ('latestLineMovement' in prop && prop.latestLineMovement) {
+    return {
+      ...baseProp,
+      lineMovement: {
+        previousLine: Number(prop.latestLineMovement.oldLine),
+        currentLine: Number(prop.latestLineMovement.newLine),
+        change: Number(prop.latestLineMovement.movement),
+        timestamp: prop.latestLineMovement.timestamp,
+      },
+    };
+  }
+
+  return baseProp;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -99,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/props", async (req, res) => {
     try {
       const validatedQuery = queryParamsSportSchema.parse(req.query);
-      const props = await storage.getActiveProps(validatedQuery.sport);
+      const props = await storage.getActivePropsWithLineMovement(validatedQuery.sport);
       res.json(props.map(transformPropForAPI));
     } catch (error) {
       if (error instanceof ZodError) {
@@ -113,7 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/props/:sport", async (req, res) => {
     try {
       const { sport } = req.params;
-      const props = await storage.getActiveProps(sport as any);
+      const props = await storage.getActivePropsWithLineMovement(sport as any);
       res.json(props.map(transformPropForAPI));
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch props" });
