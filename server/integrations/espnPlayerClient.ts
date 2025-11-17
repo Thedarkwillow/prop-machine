@@ -117,7 +117,13 @@ class ESPNPlayerClient extends IntegrationClient {
   async getNFLPlayerStats(playerId: string): Promise<NFLPlayerStats> {
     try {
       const statsUrl = `/v2/sports/football/leagues/nfl/seasons/2024/athletes/${playerId}/statistics/0`;
+      console.log(`[ESPN] Fetching NFL stats for player ${playerId}: ${statsUrl}`);
       const response = await this.get<any>(statsUrl);
+      console.log(`[ESPN] NFL stats response structure:`, JSON.stringify({ 
+        hasData: !!response?.data,
+        hasSplits: !!response?.data?.splits,
+        categories: response?.data?.splits?.categories?.length || 0
+      }));
       
       const stats = response?.data?.splits?.categories || [];
       const passingStats = stats.find((c: any) => c.name === 'passing')?.stats || [];
@@ -148,7 +154,13 @@ class ESPNPlayerClient extends IntegrationClient {
   async getNHLPlayerStats(playerId: string): Promise<NHLPlayerStats> {
     try {
       const statsUrl = `/v2/sports/hockey/leagues/nhl/seasons/2025/athletes/${playerId}/statistics/0`;
+      console.log(`[ESPN] Fetching NHL stats for player ${playerId}: ${statsUrl}`);
       const response = await this.get<any>(statsUrl);
+      console.log(`[ESPN] NHL stats response structure:`, JSON.stringify({ 
+        hasData: !!response?.data,
+        hasSplits: !!response?.data?.splits,
+        categories: response?.data?.splits?.categories?.length || 0
+      }));
       
       const stats = response?.data?.splits?.categories?.[0]?.stats || [];
       

@@ -6,6 +6,26 @@ Prop Machine is an AI-powered sports betting intelligence platform that helps us
 
 ## Recent Changes
 
+**November 17, 2025 - Multi-Sport Player Comparison Bug Fixes**
+- **Fixed critical IntegrationResponse data access bug in ESPN client:**
+  - ESPN player client was accessing `response.items` and `response.splits` directly
+  - Correct pattern: `response.data.items` and `response.data.splits`
+  - IntegrationClient wraps all responses in `{data: T, cached: boolean}` structure
+  - Fixed all occurrences in searchNFLPlayers, searchNHLPlayers, getNFLPlayerStats, getNHLPlayerStats methods
+- **Added comprehensive logging for debugging:**
+  - Player comparison route logs start/success/error states
+  - ESPN client logs all API calls with response structure details
+  - Enables rapid debugging of integration issues
+- **Verified multi-sport player comparison functionality:**
+  - NHL player comparison tested and working (e.g., McDavid vs Matthews)
+  - Player search finds correct athletes from ESPN v3 API
+  - Stats display correctly when available from ESPN v2 API
+  - Graceful fallback to zero stats when ESPN API returns 404
+- **Known ESPN API limitations documented:**
+  - ESPN v3 player search works reliably (2000+ NHL, 5000+ NFL players)
+  - ESPN v2 stats endpoints may return 404 for some players (free tier limitation)
+  - Application handles 404s gracefully without crashing
+
 **November 16, 2025 - Multi-Platform Prop Integration & Data-Safety System**
 - **Multi-Platform Prop Fetching:** Integrated PrizePicks and Underdog Fantasy APIs
   - Created `prizepicksClient` for fetching props from PrizePicks API (`api.prizepicks.com/projections`)

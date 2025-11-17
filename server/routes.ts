@@ -512,10 +512,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { player1, player2, sport } = req.params;
       const selectedSport = (sport || "NBA") as "NBA" | "NHL" | "NFL";
+      console.log(`[Player Comparison] Comparing ${player1} vs ${player2} in ${selectedSport}`);
       const { playerComparisonService } = await import("./services/playerComparisonService");
       const comparison = await playerComparisonService.comparePlayers(player1, player2, selectedSport);
+      console.log(`[Player Comparison] Successfully compared players`);
       res.json(comparison);
     } catch (error) {
+      console.error(`[Player Comparison] Error:`, error);
       res.status(500).json({ error: "Failed to compare players" });
     }
   });
