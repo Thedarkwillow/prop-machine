@@ -49,29 +49,40 @@ class ESPNPlayerClient extends IntegrationClient {
 
   /**
    * Search for NFL players by name
+   * Fetches all athletes and filters by name match
    */
   async searchNFLPlayers(searchTerm: string): Promise<any[]> {
     try {
+      // Fetch with high limit to get comprehensive results
       const response = await this.get<any>(
-        `/football/leagues/nfl/athletes?limit=100`
+        `/football/leagues/nfl/athletes?limit=1000`
       );
       
       if (!response?.data?.items) return [];
       
-      // Filter by search term
+      // Search through all available players
       const players = [];
-      for (const item of response.data.items.slice(0, 20)) {
+      const searchLower = searchTerm.toLowerCase();
+      
+      // Use parallel requests for better performance
+      const matchPromises = response.data.items.slice(0, 200).map(async (item: any) => {
         try {
           const playerData = await this.get<any>(item.$ref.replace(this.baseUrl, ""));
-          if (playerData?.data?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())) {
-            players.push(playerData.data);
+          const fullName = playerData?.data?.fullName?.toLowerCase() || "";
+          const displayName = playerData?.data?.displayName?.toLowerCase() || "";
+          
+          // Match on either full name or display name
+          if (fullName.includes(searchLower) || displayName.includes(searchLower)) {
+            return playerData.data;
           }
+          return null;
         } catch (e) {
-          continue;
+          return null;
         }
-      }
+      });
       
-      return players;
+      const results = await Promise.all(matchPromises);
+      return results.filter((p): p is any => p !== null).slice(0, 10); // Return top 10 matches
     } catch (error) {
       console.error("Error searching NFL players:", error);
       return [];
@@ -80,29 +91,40 @@ class ESPNPlayerClient extends IntegrationClient {
 
   /**
    * Search for NHL players by name
+   * Fetches all athletes and filters by name match
    */
   async searchNHLPlayers(searchTerm: string): Promise<any[]> {
     try {
+      // Fetch with high limit to get comprehensive results
       const response = await this.get<any>(
-        `/hockey/leagues/nhl/athletes?limit=100`
+        `/hockey/leagues/nhl/athletes?limit=1000`
       );
       
       if (!response?.data?.items) return [];
       
-      // Filter by search term
+      // Search through all available players
       const players = [];
-      for (const item of response.data.items.slice(0, 20)) {
+      const searchLower = searchTerm.toLowerCase();
+      
+      // Use parallel requests for better performance
+      const matchPromises = response.data.items.slice(0, 200).map(async (item: any) => {
         try {
           const playerData = await this.get<any>(item.$ref.replace(this.baseUrl, ""));
-          if (playerData?.data?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())) {
-            players.push(playerData.data);
+          const fullName = playerData?.data?.fullName?.toLowerCase() || "";
+          const displayName = playerData?.data?.displayName?.toLowerCase() || "";
+          
+          // Match on either full name or display name
+          if (fullName.includes(searchLower) || displayName.includes(searchLower)) {
+            return playerData.data;
           }
+          return null;
         } catch (e) {
-          continue;
+          return null;
         }
-      }
+      });
       
-      return players;
+      const results = await Promise.all(matchPromises);
+      return results.filter((p): p is any => p !== null).slice(0, 10); // Return top 10 matches
     } catch (error) {
       console.error("Error searching NHL players:", error);
       return [];
