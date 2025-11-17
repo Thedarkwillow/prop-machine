@@ -17,7 +17,7 @@ import {
   analyzePropSchema,
 } from "./validation";
 import { ZodError } from "zod";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { adminRoutes } from "./adminRoutes";
 import { createNotificationRoutes } from "./notificationRoutes";
 import { createAnalyticsRoutes } from "./analyticsRoutes";

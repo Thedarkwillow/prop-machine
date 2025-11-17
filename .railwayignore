@@ -1,0 +1,11 @@
+node_modules
+.git
+.env
+*.log
+.replit
+replit.nix
+.upm
+vite.config.ts.timestamp-*
+dist-ssr
+.DS_Store
+coverage

@@ -2,90 +2,7 @@
 
 ## Overview
 
-Prop Machine is an AI-powered sports betting intelligence platform that helps users make informed betting decisions through ML-driven prop analysis, confidence scoring, and Kelly criterion-based bankroll management. The platform focuses on NHL props (with support for NBA, NFL, MLB) and provides automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's edge over time.
-
-## Recent Changes
-
-**November 17, 2025 - Multi-Sport Player Comparison Bug Fixes**
-- **Fixed critical IntegrationResponse data access bug in ESPN client:**
-  - ESPN player client was accessing `response.items` and `response.splits` directly
-  - Correct pattern: `response.data.items` and `response.data.splits`
-  - IntegrationClient wraps all responses in `{data: T, cached: boolean}` structure
-  - Fixed all occurrences in searchNFLPlayers, searchNHLPlayers, getNFLPlayerStats, getNHLPlayerStats methods
-- **Added comprehensive logging for debugging:**
-  - Player comparison route logs start/success/error states
-  - ESPN client logs all API calls with response structure details
-  - Enables rapid debugging of integration issues
-- **Verified multi-sport player comparison functionality:**
-  - NHL player comparison tested and working (e.g., McDavid vs Matthews)
-  - Player search finds correct athletes from ESPN v3 API
-  - Stats display correctly when available from ESPN v2 API
-  - Graceful fallback to zero stats when ESPN API returns 404
-- **Known ESPN API limitations documented:**
-  - ESPN v3 player search works reliably (2000+ NHL, 5000+ NFL players)
-  - ESPN v2 stats endpoints may return 404 for some players (free tier limitation)
-  - Application handles 404s gracefully without crashing
-
-**November 16, 2025 - Multi-Platform Prop Integration & Data-Safety System**
-- **Multi-Platform Prop Fetching:** Integrated PrizePicks and Underdog Fantasy APIs
-  - Created `prizepicksClient` for fetching props from PrizePicks API (`api.prizepicks.com/projections`)
-  - Created `underdogClient` for fetching props from Underdog API (`api.underdogfantasy.com/v1/appearances`)
-  - Built unified `propRefreshService` coordinating fetches across multiple platforms
-  - Admin endpoint `/api/admin/props/refresh` for multi-platform prop refresh with RBAC protection
-  - Supports NBA, NFL, NHL, MLB across both platforms
-  - Automatic ML analysis and confidence scoring for all fetched props
-- **Production-Grade Data Safety System:** Guarantees active props remain available during refreshes
-  - **Strategy:** Capture old prop IDs BEFORE inserting, then deactivate ONLY those specific IDs
-  - Added `getActivePropIdsBySportAndPlatform()` to query existing props before changes
-  - Added `deactivateSpecificProps(propIds)` to target only pre-existing props
-  - **Guarantees:** API failures, zero props fetched, all validation failures, and all insertion failures preserve existing active props
-  - Newly inserted props are never deactivated (not in captured oldPropIds array)
-  - Architect-verified production-ready implementation
-- **Quarter/Period Prop Support:** Extended schema for quarter and half-specific props
-  - Added `period` field to props table: `full_game`, `1Q`, `1H`, `2H`, `4Q`
-  - PrizePicks supports quarter-specific props (e.g., "Points 1Q", "Rebounds 2H")
-  - Underdog primarily full-game props
-  - Schema migration completed via `npm run db:push`
-- **Expanded Stat Type Support:** Comprehensive stat mapping for all platforms
-  - Combo stats: PTS+AST, PTS+REB, PTS+REB+AST, REB+AST, Rush+Rec Yards
-  - Platform-specific stat normalization across PrizePicks, Underdog, The Odds API
-  - Fantasy points, anytime touchdowns, pitcher strikeouts, and more
-- **Slip Confidence Score Display:** Enhanced slip builder UI
-  - Overall confidence badge showing average of all selected props
-  - Dynamically updates as props are added/removed
-  - Displays "{slipConfidence}% Confidence" next to slip title
-  - Provides at-a-glance quality assessment of parlay construction
-- **The Odds API Status:** Free tier limitation documented
-  - Player props require paid subscription ($50-100/month)
-  - Standard markets (h2h, spreads, totals) supported on free tier
-  - Code ready to activate when upgraded (uncomment in propFetcherService.ts)
-
-**November 16, 2025 - Real ML Model Integration & Database Migration**
-- **Database Migration:** Created fresh PostgreSQL database and migrated to persistent DbStorage
-  - Successfully created new Neon PostgreSQL database after old endpoint disabled
-  - Ran `npm run db:push` to sync Drizzle schema to new database
-  - All data now persists across server restarts (users, props, slips, bets)
-  - Seed data successfully populated in new database
-- **Real ML Model Integration:** Built statistical prop analysis using BallDontLie API
-  - Created `propAnalysisService` that replaces mock random scoring with real player statistics
-  - Integrates player season averages, recent performance, matchup analysis, line movement
-  - Uses `modelScorer` to generate confidence scores (0-100) with detailed reasoning arrays
-  - Calculates expected value (EV%) and model probability (decimal) for each prop
-  - Fully functional for manual prop analysis via admin interface
-- **Admin Role-Based Access Control:** Complete RBAC implementation
-  - Backend: `requireAdmin` middleware protects all `/api/admin/*` routes
-  - Frontend: AdminRoute guard component prevents non-admin access
-  - Seed user (seed-user-1) has admin privileges for testing
-
-**November 15, 2025 - Complete Multi-Leg Parlay Tracking Implementation**
-- Implemented slip-based bet placement workflow for parlay tracking
-- Fixed critical /api/bets endpoint crash (inArray usage for Drizzle queries)
-- Fixed apiRequest parameter order bug in queryClient
-- Added sport field to slip picks array for proper filtering
-- Updated bet history to display both single-prop bets and multi-leg parlays
-- Enhanced backend storage to fetch both props and slips for comprehensive bet history
-- Added atomic bankroll updates via placeBetWithBankrollCheck transaction
-- Verified complete end-to-end functionality through comprehensive testing
+Prop Machine is an AI-powered sports betting intelligence platform designed to assist users in making informed sports betting decisions. It leverages machine learning for prop analysis, confidence scoring, and integrates the Kelly criterion for bankroll management. The platform primarily focuses on NHL props but also supports NBA, NFL, and MLB. Key capabilities include automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's effectiveness. The platform aims to provide a robust tool for users to gain an edge in sports betting.
 
 ## User Preferences
 
@@ -95,154 +12,49 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend Architecture
 
-**Framework & Build System**
-- React 18 with TypeScript using Vite as the build tool
-- Client-side routing via Wouter (lightweight alternative to React Router)
-- TanStack Query (React Query) for server state management with aggressive caching strategy (staleTime: Infinity)
-
-**UI Component System**
-- shadcn/ui component library built on Radix UI primitives
-- Tailwind CSS for styling with custom design tokens defined in CSS variables
-- Design philosophy: Hybrid approach combining Linear's productivity aesthetic with Robinhood's financial clarity
-- Typography: Inter for UI, JetBrains Mono for numerical data (odds, stats, confidence scores)
-- Custom hover and elevation utilities for interactive feedback
-
-**State Management**
-- Server state managed via TanStack Query with custom query client
-- No global client state management (relies on React hooks and query cache)
-- Form state handled by react-hook-form with Zod validation via @hookform/resolvers
-
-**Key Design Patterns**
-- Progressive disclosure: Surface critical metrics (confidence, EV) at a glance, details on demand
-- Data hierarchy: Information density without clutter, using typography scale and color coding
-- Trust through transparency: Clear presentation of model probabilities, confidence scores, and performance metrics
+The frontend is built with React 18 and TypeScript, using Vite as the build tool and Wouter for client-side routing. TanStack Query manages server state with aggressive caching. UI components are built with shadcn/ui, based on Radix UI primitives, and styled with Tailwind CSS. The design philosophy combines productivity aesthetics with financial clarity, using Inter for UI typography and JetBrains Mono for numerical data. Form state is handled by react-hook-form with Zod validation. The design emphasizes progressive disclosure, data hierarchy, and transparency in presenting model probabilities and performance metrics.
 
 ### Backend Architecture
 
-**Server Framework**
-- Express.js with TypeScript running on Node.js
-- Custom middleware for request logging and JSON body parsing with raw body capture
-- Vite integration for development with HMR (Hot Module Replacement)
-
-**API Design**
-- RESTful API structure with route registration in `/server/routes.ts`
-- Zod-based validation for all route parameters, query strings, and request bodies (defined in `/server/validation.ts`)
-- Comprehensive error handling with ZodError catching for validation failures
-- Routes organized by resource: users, props, slips, bets, performance snapshots
-
-**Data Access Layer**
-- Abstraction through `IStorage` interface defined in `/server/storage.ts`
-- **Currently using PostgreSQL database (`DbStorage`)** with Neon serverless driver
-  - All data persists in PostgreSQL database across server restarts
-  - Drizzle ORM provides type-safe queries and automatic schema generation
-  - Database connection configured via DATABASE_URL environment variable
-- `MemStorage` implementation available as fallback for development without database
-
-**Seeding Strategy**
-- Database seeding via `/server/seed.ts` creates default admin user and sample props
-- Default seed user (seed-user-1) has admin privileges (isAdmin: true)
-- Creates 28 sample props across NHL, NBA, NFL, MLB
-- Creates 3 sample slips (conservative, balanced, aggressive)
-- Creates 4 sample bets for performance tracking
-- Idempotent seeding (checks for existing data before insertion)
+The backend is developed with Express.js and TypeScript on Node.js. It features a RESTful API with Zod-based validation for all requests and comprehensive error handling. Routes are organized by resource, including users, props, slips, bets, and performance snapshots. A data access layer uses an `IStorage` interface, with the primary implementation being `DbStorage` for PostgreSQL via Neon serverless driver and Drizzle ORM for type-safe queries. A `MemStorage` fallback is available for development. The system includes a robust seeding strategy for initial data population and a comprehensive authentication and authorization system using Replit Auth (or Google OAuth for Railway deployment) and role-based access control (RBAC) with an `isAdmin` flag for administrative privileges.
 
 ### Data Storage Solutions
 
-**Database Configuration**
-- Drizzle ORM configured for PostgreSQL via Neon serverless driver
-- Schema defined in `/shared/schema.ts` using Drizzle's pgTable API
-- WebSocket-based connection pooling for serverless environments
+The platform utilizes a PostgreSQL database, configured with Drizzle ORM and Neon serverless driver. The schema, defined in `/shared/schema.ts`, includes:
+- **Users Table**: Tracks bankroll, Kelly sizing, risk tolerance, and an `isAdmin` boolean for RBAC.
+- **Props Table**: Stores ML-analyzed betting propositions, including sport, player, team, stat type, confidence scores, expected value (EV%), model probability, and platform origin (e.g., PrizePicks, Underdog). It supports quarter/period specific props.
+- **Slips Table**: Stores pre-generated betting slips with `picks` (JSONB array of prop details), suggested bet amount, potential return, and status.
+- **Bets Table**: Records individual bets, linking to either `propId` (single bets) or `slipId` (parlays), captures closing line value (CLV), and tracks status. Atomic bankroll updates are handled via transactions.
+- **Performance Snapshots Table**: Tracks time-series metrics like win rate, ROI, and total bets for historical analysis.
+Drizzle Kit is used for schema migrations.
 
-**Schema Design**
+## External Dependencies
 
-*Users Table*
-- Tracks bankroll (current and initial), Kelly sizing multiplier, and risk tolerance
-- Decimal precision for financial values (10,2 for bankroll, 3,2 for Kelly multiplier)
-- **isAdmin field:** Boolean flag for admin role-based access control (defaults to false)
+### Third-Party UI Libraries
+- **Radix UI**: For accessible, headless UI components.
+- **Recharts**: For data visualization (charts).
+- **date-fns**: For date manipulation and formatting.
+- **Lucide React**: For icons.
 
-*Props Table*
-- Stores ML-analyzed betting propositions with sport, player, team, opponent, stat type
-- Key metrics: confidence (0-100 integer), expected value (EV%), model probability (4 decimal places)
-- Platform tracking (PrizePicks, Underdog, etc.) and active/inactive state management
+### Development Tools
+- **@replit/vite-plugin-runtime-error-modal**: For error overlays in development.
+- **@replit/vite-plugin-cartographer**: For Replit integration.
+- **tsx**: For TypeScript execution in development.
 
-*Slips Table*
-- Pre-generated betting slips categorized by risk type (conservative, balanced, aggressive)
-- JSONB `picks` field stores complete array of prop details for multi-leg parlays:
-  - Each pick includes: propId, player, team, sport, stat, line, direction, confidence
-  - Enables full tracking of parlay legs without JOIN queries
-  - Sport field supports cross-sport filtering in bet history
-- Tracks suggested bet amount (Kelly-calculated), potential return, status, and timestamps
+### Validation & Type Safety
+- **Zod**: For runtime schema validation and API contract enforcement.
+- **drizzle-zod**: For automatic Zod schema generation from Drizzle tables.
 
-*Bets Table*
-- Individual bet records with dual tracking: single props OR multi-leg parlays
-- Single bets: link to props via `propId`, `slipId` is null
-- Parlay bets: link to slips via `slipId`, `propId` is null
-- Slip reference provides access to complete picks array for parlay tracking
-- Captures closing line value (CLV) for model validation
-- Status lifecycle: pending → won/lost/pushed
-- Atomic bankroll updates via transaction in `placeBetWithBankrollCheck`
+### Database & ORM
+- **@neondatabase/serverless**: For PostgreSQL connectivity.
+- **drizzle-orm**: For type-safe database queries and ORM functionalities.
+- **ws (WebSocket)**: For Neon serverless connection protocol.
 
-*Performance Snapshots Table*
-- Time-series tracking of key metrics: win rate, ROI, CLV%, total bets
-- Enables historical performance analysis and charting
-
-**Migration Strategy**
-- Drizzle Kit configured for schema migrations (output to `/migrations`)
-- `db:push` npm script for schema synchronization
-
-### Authentication and Authorization
-
-**Replit Auth Integration**
-- Multi-user authentication via Replit OAuth (openid-client with Passport.js)
-- Session-based authentication with in-memory session store (memorystore)
-  - Sessions persist until server restart
-  - Falls back from PostgreSQL session store when database unavailable
-- User data synced on login via `/server/replitAuth.ts`
-- String-based user IDs (varchar) to support OAuth sub claims
-
-**Role-Based Access Control (RBAC)**
-- **Admin Role System:**
-  - `isAdmin` boolean field on users table (defaults to false)
-  - Backend: `requireAdmin` middleware protects all `/api/admin/*` routes
-    - Checks authentication AND user.isAdmin flag
-    - Returns 403 Forbidden if user is not admin
-  - Frontend: `AdminRoute` guard component prevents non-admin access
-    - Redirects non-admins from /admin to dashboard
-    - Admin navigation link only visible to admins (user?.isAdmin === true)
-- **Seed Admin User:** seed-user-1 (seed@example.com) has admin privileges for testing
-- **New Users:** Default to non-admin role (isAdmin: false)
-
-**Admin Capabilities**
-- Manual settlement triggers for pending bets
-- Integration API testing (NBA, Odds, Scoreboard APIs)
-- Prop rescoring across all active props
-- System statistics dashboard
-- All admin actions logged and protected by RBAC
-
-### External Dependencies
-
-**Third-Party UI Libraries**
-- Radix UI primitives (@radix-ui/*) for accessible, headless components
-- Recharts for data visualization (bankroll charts, performance trends)
-- date-fns for date manipulation and formatting
-- Lucide React for icon system
-
-**Development Tools**
-- @replit/vite-plugin-runtime-error-modal for error overlays
-- @replit/vite-plugin-cartographer and dev-banner for Replit integration
-- tsx for TypeScript execution in development
-
-**Validation & Type Safety**
-- Zod for runtime validation (schema validation, API contracts)
-- drizzle-zod for automatic Zod schema generation from Drizzle tables
-- TypeScript strict mode enabled across entire codebase
-
-**Database & ORM**
-- @neondatabase/serverless for PostgreSQL connectivity
-- drizzle-orm for type-safe database queries
-- ws (WebSocket) for Neon serverless connection protocol
-
-**Code Quality**
-- Path aliases configured for clean imports (@/, @shared/, @assets/)
-- Shared types between frontend/backend via `/shared` directory
-- ESLint-style naming conventions (components PascalCase, utilities camelCase)
+### External APIs/Services
+- **PrizePicks API**: For fetching sports propositions.
+- **Underdog Fantasy API**: For fetching sports propositions.
+- **BallDontLie API**: Provides player statistics for ML model integration.
+- **ESPN API**: For player search and statistics (v2 and v3 versions).
+- **The Odds API**: Integrated for odds data (player props require paid tier).
+- **Google OAuth**: For authentication in Railway deployments.
+- **Replit Auth**: Default authentication provider.
