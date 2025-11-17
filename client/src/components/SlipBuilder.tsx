@@ -6,16 +6,27 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { X, AlertTriangle, Info } from "lucide-react";
 import type { Prop } from "@shared/schema";
 import { detectCorrelations, type CorrelationWarning } from "@shared/correlations";
+import LineMovementBadge from "./LineMovementBadge";
+
+// Extended prop type with optional line movement data
+type PropWithLineMovement = Prop & {
+  lineMovement?: {
+    previousLine: number;
+    currentLine: number;
+    change: number;
+    timestamp: Date | string;
+  } | null;
+};
 
 interface SlipBuilderProps {
-  availableProps: Prop[];
+  availableProps: PropWithLineMovement[];
   onPlaceSlip?: (propIds: number[]) => void;
 }
 
 export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilderProps) {
-  const [selectedProps, setSelectedProps] = useState<Prop[]>([]);
+  const [selectedProps, setSelectedProps] = useState<PropWithLineMovement[]>([]);
 
-  const handleAddProp = (prop: Prop) => {
+  const handleAddProp = (prop: PropWithLineMovement) => {
     if (selectedProps.some(p => p.id === prop.id)) {
       return; // Already added
     }
@@ -60,7 +71,7 @@ export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilder
   };
 
   // Check if a prop would create a correlation if added
-  const getCorrelationWarningForProp = (prop: Prop): CorrelationWarning | null => {
+  const getCorrelationWarningForProp = (prop: PropWithLineMovement): CorrelationWarning | null => {
     if (selectedProps.length === 0) return null;
     
     const testSlip = [...selectedProps, prop];
@@ -202,8 +213,12 @@ export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilder
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
                       <div className="font-medium">{prop.player}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {prop.stat} {prop.direction} {prop.line}
+                      <div className="text-sm text-muted-foreground flex items-center gap-1">
+                        <span>{prop.stat} {prop.direction} {prop.line}</span>
+                        <LineMovementBadge 
+                          lineMovement={prop.lineMovement} 
+                          direction={prop.direction}
+                        />
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge variant="secondary" className="text-xs">

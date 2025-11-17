@@ -160,6 +160,7 @@ export default function Dashboard() {
     confidence: prop.confidence,
     ev: parseFloat(prop.ev),
     platform: prop.platform,
+    lineMovement: prop.lineMovement || null,
   }));
 
   // Filter props by search query and stat type
