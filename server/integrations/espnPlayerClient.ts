@@ -44,45 +44,35 @@ interface NHLPlayerStats {
 
 class ESPNPlayerClient extends IntegrationClient {
   constructor() {
-    super("https://sports.core.api.espn.com/v2/sports", ESPN_PLAYER_RATE_LIMIT);
+    super("https://sports.core.api.espn.com", ESPN_PLAYER_RATE_LIMIT);
   }
 
   /**
-   * Search for NFL players by name
-   * Fetches all athletes and filters by name match
+   * Search for NFL players by name using v3 athletes endpoint with full data
    */
   async searchNFLPlayers(searchTerm: string): Promise<any[]> {
     try {
-      // Fetch with high limit to get comprehensive results
-      const response = await this.get<any>(
-        `/football/leagues/nfl/athletes?limit=1000`
-      );
+      const searchLower = searchTerm.toLowerCase();
+      const response = await this.get<any>(`/v3/sports/football/nfl/athletes?limit=5000`);
       
       if (!response?.data?.items) return [];
       
-      // Search through all available players
-      const players = [];
-      const searchLower = searchTerm.toLowerCase();
-      
-      // Use parallel requests for better performance
-      const matchPromises = response.data.items.slice(0, 200).map(async (item: any) => {
-        try {
-          const playerData = await this.get<any>(item.$ref.replace(this.baseUrl, ""));
-          const fullName = playerData?.data?.fullName?.toLowerCase() || "";
-          const displayName = playerData?.data?.displayName?.toLowerCase() || "";
-          
-          // Match on either full name or display name
-          if (fullName.includes(searchLower) || displayName.includes(searchLower)) {
-            return playerData.data;
-          }
-          return null;
-        } catch (e) {
-          return null;
-        }
+      // Pre-filter by name using data already in items (no additional API calls needed!)
+      const rawMatches = response.data.items.filter((player: any) => {
+        const fullName = player.fullName?.toLowerCase() || "";
+        const displayName = player.displayName?.toLowerCase() || "";
+        return fullName.includes(searchLower) || displayName.includes(searchLower);
       });
       
-      const results = await Promise.all(matchPromises);
-      return results.filter((p): p is any => p !== null).slice(0, 10); // Return top 10 matches
+      // Ensure consistent structure for downstream use
+      return rawMatches.slice(0, 10).map((player: any) => ({
+        id: player.id,
+        fullName: player.fullName,
+        displayName: player.displayName,
+        shortName: player.shortName,
+        team: { name: player.team?.name || player.team?.displayName || "Unknown" },
+        position: player.position,
+      }));
     } catch (error) {
       console.error("Error searching NFL players:", error);
       return [];
@@ -90,41 +80,31 @@ class ESPNPlayerClient extends IntegrationClient {
   }
 
   /**
-   * Search for NHL players by name
-   * Fetches all athletes and filters by name match
+   * Search for NHL players by name using v3 athletes endpoint with full data
    */
   async searchNHLPlayers(searchTerm: string): Promise<any[]> {
     try {
-      // Fetch with high limit to get comprehensive results
-      const response = await this.get<any>(
-        `/hockey/leagues/nhl/athletes?limit=1000`
-      );
+      const searchLower = searchTerm.toLowerCase();
+      const response = await this.get<any>(`/v3/sports/hockey/nhl/athletes?limit=2000`);
       
       if (!response?.data?.items) return [];
       
-      // Search through all available players
-      const players = [];
-      const searchLower = searchTerm.toLowerCase();
-      
-      // Use parallel requests for better performance
-      const matchPromises = response.data.items.slice(0, 200).map(async (item: any) => {
-        try {
-          const playerData = await this.get<any>(item.$ref.replace(this.baseUrl, ""));
-          const fullName = playerData?.data?.fullName?.toLowerCase() || "";
-          const displayName = playerData?.data?.displayName?.toLowerCase() || "";
-          
-          // Match on either full name or display name
-          if (fullName.includes(searchLower) || displayName.includes(searchLower)) {
-            return playerData.data;
-          }
-          return null;
-        } catch (e) {
-          return null;
-        }
+      // Pre-filter by name using data already in items (no additional API calls needed!)
+      const rawMatches = response.data.items.filter((player: any) => {
+        const fullName = player.fullName?.toLowerCase() || "";
+        const displayName = player.displayName?.toLowerCase() || "";
+        return fullName.includes(searchLower) || displayName.includes(searchLower);
       });
       
-      const results = await Promise.all(matchPromises);
-      return results.filter((p): p is any => p !== null).slice(0, 10); // Return top 10 matches
+      // Ensure consistent structure for downstream use
+      return rawMatches.slice(0, 10).map((player: any) => ({
+        id: player.id,
+        fullName: player.fullName,
+        displayName: player.displayName,
+        shortName: player.shortName,
+        team: { name: player.team?.name || player.team?.displayName || "Unknown" },
+        position: player.position,
+      }));
     } catch (error) {
       console.error("Error searching NHL players:", error);
       return [];
@@ -136,7 +116,7 @@ class ESPNPlayerClient extends IntegrationClient {
    */
   async getNFLPlayerStats(playerId: string): Promise<NFLPlayerStats> {
     try {
-      const statsUrl = `/football/leagues/nfl/seasons/2024/athletes/${playerId}/statistics/0`;
+      const statsUrl = `/v2/sports/football/leagues/nfl/seasons/2024/athletes/${playerId}/statistics/0`;
       const response = await this.get<any>(statsUrl);
       
       const stats = response?.data?.splits?.categories || [];
@@ -167,7 +147,7 @@ class ESPNPlayerClient extends IntegrationClient {
    */
   async getNHLPlayerStats(playerId: string): Promise<NHLPlayerStats> {
     try {
-      const statsUrl = `/hockey/leagues/nhl/seasons/2025/athletes/${playerId}/statistics/0`;
+      const statsUrl = `/v2/sports/hockey/leagues/nhl/seasons/2025/athletes/${playerId}/statistics/0`;
       const response = await this.get<any>(statsUrl);
       
       const stats = response?.data?.splits?.categories?.[0]?.stats || [];

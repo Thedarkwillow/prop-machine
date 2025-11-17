@@ -15,7 +15,7 @@ export default function PlayerComparison() {
   const [searchKey, setSearchKey] = useState("");
 
   const { data: comparison, isLoading } = useQuery<any>({
-    queryKey: ["/api/player-comparison", sport, searchKey],
+    queryKey: ["/api/player-comparison", searchKey],
     enabled: searchKey.length > 0,
   });
 
