@@ -164,7 +164,9 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
                       {prop.direction === 'over' ? 'O' : 'U'}
                     </Badge>
                     <div className="flex items-center gap-1">
-                      <span className="font-mono font-medium">{prop.line}</span>
+                      <span className="font-mono font-medium">
+                        {prop.lineMovement?.currentLine ?? prop.line}
+                      </span>
                       <LineMovementBadge 
                         lineMovement={prop.lineMovement} 
                         direction={prop.direction}
@@ -225,7 +227,8 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Prop:</span>
                   <span className="font-medium">
-                    {selectedProp.direction === 'over' ? 'Over' : 'Under'} {selectedProp.line} {selectedProp.stat}
+                    {selectedProp.direction === 'over' ? 'Over' : 'Under'}{' '}
+                    {selectedProp.lineMovement?.currentLine ?? selectedProp.line} {selectedProp.stat}
                   </span>
                 </div>
                 <div className="flex justify-between">

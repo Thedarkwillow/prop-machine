@@ -23,9 +23,11 @@ export default function LineMovementBadge({ lineMovement, direction }: LineMovem
   const absChange = Math.abs(change);
   const isSteamMove = absChange >= 1.0;
   
+  // Over bettors want the line to go DOWN (easier to hit)
+  // Under bettors want the line to go UP (easier to hit)
   const isFavorable = direction === "over" 
-    ? change > 0
-    : change < 0;
+    ? change < 0
+    : change > 0;
 
   const movementColor = isFavorable 
     ? "text-green-600 dark:text-green-400"

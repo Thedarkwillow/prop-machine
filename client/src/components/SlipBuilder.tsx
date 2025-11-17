@@ -130,8 +130,14 @@ export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilder
                 >
                   <div className="flex-1">
                     <div className="font-medium">{prop.player}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {prop.stat} {prop.direction} {prop.line} • {prop.confidence}% confidence
+                    <div className="text-sm text-muted-foreground flex items-center gap-1">
+                      <span>
+                        {prop.stat} {prop.direction} {prop.lineMovement?.currentLine ?? prop.line} • {prop.confidence}% confidence
+                      </span>
+                      <LineMovementBadge 
+                        lineMovement={prop.lineMovement} 
+                        direction={prop.direction}
+                      />
                     </div>
                   </div>
                   <Button
@@ -214,7 +220,9 @@ export default function SlipBuilder({ availableProps, onPlaceSlip }: SlipBuilder
                     <div className="flex-1">
                       <div className="font-medium">{prop.player}</div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
-                        <span>{prop.stat} {prop.direction} {prop.line}</span>
+                        <span>
+                          {prop.stat} {prop.direction} {prop.lineMovement?.currentLine ?? prop.line}
+                        </span>
                         <LineMovementBadge 
                           lineMovement={prop.lineMovement} 
                           direction={prop.direction}
