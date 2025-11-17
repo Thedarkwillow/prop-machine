@@ -508,11 +508,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Player Comparison routes
-  app.get("/api/player-comparison/:player1/:player2", isAuthenticated, async (req, res) => {
+  app.get("/api/player-comparison/:player1/:player2/:sport?", isAuthenticated, async (req, res) => {
     try {
-      const { player1, player2 } = req.params;
+      const { player1, player2, sport } = req.params;
+      const selectedSport = (sport || "NBA") as "NBA" | "NHL" | "NFL";
       const { playerComparisonService } = await import("./services/playerComparisonService");
-      const comparison = await playerComparisonService.comparePlayers(player1, player2);
+      const comparison = await playerComparisonService.comparePlayers(player1, player2, selectedSport);
       res.json(comparison);
     } catch (error) {
       res.status(500).json({ error: "Failed to compare players" });

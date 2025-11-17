@@ -4,23 +4,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PlayerComparison() {
   const [player1Name, setPlayer1Name] = useState("");
   const [player2Name, setPlayer2Name] = useState("");
+  const [sport, setSport] = useState<"NBA" | "NHL" | "NFL">("NBA");
   const [searchKey, setSearchKey] = useState("");
 
   const { data: comparison, isLoading } = useQuery<any>({
-    queryKey: ["/api/player-comparison", searchKey],
+    queryKey: ["/api/player-comparison", sport, searchKey],
     enabled: searchKey.length > 0,
   });
 
   const handleCompare = (e: React.FormEvent) => {
     e.preventDefault();
     if (player1Name && player2Name) {
-      setSearchKey(`${player1Name}/${player2Name}`);
+      setSearchKey(`${player1Name}/${player2Name}/${sport}`);
     }
   };
 
@@ -44,33 +46,48 @@ export default function PlayerComparison() {
           Player Comparison
         </h1>
         <p className="text-muted-foreground">
-          Compare NBA player stats side-by-side using BallDontLie data
+          Compare player stats side-by-side across NBA, NHL, and NFL
         </p>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>Select Players to Compare</CardTitle>
-          <CardDescription>Currently supports NBA players only</CardDescription>
+          <CardDescription>Choose a sport and enter two player names</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleCompare} className="flex gap-2">
-            <Input
-              placeholder="Player 1 (e.g., LeBron James)"
-              value={player1Name}
-              onChange={(e) => setPlayer1Name(e.target.value)}
-              data-testid="input-player1"
-            />
-            <Input
-              placeholder="Player 2 (e.g., Kevin Durant)"
-              value={player2Name}
-              onChange={(e) => setPlayer2Name(e.target.value)}
-              data-testid="input-player2"
-            />
-            <Button type="submit" disabled={!player1Name || !player2Name} data-testid="button-compare">
-              <Users className="h-4 w-4 mr-2" />
-              Compare
-            </Button>
+          <form onSubmit={handleCompare} className="space-y-3">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Sport</label>
+              <Select value={sport} onValueChange={(value: "NBA" | "NHL" | "NFL") => setSport(value)}>
+                <SelectTrigger data-testid="select-sport">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NBA">NBA (Basketball)</SelectItem>
+                  <SelectItem value="NHL">NHL (Hockey)</SelectItem>
+                  <SelectItem value="NFL">NFL (Football)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder={sport === "NBA" ? "e.g., LeBron James" : sport === "NHL" ? "e.g., Connor McDavid" : "e.g., Patrick Mahomes"}
+                value={player1Name}
+                onChange={(e) => setPlayer1Name(e.target.value)}
+                data-testid="input-player1"
+              />
+              <Input
+                placeholder={sport === "NBA" ? "e.g., Kevin Durant" : sport === "NHL" ? "e.g., Auston Matthews" : "e.g., Josh Allen"}
+                value={player2Name}
+                onChange={(e) => setPlayer2Name(e.target.value)}
+                data-testid="input-player2"
+              />
+              <Button type="submit" disabled={!player1Name || !player2Name} data-testid="button-compare">
+                <Users className="h-4 w-4 mr-2" />
+                Compare
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
