@@ -1,5 +1,4 @@
 import { Issuer, generators } from "openid-client";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import type { Express } from "express";
 import session from "express-session";
@@ -10,12 +9,13 @@ dotenv.config();
 
 const MemoryStore = createMemoryStore(session);
 
+// Correct production fallback redirect URI
 const redirectUri =
   process.env.GOOGLE_REDIRECT_URI ||
-  "https://your-railway-domain.up.railway.app/auth/google/callback";
+  "https://prop-machine-production.up.railway.app/auth/google/callback";
 
-let googleClient: any = null;
-const codeVerifiers = new Map<string, string>();
+let googleClient = null;
+const codeVerifiers = new Map();
 
 export async function getGoogleClient() {
   if (googleClient) return googleClient;
@@ -23,8 +23,8 @@ export async function getGoogleClient() {
   const GoogleIssuer = await Issuer.discover("https://accounts.google.com");
 
   googleClient = new GoogleIssuer.Client({
-    client_id: process.env.GOOGLE_CLIENT_ID!,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_secret: process.env.GOOGLE_CLIENT_SECRET,
     redirect_uris: [redirectUri],
     response_types: ["code"],
   });
@@ -33,14 +33,14 @@ export async function getGoogleClient() {
 }
 
 export async function setupGoogleAuth(app: Express) {
+  /* ------------------------- SESSION ------------------------- */
+
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "your-secret-key",
       resave: false,
       saveUninitialized: false,
-      store: new MemoryStore({
-        checkPeriod: 86400000,
-      }),
+      store: new MemoryStore({ checkPeriod: 86400000 }),
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -49,20 +49,25 @@ export async function setupGoogleAuth(app: Express) {
     })
   );
 
-  // Alias /api/login to /auth/google for compatibility with Landing page
-  app.get("/api/login", async (req, res) => {
+  /* ------------------------- LOGIN ROUTE ------------------------- */
+
+  // Only definition for /api/login (do NOT duplicate in index.ts)
+  app.get("/api/login", (req, res) => {
     res.redirect("/auth/google");
   });
+
+  /* ------------------------- GOOGLE AUTH ------------------------- */
 
   app.get("/auth/google", async (req, res) => {
     try {
       const client = await getGoogleClient();
+
       const codeVerifier = generators.codeVerifier();
       const codeChallenge = generators.codeChallenge(codeVerifier);
-      
       const state = generators.state();
+
       codeVerifiers.set(state, codeVerifier);
-      
+
       const url = client.authorizationUrl({
         scope: "openid email profile",
         code_challenge: codeChallenge,
@@ -70,39 +75,39 @@ export async function setupGoogleAuth(app: Express) {
         redirect_uri: redirectUri,
         state,
       });
-      
+
       res.redirect(url);
-    } catch (error) {
-      console.error("Google auth error:", error);
+    } catch (err) {
+      console.error("Google auth error:", err);
       res.status(500).send("Authentication failed");
     }
   });
+
+  /* ------------------------- CALLBACK ------------------------- */
 
   app.get("/auth/google/callback", async (req, res) => {
     try {
       const { code, state } = req.query;
       const client = await getGoogleClient();
-      
-      const codeVerifier = codeVerifiers.get(state as string);
-      if (!codeVerifier) {
-        throw new Error("Invalid state parameter");
-      }
-      codeVerifiers.delete(state as string);
-      
+
+      const codeVerifier = codeVerifiers.get(state);
+      if (!codeVerifier) throw new Error("Invalid state parameter");
+
+      codeVerifiers.delete(state);
+
       const tokenSet = await client.callback(
         redirectUri,
-        { code: code as string, state: state as string },
+        { code, state },
         { code_verifier: codeVerifier }
       );
 
-      const userinfo = await client.userinfo(tokenSet.access_token!);
-      
-      let user = await storage.getUserByEmail(userinfo.email as string);
-      
+      const userinfo = await client.userinfo(tokenSet.access_token);
+
+      let user = await storage.getUserByEmail(userinfo.email);
       if (!user) {
         user = await storage.createUser({
-          email: userinfo.email as string,
-          username: userinfo.name as string,
+          email: userinfo.email,
+          username: userinfo.name,
           bankroll: 1000,
           kellySizing: "full",
           riskTolerance: "moderate",
@@ -110,32 +115,28 @@ export async function setupGoogleAuth(app: Express) {
         });
       }
 
-      req.session!.userId = user.id;
+      req.session.userId = user.id;
+
       res.redirect("/");
-    } catch (error) {
-      console.error("Google callback error:", error);
+    } catch (err) {
+      console.error("Google callback error:", err);
       res.status(500).send("Authentication callback failed");
     }
   });
 
-  app.get("/api/user", async (req, res) => {
-    if (!req.session?.userId) {
-      return res.status(401).json({ error: "Not authenticated" });
-    }
+  /* ------------------------- USER + LOGOUT ------------------------- */
 
-    try {
-      const user = await storage.getUser(req.session.userId);
-      res.json({ user });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to get user" });
-    }
+  app.get("/api/user", async (req, res) => {
+    if (!req.session?.userId)
+      return res.status(401).json({ error: "Not authenticated" });
+
+    const user = await storage.getUser(req.session.userId);
+    res.json({ user });
   });
 
   app.post("/api/logout", (req, res) => {
     req.session?.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: "Logout failed" });
-      }
+      if (err) return res.status(500).json({ error: "Logout failed" });
       res.json({ success: true });
     });
   });
