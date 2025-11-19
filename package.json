@@ -1,34 +1,23 @@
 diff --git a/package.json b/package.json
-index 1111111..2222222 100644
+index 1234567..abcdef0 100644
 --- a/package.json
 +++ b/package.json
-@@ -1,6 +1,6 @@
- {
-   "name": "rest-express",
--  "version": "1.0.0",
-+  "version": "1.1.0",
-   "type": "module",
-   "private": true,
- 
-@@ -10,7 +10,9 @@
-     "dev": "vite",
--    "build": "vite build",
--    "start": "node server/index.ts"
-+    "build": "vite build && esbuild server/index.ts --bundle --platform=node --format=esm --packages=external --outdir=dist",
-+    "start": "NODE_ENV=production node dist/index.js"
+@@ -23,7 +23,7 @@
+     "jsonwebtoken": "^9.0.2",
+     "nodemailer": "^6.9.13",
+     "pg": "^8.11.3",
+-    "openid-client": "^6.8.1",
++    "openid-client": "^5.7.1",
+     "drizzle-orm": "^0.30.3"
    },
- 
-   "dependencies": {
-+    "openid-client": "5.7.1",
-+    "pg": "^8.11.3",
-     "express": "^4.19.2",
-     "dotenv": "^16.3.1",
-@@ -25,6 +27,7 @@
-   },
- 
    "devDependencies": {
-+    "esbuild": "^0.21.5",
-     "typescript": "^5.4.2",
-     "vite": "^5.2.0"
-   }
- }
+diff --git a/server/auth/googleAuth.ts b/server/auth/googleAuth.ts
+index abc1234..def5678 100644
+--- a/server/auth/googleAuth.ts
++++ b/server/auth/googleAuth.ts
+@@ -1,6 +1,6 @@
+-import { Issuer } from "openid-client";
++import Issuer from "openid-client";
+
+ // your existing google auth logic
+ // (the rest of the file stays the same)
