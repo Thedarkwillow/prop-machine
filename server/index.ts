@@ -46,13 +46,10 @@ app.use("/api/analytics", createAnalyticsRoutes(storage));
 app.use("/api/notifications", createNotificationRoutes(storage));
 app.use("/api", router);
 
-/* ------------------------- FIX: LOGIN ROUTE ------------------------- */
-/** 
- * This makes `/api/login` work again.
- * It cleanly redirects to Google OAuth in production.
- */
+/* ------------------------- FIXED LOGIN ROUTE ------------------------- */
 app.get("/api/login", (_req, res) => {
-  res.redirect("/api/auth/google");
+  // CORRECT REDIRECT — this route actually exists
+  res.redirect("/auth/google");
 });
 
 /* ------------------------- PRODUCTION STATIC FILES ------------------------- */
@@ -70,8 +67,13 @@ if (process.env.NODE_ENV === "production") {
 
   app.use(express.static(distPath));
 
-  // SPA fallback
-  app.get("*", (_req, res) => {
+  // IMPORTANT: OAuth callback MUST be matched BEFORE fallback
+  app.get("*", (req, res) => {
+    // Let OAuth callback & API routes through
+    if (req.path.startsWith("/auth/") || req.path.startsWith("/api/")) {
+      return res.status(404).json({ error: "Not found" });
+    }
+
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
@@ -90,7 +92,6 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
 
-  // Scheduler
   if (process.env.DISABLE_PROP_SCHEDULER === "true") {
     console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
   } else {
