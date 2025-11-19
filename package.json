@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "vite build && tsc --project tsconfig.server.json",
+    "dev": "tsx server/index.ts",
+    "build": "vite build",
+    "start": "NODE_ENV=production tsx server/index.ts",
     "start": "NODE_ENV=production node dist-server/index.js",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
