@@ -29,7 +29,37 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    // Build URL from query key
+    // If queryKey has multiple parts, treat first as base URL and rest as query params
+    let url: string;
+    if (queryKey.length === 1) {
+      url = queryKey[0] as string;
+    } else {
+      const [baseUrl, ...params] = queryKey;
+      const searchParams = new URLSearchParams();
+      
+      // Handle different parameter formats
+      if (params.length === 1 && typeof params[0] === 'object' && params[0] !== null) {
+        // Object format: { sport: 'NHL', status: 'active' }
+        Object.entries(params[0]).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            searchParams.set(key, String(value));
+          }
+        });
+      } else {
+        // Simple format: ['/api/props', 'NHL'] → /api/props?sport=NHL
+        // Assume second param is the value for a default key
+        if (baseUrl === '/api/props' && params[0]) {
+          searchParams.set('sport', String(params[0]));
+        }
+      }
+      
+      url = searchParams.toString() 
+        ? `${baseUrl}?${searchParams.toString()}` 
+        : baseUrl as string;
+    }
+
+    const res = await fetch(url, {
       credentials: "include",
     });
 
