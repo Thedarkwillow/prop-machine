@@ -1,28 +1,28 @@
-import * as client from "openid-client";
-import { Strategy, type VerifyFunction } from "openid-client/passport";
-
-import passport from "passport";
+import { Issuer, generators } from "openid-client";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
-import memoize from "memoizee";
 import createMemoryStore from "memorystore";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 
-const getOidcConfig = memoize(
-  async () => {
-    return await client.discovery(
-      new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
-      process.env.REPL_ID!
-    );
-  },
-  { maxAge: 3600 * 1000 }
-);
+let replitClient: any = null;
+
+async function getReplitClient() {
+  if (replitClient) return replitClient;
+  
+  const ReplitIssuer = await Issuer.discover(process.env.ISSUER_URL ?? "https://replit.com/oidc");
+  
+  replitClient = new ReplitIssuer.Client({
+    client_id: process.env.REPL_ID!,
+    redirect_uris: [`https://${process.env.REPLIT_DOMAINS || "localhost"}/api/callback`],
+    response_types: ["code"],
+  });
+  
+  return replitClient;
+}
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   
-  // Always use in-memory session store for now (database endpoint is disabled)
-  // This avoids session store failures during auth callback
   const MemoryStore = createMemoryStore(session);
   const sessionStore = new MemoryStore({
     checkPeriod: sessionTtl,
@@ -30,141 +30,112 @@ export function getSession() {
   console.log("Using in-memory session store (sessions will be lost on restart)");
   
   return session({
-    secret: process.env.SESSION_SECRET!,
+    secret: process.env.SESSION_SECRET || "replit-secret-key",
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       maxAge: sessionTtl,
     },
   });
 }
 
-function updateUserSession(
-  user: any,
-  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
-) {
-  user.claims = tokens.claims();
-  user.access_token = tokens.access_token;
-  user.refresh_token = tokens.refresh_token;
-  user.expires_at = user.claims?.exp;
-}
-
-async function upsertUser(
-  claims: any,
-) {
-  try {
-    await storage.upsertUser({
-      id: claims["sub"],
-      email: claims["email"],
-      firstName: claims["first_name"],
-      lastName: claims["last_name"],
-      profileImageUrl: claims["profile_image_url"],
-    });
-  } catch (error) {
-    // Log error but don't fail auth if database is unavailable
-    // User will be created on first API call that succeeds
-    console.warn("Failed to upsert user in database during auth callback:", error);
-  }
-}
-
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());
-  app.use(passport.initialize());
-  app.use(passport.session());
 
-  const config = await getOidcConfig();
-
-  const verify: VerifyFunction = async (
-    tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
-    verified: passport.AuthenticateCallback
-  ) => {
-    const user = {};
-    updateUserSession(user, tokens);
-    await upsertUser(tokens.claims());
-    verified(null, user);
-  };
-
-  // Keep track of registered strategies
-  const registeredStrategies = new Set<string>();
-
-  // Helper function to ensure strategy exists for a domain
-  const ensureStrategy = (domain: string) => {
-    const strategyName = `replitauth:${domain}`;
-    if (!registeredStrategies.has(strategyName)) {
-      const strategy = new Strategy(
-        {
-          name: strategyName,
-          config,
-          scope: "openid email profile offline_access",
-          callbackURL: `https://${domain}/api/callback`,
-        },
-        verify,
-      );
-      passport.use(strategy);
-      registeredStrategies.add(strategyName);
+  app.get("/api/login", async (req, res) => {
+    try {
+      const client = await getReplitClient();
+      const codeVerifier = generators.codeVerifier();
+      const codeChallenge = generators.codeChallenge(codeVerifier);
+      
+      req.session!.codeVerifier = codeVerifier;
+      
+      const authUrl = client.authorizationUrl({
+        scope: "openid email profile",
+        code_challenge: codeChallenge,
+        code_challenge_method: "S256",
+        redirect_uri: `https://${req.hostname}/api/callback`,
+      });
+      
+      res.redirect(authUrl);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).send("Authentication failed");
     }
-  };
-
-  passport.serializeUser((user: Express.User, cb) => cb(null, user));
-  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
-
-  app.get("/api/login", (req, res, next) => {
-    ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      prompt: "login consent",
-      scope: ["openid", "email", "profile", "offline_access"],
-    })(req, res, next);
   });
 
-  app.get("/api/callback", (req, res, next) => {
-    ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
-      failureRedirect: "/api/login",
-    })(req, res, next);
-  });
-
-  app.get("/api/logout", (req, res) => {
-    req.logout(() => {
-      res.redirect(
-        client.buildEndSessionUrl(config, {
-          client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-        }).href
+  app.get("/api/callback", async (req, res) => {
+    try {
+      const { code } = req.query;
+      const codeVerifier = req.session!.codeVerifier;
+      const client = await getReplitClient();
+      
+      if (!code || !codeVerifier) {
+        return res.status(400).send("Invalid callback request");
+      }
+      
+      const tokenSet = await client.callback(
+        `https://${req.hostname}/api/callback`,
+        { code: code as string },
+        { code_verifier: codeVerifier }
       );
+      
+      const userinfo = await client.userinfo(tokenSet.access_token!);
+      
+      try {
+        await storage.upsertUser({
+          id: userinfo.sub as string,
+          email: userinfo.email as string,
+          firstName: userinfo.first_name as string,
+          lastName: userinfo.last_name as string,
+          profileImageUrl: userinfo.profile_image_url as string,
+        });
+      } catch (error) {
+        console.warn("Failed to upsert user:", error);
+      }
+      
+      req.session!.userId = userinfo.sub as string;
+      req.session!.access_token = tokenSet.access_token;
+      
+      delete req.session!.codeVerifier;
+      
+      res.redirect("/");
+    } catch (error) {
+      console.error("Callback error:", error);
+      res.status(500).send("Authentication failed");
+    }
+  });
+
+  app.get("/api/user", async (req, res) => {
+    if (!req.session?.userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    try {
+      const user = await storage.getUser(req.session.userId);
+      res.json({ user });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get user" });
+    }
+  });
+
+  app.post("/api/logout", (req, res) => {
+    req.session?.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      res.json({ success: true });
     });
   });
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  const user = req.user as any;
-
-  if (!req.isAuthenticated() || !user.expires_at) {
-    return res.status(401).json({ message: "Unauthorized" });
+  if (!req.session?.userId) {
+    return res.status(401).json({ error: "Not authenticated" });
   }
-
-  const now = Math.floor(Date.now() / 1000);
-  if (now <= user.expires_at) {
-    return next();
-  }
-
-  const refreshToken = user.refresh_token;
-  if (!refreshToken) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
-
-  try {
-    const config = await getOidcConfig();
-    const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
-    updateUserSession(user, tokenResponse);
-    return next();
-  } catch (error) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
+  next();
 };
