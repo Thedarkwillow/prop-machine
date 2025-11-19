@@ -1,18 +1,33 @@
-import * as client from "openid-client";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
-import memoize from "memoizee";
 import createMemoryStore from "memorystore";
 import { storage } from "./storage.js";
+import { webcrypto } from "crypto";
 
-const getOidcConfig = memoize(
-  async () => {
-    const issuerUrl = new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc");
-    const config = await client.discovery(issuerUrl, process.env.REPL_ID!);
-    return config;
-  },
-  { maxAge: 3600 * 1000 }
-);
+const ISSUER_URL = process.env.ISSUER_URL ?? "https://replit.com/oidc";
+const CLIENT_ID = process.env.REPL_ID!;
+
+// Generate PKCE verifier and challenge
+async function generatePKCE() {
+  const verifier = base64URLEncode(webcrypto.getRandomValues(new Uint8Array(32)));
+  const challenge = await createChallenge(verifier);
+  return { verifier, challenge };
+}
+
+function base64URLEncode(buffer: Uint8Array): string {
+  return Buffer.from(buffer)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
+async function createChallenge(verifier: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const hash = await webcrypto.subtle.digest('SHA-256', data);
+  return base64URLEncode(new Uint8Array(hash));
+}
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
@@ -44,22 +59,19 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/login", async (req, res) => {
     try {
-      const config = await getOidcConfig();
-      const code_verifier = client.randomPKCECodeVerifier();
-      const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
-
-      req.session!.code_verifier = code_verifier;
+      const { verifier, challenge } = await generatePKCE();
+      req.session!.code_verifier = verifier;
 
       const redirectUri = `https://${req.hostname}/api/callback`;
-      const parameters: Record<string, string> = {
-        redirect_uri: redirectUri,
-        scope: 'openid email profile offline_access',
-        code_challenge,
-        code_challenge_method: 'S256',
-      };
+      const authUrl = new URL(`${ISSUER_URL}/auth`);
+      authUrl.searchParams.set("client_id", CLIENT_ID);
+      authUrl.searchParams.set("redirect_uri", redirectUri);
+      authUrl.searchParams.set("response_type", "code");
+      authUrl.searchParams.set("scope", "openid email profile offline_access");
+      authUrl.searchParams.set("code_challenge", challenge);
+      authUrl.searchParams.set("code_challenge_method", "S256");
 
-      const authUrl = client.buildAuthorizationUrl(config, parameters);
-      res.redirect(authUrl.href);
+      res.redirect(authUrl.toString());
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).send("Login failed");
@@ -68,22 +80,41 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", async (req, res) => {
     try {
-      const config = await getOidcConfig();
+      const { code } = req.query;
       const code_verifier = req.session!.code_verifier;
 
-      if (!code_verifier) {
-        return res.status(400).send("Invalid session");
+      if (!code || !code_verifier) {
+        return res.status(400).send("Invalid callback");
       }
 
-      const currentUrl = new URL(req.protocol + '://' + req.get('host') + req.originalUrl);
       const redirectUri = `https://${req.hostname}/api/callback`;
+      const tokenUrl = `${ISSUER_URL}/token`;
 
-      const tokens = await client.authorizationCodeGrant(config, currentUrl, {
-        pkceCodeVerifier: code_verifier,
-        expectedRedirectUri: redirectUri,
+      const tokenResponse = await fetch(tokenUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "authorization_code",
+          code: code as string,
+          redirect_uri: redirectUri,
+          client_id: CLIENT_ID,
+          code_verifier,
+        }),
       });
 
-      const claims = tokens.claims();
+      if (!tokenResponse.ok) {
+        const errorText = await tokenResponse.text();
+        console.error("Token exchange failed:", errorText);
+        return res.status(500).send("Authentication failed");
+      }
+
+      const tokens = await tokenResponse.json();
+
+      // Decode ID token to get claims
+      const idToken = tokens.id_token;
+      const claims = JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString());
 
       // Save user to database
       await storage.upsertUser({
@@ -155,18 +186,35 @@ export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
   }
 
   try {
-    const config = await getOidcConfig();
-    const tokens = await client.refreshTokenGrant(config, refreshToken);
-    const claims = tokens.claims();
-    
+    const tokenUrl = `${ISSUER_URL}/token`;
+    const tokenResponse = await fetch(tokenUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+        client_id: CLIENT_ID,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const tokens = await tokenResponse.json();
+    const idToken = tokens.id_token;
+    const claims = JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString());
+
     // Update session with refreshed tokens
     req.session!.user = {
       claims,
       access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
+      refresh_token: tokens.refresh_token || refreshToken,
       expires_at: claims.exp,
     };
-    
+
     return next();
   } catch (error) {
     console.error("Token refresh failed:", error);
