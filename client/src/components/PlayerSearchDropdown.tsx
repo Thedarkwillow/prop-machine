@@ -3,10 +3,10 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
-interface Player {
+export interface Player {
   id: string;
   fullName: string;
   displayName: string;
@@ -15,55 +15,102 @@ interface Player {
   sport: string;
 }
 
-export function PlayerSearchDropdown({ onPlayerSelect }: { onPlayerSelect?: (player: Player) => void }) {
+interface PlayerSearchDropdownProps {
+  value?: Player | null;
+  onChange?: (player: Player | null) => void;
+  sport?: string;
+  placeholder?: string;
+  triggerTestId?: string;
+  inputTestId?: string;
+}
+
+export function PlayerSearchDropdown({ 
+  value = null,
+  onChange,
+  sport = "All",
+  placeholder = "Search players...",
+  triggerTestId = "button-player-search",
+  inputTestId = "input-player-search"
+}: PlayerSearchDropdownProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedSport, setSelectedSport] = useState("All");
+  const [selectedSport, setSelectedSport] = useState(sport);
   
   const { data: players = [], isLoading } = useQuery<Player[]>({
-    queryKey: [`/api/players/search?search=${search}&sport=${selectedSport}`],
+    queryKey: [`/api/players/search?search=${search}&sport=${sport}`],
     enabled: search.length >= 2,
   });
 
   const sports = ["All", "NBA", "NHL", "NFL", "MLB"];
 
+  const handleClear = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onChange?.(null);
+    setSearch("");
+  };
+
   return (
     <div className="w-full max-w-md">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-            data-testid="button-player-search"
-          >
-            <Search className="mr-2 h-4 w-4" />
-            Search players...
-            <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-          </Button>
-        </PopoverTrigger>
+        <div className="flex gap-1">
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="flex-1 justify-between"
+              data-testid={triggerTestId}
+            >
+              <div className="flex items-center flex-1 min-w-0">
+                <Search className="mr-2 h-4 w-4 flex-shrink-0" />
+                {value ? (
+                  <div className="flex flex-col items-start flex-1 min-w-0">
+                    <span className="font-medium truncate">{value.displayName}</span>
+                    <span className="text-xs text-muted-foreground truncate">
+                      {value.sport} - {value.team.name}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="truncate">{placeholder}</span>
+                )}
+              </div>
+              <ChevronDown className="ml-2 h-4 w-4 opacity-50 flex-shrink-0" />
+            </Button>
+          </PopoverTrigger>
+          {value && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleClear}
+              data-testid={`${triggerTestId}-clear`}
+              className="flex-shrink-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         <PopoverContent className="w-[400px] p-0" align="start">
           <div className="flex gap-2 p-2 border-b">
-            {sports.map((sport) => (
+            {sports.map((s) => (
               <Button
-                key={sport}
-                variant={selectedSport === sport ? "default" : "ghost"}
+                key={s}
+                variant={selectedSport === s ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setSelectedSport(sport)}
-                data-testid={`button-sport-${sport.toLowerCase()}`}
+                onClick={() => setSelectedSport(s)}
+                data-testid={`button-sport-${s.toLowerCase()}`}
                 className="text-xs"
               >
-                {sport}
+                {s}
               </Button>
             ))}
           </div>
           <Command shouldFilter={false}>
             <CommandInput
-              placeholder="Search players..."
+              placeholder={placeholder}
               value={search}
               onValueChange={setSearch}
-              data-testid="input-player-search"
+              data-testid={inputTestId}
             />
             <CommandList>
               <CommandEmpty>
@@ -76,8 +123,9 @@ export function PlayerSearchDropdown({ onPlayerSelect }: { onPlayerSelect?: (pla
                       key={player.id}
                       value={player.id}
                       onSelect={() => {
-                        onPlayerSelect?.(player);
+                        onChange?.(player);
                         setOpen(false);
+                        setSearch("");
                       }}
                       data-testid={`player-result-${player.id}`}
                       className="flex items-center justify-between py-3"

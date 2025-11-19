@@ -1,25 +1,18 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PlayerSearchDropdown, Player } from "@/components/PlayerSearchDropdown";
 
 export default function PropComparison() {
-  const [playerName, setPlayerName] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   const { data: comparisons, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/prop-comparison/player", searchQuery],
-    enabled: searchQuery.length > 0,
+    queryKey: ["/api/prop-comparison/player", selectedPlayer?.displayName || ""],
+    enabled: !!selectedPlayer,
   });
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSearchQuery(playerName);
-  };
 
   return (
     <div className="container mx-auto p-6 max-w-7xl space-y-6">
@@ -33,21 +26,16 @@ export default function PropComparison() {
       <Card>
         <CardHeader>
           <CardTitle>Search Player Props</CardTitle>
-          <CardDescription>Enter a player name to compare their props across platforms</CardDescription>
+          <CardDescription>Search for a player to compare their props across platforms</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearch} className="flex gap-2">
-            <Input
-              placeholder="Player name (e.g., Connor McDavid)"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              data-testid="input-player-search"
-            />
-            <Button type="submit" data-testid="button-search">
-              <Search className="h-4 w-4 mr-2" />
-              Search
-            </Button>
-          </form>
+          <PlayerSearchDropdown
+            value={selectedPlayer}
+            onChange={setSelectedPlayer}
+            placeholder="Search for a player..."
+            triggerTestId="button-player-prop-search"
+            inputTestId="input-player-prop-search"
+          />
         </CardContent>
       </Card>
 
@@ -135,10 +123,10 @@ export default function PropComparison() {
         </div>
       )}
 
-      {!isLoading && comparisons && comparisons.length === 0 && searchQuery && (
+      {!isLoading && comparisons && comparisons.length === 0 && selectedPlayer && (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            No props found for "{searchQuery}"
+            No props found for "{selectedPlayer.displayName}"
           </CardContent>
         </Card>
       )}

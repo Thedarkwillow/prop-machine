@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PlayerSearchDropdown, Player } from "@/components/PlayerSearchDropdown";
 
 export default function PlayerComparison() {
-  const [player1Name, setPlayer1Name] = useState("");
-  const [player2Name, setPlayer2Name] = useState("");
+  const [player1, setPlayer1] = useState<Player | null>(null);
+  const [player2, setPlayer2] = useState<Player | null>(null);
   const [sport, setSport] = useState<"NBA" | "NHL" | "NFL">("NBA");
   const [searchKey, setSearchKey] = useState("");
+
+  useEffect(() => {
+    setPlayer1(null);
+    setPlayer2(null);
+  }, [sport]);
 
   const { data: comparison, isLoading } = useQuery<any>({
     queryKey: ["/api/player-comparison", searchKey],
@@ -21,8 +26,8 @@ export default function PlayerComparison() {
 
   const handleCompare = (e: React.FormEvent) => {
     e.preventDefault();
-    if (player1Name && player2Name) {
-      setSearchKey(`${player1Name}/${player2Name}/${sport}`);
+    if (player1 && player2) {
+      setSearchKey(`${player1.displayName}/${player2.displayName}/${sport}`);
     }
   };
 
@@ -270,19 +275,27 @@ export default function PlayerComparison() {
               </Select>
             </div>
             <div className="flex gap-2">
-              <Input
-                placeholder={sport === "NBA" ? "e.g., LeBron James" : sport === "NHL" ? "e.g., Connor McDavid" : "e.g., Patrick Mahomes"}
-                value={player1Name}
-                onChange={(e) => setPlayer1Name(e.target.value)}
-                data-testid="input-player1"
-              />
-              <Input
-                placeholder={sport === "NBA" ? "e.g., Kevin Durant" : sport === "NHL" ? "e.g., Auston Matthews" : "e.g., Josh Allen"}
-                value={player2Name}
-                onChange={(e) => setPlayer2Name(e.target.value)}
-                data-testid="input-player2"
-              />
-              <Button type="submit" disabled={!player1Name || !player2Name} data-testid="button-compare">
+              <div className="flex-1">
+                <PlayerSearchDropdown
+                  value={player1}
+                  onChange={setPlayer1}
+                  sport={sport}
+                  placeholder="Search for first player..."
+                  triggerTestId="button-player1-search"
+                  inputTestId="input-player1-search"
+                />
+              </div>
+              <div className="flex-1">
+                <PlayerSearchDropdown
+                  value={player2}
+                  onChange={setPlayer2}
+                  sport={sport}
+                  placeholder="Search for second player..."
+                  triggerTestId="button-player2-search"
+                  inputTestId="input-player2-search"
+                />
+              </div>
+              <Button type="submit" disabled={!player1 || !player2} data-testid="button-compare">
                 <Users className="h-4 w-4 mr-2" />
                 Compare
               </Button>
