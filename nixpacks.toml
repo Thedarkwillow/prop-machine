@@ -5,7 +5,7 @@ cmds = ["npx vite build"]
 nixPkgs = ["nodejs_18", "npm-9_x", "openssl"]
 
 [start]
-cmd = "NODE_ENV=production tsx server/index.ts"
+cmd = "npm run start"
 
 # Override package.json scripts for Railway deployment
 [variables]
