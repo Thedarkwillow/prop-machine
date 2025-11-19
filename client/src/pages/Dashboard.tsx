@@ -17,10 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter, Search } from "lucide-react";
+import { Filter, Search, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 // Helper to format numbers without unnecessary decimals (50.0 → 50, 75.5 → 75.5)
 const formatNumber = (value: number, decimals: number = 1): string => {
@@ -61,6 +62,30 @@ export default function Dashboard() {
   // Fetch props
   const { data: props = [], isLoading: propsLoading, isError: propsError } = useQuery({
     queryKey: ['/api/props', selectedSport],
+  });
+
+  // Refresh props mutation
+  const refreshPropsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('POST', '/api/admin/props/refresh', {
+        sports: [selectedSport]
+      });
+      return await response.json();
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/props'] });
+      toast({
+        title: "Props refreshed successfully",
+        description: `Fetched ${data.summary.totalPropsFetched} props, created ${data.summary.totalPropsCreated} new props`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Failed to refresh props",
+        description: error.message || "Please try again later",
+      });
+    },
   });
 
   // Fetch performance history (uses authenticated session user)
@@ -295,9 +320,21 @@ export default function Dashboard() {
             {/* Props Feed */}
             <div>
               <div className="flex flex-col gap-4 mb-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <h2 className="text-2xl font-bold">Live Props Feed</h2>
-                  <ManualPropInput />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="default"
+                      onClick={() => refreshPropsMutation.mutate()}
+                      disabled={refreshPropsMutation.isPending}
+                      data-testid="button-refresh-props"
+                    >
+                      <RefreshCw className={`h-4 w-4 mr-2 ${refreshPropsMutation.isPending ? 'animate-spin' : ''}`} />
+                      {refreshPropsMutation.isPending ? 'Refreshing...' : 'Refresh Props'}
+                    </Button>
+                    <ManualPropInput />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Select value={selectedSport} onValueChange={setSelectedSport}>

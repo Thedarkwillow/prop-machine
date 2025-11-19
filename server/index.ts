@@ -10,6 +10,7 @@ import { createNotificationRoutes } from "./notificationRoutes.js";
 import { storage } from "./storage.js";
 import { setupVite, log } from "./vite.js";
 import { seedDatabase } from "./seed.js";
+import { propSchedulerService } from "./services/propSchedulerService.js";
 
 dotenv.config();
 
@@ -45,6 +46,9 @@ seedDatabase().catch((error) => {
 
 const server = app.listen(5000, "0.0.0.0", () => {
   log(`serving on port 5000`);
+  
+  // Start automatic prop refresh scheduler (every 15 minutes)
+  propSchedulerService.start(15);
 });
 
 setupVite(app, server);
