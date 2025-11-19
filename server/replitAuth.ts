@@ -1,18 +1,20 @@
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
-import connectPg from "connect-pg-simple";
+import createMemoryStore from "memorystore";
 import { storage } from "./storage.js";
 import { nanoid } from "nanoid";
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
+  
+  // Use in-memory store (sessions lost on restart, but login works)
+  const MemoryStore = createMemoryStore(session);
+  const sessionStore = new MemoryStore({
+    checkPeriod: sessionTtl,
   });
+  
+  console.log("Using in-memory session store (sessions will be lost on restart)");
+  
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
