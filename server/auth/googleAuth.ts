@@ -9,7 +9,6 @@ dotenv.config();
 
 const MemoryStore = createMemoryStore(session);
 
-// Correct production fallback redirect URI
 const redirectUri =
   process.env.GOOGLE_REDIRECT_URI ||
   "https://prop-machine-production.up.railway.app/auth/google/callback";
@@ -49,16 +48,15 @@ export async function setupGoogleAuth(app: Express) {
     })
   );
 
-  /* ------------------------- LOGIN ROUTE ------------------------- */
+  /* ------------------------- LOGIN ------------------------- */
 
-  // Only definition for /api/login (do NOT duplicate in index.ts)
   app.get("/api/login", (req, res) => {
     res.redirect("/auth/google");
   });
 
-  /* ------------------------- GOOGLE AUTH ------------------------- */
+  /* ------------------------- START AUTH ------------------------- */
 
-  app.get("/auth/google", async (req, res) => {
+  app.get("/auth/google", async (_req, res) => {
     try {
       const client = await getGoogleClient();
 
@@ -103,6 +101,7 @@ export async function setupGoogleAuth(app: Express) {
 
       const userinfo = await client.userinfo(tokenSet.access_token);
 
+      // Look up or create the user in your DB (unchanged)
       let user = await storage.getUserByEmail(userinfo.email);
       if (!user) {
         user = await storage.createUser({
@@ -115,7 +114,14 @@ export async function setupGoogleAuth(app: Express) {
         });
       }
 
-      req.session.userId = user.id;
+      /* ------------------------- NORMALIZED SESSION ------------------------- */
+      req.session.user = {
+        id: user.id.toString(),
+        email: userinfo.email || null,
+        name: userinfo.name || null,
+        picture: userinfo.picture || null,
+        provider: "google",
+      };
 
       res.redirect("/");
     } catch (err) {
@@ -124,15 +130,18 @@ export async function setupGoogleAuth(app: Express) {
     }
   });
 
-  /* ------------------------- USER + LOGOUT ------------------------- */
+  /* ------------------------- USER ENDPOINT ------------------------- */
 
   app.get("/api/user", async (req, res) => {
-    if (!req.session?.userId)
+    if (!req.session?.user)
       return res.status(401).json({ error: "Not authenticated" });
 
-    const user = await storage.getUser(req.session.userId);
-    res.json({ user });
+    // Also return the DB row (optional)
+    const dbUser = await storage.getUser(Number(req.session.user.id));
+    res.json({ session: req.session.user, db: dbUser });
   });
+
+  /* ------------------------- LOGOUT ------------------------- */
 
   app.post("/api/logout", (req, res) => {
     req.session?.destroy((err) => {
