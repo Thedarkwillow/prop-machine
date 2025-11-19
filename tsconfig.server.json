@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "dist", "dist-server", "**/*.test.ts"],
+  "compilerOptions": {
+    "noEmit": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "outDir": "./dist-server",
+    "rootDir": ".",
+    "jsx": "react",
+    "lib": ["esnext"],
+    "types": ["node"],
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true
+  }
+}

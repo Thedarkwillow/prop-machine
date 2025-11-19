@@ -1,0 +1,12 @@
+[phases.build]
+cmds = ["npx vite build"]
+
+[phases.setup]
+nixPkgs = ["nodejs_18", "npm-9_x", "openssl"]
+
+[start]
+cmd = "NODE_ENV=production tsx server/index.ts"
+
+# Override package.json scripts for Railway deployment
+[variables]
+NPM_CONFIG_SCRIPTS_PREPEND_NODE_PATH = "auto"
