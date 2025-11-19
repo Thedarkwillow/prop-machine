@@ -1,8 +1,18 @@
+import * as client from "openid-client";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
+import memoize from "memoizee";
 import createMemoryStore from "memorystore";
 import { storage } from "./storage.js";
-import { nanoid } from "nanoid";
+
+const getOidcConfig = memoize(
+  async () => {
+    const issuerUrl = new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc");
+    const config = await client.discovery(issuerUrl, process.env.REPL_ID!);
+    return config;
+  },
+  { maxAge: 3600 * 1000 }
+);
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
@@ -32,98 +42,67 @@ export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());
 
-  const issuerUrl = process.env.ISSUER_URL ?? "https://replit.com/oidc";
-  const clientId = process.env.REPL_ID!;
-
   app.get("/api/login", async (req, res) => {
-    const state = nanoid();
-    const codeVerifier = nanoid(64);
-    
-    // Create SHA-256 hash of code verifier for PKCE
-    const crypto = await import("crypto");
-    const codeChallenge = crypto
-      .createHash("sha256")
-      .update(codeVerifier)
-      .digest("base64url");
+    try {
+      const config = await getOidcConfig();
+      const code_verifier = client.randomPKCECodeVerifier();
+      const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
 
-    req.session!.state = state;
-    req.session!.codeVerifier = codeVerifier;
+      req.session!.code_verifier = code_verifier;
 
-    const redirectUri = `${req.protocol}://${req.get("host")}/api/callback`;
+      const redirectUri = `https://${req.hostname}/api/callback`;
+      const parameters: Record<string, string> = {
+        redirect_uri: redirectUri,
+        scope: 'openid email profile offline_access',
+        code_challenge,
+        code_challenge_method: 'S256',
+      };
 
-    const authUrl = new URL(`${issuerUrl}/auth`);
-    authUrl.searchParams.set("client_id", clientId);
-    authUrl.searchParams.set("redirect_uri", redirectUri);
-    authUrl.searchParams.set("response_type", "code");
-    authUrl.searchParams.set("scope", "openid email profile");
-    authUrl.searchParams.set("state", state);
-    authUrl.searchParams.set("code_challenge", codeChallenge);
-    authUrl.searchParams.set("code_challenge_method", "S256");
-
-    res.redirect(authUrl.toString());
+      const authUrl = client.buildAuthorizationUrl(config, parameters);
+      res.redirect(authUrl.href);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).send("Login failed");
+    }
   });
 
   app.get("/api/callback", async (req, res) => {
     try {
-      const { code, state } = req.query;
-      const savedState = req.session!.state;
-      const codeVerifier = req.session!.codeVerifier;
+      const config = await getOidcConfig();
+      const code_verifier = req.session!.code_verifier;
 
-      if (!code || !state || state !== savedState) {
-        return res.status(400).send("Invalid callback");
+      if (!code_verifier) {
+        return res.status(400).send("Invalid session");
       }
 
-      const redirectUri = `${req.protocol}://${req.get("host")}/api/callback`;
-      const tokenUrl = `${issuerUrl}/token`;
+      const currentUrl = new URL(req.protocol + '://' + req.get('host') + req.originalUrl);
+      const redirectUri = `https://${req.hostname}/api/callback`;
 
-      const tokenResponse = await fetch(tokenUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          code: code as string,
-          redirect_uri: redirectUri,
-          client_id: clientId,
-          code_verifier: codeVerifier,
-        }),
+      const tokens = await client.authorizationCodeGrant(config, currentUrl, {
+        pkceCodeVerifier: code_verifier,
+        expectedRedirectUri: redirectUri,
       });
 
-      if (!tokenResponse.ok) {
-        console.error("Token exchange failed:", await tokenResponse.text());
-        return res.status(500).send("Authentication failed");
-      }
+      const claims = tokens.claims();
 
-      const tokens = await tokenResponse.json();
-      const accessToken = tokens.access_token;
-
-      // Get user info
-      const userinfoResponse = await fetch(`${issuerUrl}/userinfo`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!userinfoResponse.ok) {
-        console.error("Userinfo failed:", await userinfoResponse.text());
-        return res.status(500).send("Authentication failed");
-      }
-
-      const userinfo = await userinfoResponse.json();
-
+      // Save user to database
       await storage.upsertUser({
-        id: userinfo.sub,
-        email: userinfo.email || "",
-        firstName: userinfo.first_name || "",
-        lastName: userinfo.last_name || "",
-        profileImageUrl: userinfo.profile_image_url || "",
+        id: claims.sub,
+        email: claims.email || "",
+        firstName: claims.first_name || "",
+        lastName: claims.last_name || "",
+        profileImageUrl: claims.profile_image_url || "",
       });
 
-      req.session!.userId = userinfo.sub;
-      delete req.session!.state;
-      delete req.session!.codeVerifier;
+      // Save user info to session
+      req.session!.user = {
+        claims,
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+        expires_at: claims.exp,
+      };
 
+      delete req.session!.code_verifier;
       res.redirect("/");
     } catch (error) {
       console.error("Callback error:", error);
@@ -131,7 +110,8 @@ export async function setupAuth(app: Express) {
     }
   });
 
-  app.get("/api/logout", (req, res) => {
+  app.get("/api/logout", async (req, res) => {
+    const session = req.session!;
     req.session?.destroy(() => {
       res.redirect("/");
     });
@@ -139,7 +119,7 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/auth/user", async (req: any, res) => {
     try {
-      const userId = req.session?.userId;
+      const userId = req.session?.user?.claims?.sub;
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
@@ -156,8 +136,40 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
-  if (!req.session?.userId) {
+  const sessionUser = req.session?.user;
+
+  if (!sessionUser?.claims?.sub) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  next();
+
+  // Check if token is expired
+  const now = Math.floor(Date.now() / 1000);
+  if (sessionUser.expires_at && now <= sessionUser.expires_at) {
+    return next();
+  }
+
+  // Try to refresh token if expired
+  const refreshToken = sessionUser.refresh_token;
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const config = await getOidcConfig();
+    const tokens = await client.refreshTokenGrant(config, refreshToken);
+    const claims = tokens.claims();
+    
+    // Update session with refreshed tokens
+    req.session!.user = {
+      claims,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+      expires_at: claims.exp,
+    };
+    
+    return next();
+  } catch (error) {
+    console.error("Token refresh failed:", error);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 };

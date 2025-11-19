@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
 // ==================== DASHBOARD ROUTE ====================
 router.get("/dashboard", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     
     // Get user data
     const user = await storage.getUser(userId);
@@ -99,7 +99,7 @@ router.delete("/props/:id", async (req, res) => {
 // ==================== SLIPS ROUTES ====================
 router.get("/slips", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const slips = await storage.getSlipsByUser(userId);
     res.json(slips);
   } catch (error) {
@@ -110,7 +110,7 @@ router.get("/slips", requireAuth, async (req, res) => {
 
 router.get("/slips/pending", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const slips = await storage.getPendingSlips(userId);
     res.json(slips);
   } catch (error) {
@@ -121,7 +121,7 @@ router.get("/slips/pending", requireAuth, async (req, res) => {
 
 router.post("/slips", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const slipData = insertSlipSchema.parse({ ...req.body, userId });
     const slip = await storage.createSlip(slipData);
     res.status(201).json(slip);
@@ -153,7 +153,7 @@ router.patch("/slips/:id/status", async (req, res) => {
 // ==================== BETS ROUTES ====================
 router.get("/bets", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const bets = await storage.getBetsWithProps(userId);
     res.json(bets);
   } catch (error) {
@@ -178,7 +178,7 @@ router.get("/bets/:id", async (req, res) => {
 
 router.post("/bets", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const betData = insertBetSchema.parse({ ...req.body, userId });
     const result = await storage.placeBetWithBankrollCheck(betData);
     
@@ -226,7 +226,7 @@ router.patch("/bets/:id/settle", async (req, res) => {
 // ==================== PERFORMANCE ROUTES ====================
 router.get("/performance/latest", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const snapshot = await storage.getLatestSnapshot(userId);
     res.json(snapshot);
   } catch (error) {
@@ -237,7 +237,7 @@ router.get("/performance/latest", requireAuth, async (req, res) => {
 
 router.get("/performance/history", requireAuth, async (req, res) => {
   try {
-    const userId = req.session!.userId!;
+    const userId = (req.session as any)?.user?.claims?.sub;
     const days = parseInt(req.query.days as string) || 30;
     const history = await storage.getSnapshotHistory(userId, days);
     res.json(history);
