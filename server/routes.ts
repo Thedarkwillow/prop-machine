@@ -396,13 +396,31 @@ router.get("/players/search", async (req, res) => {
     }
 
     const { espnPlayerClient } = await import("./integrations/espnPlayerClient");
+    const { balldontlieClient } = await import("./integrations/balldontlieClient");
     const selectedSport = sport && typeof sport === 'string' ? sport : "All";
     
     let results: any[] = [];
     
     if (selectedSport === "All" || selectedSport === "NBA") {
-      // NBA search would be added here when available
-      // For now, skip NBA
+      try {
+        const playersResponse = await balldontlieClient.searchPlayers(search);
+        // PlayersResponse already contains {data: Player[], meta: {...}}
+        const nbaPlayers = (playersResponse.data || []).map((player: any) => ({
+          id: player.id.toString(),
+          fullName: `${player.first_name} ${player.last_name}`,
+          displayName: `${player.first_name} ${player.last_name}`,
+          shortName: `${player.first_name.charAt(0)}. ${player.last_name}`,
+          team: { 
+            name: player.team.full_name || `${player.team.city} ${player.team.name}`,
+            abbreviation: player.team.abbreviation 
+          },
+          position: player.position ? { abbreviation: player.position } : { abbreviation: "N/A" },
+          sport: "NBA"
+        }));
+        results.push(...nbaPlayers);
+      } catch (error) {
+        console.error("Error fetching NBA players from BallDontLie:", error);
+      }
     }
     
     if (selectedSport === "All" || selectedSport === "NHL") {

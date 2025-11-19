@@ -119,9 +119,9 @@ export class BalldontlieClient extends IntegrationClient {
       'https://api.balldontlie.io/v1',
       {
         provider: 'balldontlie',
-        requestsPerMinute: 60,
-        requestsPerHour: 3600,
-        requestsPerDay: 86400,
+        requestsPerMinute: 5,    // Free tier: 5 requests/min
+        requestsPerHour: 300,    // Free tier: ~5 req/min * 60 min
+        requestsPerDay: 7200,    // Free tier: ~5 req/min * 60 min * 24 hr
       },
       { ttl: 300, useETag: true, useLastModified: true }
     );
