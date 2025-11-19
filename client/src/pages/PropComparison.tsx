@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlayerSearchDropdown, Player } from "@/components/PlayerSearchDropdown";
 
 export default function PropComparison() {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [sport, setSport] = useState<"NBA" | "NHL" | "NFL" | "MLB">("NBA");
+
+  useEffect(() => {
+    setSelectedPlayer(null);
+  }, [sport]);
 
   const { data: comparisons, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/prop-comparison/player", selectedPlayer?.displayName || ""],
+    queryKey: [`/api/prop-comparison/player?player=${selectedPlayer?.displayName || ""}&sport=${sport}`],
     enabled: !!selectedPlayer,
   });
 
@@ -28,14 +34,32 @@ export default function PropComparison() {
           <CardTitle>Search Player Props</CardTitle>
           <CardDescription>Search for a player to compare their props across platforms</CardDescription>
         </CardHeader>
-        <CardContent>
-          <PlayerSearchDropdown
-            value={selectedPlayer}
-            onChange={setSelectedPlayer}
-            placeholder="Search for a player..."
-            triggerTestId="button-player-prop-search"
-            inputTestId="input-player-prop-search"
-          />
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Sport</label>
+            <Select value={sport} onValueChange={(value: any) => setSport(value)}>
+              <SelectTrigger data-testid="select-sport-prop">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="NBA">NBA (Basketball)</SelectItem>
+                <SelectItem value="NHL">NHL (Hockey)</SelectItem>
+                <SelectItem value="NFL">NFL (Football)</SelectItem>
+                <SelectItem value="MLB">MLB (Baseball)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Player</label>
+            <PlayerSearchDropdown
+              value={selectedPlayer}
+              onChange={setSelectedPlayer}
+              sport={sport}
+              placeholder="Search for a player..."
+              triggerTestId="button-player-prop-search"
+              inputTestId="input-player-prop-search"
+            />
+          </div>
         </CardContent>
       </Card>
 

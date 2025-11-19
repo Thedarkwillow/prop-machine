@@ -311,6 +311,81 @@ router.get("/scoreboard", async (req, res) => {
   }
 });
 
+// ==================== PROP COMPARISON ROUTES ====================
+router.get("/prop-comparison/player", async (req, res) => {
+  try {
+    const { player, sport } = req.query;
+    
+    if (!player || typeof player !== 'string') {
+      return res.json([]);
+    }
+
+    // Mock prop comparison data - will be replaced with real API integration
+    const mockComparisons = [
+      {
+        player: player,
+        sport: sport || "Unknown",
+        stat: "Points",
+        bestLine: 27.5,
+        lineSpread: 1.5,
+        recommendation: "Best value on Underdog at 27.5. PrizePicks line is soft at 26.0.",
+        platforms: [
+          {
+            platform: "Underdog",
+            direction: "over",
+            line: 27.5,
+            confidence: 68,
+            ev: "+4.2"
+          },
+          {
+            platform: "PrizePicks",
+            direction: "over",
+            line: 26.0,
+            confidence: 72,
+            ev: "+5.8"
+          },
+          {
+            platform: "Sleeper",
+            direction: "over",
+            line: 27.0,
+            confidence: 65,
+            ev: "+2.1"
+          }
+        ]
+      },
+      {
+        player: player,
+        sport: sport || "Unknown",
+        stat: "Assists",
+        bestLine: 8.5,
+        lineSpread: 0.5,
+        recommendation: "Lines are tight across platforms. Slight edge on PrizePicks.",
+        platforms: [
+          {
+            platform: "PrizePicks",
+            direction: "over",
+            line: 8.5,
+            confidence: 61,
+            ev: "+1.8"
+          },
+          {
+            platform: "Underdog",
+            direction: "over",
+            line: 8.0,
+            confidence: 58,
+            ev: "+0.9"
+          }
+        ]
+      }
+    ];
+
+    res.json(mockComparisons);
+  } catch (error) {
+    console.error("Error fetching prop comparison:", error);
+    res.status(500).json({ error: "Failed to fetch prop comparison" });
+  }
+});
+
 // ==================== PLAYER SEARCH ROUTES ====================
 router.get("/players/search", async (req, res) => {
   try {
