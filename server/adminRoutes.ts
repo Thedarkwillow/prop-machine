@@ -5,6 +5,7 @@ import { modelScorer } from "./ml/modelScorer";
 import { storage } from "./storage";
 import { propFetcherService } from "./services/propFetcherService";
 import { propRefreshService } from "./services/propRefreshService";
+import { refreshProps } from "./seed";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
@@ -97,6 +98,34 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error("Prop fetch error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Refresh sample props with current game times (for development)
+  router.post("/props/refresh-samples", async (req, res) => {
+    try {
+      console.log("Refreshing sample props with current game times...");
+      const result = await refreshProps();
+      
+      if (result.success) {
+        res.json({
+          success: true,
+          message: `Refreshed ${result.count} sample props with current game times`,
+          count: result.count,
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          error: result.error || "Failed to refresh props",
+        });
+      }
+    } catch (error) {
+      const err = error as Error;
+      console.error("Sample props refresh error:", error);
       res.status(500).json({
         success: false,
         error: err.message,

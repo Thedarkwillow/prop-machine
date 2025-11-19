@@ -12,6 +12,7 @@ export default function Admin() {
   const { toast } = useToast();
   const [isSettling, setIsSettling] = useState(false);
   const [isRescoring, setIsRescoring] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [testResults, setTestResults] = useState<any>(null);
 
   const { data: stats, refetch: refetchStats } = useQuery({
@@ -66,6 +67,31 @@ export default function Admin() {
       });
     } finally {
       setIsRescoring(false);
+    }
+  };
+
+  const handleRefreshSampleProps = async () => {
+    setIsRefreshing(true);
+    try {
+      const response: any = await apiRequest({
+        url: "/api/admin/props/refresh-samples",
+        method: "POST",
+      });
+
+      toast({
+        title: "Props Refreshed",
+        description: response?.message || `Refreshed ${response?.count || 0} sample props`,
+      });
+
+      refetchStats();
+    } catch (error: any) {
+      toast({
+        title: "Refresh Failed",
+        description: error.message || "Failed to refresh props",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -266,6 +292,26 @@ export default function Admin() {
               >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 {isRescoring ? "Rescoring..." : "Rescore All Props"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Refresh Sample Props</CardTitle>
+              <CardDescription>
+                Replace old props with fresh sample data and current game times
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={handleRefreshSampleProps}
+                disabled={isRefreshing}
+                variant="default"
+                data-testid="button-refresh-sample-props"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                {isRefreshing ? "Refreshing..." : "Refresh Sample Props"}
               </Button>
             </CardContent>
           </Card>
