@@ -10,7 +10,6 @@ import { adminRoutes } from "./adminRoutes.js";
 import { createAnalyticsRoutes } from "./analyticsRoutes.js";
 import { createNotificationRoutes } from "./notificationRoutes.js";
 import { storage } from "./storage.js";
-import { log } from "./vite.js";
 import { seedDatabase } from "./seed.js";
 import { propSchedulerService } from "./services/propSchedulerService.js";
 
@@ -22,10 +21,10 @@ app.use(cors());
 app.use(express.json());
 
 if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
-  log("🔐 Using Google OAuth (Railway production)");
+  console.log("🔐 Using Google OAuth (Railway production)");
   setupGoogleAuth(app);
 } else {
-  log("🔐 Using Replit Auth (default)");
+  console.log("🔐 Using Replit Auth (default)");
   setupAuth(app);
 }
 
@@ -52,7 +51,7 @@ if (process.env.NODE_ENV === "production") {
     process.exit(1);
   }
   
-  log(`📦 Serving static files from: ${distPath}`);
+  console.log(`📦 Serving static files from: ${distPath}`);
   app.use(express.static(distPath));
   app.use("*", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
@@ -64,7 +63,7 @@ seedDatabase().catch((error) => {
 });
 
 const server = app.listen(5000, "0.0.0.0", () => {
-  log(`serving on port 5000`);
+  console.log(`[express] serving on port 5000`);
   
   // Start automatic prop refresh scheduler (every 15 minutes)
   propSchedulerService.start(15);
