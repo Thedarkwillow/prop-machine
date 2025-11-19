@@ -49,6 +49,11 @@ export async function setupGoogleAuth(app: Express) {
     })
   );
 
+  // Alias /api/login to /auth/google for compatibility with Landing page
+  app.get("/api/login", async (req, res) => {
+    res.redirect("/auth/google");
+  });
+
   app.get("/auth/google", async (req, res) => {
     try {
       const client = await getGoogleClient();
