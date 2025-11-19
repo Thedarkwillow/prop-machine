@@ -1,5 +1,4 @@
 import { IntegrationClient, RateLimitConfig } from "./integrationClient";
-import { balldontlieClient } from "./balldontlieClient";
 
 interface GameResult {
   gameId: string;
