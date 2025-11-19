@@ -77,8 +77,8 @@ export function adminRoutes(): Router {
       const { sports } = req.body;
       const targetSports = sports || ['NBA', 'NFL', 'NHL'];
       
-      console.log(`Starting multi-platform prop refresh for: ${targetSports.join(', ')}`);
-      const result = await propRefreshService.refreshAllPlatforms(targetSports);
+      // Use scheduler's triggerManualRefresh to update state properly
+      const result = await propSchedulerService.triggerManualRefresh(targetSports);
       
       res.json({
         success: result.success,

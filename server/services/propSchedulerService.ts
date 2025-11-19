@@ -90,8 +90,8 @@ class PropSchedulerService {
       const sports = ['NBA', 'NFL', 'NHL'];
       const result = await propRefreshService.refreshAllPlatforms(sports);
 
-      // Only update lastSuccessfulRefresh if props were actually created
-      if (result.success && result.totalPropsCreated > 0) {
+      // Consider successful if API calls succeeded (even if no new props created due to duplicates)
+      if (result.success) {
         this.lastSuccessfulRefresh = new Date();
         this.lastError = null;
         
@@ -115,9 +115,9 @@ class PropSchedulerService {
           }
         });
       } else {
-        // Refresh ran but no props were created - consider this a partial failure
-        this.lastError = `Refresh completed but no props created. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
-        console.warn('⚠️  Prop refresh completed but no props were created');
+        // All platforms failed
+        this.lastError = `Refresh failed. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+        console.error('❌ Prop refresh failed - all platforms returned errors');
       }
     } catch (error) {
       const err = error as Error;
@@ -137,12 +137,14 @@ class PropSchedulerService {
     this.lastRefreshTime = new Date();
     const result = await propRefreshService.refreshAllPlatforms(targetSports);
     
-    // Update success/error state just like automatic refreshes
-    if (result.success && result.totalPropsCreated > 0) {
+    // Consider successful if API calls succeeded (even if no new props created due to duplicates)
+    if (result.success) {
       this.lastSuccessfulRefresh = new Date();
       this.lastError = null;
+      console.log(`✅ Manual refresh completed - Fetched: ${result.totalPropsFetched}, Created: ${result.totalPropsCreated}`);
     } else {
-      this.lastError = `Manual refresh: no props created. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+      this.lastError = `Manual refresh failed. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+      console.error('❌ Manual refresh failed - all platforms returned errors');
     }
     
     return result;
