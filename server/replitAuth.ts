@@ -15,6 +15,7 @@ async function getReplitClient() {
     client_id: process.env.REPL_ID!,
     redirect_uris: [`https://${process.env.REPLIT_DOMAINS || "localhost"}/api/callback`],
     response_types: ["code"],
+    token_endpoint_auth_method: "none",
   });
   
   return replitClient;
@@ -51,13 +52,16 @@ export async function setupAuth(app: Express) {
       const client = await getReplitClient();
       const codeVerifier = generators.codeVerifier();
       const codeChallenge = generators.codeChallenge(codeVerifier);
+      const state = generators.state();
       
       req.session!.codeVerifier = codeVerifier;
+      req.session!.state = state;
       
       const authUrl = client.authorizationUrl({
         scope: "openid email profile",
         code_challenge: codeChallenge,
         code_challenge_method: "S256",
+        state,
         redirect_uri: `https://${req.hostname}/api/callback`,
       });
       
@@ -70,18 +74,23 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", async (req, res) => {
     try {
-      const { code } = req.query;
+      const { code, state } = req.query;
       const codeVerifier = req.session!.codeVerifier;
+      const sessionState = req.session!.state;
       const client = await getReplitClient();
       
-      if (!code || !codeVerifier) {
+      if (!code || !codeVerifier || !state || !sessionState) {
         return res.status(400).send("Invalid callback request");
+      }
+      
+      if (state !== sessionState) {
+        return res.status(400).send("State mismatch - possible CSRF attack");
       }
       
       const tokenSet = await client.callback(
         `https://${req.hostname}/api/callback`,
-        { code: code as string },
-        { code_verifier: codeVerifier }
+        { code: code as string, state: state as string },
+        { code_verifier: codeVerifier, state: sessionState }
       );
       
       const userinfo = await client.userinfo(tokenSet.access_token!);
@@ -102,6 +111,7 @@ export async function setupAuth(app: Express) {
       req.session!.access_token = tokenSet.access_token;
       
       delete req.session!.codeVerifier;
+      delete req.session!.state;
       
       res.redirect("/");
     } catch (error) {

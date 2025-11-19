@@ -4,6 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
+packages = ["jq"]
 
 [deployment]
 deploymentTarget = "autoscale"
@@ -13,6 +14,10 @@ run = ["npm", "run", "start"]
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 33223
+externalPort = 6800
 
 [[ports]]
 localPort = 35799
@@ -29,10 +34,6 @@ externalPort = 3001
 [[ports]]
 localPort = 38609
 externalPort = 3002
-
-[[ports]]
-localPort = 41487
-externalPort = 6800
 
 [[ports]]
 localPort = 43129
