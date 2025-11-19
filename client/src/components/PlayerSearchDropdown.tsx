@@ -34,14 +34,11 @@ export function PlayerSearchDropdown({
 }: PlayerSearchDropdownProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedSport, setSelectedSport] = useState(sport);
   
   const { data: players = [], isLoading } = useQuery<Player[]>({
     queryKey: [`/api/players/search?search=${search}&sport=${sport}`],
     enabled: search.length >= 2,
   });
-
-  const sports = ["All", "NBA", "NHL", "NFL", "MLB"];
 
   const handleClear = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -91,20 +88,6 @@ export function PlayerSearchDropdown({
           )}
         </div>
         <PopoverContent className="w-[400px] p-0" align="start">
-          <div className="flex gap-2 p-2 border-b">
-            {sports.map((s) => (
-              <Button
-                key={s}
-                variant={selectedSport === s ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setSelectedSport(s)}
-                data-testid={`button-sport-${s.toLowerCase()}`}
-                className="text-xs"
-              >
-                {s}
-              </Button>
-            ))}
-          </div>
           <Command shouldFilter={false}>
             <CommandInput
               placeholder={placeholder}
