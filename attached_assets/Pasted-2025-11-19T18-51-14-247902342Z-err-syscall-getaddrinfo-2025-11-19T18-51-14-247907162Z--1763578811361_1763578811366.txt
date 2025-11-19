@@ -1,0 +1,1001 @@
+2025-11-19T18:51:14.247902342Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:14.247907162Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:14.247911988Z [err]      }
+2025-11-19T18:51:14.247915921Z [err]    }
+2025-11-19T18:51:14.247919716Z [err]  }
+2025-11-19T18:51:14.375646260Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:14.375658713Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:14.375666117Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:14.375673463Z [err]    severity: undefined,
+2025-11-19T18:51:14.375680041Z [err]    code: undefined,
+2025-11-19T18:51:14.375689210Z [err]    detail: undefined,
+2025-11-19T18:51:14.375719927Z [err]    hint: undefined,
+2025-11-19T18:51:14.375725850Z [err]    position: undefined,
+2025-11-19T18:51:14.375732352Z [err]    internalPosition: undefined,
+2025-11-19T18:51:14.375739856Z [err]    internalQuery: undefined,
+2025-11-19T18:51:14.375747384Z [err]    where: undefined,
+2025-11-19T18:51:14.375754620Z [err]    schema: undefined,
+2025-11-19T18:51:14.375760333Z [err]    table: undefined,
+2025-11-19T18:51:14.375766909Z [err]    column: undefined,
+2025-11-19T18:51:14.375773961Z [err]    dataType: undefined,
+2025-11-19T18:51:14.375781200Z [err]    constraint: undefined,
+2025-11-19T18:51:14.375787974Z [err]    file: undefined,
+2025-11-19T18:51:14.375795481Z [err]    line: undefined,
+2025-11-19T18:51:14.375801581Z [err]    routine: undefined,
+2025-11-19T18:51:14.375806653Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:14.375811579Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:14.375817363Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:14.375823520Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:14.375829603Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:14.375835898Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:14.377741390Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:14.377756336Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:14.377763041Z [err]        errno: -3008,
+2025-11-19T18:51:14.377768781Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:14.377774324Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:14.377780541Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:14.377786533Z [err]      }
+2025-11-19T18:51:14.377792085Z [err]    }
+2025-11-19T18:51:14.377797728Z [err]  }
+2025-11-19T18:51:14.398589756Z [err]    internalPosition: undefined,
+2025-11-19T18:51:14.398604917Z [err]    internalQuery: undefined,
+2025-11-19T18:51:14.398613927Z [err]    where: undefined,
+2025-11-19T18:51:14.398621540Z [err]    schema: undefined,
+2025-11-19T18:51:14.398628801Z [err]    table: undefined,
+2025-11-19T18:51:14.398636790Z [err]    column: undefined,
+2025-11-19T18:51:14.398643399Z [err]    dataType: undefined,
+2025-11-19T18:51:14.398649951Z [err]    constraint: undefined,
+2025-11-19T18:51:14.398658301Z [err]    file: undefined,
+2025-11-19T18:51:14.398667147Z [err]    line: undefined,
+2025-11-19T18:51:14.398678885Z [err]    routine: undefined,
+2025-11-19T18:51:14.398680352Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:14.398689400Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:14.398693363Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:14.398697734Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:14.398705687Z [err]    severity: undefined,
+2025-11-19T18:51:14.398706444Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:14.398715916Z [err]    code: undefined,
+2025-11-19T18:51:14.398720836Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:14.398723342Z [err]    detail: undefined,
+2025-11-19T18:51:14.398730432Z [err]    hint: undefined,
+2025-11-19T18:51:14.398740879Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:14.398741882Z [err]    position: undefined,
+2025-11-19T18:51:14.398751284Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:14.398757908Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:14.400145739Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:14.400154679Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:14.400159457Z [err]        errno: -3008,
+2025-11-19T18:51:14.400163834Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:14.400168165Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:14.400172228Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:14.400176298Z [err]      }
+2025-11-19T18:51:14.400180283Z [err]    }
+2025-11-19T18:51:14.400186007Z [err]  }
+2025-11-19T18:51:14.429780143Z [err]    column: undefined,
+2025-11-19T18:51:14.429800088Z [err]    dataType: undefined,
+2025-11-19T18:51:14.429813972Z [err]    constraint: undefined,
+2025-11-19T18:51:14.429815072Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:14.429828806Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:14.429830468Z [err]    file: undefined,
+2025-11-19T18:51:14.429842933Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:14.429846116Z [err]    line: undefined,
+2025-11-19T18:51:14.429852369Z [err]    severity: undefined,
+2025-11-19T18:51:14.429858903Z [err]    code: undefined,
+2025-11-19T18:51:14.429865046Z [err]    detail: undefined,
+2025-11-19T18:51:14.429872491Z [err]    hint: undefined,
+2025-11-19T18:51:14.429882625Z [err]    position: undefined,
+2025-11-19T18:51:14.429884878Z [err]    routine: undefined,
+2025-11-19T18:51:14.429892327Z [err]    internalPosition: undefined,
+2025-11-19T18:51:14.429898201Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:14.429908364Z [err]    internalQuery: undefined,
+2025-11-19T18:51:14.429912036Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:14.429921087Z [err]    where: undefined,
+2025-11-19T18:51:14.429925597Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:14.429935964Z [err]    schema: undefined,
+2025-11-19T18:51:14.429938777Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:14.429946371Z [err]    table: undefined,
+2025-11-19T18:51:14.429952851Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:14.429961222Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:14.431272154Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:14.431281490Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:14.431295659Z [err]        errno: -3008,
+2025-11-19T18:51:14.431299932Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:14.431304854Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:14.431310601Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:14.431315311Z [err]      }
+2025-11-19T18:51:14.431322390Z [err]    }
+2025-11-19T18:51:14.431326805Z [err]  }
+2025-11-19T18:51:14.625606014Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:14.625614034Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:14.625622702Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:14.625631602Z [err]    severity: undefined,
+2025-11-19T18:51:14.625640462Z [err]    code: undefined,
+2025-11-19T18:51:14.625647975Z [err]    detail: undefined,
+2025-11-19T18:51:14.625654276Z [err]    hint: undefined,
+2025-11-19T18:51:14.625660392Z [err]    position: undefined,
+2025-11-19T18:51:14.625666918Z [err]    internalPosition: undefined,
+2025-11-19T18:51:14.625672616Z [err]    internalQuery: undefined,
+2025-11-19T18:51:14.625678921Z [err]    where: undefined,
+2025-11-19T18:51:14.625685165Z [err]    schema: undefined,
+2025-11-19T18:51:14.625690607Z [err]    table: undefined,
+2025-11-19T18:51:14.625696408Z [err]    column: undefined,
+2025-11-19T18:51:14.625701949Z [err]    dataType: undefined,
+2025-11-19T18:51:14.625707365Z [err]    constraint: undefined,
+2025-11-19T18:51:14.625713593Z [err]    file: undefined,
+2025-11-19T18:51:14.625719828Z [err]    line: undefined,
+2025-11-19T18:51:14.625726089Z [err]    routine: undefined,
+2025-11-19T18:51:14.625731530Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:14.625738413Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:14.625744020Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:14.625751821Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:14.625757398Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:14.625762458Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:14.625768139Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:14.625773812Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:14.625779093Z [err]        errno: -3008,
+2025-11-19T18:51:14.625784732Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:14.625790107Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:14.625795511Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:14.625800995Z [err]      }
+2025-11-19T18:51:14.625806585Z [err]    }
+2025-11-19T18:51:14.625811711Z [err]  }
+2025-11-19T18:51:15.247617391Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.247625235Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.247625337Z [err]    constraint: undefined,
+2025-11-19T18:51:15.247630797Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.247634096Z [err]        errno: -3008,
+2025-11-19T18:51:15.247640257Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.247642493Z [err]    file: undefined,
+2025-11-19T18:51:15.247648814Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.247651839Z [err]    line: undefined,
+2025-11-19T18:51:15.247659668Z [err]    severity: undefined,
+2025-11-19T18:51:15.247660386Z [err]    routine: undefined,
+2025-11-19T18:51:15.247667027Z [err]    code: undefined,
+2025-11-19T18:51:15.247675678Z [err]    detail: undefined,
+2025-11-19T18:51:15.247680197Z [err]    detail: undefined,
+2025-11-19T18:51:15.247680273Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.247684464Z [err]    hint: undefined,
+2025-11-19T18:51:15.247690111Z [err]    severity: undefined,
+2025-11-19T18:51:15.247691885Z [err]    hint: undefined,
+2025-11-19T18:51:15.247711111Z [err]    position: undefined,
+2025-11-19T18:51:15.247718810Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.247727594Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.247733882Z [err]    where: undefined,
+2025-11-19T18:51:15.247739216Z [err]    code: undefined,
+2025-11-19T18:51:15.247741833Z [err]    schema: undefined,
+2025-11-19T18:51:15.247741836Z [err]    schema: undefined,
+2025-11-19T18:51:15.247748911Z [err]    table: undefined,
+2025-11-19T18:51:15.247755214Z [err]    table: undefined,
+2025-11-19T18:51:15.247757777Z [err]    position: undefined,
+2025-11-19T18:51:15.247757981Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.247759241Z [err]    column: undefined,
+2025-11-19T18:51:15.247762667Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.247766010Z [err]    column: undefined,
+2025-11-19T18:51:15.247768221Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.247771673Z [err]    dataType: undefined,
+2025-11-19T18:51:15.247775290Z [err]    dataType: undefined,
+2025-11-19T18:51:15.247777241Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.247777969Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.247781209Z [err]    constraint: undefined,
+2025-11-19T18:51:15.247787472Z [err]    where: undefined,
+2025-11-19T18:51:15.247789530Z [err]    }
+2025-11-19T18:51:15.247790889Z [err]    file: undefined,
+2025-11-19T18:51:15.247792380Z [err]      }
+2025-11-19T18:51:15.247798837Z [err]  }
+2025-11-19T18:51:15.247798858Z [err]    line: undefined,
+2025-11-19T18:51:15.247802467Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.247807756Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.247808193Z [err]    routine: undefined,
+2025-11-19T18:51:15.247816424Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.247823172Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.247829109Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.247841834Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.247849087Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.247855457Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.248072339Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.248080227Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.248086394Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.248092335Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.248096980Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.248102448Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.248108882Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.248118624Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.248124366Z [err]        errno: -3008,
+2025-11-19T18:51:15.248130126Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.248134888Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.248140475Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.248153483Z [err]      }
+2025-11-19T18:51:15.248159155Z [err]    }
+2025-11-19T18:51:15.248164880Z [err]  }
+2025-11-19T18:51:15.248171018Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.248610553Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.248622959Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.248631134Z [err]    severity: undefined,
+2025-11-19T18:51:15.248637300Z [err]    code: undefined,
+2025-11-19T18:51:15.248643791Z [err]    detail: undefined,
+2025-11-19T18:51:15.248651925Z [err]    hint: undefined,
+2025-11-19T18:51:15.248658800Z [err]    position: undefined,
+2025-11-19T18:51:15.248665359Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.250050223Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.250058960Z [err]    where: undefined,
+2025-11-19T18:51:15.250064130Z [err]    schema: undefined,
+2025-11-19T18:51:15.250068424Z [err]    table: undefined,
+2025-11-19T18:51:15.250072668Z [err]    column: undefined,
+2025-11-19T18:51:15.250077213Z [err]    dataType: undefined,
+2025-11-19T18:51:15.250082532Z [err]    constraint: undefined,
+2025-11-19T18:51:15.250088053Z [err]    file: undefined,
+2025-11-19T18:51:15.250093606Z [err]    line: undefined,
+2025-11-19T18:51:15.250100404Z [err]    routine: undefined,
+2025-11-19T18:51:15.250105604Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.250110973Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.250117497Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.250124730Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.250130454Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.250136798Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.250143467Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.250150560Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.250156981Z [err]        errno: -3008,
+2025-11-19T18:51:15.250163459Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.250169877Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.250178038Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.250184459Z [err]      }
+2025-11-19T18:51:15.250190707Z [err]    }
+2025-11-19T18:51:15.250196875Z [err]  }
+2025-11-19T18:51:15.250202919Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.252919851Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.252925534Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.252931804Z [err]    severity: undefined,
+2025-11-19T18:51:15.252937423Z [err]    code: undefined,
+2025-11-19T18:51:15.252943088Z [err]    detail: undefined,
+2025-11-19T18:51:15.252948767Z [err]    hint: undefined,
+2025-11-19T18:51:15.252956769Z [err]    position: undefined,
+2025-11-19T18:51:15.252962658Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.252968709Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.252974709Z [err]    where: undefined,
+2025-11-19T18:51:15.252999694Z [err]    schema: undefined,
+2025-11-19T18:51:15.253007684Z [err]    table: undefined,
+2025-11-19T18:51:15.253013506Z [err]    column: undefined,
+2025-11-19T18:51:15.253019272Z [err]    dataType: undefined,
+2025-11-19T18:51:15.253025603Z [err]    constraint: undefined,
+2025-11-19T18:51:15.253033397Z [err]    file: undefined,
+2025-11-19T18:51:15.253039064Z [err]    line: undefined,
+2025-11-19T18:51:15.253044940Z [err]    routine: undefined,
+2025-11-19T18:51:15.253051431Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.253057710Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.253063016Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.253068413Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.253073755Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.253080002Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.253085978Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.256201510Z [err]    severity: undefined,
+2025-11-19T18:51:15.256203290Z [err]    routine: undefined,
+2025-11-19T18:51:15.256205722Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.256213428Z [err]    code: undefined,
+2025-11-19T18:51:15.256216104Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.256219475Z [err]        errno: -3008,
+2025-11-19T18:51:15.256222509Z [err]    detail: undefined,
+2025-11-19T18:51:15.256230506Z [err]    hint: undefined,
+2025-11-19T18:51:15.256234014Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.256240037Z [err]    position: undefined,
+2025-11-19T18:51:15.256243306Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.256248306Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.256252477Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.256257706Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.256262165Z [err]      }
+2025-11-19T18:51:15.256268055Z [err]    where: undefined,
+2025-11-19T18:51:15.256271167Z [err]    }
+2025-11-19T18:51:15.256280103Z [err]    schema: undefined,
+2025-11-19T18:51:15.256283816Z [err]  }
+2025-11-19T18:51:15.256288976Z [err]    table: undefined,
+2025-11-19T18:51:15.256292910Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.256297643Z [err]    column: undefined,
+2025-11-19T18:51:15.256301986Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.256308734Z [err]    dataType: undefined,
+2025-11-19T18:51:15.256310496Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.256316788Z [err]    constraint: undefined,
+2025-11-19T18:51:15.256323509Z [err]    file: undefined,
+2025-11-19T18:51:15.256330107Z [err]    line: undefined,
+2025-11-19T18:51:15.259362223Z [err]    hint: undefined,
+2025-11-19T18:51:15.259366981Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.259373665Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.259375679Z [err]    position: undefined,
+2025-11-19T18:51:15.259378878Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.259384683Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.259384797Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.259390790Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.259395067Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.259396736Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.259401052Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.259405455Z [err]        errno: -3008,
+2025-11-19T18:51:15.259410554Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.259414559Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.259418034Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.259421794Z [err]      }
+2025-11-19T18:51:15.259425791Z [err]    }
+2025-11-19T18:51:15.259429757Z [err]  }
+2025-11-19T18:51:15.259433477Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.259437189Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.259441161Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.259444836Z [err]    severity: undefined,
+2025-11-19T18:51:15.259452133Z [err]    code: undefined,
+2025-11-19T18:51:15.259456186Z [err]    detail: undefined,
+2025-11-19T18:51:15.265144849Z [err]    where: undefined,
+2025-11-19T18:51:15.265153700Z [err]    schema: undefined,
+2025-11-19T18:51:15.265163009Z [err]    table: undefined,
+2025-11-19T18:51:15.265171931Z [err]    column: undefined,
+2025-11-19T18:51:15.265179513Z [err]    dataType: undefined,
+2025-11-19T18:51:15.265187989Z [err]    constraint: undefined,
+2025-11-19T18:51:15.265201971Z [err]    file: undefined,
+2025-11-19T18:51:15.265209337Z [err]    line: undefined,
+2025-11-19T18:51:15.265216664Z [err]    routine: undefined,
+2025-11-19T18:51:15.265225014Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.265232796Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.265236866Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.265249892Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.265257378Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.265266271Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.265274649Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.265282722Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.265289036Z [err]        errno: -3008,
+2025-11-19T18:51:15.265295727Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.265326429Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.265333316Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.265340022Z [err]      }
+2025-11-19T18:51:15.265348694Z [err]    }
+2025-11-19T18:51:15.265365951Z [err]  }
+2025-11-19T18:51:15.265373772Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.265380837Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.268231558Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.268244860Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.268255618Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.268255638Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.268266593Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.268272783Z [err]    severity: undefined,
+2025-11-19T18:51:15.268284787Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.268286864Z [err]    code: undefined,
+2025-11-19T18:51:15.268301903Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.268302326Z [err]    detail: undefined,
+2025-11-19T18:51:15.268315980Z [err]    hint: undefined,
+2025-11-19T18:51:15.268318749Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.268326007Z [err]    position: undefined,
+2025-11-19T18:51:15.268335098Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.268342197Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.268348847Z [err]    where: undefined,
+2025-11-19T18:51:15.268355908Z [err]    schema: undefined,
+2025-11-19T18:51:15.268363110Z [err]    table: undefined,
+2025-11-19T18:51:15.268370468Z [err]    column: undefined,
+2025-11-19T18:51:15.268378694Z [err]    dataType: undefined,
+2025-11-19T18:51:15.268385361Z [err]    constraint: undefined,
+2025-11-19T18:51:15.268391281Z [err]    file: undefined,
+2025-11-19T18:51:15.268396263Z [err]    line: undefined,
+2025-11-19T18:51:15.268401345Z [err]    routine: undefined,
+2025-11-19T18:51:15.268408107Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.271666701Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.271733055Z [err]        errno: -3008,
+2025-11-19T18:51:15.271741261Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.271749468Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.271756552Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.271763832Z [err]      }
+2025-11-19T18:51:15.271771907Z [err]    }
+2025-11-19T18:51:15.271780128Z [err]  }
+2025-11-19T18:51:15.271787825Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.271795715Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.271803130Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.271810227Z [err]    severity: undefined,
+2025-11-19T18:51:15.271817454Z [err]    code: undefined,
+2025-11-19T18:51:15.271824719Z [err]    detail: undefined,
+2025-11-19T18:51:15.271834901Z [err]    hint: undefined,
+2025-11-19T18:51:15.271843232Z [err]    position: undefined,
+2025-11-19T18:51:15.271850663Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.271858086Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.271866113Z [err]    where: undefined,
+2025-11-19T18:51:15.271873461Z [err]    schema: undefined,
+2025-11-19T18:51:15.271880804Z [err]    table: undefined,
+2025-11-19T18:51:15.271887752Z [err]    column: undefined,
+2025-11-19T18:51:15.271895857Z [err]    dataType: undefined,
+2025-11-19T18:51:15.271906015Z [err]    constraint: undefined,
+2025-11-19T18:51:15.271912074Z [err]    file: undefined,
+2025-11-19T18:51:15.271919480Z [err]    line: undefined,
+2025-11-19T18:51:15.271926233Z [err]    routine: undefined,
+2025-11-19T18:51:15.271932562Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.274785271Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.274807574Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.274816408Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.274823691Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.274831210Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.274838720Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.274846630Z [err]        errno: -3008,
+2025-11-19T18:51:15.274855889Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.274863359Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.274869987Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.274876653Z [err]      }
+2025-11-19T18:51:15.274883536Z [err]    }
+2025-11-19T18:51:15.274890123Z [err]  }
+2025-11-19T18:51:15.274896942Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.274903364Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.274920414Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.274927933Z [err]    severity: undefined,
+2025-11-19T18:51:15.274936702Z [err]    code: undefined,
+2025-11-19T18:51:15.274944294Z [err]    detail: undefined,
+2025-11-19T18:51:15.274951028Z [err]    hint: undefined,
+2025-11-19T18:51:15.274957595Z [err]    position: undefined,
+2025-11-19T18:51:15.274963981Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.274972933Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.274978509Z [err]    where: undefined,
+2025-11-19T18:51:15.280137916Z [err]    schema: undefined,
+2025-11-19T18:51:15.280149992Z [err]    table: undefined,
+2025-11-19T18:51:15.280157641Z [err]    column: undefined,
+2025-11-19T18:51:15.280164480Z [err]    dataType: undefined,
+2025-11-19T18:51:15.280171533Z [err]    constraint: undefined,
+2025-11-19T18:51:15.280179788Z [err]    file: undefined,
+2025-11-19T18:51:15.280188120Z [err]    line: undefined,
+2025-11-19T18:51:15.280196708Z [err]    routine: undefined,
+2025-11-19T18:51:15.280203995Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.280211044Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.280217612Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.280223802Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.280230446Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.280236469Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.280243190Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.280251940Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.280258645Z [err]        errno: -3008,
+2025-11-19T18:51:15.280267751Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.280273895Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.280279906Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.280286117Z [err]      }
+2025-11-19T18:51:15.280291594Z [err]    }
+2025-11-19T18:51:15.280297465Z [err]  }
+2025-11-19T18:51:15.280303123Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.280309328Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.283617188Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.283626777Z [err]    severity: undefined,
+2025-11-19T18:51:15.283633750Z [err]    code: undefined,
+2025-11-19T18:51:15.283639379Z [err]    detail: undefined,
+2025-11-19T18:51:15.283644837Z [err]    hint: undefined,
+2025-11-19T18:51:15.283650946Z [err]    position: undefined,
+2025-11-19T18:51:15.283656568Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.283662606Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.283668426Z [err]    where: undefined,
+2025-11-19T18:51:15.283674690Z [err]    schema: undefined,
+2025-11-19T18:51:15.283681257Z [err]    table: undefined,
+2025-11-19T18:51:15.283687153Z [err]    column: undefined,
+2025-11-19T18:51:15.283692201Z [err]    dataType: undefined,
+2025-11-19T18:51:15.283742216Z [err]    constraint: undefined,
+2025-11-19T18:51:15.283748160Z [err]    file: undefined,
+2025-11-19T18:51:15.283754186Z [err]    line: undefined,
+2025-11-19T18:51:15.283760337Z [err]    routine: undefined,
+2025-11-19T18:51:15.283766569Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.283770677Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.283774942Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.283782193Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.283786726Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.283790858Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.283795007Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.283799021Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.288190569Z [err]        errno: -3008,
+2025-11-19T18:51:15.288200380Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.288208545Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.288215367Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.288220451Z [err]      }
+2025-11-19T18:51:15.288225257Z [err]    }
+2025-11-19T18:51:15.288230259Z [err]  }
+2025-11-19T18:51:15.288235668Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.288240812Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.288247604Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.288252992Z [err]    severity: undefined,
+2025-11-19T18:51:15.288257260Z [err]    code: undefined,
+2025-11-19T18:51:15.288262417Z [err]    detail: undefined,
+2025-11-19T18:51:15.288266539Z [err]    hint: undefined,
+2025-11-19T18:51:15.288271308Z [err]    position: undefined,
+2025-11-19T18:51:15.288275677Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.288280832Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.288285541Z [err]    where: undefined,
+2025-11-19T18:51:15.288290172Z [err]    schema: undefined,
+2025-11-19T18:51:15.288294137Z [err]    table: undefined,
+2025-11-19T18:51:15.288298622Z [err]    column: undefined,
+2025-11-19T18:51:15.288302900Z [err]    dataType: undefined,
+2025-11-19T18:51:15.288307874Z [err]    constraint: undefined,
+2025-11-19T18:51:15.288313241Z [err]    file: undefined,
+2025-11-19T18:51:15.288317359Z [err]    line: undefined,
+2025-11-19T18:51:15.288321745Z [err]    routine: undefined,
+2025-11-19T18:51:15.288325791Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.288333595Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.304697749Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:15.304704825Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:15.304709943Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:15.304717029Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:15.304723416Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:15.304729499Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:15.304734666Z [err]        errno: -3008,
+2025-11-19T18:51:15.304741550Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:15.304747697Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:15.304754328Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:15.304761286Z [err]      }
+2025-11-19T18:51:15.304768973Z [err]    }
+2025-11-19T18:51:15.304774589Z [err]  }
+2025-11-19T18:51:15.309480343Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:15.309491241Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:15.309498625Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:15.309505699Z [err]    severity: undefined,
+2025-11-19T18:51:15.309516441Z [err]    code: undefined,
+2025-11-19T18:51:15.309522146Z [err]    detail: undefined,
+2025-11-19T18:51:15.309527758Z [err]    hint: undefined,
+2025-11-19T18:51:15.309532799Z [err]    position: undefined,
+2025-11-19T18:51:15.309537575Z [err]    internalPosition: undefined,
+2025-11-19T18:51:15.309542161Z [err]    internalQuery: undefined,
+2025-11-19T18:51:15.309547788Z [err]    where: undefined,
+2025-11-19T18:51:15.309553211Z [err]    schema: undefined,
+2025-11-19T18:51:15.309560307Z [err]    table: undefined,
+2025-11-19T18:51:15.309568526Z [err]    column: undefined,
+2025-11-19T18:51:15.309573793Z [err]    dataType: undefined,
+2025-11-19T18:51:15.309578879Z [err]    constraint: undefined,
+2025-11-19T18:51:15.309583662Z [err]    file: undefined,
+2025-11-19T18:51:15.309588060Z [err]    line: undefined,
+2025-11-19T18:51:15.309603210Z [err]    routine: undefined,
+2025-11-19T18:51:15.309609814Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:15.309615948Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:15.309621713Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:16.292561533Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T18:51:16.292570185Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T18:51:16.292606014Z [err]    column: undefined,
+2025-11-19T18:51:16.292612511Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:16.292618030Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:16.292623508Z [err]    dataType: undefined,
+2025-11-19T18:51:16.292624758Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:16.292630758Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T18:51:16.292636075Z [err]    severity: undefined,
+2025-11-19T18:51:16.292642815Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T18:51:16.292644180Z [err]    internalQuery: undefined,
+2025-11-19T18:51:16.292654024Z [err]    code: undefined,
+2025-11-19T18:51:16.292656987Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T18:51:16.292658163Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T18:51:16.292665605Z [err]    where: undefined,
+2025-11-19T18:51:16.292666399Z [err]    detail: undefined,
+2025-11-19T18:51:16.292674806Z [err]  Cache read error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:16.292678956Z [err]    hint: undefined,
+2025-11-19T18:51:16.292682563Z [err]    schema: undefined,
+2025-11-19T18:51:16.292690027Z [err]    position: undefined,
+2025-11-19T18:51:16.292697813Z [err]    table: undefined,
+2025-11-19T18:51:16.292704381Z [err]    internalPosition: undefined,
+2025-11-19T18:51:16.300162539Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T18:51:16.300168303Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T18:51:16.300173303Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T18:51:16.300178540Z [inf]  Fetching props from The Odds API for NFL...
+2025-11-19T18:51:16.300183406Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:16.300189055Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:16.300195387Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:16.300201663Z [err]    severity: undefined,
+2025-11-19T18:51:16.300209329Z [err]    constraint: undefined,
+2025-11-19T18:51:16.300213977Z [err]    code: undefined,
+2025-11-19T18:51:16.300221673Z [err]    file: undefined,
+2025-11-19T18:51:16.300227522Z [err]    detail: undefined,
+2025-11-19T18:51:16.300232948Z [err]    line: undefined,
+2025-11-19T18:51:16.300239811Z [err]    hint: undefined,
+2025-11-19T18:51:16.300246009Z [err]    routine: undefined,
+2025-11-19T18:51:16.300251591Z [err]    position: undefined,
+2025-11-19T18:51:16.300257357Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:16.300268359Z [err]    internalPosition: undefined,
+2025-11-19T18:51:16.300269876Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:16.300281572Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:16.300285147Z [err]    internalQuery: undefined,
+2025-11-19T18:51:16.300291761Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:16.300299617Z [err]    where: undefined,
+2025-11-19T18:51:16.300302900Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:16.300311375Z [err]    schema: undefined,
+2025-11-19T18:51:16.300313602Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:16.300323381Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:16.300329319Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:16.300333969Z [err]        errno: -3008,
+2025-11-19T18:51:16.300338794Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:16.300344229Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:16.300348999Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:16.300355449Z [err]      }
+2025-11-19T18:51:16.300360239Z [err]    }
+2025-11-19T18:51:16.300365197Z [err]  }
+2025-11-19T18:51:16.300373345Z [inf]  No props found on Underdog for NFL
+2025-11-19T18:51:16.300378072Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T18:51:16.300383825Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T18:51:16.300388648Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:16.300393190Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T18:51:16.300551360Z [err]    table: undefined,
+2025-11-19T18:51:16.300562406Z [err]    column: undefined,
+2025-11-19T18:51:16.300570382Z [err]    dataType: undefined,
+2025-11-19T18:51:16.300577804Z [err]    constraint: undefined,
+2025-11-19T18:51:16.300584455Z [err]    file: undefined,
+2025-11-19T18:51:16.300591547Z [err]    line: undefined,
+2025-11-19T18:51:16.300598756Z [err]    routine: undefined,
+2025-11-19T18:51:16.300606992Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:16.300613445Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:16.301623047Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:16.301633631Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:16.301638736Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:16.301643539Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:16.301650250Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:16.301657296Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:16.301701619Z [err]        errno: -3008,
+2025-11-19T18:51:16.301708215Z [err]    where: undefined,
+2025-11-19T18:51:16.301711901Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:16.301722433Z [err]      }
+2025-11-19T18:51:16.301722887Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:16.301736709Z [err]    }
+2025-11-19T18:51:16.301737054Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:16.301745985Z [err]  }
+2025-11-19T18:51:16.301753465Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:16.301759149Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:16.301764802Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:16.301770814Z [err]    severity: undefined,
+2025-11-19T18:51:16.301778572Z [err]    code: undefined,
+2025-11-19T18:51:16.301786192Z [err]    detail: undefined,
+2025-11-19T18:51:16.301792548Z [err]    hint: undefined,
+2025-11-19T18:51:16.301799590Z [err]    position: undefined,
+2025-11-19T18:51:16.301806957Z [err]    internalPosition: undefined,
+2025-11-19T18:51:16.301813127Z [err]    internalQuery: undefined,
+2025-11-19T18:51:16.303646580Z [err]    schema: undefined,
+2025-11-19T18:51:16.303653148Z [err]    table: undefined,
+2025-11-19T18:51:16.303660565Z [err]    column: undefined,
+2025-11-19T18:51:16.303667193Z [err]    dataType: undefined,
+2025-11-19T18:51:16.303675856Z [err]    constraint: undefined,
+2025-11-19T18:51:17.192159741Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:17.192169176Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:17.192174756Z [err]        errno: -3008,
+2025-11-19T18:51:17.192180452Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:17.192186701Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:17.192191798Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:17.192194999Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:17.192197930Z [err]      }
+2025-11-19T18:51:17.192202031Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:17.192203330Z [err]    }
+2025-11-19T18:51:17.192207035Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:17.192208984Z [err]  }
+2025-11-19T18:51:17.192211939Z [err]    severity: undefined,
+2025-11-19T18:51:17.192214279Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:17.192217784Z [err]    code: undefined,
+2025-11-19T18:51:17.192220258Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:17.192222626Z [err]    detail: undefined,
+2025-11-19T18:51:17.192225692Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:17.192228785Z [err]    hint: undefined,
+2025-11-19T18:51:17.192232062Z [err]    severity: undefined,
+2025-11-19T18:51:17.192234454Z [err]    position: undefined,
+2025-11-19T18:51:17.192237919Z [err]    code: undefined,
+2025-11-19T18:51:17.192240014Z [err]    internalPosition: undefined,
+2025-11-19T18:51:17.192244046Z [err]    detail: undefined,
+2025-11-19T18:51:17.192245502Z [err]    internalQuery: undefined,
+2025-11-19T18:51:17.192248906Z [err]    hint: undefined,
+2025-11-19T18:51:17.192250372Z [err]    where: undefined,
+2025-11-19T18:51:17.192254338Z [err]    position: undefined,
+2025-11-19T18:51:17.192258786Z [err]    internalPosition: undefined,
+2025-11-19T18:51:17.192262661Z [err]    schema: undefined,
+2025-11-19T18:51:17.192263814Z [err]    internalQuery: undefined,
+2025-11-19T18:51:17.192268499Z [err]    where: undefined,
+2025-11-19T18:51:17.192270431Z [err]    table: undefined,
+2025-11-19T18:51:17.192273694Z [err]    schema: undefined,
+2025-11-19T18:51:17.192277668Z [err]    column: undefined,
+2025-11-19T18:51:17.192279126Z [err]    table: undefined,
+2025-11-19T18:51:17.192285524Z [err]    dataType: undefined,
+2025-11-19T18:51:17.192285567Z [err]    column: undefined,
+2025-11-19T18:51:17.192291339Z [err]    dataType: undefined,
+2025-11-19T18:51:17.192293225Z [err]    constraint: undefined,
+2025-11-19T18:51:17.192297247Z [err]    constraint: undefined,
+2025-11-19T18:51:17.192300453Z [err]    file: undefined,
+2025-11-19T18:51:17.192302944Z [err]    file: undefined,
+2025-11-19T18:51:17.192307827Z [err]    line: undefined,
+2025-11-19T18:51:17.192312251Z [err]    routine: undefined,
+2025-11-19T18:51:17.192314486Z [err]    line: undefined,
+2025-11-19T18:51:17.192322900Z [err]    routine: undefined,
+2025-11-19T18:51:17.192328051Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:17.192331982Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:17.192335780Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:17.192340085Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:17.192344049Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:17.192348400Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:17.192403040Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:17.192408211Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:17.192414322Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:17.192419375Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:17.192424286Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:17.192430093Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:17.192434711Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:17.192439161Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:17.192443214Z [err]        errno: -3008,
+2025-11-19T18:51:17.192447144Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:17.192452335Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:17.192456531Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:17.192460435Z [err]      }
+2025-11-19T18:51:17.192464453Z [err]    }
+2025-11-19T18:51:17.192468529Z [err]  }
+2025-11-19T18:51:17.192472312Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:17.192476419Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:17.192480488Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:17.192484091Z [err]    severity: undefined,
+2025-11-19T18:51:17.192487884Z [err]    code: undefined,
+2025-11-19T18:51:17.192491559Z [err]    detail: undefined,
+2025-11-19T18:51:17.193614511Z [err]    hint: undefined,
+2025-11-19T18:51:17.193621726Z [err]    position: undefined,
+2025-11-19T18:51:17.193626025Z [err]    internalPosition: undefined,
+2025-11-19T18:51:17.196306741Z [err]    internalQuery: undefined,
+2025-11-19T18:51:17.196310194Z [err]    where: undefined,
+2025-11-19T18:51:17.196313923Z [err]    schema: undefined,
+2025-11-19T18:51:17.196317913Z [err]    table: undefined,
+2025-11-19T18:51:17.196322943Z [err]    column: undefined,
+2025-11-19T18:51:17.196341841Z [err]    dataType: undefined,
+2025-11-19T18:51:17.196345659Z [err]    constraint: undefined,
+2025-11-19T18:51:17.196349736Z [err]    file: undefined,
+2025-11-19T18:51:17.196353765Z [err]    line: undefined,
+2025-11-19T18:51:17.196357502Z [err]    routine: undefined,
+2025-11-19T18:51:17.196362879Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:17.196366651Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:17.196370451Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:17.196374527Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:17.196380420Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:17.196384079Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:17.196387570Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:17.196391906Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:17.196395711Z [err]        errno: -3008,
+2025-11-19T18:51:17.196401602Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:17.196405413Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:17.196409954Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:17.196413885Z [err]      }
+2025-11-19T18:51:17.196419824Z [err]    }
+2025-11-19T18:51:17.196423859Z [err]  }
+2025-11-19T18:51:17.196427641Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:17.198807527Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:17.198813728Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:17.198819142Z [err]    severity: undefined,
+2025-11-19T18:51:17.198824615Z [err]    code: undefined,
+2025-11-19T18:51:17.198829963Z [err]    detail: undefined,
+2025-11-19T18:51:17.198835059Z [err]    hint: undefined,
+2025-11-19T18:51:17.198841465Z [err]    position: undefined,
+2025-11-19T18:51:17.198846561Z [err]    internalPosition: undefined,
+2025-11-19T18:51:17.198853812Z [err]    internalQuery: undefined,
+2025-11-19T18:51:17.198952243Z [err]    where: undefined,
+2025-11-19T18:51:17.198961382Z [err]    schema: undefined,
+2025-11-19T18:51:17.198967520Z [err]    table: undefined,
+2025-11-19T18:51:17.198975550Z [err]    column: undefined,
+2025-11-19T18:51:17.198982838Z [err]    dataType: undefined,
+2025-11-19T18:51:17.198989674Z [err]    constraint: undefined,
+2025-11-19T18:51:17.198994841Z [err]    file: undefined,
+2025-11-19T18:51:17.198999862Z [err]    line: undefined,
+2025-11-19T18:51:17.199004617Z [err]    routine: undefined,
+2025-11-19T18:51:17.199009360Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:17.199014639Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:17.199019443Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:17.199023782Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:17.199028418Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:17.199033774Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:17.199039677Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:17.200692371Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:17.200699425Z [err]        errno: -3008,
+2025-11-19T18:51:17.200705552Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:17.200710546Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:17.200716126Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:17.200721787Z [err]      }
+2025-11-19T18:51:17.200727378Z [err]    }
+2025-11-19T18:51:17.200733031Z [err]  }
+2025-11-19T18:51:17.200738726Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:17.200745534Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:17.200751600Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:17.200757885Z [err]    severity: undefined,
+2025-11-19T18:51:17.200763233Z [err]    code: undefined,
+2025-11-19T18:51:17.200769274Z [err]    detail: undefined,
+2025-11-19T18:51:17.200774763Z [err]    hint: undefined,
+2025-11-19T18:51:17.200779850Z [err]    position: undefined,
+2025-11-19T18:51:17.200787649Z [err]    internalPosition: undefined,
+2025-11-19T18:51:17.200795120Z [err]    internalQuery: undefined,
+2025-11-19T18:51:17.200800859Z [err]    where: undefined,
+2025-11-19T18:51:17.200807037Z [err]    schema: undefined,
+2025-11-19T18:51:17.200812942Z [err]    table: undefined,
+2025-11-19T18:51:17.200818766Z [err]    column: undefined,
+2025-11-19T18:51:17.200823531Z [err]    dataType: undefined,
+2025-11-19T18:51:17.200833852Z [err]    constraint: undefined,
+2025-11-19T18:51:17.200838724Z [err]    file: undefined,
+2025-11-19T18:51:17.200843788Z [err]    line: undefined,
+2025-11-19T18:51:17.200849364Z [err]    routine: undefined,
+2025-11-19T18:51:17.200855103Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:17.203476565Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:17.203485764Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:17.203494791Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:17.203503354Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:18.274583056Z [err]    dataType: undefined,
+2025-11-19T18:51:18.274586859Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:18.274598331Z [err]    constraint: undefined,
+2025-11-19T18:51:18.274602338Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:18.274606969Z [err]    file: undefined,
+2025-11-19T18:51:18.274634132Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:18.274641277Z [err]    line: undefined,
+2025-11-19T18:51:18.274652014Z [err]    routine: undefined,
+2025-11-19T18:51:18.274662121Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:18.274667540Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:18.274673745Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:18.274867219Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:18.274876218Z [err]        errno: -3008,
+2025-11-19T18:51:18.274880476Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:18.274886181Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:18.274897417Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:18.274904319Z [err]  }
+2025-11-19T18:51:18.274905906Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:18.274913458Z [err]    position: undefined,
+2025-11-19T18:51:18.274916503Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:18.274917828Z [err]      }
+2025-11-19T18:51:18.274925748Z [err]    internalPosition: undefined,
+2025-11-19T18:51:18.274927245Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:18.274928767Z [err]    }
+2025-11-19T18:51:18.274934838Z [err]    internalQuery: undefined,
+2025-11-19T18:51:18.274938667Z [err]    constraint: undefined,
+2025-11-19T18:51:18.274943750Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:18.274947101Z [err]    column: undefined,
+2025-11-19T18:51:18.274947993Z [err]    schema: undefined,
+2025-11-19T18:51:18.274948234Z [err]    where: undefined,
+2025-11-19T18:51:18.274958204Z [err]    file: undefined,
+2025-11-19T18:51:18.274959382Z [err]    severity: undefined,
+2025-11-19T18:51:18.274964142Z [err]    table: undefined,
+2025-11-19T18:51:18.274966653Z [err]    dataType: undefined,
+2025-11-19T18:51:18.274972278Z [err]    code: undefined,
+2025-11-19T18:51:18.274980006Z [err]    detail: undefined,
+2025-11-19T18:51:18.274986445Z [err]    hint: undefined,
+2025-11-19T18:51:18.275012942Z [err]    line: undefined,
+2025-11-19T18:51:18.275031418Z [err]    routine: undefined,
+2025-11-19T18:51:18.275224491Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:18.275228934Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:18.275233402Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:18.275238200Z [err]    severity: undefined,
+2025-11-19T18:51:18.275243037Z [err]    code: undefined,
+2025-11-19T18:51:18.275247661Z [err]    detail: undefined,
+2025-11-19T18:51:18.275252320Z [err]    hint: undefined,
+2025-11-19T18:51:18.275257782Z [err]    position: undefined,
+2025-11-19T18:51:18.275264653Z [err]    internalPosition: undefined,
+2025-11-19T18:51:18.275269740Z [err]    internalQuery: undefined,
+2025-11-19T18:51:18.275274826Z [err]    where: undefined,
+2025-11-19T18:51:18.275279377Z [err]    schema: undefined,
+2025-11-19T18:51:18.275284343Z [err]    table: undefined,
+2025-11-19T18:51:18.275289072Z [err]    column: undefined,
+2025-11-19T18:51:18.277808963Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:18.277814168Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:18.277821192Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:18.277827050Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:18.277833434Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:18.277839567Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:18.277846349Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:18.277852708Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:18.277859260Z [err]        errno: -3008,
+2025-11-19T18:51:18.277866435Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:18.277873722Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:18.277881291Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:18.277888047Z [err]      }
+2025-11-19T18:51:18.277895707Z [err]    }
+2025-11-19T18:51:18.277902483Z [err]  }
+2025-11-19T18:51:18.277908952Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:18.277915888Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:18.277923626Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:18.277932487Z [err]    severity: undefined,
+2025-11-19T18:51:18.277939923Z [err]    code: undefined,
+2025-11-19T18:51:18.277946710Z [err]    detail: undefined,
+2025-11-19T18:51:18.277953478Z [err]    hint: undefined,
+2025-11-19T18:51:18.277961448Z [err]    position: undefined,
+2025-11-19T18:51:18.277968293Z [err]    internalPosition: undefined,
+2025-11-19T18:51:18.278345277Z [err]    internalQuery: undefined,
+2025-11-19T18:51:18.278351092Z [err]    where: undefined,
+2025-11-19T18:51:18.278357065Z [err]    schema: undefined,
+2025-11-19T18:51:18.278362968Z [err]    table: undefined,
+2025-11-19T18:51:18.278368652Z [err]    column: undefined,
+2025-11-19T18:51:18.278374561Z [err]    dataType: undefined,
+2025-11-19T18:51:18.278380135Z [err]    constraint: undefined,
+2025-11-19T18:51:18.278385323Z [err]    file: undefined,
+2025-11-19T18:51:18.278390965Z [err]    line: undefined,
+2025-11-19T18:51:18.278397135Z [err]    routine: undefined,
+2025-11-19T18:51:18.278417751Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:18.278423398Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:18.278428570Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:18.278436044Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:18.278443491Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:18.278453799Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:18.278461387Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:18.278468357Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:18.278476570Z [err]        errno: -3008,
+2025-11-19T18:51:18.278483065Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:18.278489164Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:18.278495554Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:18.278501852Z [err]      }
+2025-11-19T18:51:18.278508298Z [err]    }
+2025-11-19T18:51:18.278515306Z [err]  }
+2025-11-19T18:51:18.278523085Z [inf]  Found 16 upcoming icehockey_nhl events, fetching player props...
+2025-11-19T18:51:18.279549068Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:18.279558048Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:19.258240871Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:19.258357593Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:19.258357965Z [err]    position: undefined,
+2025-11-19T18:51:19.258368347Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:19.258369624Z [err]    internalPosition: undefined,
+2025-11-19T18:51:19.258372848Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:19.258378258Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:19.258391131Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:19.258395148Z [err]      }
+2025-11-19T18:51:19.258405031Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:19.258408707Z [err]    }
+2025-11-19T18:51:19.258419242Z [err]  }
+2025-11-19T18:51:19.258429313Z [err]  Rate limit check error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:19.258433590Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:19.258441276Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:19.258452357Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:19.258453734Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:19.258465297Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:19.258470293Z [err]    severity: undefined,
+2025-11-19T18:51:19.258478081Z [err]    code: undefined,
+2025-11-19T18:51:19.258488222Z [err]    detail: undefined,
+2025-11-19T18:51:19.258488683Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:19.258499723Z [err]    hint: undefined,
+2025-11-19T18:51:19.258510241Z [err]        errno: -3008,
+2025-11-19T18:51:19.258550731Z [err]    internalPosition: undefined,
+2025-11-19T18:51:19.258558352Z [err]    internalQuery: undefined,
+2025-11-19T18:51:19.258564125Z [err]    where: undefined,
+2025-11-19T18:51:19.258569616Z [err]    schema: undefined,
+2025-11-19T18:51:19.258575777Z [err]    table: undefined,
+2025-11-19T18:51:19.258582104Z [err]    column: undefined,
+2025-11-19T18:51:19.258594361Z [err]    dataType: undefined,
+2025-11-19T18:51:19.258604190Z [err]    constraint: undefined,
+2025-11-19T18:51:19.258610553Z [err]    file: undefined,
+2025-11-19T18:51:19.258616562Z [err]    line: undefined,
+2025-11-19T18:51:19.258622184Z [err]    routine: undefined,
+2025-11-19T18:51:19.258668940Z [err]    internalQuery: undefined,
+2025-11-19T18:51:19.258672980Z [err]    where: undefined,
+2025-11-19T18:51:19.258677483Z [err]    schema: undefined,
+2025-11-19T18:51:19.258682432Z [err]    table: undefined,
+2025-11-19T18:51:19.258686934Z [err]    column: undefined,
+2025-11-19T18:51:19.258691165Z [err]    dataType: undefined,
+2025-11-19T18:51:19.258696096Z [err]    constraint: undefined,
+2025-11-19T18:51:19.258701065Z [err]    file: undefined,
+2025-11-19T18:51:19.258705758Z [err]    line: undefined,
+2025-11-19T18:51:19.258715082Z [err]    routine: undefined,
+2025-11-19T18:51:19.258719703Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:19.258723793Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:19.258728234Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:19.258749443Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:19.258755336Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:19.258760058Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:19.258765067Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:19.258769410Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:19.258775070Z [err]        errno: -3008,
+2025-11-19T18:51:19.258779649Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:19.258783666Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:19.258787878Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:19.258792646Z [err]      }
+2025-11-19T18:51:19.258797080Z [err]    }
+2025-11-19T18:51:19.258804742Z [err]  }
+2025-11-19T18:51:19.258808876Z [err]  Rate limit increment error for odds_api: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:19.258817743Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:19.258821935Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:19.258826364Z [err]    severity: undefined,
+2025-11-19T18:51:19.258830823Z [err]    code: undefined,
+2025-11-19T18:51:19.258837703Z [err]    detail: undefined,
+2025-11-19T18:51:19.258841742Z [err]    hint: undefined,
+2025-11-19T18:51:19.258845822Z [err]    position: undefined,
+2025-11-19T18:51:19.262143484Z [err]    internalPosition: undefined,
+2025-11-19T18:51:19.262155553Z [err]    internalQuery: undefined,
+2025-11-19T18:51:19.262164671Z [err]    where: undefined,
+2025-11-19T18:51:19.262173043Z [err]    schema: undefined,
+2025-11-19T18:51:19.262181351Z [err]    table: undefined,
+2025-11-19T18:51:19.262189815Z [err]    column: undefined,
+2025-11-19T18:51:19.262197708Z [err]    dataType: undefined,
+2025-11-19T18:51:19.262202603Z [err]    constraint: undefined,
+2025-11-19T18:51:19.262209149Z [err]    file: undefined,
+2025-11-19T18:51:19.262214997Z [err]    line: undefined,
+2025-11-19T18:51:19.262223273Z [err]    routine: undefined,
+2025-11-19T18:51:19.262230700Z [err]    sourceError: TypeError: fetch failed
+2025-11-19T18:51:19.262238442Z [err]        at node:internal/deps/undici/undici:12618:11
+2025-11-19T18:51:19.262246406Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:51:19.262255466Z [err]        at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15) {
+2025-11-19T18:51:19.262263358Z [err]      cause: Error: getaddrinfo ENOTFOUND api.proxy.rlwy.net
+2025-11-19T18:51:19.262271840Z [err]          at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:51:19.262282381Z [err]          at __node_internal_ (node:internal/errors:715:10)
+2025-11-19T18:51:19.262331672Z [err]          at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:107:26) {
+2025-11-19T18:51:19.262339729Z [err]        errno: -3008,
+2025-11-19T18:51:19.262349820Z [err]        code: 'ENOTFOUND',
+2025-11-19T18:51:19.262357223Z [err]        syscall: 'getaddrinfo',
+2025-11-19T18:51:19.262368567Z [err]        hostname: 'api.proxy.rlwy.net'
+2025-11-19T18:51:19.262381097Z [err]      }
+2025-11-19T18:51:19.262392669Z [err]    }
+2025-11-19T18:51:19.262401704Z [err]  }
+2025-11-19T18:51:19.262411013Z [err]  Cache write error: NeonDbError: Error connecting to database: fetch failed
+2025-11-19T18:51:19.262419995Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+2025-11-19T18:51:19.262431211Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:51:19.262443786Z [err]    severity: undefined,
+2025-11-19T18:51:35.485901878Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 509
