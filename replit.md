@@ -4,6 +4,25 @@
 
 Prop Machine is an AI-powered sports betting intelligence platform designed to assist users in making informed sports betting decisions. It leverages machine learning for prop analysis, confidence scoring, and integrates the Kelly criterion for bankroll management. The platform primarily focuses on NHL props but also supports NBA, NFL, and MLB. Key capabilities include automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's effectiveness. The platform aims to provide a robust tool for users to gain an edge in sports betting.
 
+## Recent Changes (November 19, 2025)
+
+### Live Scoreboard Integration
+- **ESPN API Integration**: Integrated ESPN API for live game scores across all four major sports (NBA, NHL, NFL, MLB)
+- **Real-time Game Data**: Live Scoreboard now displays scheduled, in-progress, and completed games
+- **Database Persistence**: Games are stored in `gameEvents` table for tracking and settlement
+- **Service Architecture**: Uses `liveScoreboardService` with caching to respect API rate limits
+
+### Authentication & Security
+- **Session Bridging**: Added middleware to bridge `req.session.user` to `req.user` for compatibility
+- **Secure Endpoints**: All notification preference endpoints now require authentication
+- **Zod Validation**: PATCH requests validate using `updateNotificationPreferencesSchema`
+- **Database Fix**: Fixed `upsertUser()` to handle email uniqueness conflicts during OIDC login
+
+### Navigation Fixes
+- **Sidebar Updates**: Fixed navigation links to point to existing routes
+- **Props Feed**: Changed `/props` to `/` (Dashboard with Live Props)
+- **Live Scores**: Properly linked to `/live-scoreboard` page
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
