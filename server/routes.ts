@@ -302,14 +302,9 @@ router.get("/line-movements/recent", async (req, res) => {
 // ==================== SCOREBOARD ROUTES ====================
 router.get("/scoreboard", async (req, res) => {
   try {
-    // For now, return no games (scoreboard integration pending)
-    // In the future, integrate with ESPN/The Odds API for live scores
-    res.json({
-      NHL: [],
-      NBA: [],
-      NFL: [],
-      MLB: [],
-    });
+    const { liveScoreboardService } = await import("./services/liveScoreboardService");
+    const scores = await liveScoreboardService.getAllLiveScores();
+    res.json(scores);
   } catch (error) {
     console.error("Error fetching scoreboard:", error);
     res.status(500).json({ error: "Failed to fetch scoreboard" });

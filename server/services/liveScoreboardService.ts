@@ -20,7 +20,6 @@ export class LiveScoreboardService {
             awayScore: game.awayScore,
             status: game.status,
             playerStats: game.playerStats,
-            updatedAt: new Date(),
           });
         } else {
           const gameEvent: InsertGameEvent = {
@@ -33,7 +32,6 @@ export class LiveScoreboardService {
             homeScore: game.homeScore,
             awayScore: game.awayScore,
             playerStats: game.playerStats,
-            updatedAt: new Date(),
           };
           
           await storage.createGameEvent(gameEvent);

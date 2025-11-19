@@ -27,33 +27,24 @@ class ScoreboardClient extends IntegrationClient {
 
   async getNBAScores(date?: Date): Promise<GameResult[]> {
     try {
-      // Use balldontlie for NBA since it has player stats
-      const games = await balldontlieClient.getTodaysGames();
-      
-      const results: GameResult[] = [];
-      
-      for (const game of games.data) {
-        if (!game.home_team || !game.visitor_team) continue;
-        
-        const result: GameResult = {
-          gameId: game.id.toString(),
-          sport: "NBA",
-          homeTeam: game.home_team.name,
-          awayTeam: game.visitor_team.name,
-          homeScore: game.home_team_score || 0,
-          awayScore: game.visitor_team_score || 0,
-          status: (game.status === "Final" ? "final" : game.status === "In Progress" ? "in_progress" : "scheduled") as "scheduled" | "in_progress" | "final",
-          gameTime: new Date(game.date),
-          playerStats: {},
-        };
-        
-        // Player stats will be populated by settlement service
-        // when needed for prop settlement
-        
-        results.push(result);
-      }
-      
-      return results;
+      const dateStr = date ? this.formatDate(date) : this.formatDate(new Date());
+      const response = await this.get<any>(
+        `/basketball/nba/scoreboard?dates=${dateStr}`
+      );
+
+      if (!response?.data?.events) return [];
+
+      return response.data.events.map((event: any) => ({
+        gameId: event.id,
+        sport: "NBA",
+        homeTeam: event.competitions[0]?.competitors?.find((c: any) => c.homeAway === "home")?.team?.displayName || "",
+        awayTeam: event.competitions[0]?.competitors?.find((c: any) => c.homeAway === "away")?.team?.displayName || "",
+        homeScore: parseInt(event.competitions[0]?.competitors?.find((c: any) => c.homeAway === "home")?.score || "0"),
+        awayScore: parseInt(event.competitions[0]?.competitors?.find((c: any) => c.homeAway === "away")?.score || "0"),
+        status: event.status?.type?.completed ? "final" : event.status?.type?.state === "in" ? "in_progress" : "scheduled",
+        gameTime: new Date(event.date),
+        playerStats: {},
+      }));
     } catch (error) {
       console.error("Error fetching NBA scores:", error);
       return [];
