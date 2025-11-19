@@ -1,36 +1,29 @@
-/**
- * Authentication router - supports both Replit Auth and Google OAuth
- * - Replit Auth: Used when ISSUER_URL and REPL_ID are present (Replit platform)
- * - Google OAuth: Used when GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are present (Railway, local)
- */
-
-import type { Express, RequestHandler } from "express";
-
-// Check which auth provider to use based on environment variables
-const useGoogleAuth = process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET;
-
-let setupAuth: (app: Express) => Promise<void>;
-let isAuthenticated: RequestHandler;
-let getSession: () => any;
-
-async function initializeAuth() {
-  if (useGoogleAuth) {
-    console.log("🔐 Using Google OAuth");
-    const googleAuth = await import("./googleAuth");
-    setupAuth = googleAuth.setupGoogleAuth;
-    isAuthenticated = googleAuth.isAuthenticated;
-    getSession = googleAuth.getSession;
-  } else {
-    // Default to Replit Auth (works on Replit platform and local development)
-    console.log("🔐 Using Replit Auth (default)");
-    const replitAuth = await import("../replitAuth");
-    setupAuth = replitAuth.setupAuth;
-    isAuthenticated = replitAuth.isAuthenticated;
-    getSession = replitAuth.getSession;
-  }
-}
-
-// Initialize auth providers
-await initializeAuth();
-
-export { setupAuth, isAuthenticated, getSession };
+diff --git a/server/auth/index.ts b/server/auth/index.ts
+index 1111111..2222222 100644
+--- a/server/auth/index.ts
++++ b/server/auth/index.ts
+@@ -1,6 +1,18 @@
+-import express from "express";
+-const router = express.Router();
++import express from "express";
++import {
++  startGoogleAuth,
++  handleGoogleCallback,
++} from "./googleAuth.js";
++
++const router = express.Router();
+ 
+-router.get("/", (req, res) => {
+-  res.send("auth works");
++router.get("/google", async (req, res) => {
++  const url = await startGoogleAuth();
++  res.redirect(url);
+ });
++
++router.get("/google/callback", async (req, res) => {
++  const { code } = req.query;
++  const jwt = await handleGoogleCallback(code as string);
++  res.redirect(`/auth/success?jwt=${jwt}`);
++});
+ 
+ export default router;
