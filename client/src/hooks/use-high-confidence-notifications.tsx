@@ -99,7 +99,7 @@ export function useHighConfidenceNotifications(sport: string = 'NHL') {
                 {prop.player} - {prop.direction.toUpperCase()} {prop.line}
               </div>
               <div className="text-sm text-muted-foreground">
-                {prop.stat} • {prop.confidence}% confidence • {prop.ev.toFixed(1)}% EV
+                {prop.stat} • {prop.confidence}% confidence • {parseFloat(prop.ev as any).toFixed(1)}% EV
               </div>
               <div className="text-xs text-muted-foreground">
                 {prop.platform}

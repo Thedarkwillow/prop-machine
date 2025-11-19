@@ -183,11 +183,11 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
               </TableCell>
               <TableCell className="text-right">
                 <span className={`font-mono font-bold ${
-                  prop.ev >= 5 ? 'text-green-600 dark:text-green-400' : 
-                  prop.ev >= 0 ? 'text-yellow-600 dark:text-yellow-400' : 
+                  parseFloat(prop.ev as any) >= 5 ? 'text-green-600 dark:text-green-400' : 
+                  parseFloat(prop.ev as any) >= 0 ? 'text-yellow-600 dark:text-yellow-400' : 
                   'text-red-600 dark:text-red-400'
                 }`}>
-                  {prop.ev >= 0 ? '+' : ''}{prop.ev.toFixed(1)}%
+                  {parseFloat(prop.ev as any) >= 0 ? '+' : ''}{parseFloat(prop.ev as any).toFixed(1)}%
                 </span>
               </TableCell>
               <TableCell>
