@@ -1,0 +1,2174 @@
+2025-11-19T19:10:40.179390795Z [err]    constraint: undefined,
+2025-11-19T19:10:40.179397502Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:40.179404116Z [err]    line: '1449',
+2025-11-19T19:10:40.179410904Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:40.179415660Z [err]    sourceError: undefined
+2025-11-19T19:10:40.179421978Z [err]  }
+2025-11-19T19:10:41.202906912Z [err]    code: '42P01',
+2025-11-19T19:10:41.202914193Z [err]    detail: undefined,
+2025-11-19T19:10:41.202923008Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:41.202930259Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.202936237Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.202941585Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.202972369Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.202976283Z [err]    hint: undefined,
+2025-11-19T19:10:41.202981528Z [err]    schema: undefined,
+2025-11-19T19:10:41.202984461Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.202987779Z [err]    position: '141',
+2025-11-19T19:10:41.202993378Z [err]    where: undefined,
+2025-11-19T19:10:41.209629210Z [err]    table: undefined,
+2025-11-19T19:10:41.209637868Z [err]    column: undefined,
+2025-11-19T19:10:41.209643006Z [err]    dataType: undefined,
+2025-11-19T19:10:41.209647520Z [err]    constraint: undefined,
+2025-11-19T19:10:41.209651894Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.209656938Z [err]    line: '1449',
+2025-11-19T19:10:41.209664790Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.209673453Z [err]    sourceError: undefined
+2025-11-19T19:10:41.209682425Z [err]  }
+2025-11-19T19:10:41.209778563Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:41.209787346Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.209793400Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.209799702Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.209805850Z [err]    code: '42P01',
+2025-11-19T19:10:41.209952342Z [err]    detail: undefined,
+2025-11-19T19:10:41.209958327Z [err]    hint: undefined,
+2025-11-19T19:10:41.209964158Z [err]    position: '13',
+2025-11-19T19:10:41.209970582Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.209976253Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.209982112Z [err]    where: undefined,
+2025-11-19T19:10:41.209987366Z [err]    schema: undefined,
+2025-11-19T19:10:41.209994404Z [err]    table: undefined,
+2025-11-19T19:10:41.210000444Z [err]    column: undefined,
+2025-11-19T19:10:41.210008633Z [err]    dataType: undefined,
+2025-11-19T19:10:41.210014394Z [err]    constraint: undefined,
+2025-11-19T19:10:41.210019709Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.210025141Z [err]    line: '1449',
+2025-11-19T19:10:41.210031931Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.210037544Z [err]    sourceError: undefined
+2025-11-19T19:10:41.210043246Z [err]  }
+2025-11-19T19:10:41.210050461Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:41.210055813Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.210061235Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.210066773Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.210072125Z [err]    code: '42P01',
+2025-11-19T19:10:41.210078274Z [err]    detail: undefined,
+2025-11-19T19:10:41.210084203Z [err]    hint: undefined,
+2025-11-19T19:10:41.210090646Z [err]    position: '141',
+2025-11-19T19:10:41.210099887Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.210106884Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.210119162Z [err]    where: undefined,
+2025-11-19T19:10:41.210125788Z [err]    schema: undefined,
+2025-11-19T19:10:41.210131555Z [err]    table: undefined,
+2025-11-19T19:10:41.211329132Z [err]    column: undefined,
+2025-11-19T19:10:41.211336003Z [err]    dataType: undefined,
+2025-11-19T19:10:41.211341969Z [err]    constraint: undefined,
+2025-11-19T19:10:41.211347792Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.211352787Z [err]    line: '1449',
+2025-11-19T19:10:41.211358408Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.211367264Z [err]    sourceError: undefined
+2025-11-19T19:10:41.211373221Z [err]  }
+2025-11-19T19:10:41.211382481Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:41.211389086Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.211394609Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.211400496Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.211406455Z [err]    code: '42P01',
+2025-11-19T19:10:41.211412507Z [err]    detail: undefined,
+2025-11-19T19:10:41.211417849Z [err]    hint: undefined,
+2025-11-19T19:10:41.211425382Z [err]    position: '141',
+2025-11-19T19:10:41.211435859Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.211440560Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.211445870Z [err]    where: undefined,
+2025-11-19T19:10:41.211450649Z [err]    schema: undefined,
+2025-11-19T19:10:41.211455285Z [err]    table: undefined,
+2025-11-19T19:10:41.211460781Z [err]    column: undefined,
+2025-11-19T19:10:41.211467035Z [err]    dataType: undefined,
+2025-11-19T19:10:41.211474073Z [err]    constraint: undefined,
+2025-11-19T19:10:41.211480444Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.211485558Z [err]    line: '1449',
+2025-11-19T19:10:41.211490854Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.211495757Z [err]    sourceError: undefined
+2025-11-19T19:10:41.211607311Z [err]  }
+2025-11-19T19:10:41.211613516Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:41.211618673Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.211624970Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.211631846Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.211637461Z [err]    code: '42P01',
+2025-11-19T19:10:41.211643774Z [err]    detail: undefined,
+2025-11-19T19:10:41.211650450Z [err]    hint: undefined,
+2025-11-19T19:10:41.211655875Z [err]    position: '13',
+2025-11-19T19:10:41.211661110Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.211667328Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.211672788Z [err]    where: undefined,
+2025-11-19T19:10:41.211679108Z [err]    schema: undefined,
+2025-11-19T19:10:41.211685997Z [err]    table: undefined,
+2025-11-19T19:10:41.211692470Z [err]    column: undefined,
+2025-11-19T19:10:41.211704609Z [err]    dataType: undefined,
+2025-11-19T19:10:41.211710260Z [err]    constraint: undefined,
+2025-11-19T19:10:41.211716262Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.211722462Z [err]    line: '1449',
+2025-11-19T19:10:41.211728139Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.211733751Z [err]    sourceError: undefined
+2025-11-19T19:10:41.211740419Z [err]  }
+2025-11-19T19:10:41.211746387Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:41.211752215Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.211758482Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.211765309Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.212681480Z [err]    code: '42P01',
+2025-11-19T19:10:41.212689786Z [err]    detail: undefined,
+2025-11-19T19:10:41.212695500Z [err]    hint: undefined,
+2025-11-19T19:10:41.212701024Z [err]    position: '141',
+2025-11-19T19:10:41.212706373Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.212711622Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.212716693Z [err]    where: undefined,
+2025-11-19T19:10:41.212721643Z [err]    schema: undefined,
+2025-11-19T19:10:41.212727015Z [err]    table: undefined,
+2025-11-19T19:10:41.212733455Z [err]    column: undefined,
+2025-11-19T19:10:41.212739373Z [err]    dataType: undefined,
+2025-11-19T19:10:41.212744427Z [err]    constraint: undefined,
+2025-11-19T19:10:41.212750075Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.212755676Z [err]    line: '1449',
+2025-11-19T19:10:41.212760855Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.212766525Z [err]    sourceError: undefined
+2025-11-19T19:10:41.212772243Z [err]  }
+2025-11-19T19:10:41.316323091Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:41.316336122Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:41.316343359Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:41.316350553Z [err]    severity: 'ERROR',
+2025-11-19T19:10:41.316357351Z [err]    code: '42P01',
+2025-11-19T19:10:41.316364482Z [err]    detail: undefined,
+2025-11-19T19:10:41.316370801Z [err]    hint: undefined,
+2025-11-19T19:10:41.316376859Z [err]    position: '141',
+2025-11-19T19:10:41.316383623Z [err]    internalPosition: undefined,
+2025-11-19T19:10:41.316390322Z [err]    internalQuery: undefined,
+2025-11-19T19:10:41.316397183Z [err]    where: undefined,
+2025-11-19T19:10:41.316634912Z [err]    schema: undefined,
+2025-11-19T19:10:41.316642205Z [err]    table: undefined,
+2025-11-19T19:10:41.316648130Z [err]    column: undefined,
+2025-11-19T19:10:41.316653021Z [err]    dataType: undefined,
+2025-11-19T19:10:41.316657975Z [err]    constraint: undefined,
+2025-11-19T19:10:41.316663192Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:41.316668106Z [err]    line: '1449',
+2025-11-19T19:10:41.316673043Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:41.316677929Z [err]    sourceError: undefined
+2025-11-19T19:10:41.316682795Z [err]  }
+2025-11-19T19:10:42.188237631Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:42.188252293Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.188263654Z [err]    code: '42P01',
+2025-11-19T19:10:42.188272690Z [err]    detail: undefined,
+2025-11-19T19:10:42.188281629Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.188281759Z [err]    hint: undefined,
+2025-11-19T19:10:42.188299962Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.188436773Z [err]    position: '13',
+2025-11-19T19:10:42.188443952Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.188573297Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.188579222Z [err]    where: undefined,
+2025-11-19T19:10:42.195485240Z [err]    schema: undefined,
+2025-11-19T19:10:42.195495748Z [err]    table: undefined,
+2025-11-19T19:10:42.195502146Z [err]    column: undefined,
+2025-11-19T19:10:42.195508413Z [err]    dataType: undefined,
+2025-11-19T19:10:42.195514918Z [err]    constraint: undefined,
+2025-11-19T19:10:42.195521490Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.195526940Z [err]    line: '1449',
+2025-11-19T19:10:42.195533530Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.195538549Z [err]    sourceError: undefined
+2025-11-19T19:10:42.195544165Z [err]  }
+2025-11-19T19:10:42.195550188Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:42.195555586Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.195561105Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.195567066Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.195572563Z [err]    code: '42P01',
+2025-11-19T19:10:42.195743748Z [err]    detail: undefined,
+2025-11-19T19:10:42.195749137Z [err]    hint: undefined,
+2025-11-19T19:10:42.195755183Z [err]    position: '141',
+2025-11-19T19:10:42.195760911Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.195766773Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.195772378Z [err]    where: undefined,
+2025-11-19T19:10:42.195779113Z [err]    schema: undefined,
+2025-11-19T19:10:42.195785162Z [err]    table: undefined,
+2025-11-19T19:10:42.195791014Z [err]    column: undefined,
+2025-11-19T19:10:42.195797100Z [err]    dataType: undefined,
+2025-11-19T19:10:42.195802932Z [err]    constraint: undefined,
+2025-11-19T19:10:42.195811317Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.195817064Z [err]    line: '1449',
+2025-11-19T19:10:42.195822846Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.195827825Z [err]    sourceError: undefined
+2025-11-19T19:10:42.195838927Z [err]  }
+2025-11-19T19:10:42.195845833Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:42.195851404Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.195857021Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.195863708Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.195869330Z [err]    code: '42P01',
+2025-11-19T19:10:42.195874535Z [err]    detail: undefined,
+2025-11-19T19:10:42.195879847Z [err]    hint: undefined,
+2025-11-19T19:10:42.195885337Z [err]    position: '141',
+2025-11-19T19:10:42.195891145Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.195897025Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.195903045Z [err]    where: undefined,
+2025-11-19T19:10:42.195908928Z [err]    schema: undefined,
+2025-11-19T19:10:42.195914605Z [err]    table: undefined,
+2025-11-19T19:10:42.196602553Z [err]    column: undefined,
+2025-11-19T19:10:42.196608223Z [err]    dataType: undefined,
+2025-11-19T19:10:42.196617672Z [err]    constraint: undefined,
+2025-11-19T19:10:42.196623172Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.196629407Z [err]    line: '1449',
+2025-11-19T19:10:42.196634482Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.196639767Z [err]    sourceError: undefined
+2025-11-19T19:10:42.196644869Z [err]  }
+2025-11-19T19:10:42.196649766Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:42.196654408Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.196660748Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.196666023Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.196670532Z [err]    code: '42P01',
+2025-11-19T19:10:42.196678397Z [err]    detail: undefined,
+2025-11-19T19:10:42.196683275Z [err]    hint: undefined,
+2025-11-19T19:10:42.196687507Z [err]    position: '13',
+2025-11-19T19:10:42.196691728Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.196695915Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.196700416Z [err]    where: undefined,
+2025-11-19T19:10:42.196705309Z [err]    schema: undefined,
+2025-11-19T19:10:42.196710320Z [err]    table: undefined,
+2025-11-19T19:10:42.196714918Z [err]    column: undefined,
+2025-11-19T19:10:42.196719496Z [err]    dataType: undefined,
+2025-11-19T19:10:42.196724343Z [err]    constraint: undefined,
+2025-11-19T19:10:42.196730553Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.196736023Z [err]    line: '1449',
+2025-11-19T19:10:42.196741335Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.197042688Z [err]    sourceError: undefined
+2025-11-19T19:10:42.197048613Z [err]  }
+2025-11-19T19:10:42.199720468Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.199728079Z [err]    code: '42P01',
+2025-11-19T19:10:42.199732947Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.199739409Z [err]    where: undefined,
+2025-11-19T19:10:42.199746630Z [err]    schema: undefined,
+2025-11-19T19:10:42.199749932Z [err]    line: '1449',
+2025-11-19T19:10:42.199754370Z [err]    table: undefined,
+2025-11-19T19:10:42.199760084Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.199763585Z [err]    column: undefined,
+2025-11-19T19:10:42.199769397Z [err]    sourceError: undefined
+2025-11-19T19:10:42.199772604Z [err]    dataType: undefined,
+2025-11-19T19:10:42.199777817Z [err]  }
+2025-11-19T19:10:42.199781373Z [err]    constraint: undefined,
+2025-11-19T19:10:42.199789524Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.199790257Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:42.199799593Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.199806062Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.199811845Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.199898484Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:42.199904847Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.199910954Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.199916516Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.199922169Z [err]    code: '42P01',
+2025-11-19T19:10:42.199930189Z [err]    detail: undefined,
+2025-11-19T19:10:42.199936825Z [err]    hint: undefined,
+2025-11-19T19:10:42.199942740Z [err]    position: '141',
+2025-11-19T19:10:42.204982726Z [err]    dataType: undefined,
+2025-11-19T19:10:42.205011894Z [err]    constraint: undefined,
+2025-11-19T19:10:42.205018077Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.205022742Z [err]    line: '1449',
+2025-11-19T19:10:42.205027281Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.205032726Z [err]    sourceError: undefined
+2025-11-19T19:10:42.205037220Z [err]  }
+2025-11-19T19:10:42.205124857Z [err]    detail: undefined,
+2025-11-19T19:10:42.205130567Z [err]    hint: undefined,
+2025-11-19T19:10:42.205136809Z [err]    position: '141',
+2025-11-19T19:10:42.205143655Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.205150291Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.205156729Z [err]    where: undefined,
+2025-11-19T19:10:42.205162772Z [err]    schema: undefined,
+2025-11-19T19:10:42.205260044Z [err]    table: undefined,
+2025-11-19T19:10:42.205265369Z [err]    column: undefined,
+2025-11-19T19:10:42.214680043Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.214694253Z [err]    sourceError: undefined
+2025-11-19T19:10:42.214702586Z [err]  }
+2025-11-19T19:10:42.214710945Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.214722522Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.214730172Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.214737440Z [err]    code: '42P01',
+2025-11-19T19:10:42.214744666Z [err]    detail: undefined,
+2025-11-19T19:10:42.214751044Z [err]    hint: undefined,
+2025-11-19T19:10:42.214757472Z [err]    position: '13',
+2025-11-19T19:10:42.214763313Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.214771515Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.214777831Z [err]    where: undefined,
+2025-11-19T19:10:42.214783861Z [err]    schema: undefined,
+2025-11-19T19:10:42.214790413Z [err]    table: undefined,
+2025-11-19T19:10:42.214796548Z [err]    column: undefined,
+2025-11-19T19:10:42.214802776Z [err]    dataType: undefined,
+2025-11-19T19:10:42.214823794Z [err]    constraint: undefined,
+2025-11-19T19:10:42.214832059Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.214838316Z [err]    line: '1449',
+2025-11-19T19:10:42.214872713Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:42.299666579Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:42.299679951Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:42.299686907Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:42.299693962Z [err]    severity: 'ERROR',
+2025-11-19T19:10:42.299701451Z [err]    code: '42P01',
+2025-11-19T19:10:42.299708303Z [err]    detail: undefined,
+2025-11-19T19:10:42.299715812Z [err]    hint: undefined,
+2025-11-19T19:10:42.299723030Z [err]    position: '141',
+2025-11-19T19:10:42.299731761Z [err]    internalPosition: undefined,
+2025-11-19T19:10:42.299739005Z [err]    internalQuery: undefined,
+2025-11-19T19:10:42.299745716Z [err]    where: undefined,
+2025-11-19T19:10:42.299752291Z [err]    schema: undefined,
+2025-11-19T19:10:42.299759276Z [err]    table: undefined,
+2025-11-19T19:10:42.299766579Z [err]    column: undefined,
+2025-11-19T19:10:42.299775791Z [err]    dataType: undefined,
+2025-11-19T19:10:42.299783479Z [err]    constraint: undefined,
+2025-11-19T19:10:42.299790201Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:42.299798810Z [err]    line: '1449',
+2025-11-19T19:10:42.299806467Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:42.299812532Z [err]    sourceError: undefined
+2025-11-19T19:10:42.299830441Z [err]  }
+2025-11-19T19:10:43.254159620Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.254172222Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.254180689Z [err]    code: '42P01',
+2025-11-19T19:10:43.254201383Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:43.254208558Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.262780299Z [err]    hint: undefined,
+2025-11-19T19:10:43.262782248Z [err]    detail: undefined,
+2025-11-19T19:10:43.262786761Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.262793241Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.262795668Z [err]    position: '141',
+2025-11-19T19:10:43.262800927Z [err]    hint: undefined,
+2025-11-19T19:10:43.262810312Z [err]    position: '141',
+2025-11-19T19:10:43.262821430Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.262822053Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.262825052Z [err]    code: '42P01',
+2025-11-19T19:10:43.262831660Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.262842015Z [err]    where: undefined,
+2025-11-19T19:10:43.262844883Z [err]    detail: undefined,
+2025-11-19T19:10:43.262851521Z [err]    schema: undefined,
+2025-11-19T19:10:43.262859501Z [err]    table: undefined,
+2025-11-19T19:10:43.262867205Z [err]    column: undefined,
+2025-11-19T19:10:43.262874495Z [err]    dataType: undefined,
+2025-11-19T19:10:43.262881891Z [err]    constraint: undefined,
+2025-11-19T19:10:43.262889963Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.262897948Z [err]    line: '1449',
+2025-11-19T19:10:43.262903949Z [err]    line: '1449',
+2025-11-19T19:10:43.262909448Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.262915474Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.262919509Z [err]    sourceError: undefined
+2025-11-19T19:10:43.262926707Z [err]    sourceError: undefined
+2025-11-19T19:10:43.262928949Z [err]  }
+2025-11-19T19:10:43.262937728Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:43.262940876Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.262947070Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.262951013Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.262958274Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.262961232Z [err]    where: undefined,
+2025-11-19T19:10:43.262966889Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.262974360Z [err]    schema: undefined,
+2025-11-19T19:10:43.262976551Z [err]    code: '42P01',
+2025-11-19T19:10:43.262984416Z [err]    table: undefined,
+2025-11-19T19:10:43.262991397Z [err]    column: undefined,
+2025-11-19T19:10:43.262998359Z [err]    dataType: undefined,
+2025-11-19T19:10:43.263030275Z [err]    constraint: undefined,
+2025-11-19T19:10:43.263037491Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.263192904Z [err]    detail: undefined,
+2025-11-19T19:10:43.263200595Z [err]    hint: undefined,
+2025-11-19T19:10:43.263207581Z [err]    position: '13',
+2025-11-19T19:10:43.263215257Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.263221700Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.263227468Z [err]    where: undefined,
+2025-11-19T19:10:43.263233782Z [err]    schema: undefined,
+2025-11-19T19:10:43.263239705Z [err]    table: undefined,
+2025-11-19T19:10:43.263246420Z [err]    column: undefined,
+2025-11-19T19:10:43.263334600Z [err]    dataType: undefined,
+2025-11-19T19:10:43.263344782Z [err]    constraint: undefined,
+2025-11-19T19:10:43.263354092Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.263361772Z [err]    line: '1449',
+2025-11-19T19:10:43.263369021Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.263376281Z [err]    sourceError: undefined
+2025-11-19T19:10:43.263383171Z [err]  }
+2025-11-19T19:10:43.263390227Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:43.263397110Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.263406159Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.263413137Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.263419980Z [err]    code: '42P01',
+2025-11-19T19:10:43.263426831Z [err]    detail: undefined,
+2025-11-19T19:10:43.263434239Z [err]    hint: undefined,
+2025-11-19T19:10:43.263441082Z [err]    position: '141',
+2025-11-19T19:10:43.263448362Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.263455917Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.263465642Z [err]    where: undefined,
+2025-11-19T19:10:43.263472683Z [err]    schema: undefined,
+2025-11-19T19:10:43.263479962Z [err]    table: undefined,
+2025-11-19T19:10:43.263599476Z [err]    column: undefined,
+2025-11-19T19:10:43.263606198Z [err]    dataType: undefined,
+2025-11-19T19:10:43.263620452Z [err]    constraint: undefined,
+2025-11-19T19:10:43.263627447Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.263634317Z [err]    line: '1449',
+2025-11-19T19:10:43.263640447Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.263647473Z [err]    sourceError: undefined
+2025-11-19T19:10:43.263655502Z [err]  }
+2025-11-19T19:10:43.263663112Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:43.267310969Z [err]  }
+2025-11-19T19:10:43.267315323Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:43.267319626Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.267327385Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.267332288Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.267337001Z [err]    code: '42P01',
+2025-11-19T19:10:43.267341716Z [err]    detail: undefined,
+2025-11-19T19:10:43.267346504Z [err]    hint: undefined,
+2025-11-19T19:10:43.267350850Z [err]    position: '13',
+2025-11-19T19:10:43.267355569Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.267359982Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.267367077Z [err]    where: undefined,
+2025-11-19T19:10:43.267371299Z [err]    schema: undefined,
+2025-11-19T19:10:43.267376045Z [err]    table: undefined,
+2025-11-19T19:10:43.267381197Z [err]    column: undefined,
+2025-11-19T19:10:43.267385293Z [err]    dataType: undefined,
+2025-11-19T19:10:43.267389779Z [err]    constraint: undefined,
+2025-11-19T19:10:43.267394001Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.267398486Z [err]    line: '1449',
+2025-11-19T19:10:43.267403371Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.267407669Z [err]    sourceError: undefined
+2025-11-19T19:10:43.267412505Z [err]  }
+2025-11-19T19:10:43.267417125Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:43.267421630Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.267426034Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.267430527Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.270796554Z [err]    hint: undefined,
+2025-11-19T19:10:43.270818673Z [err]    position: '141',
+2025-11-19T19:10:43.270825924Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.270832581Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.270839354Z [err]    where: undefined,
+2025-11-19T19:10:43.270847163Z [err]    schema: undefined,
+2025-11-19T19:10:43.270857829Z [err]    table: undefined,
+2025-11-19T19:10:43.270868917Z [err]    column: undefined,
+2025-11-19T19:10:43.270869636Z [err]    code: '42P01',
+2025-11-19T19:10:43.270878296Z [err]    detail: undefined,
+2025-11-19T19:10:43.270879841Z [err]    dataType: undefined,
+2025-11-19T19:10:43.270887580Z [err]    constraint: undefined,
+2025-11-19T19:10:43.270893673Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.270899832Z [err]    line: '1449',
+2025-11-19T19:10:43.270909255Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.270916648Z [err]    sourceError: undefined
+2025-11-19T19:10:43.270924561Z [err]  }
+2025-11-19T19:10:43.306385538Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:43.306390810Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:43.306399053Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:43.306403497Z [err]    severity: 'ERROR',
+2025-11-19T19:10:43.306407633Z [err]    code: '42P01',
+2025-11-19T19:10:43.306413834Z [err]    detail: undefined,
+2025-11-19T19:10:43.306418652Z [err]    hint: undefined,
+2025-11-19T19:10:43.306423763Z [err]    position: '141',
+2025-11-19T19:10:43.306427834Z [err]    internalPosition: undefined,
+2025-11-19T19:10:43.306432202Z [err]    internalQuery: undefined,
+2025-11-19T19:10:43.306438809Z [err]    where: undefined,
+2025-11-19T19:10:43.306445225Z [err]    schema: undefined,
+2025-11-19T19:10:43.306450638Z [err]    table: undefined,
+2025-11-19T19:10:43.306454835Z [err]    column: undefined,
+2025-11-19T19:10:43.306459184Z [err]    dataType: undefined,
+2025-11-19T19:10:43.306464061Z [err]    constraint: undefined,
+2025-11-19T19:10:43.306468714Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:43.306473104Z [err]    line: '1449',
+2025-11-19T19:10:43.306477416Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:43.306483011Z [err]    sourceError: undefined
+2025-11-19T19:10:43.306487077Z [err]  }
+2025-11-19T19:10:44.661821325Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:44.661828224Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:44.661835091Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:44.661841114Z [err]    severity: 'ERROR',
+2025-11-19T19:10:44.661847463Z [err]    code: '42P01',
+2025-11-19T19:10:44.661854256Z [err]    detail: undefined,
+2025-11-19T19:10:44.661862054Z [err]    hint: undefined,
+2025-11-19T19:10:44.661868355Z [err]    position: '13',
+2025-11-19T19:10:44.661874835Z [err]    internalPosition: undefined,
+2025-11-19T19:10:44.661882027Z [err]    internalQuery: undefined,
+2025-11-19T19:10:44.661889360Z [err]    where: undefined,
+2025-11-19T19:10:44.661895991Z [err]    schema: undefined,
+2025-11-19T19:10:44.661902146Z [err]    table: undefined,
+2025-11-19T19:10:44.661910362Z [err]    column: undefined,
+2025-11-19T19:10:44.661920306Z [err]    dataType: undefined,
+2025-11-19T19:10:44.661927241Z [err]    constraint: undefined,
+2025-11-19T19:10:44.661936032Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:44.661943064Z [err]    line: '1449',
+2025-11-19T19:10:44.661951869Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:44.661959034Z [err]    sourceError: undefined
+2025-11-19T19:10:44.661967148Z [err]  }
+2025-11-19T19:10:44.661975923Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:44.661984439Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:44.661991169Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:44.662003272Z [err]    severity: 'ERROR',
+2025-11-19T19:10:44.662014149Z [err]    code: '42P01',
+2025-11-19T19:10:45.591534707Z [err]    column: undefined,
+2025-11-19T19:10:45.591541689Z [err]    dataType: undefined,
+2025-11-19T19:10:45.591549450Z [err]    constraint: undefined,
+2025-11-19T19:10:45.591557104Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.591563683Z [err]    line: '1449',
+2025-11-19T19:10:45.591570694Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.591578342Z [err]    sourceError: undefined
+2025-11-19T19:10:45.591585921Z [err]  }
+2025-11-19T19:10:45.591593631Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:45.591601580Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.591609860Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.591617064Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.591626516Z [err]    code: '42P01',
+2025-11-19T19:10:45.591634558Z [err]    detail: undefined,
+2025-11-19T19:10:45.591642923Z [err]    hint: undefined,
+2025-11-19T19:10:45.591650729Z [err]    position: '13',
+2025-11-19T19:10:45.591658341Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.591665478Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.591673589Z [err]    where: undefined,
+2025-11-19T19:10:45.591680822Z [err]    schema: undefined,
+2025-11-19T19:10:45.591689070Z [err]    table: undefined,
+2025-11-19T19:10:45.591695863Z [err]    column: undefined,
+2025-11-19T19:10:45.591708341Z [err]    dataType: undefined,
+2025-11-19T19:10:45.591711360Z [err]    detail: undefined,
+2025-11-19T19:10:45.591725893Z [err]    constraint: undefined,
+2025-11-19T19:10:45.591726269Z [err]    hint: undefined,
+2025-11-19T19:10:45.591742252Z [err]    position: '141',
+2025-11-19T19:10:45.591743073Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.591758529Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.591759514Z [err]    line: '1449',
+2025-11-19T19:10:45.591773983Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.591775864Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.591783833Z [err]    sourceError: undefined
+2025-11-19T19:10:45.591791605Z [err]  }
+2025-11-19T19:10:45.591797912Z [err]    where: undefined,
+2025-11-19T19:10:45.591807854Z [err]    schema: undefined,
+2025-11-19T19:10:45.591814741Z [err]    table: undefined,
+2025-11-19T19:10:45.591821923Z [err]    column: undefined,
+2025-11-19T19:10:45.591829010Z [err]    dataType: undefined,
+2025-11-19T19:10:45.591836740Z [err]    constraint: undefined,
+2025-11-19T19:10:45.591844654Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.591852176Z [err]    line: '1449',
+2025-11-19T19:10:45.591860598Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.591867402Z [err]    sourceError: undefined
+2025-11-19T19:10:45.591874228Z [err]  }
+2025-11-19T19:10:45.591881896Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.591889624Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.591896126Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.591903959Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.591912903Z [err]    code: '42P01',
+2025-11-19T19:10:45.591920211Z [err]    detail: undefined,
+2025-11-19T19:10:45.591929176Z [err]    hint: undefined,
+2025-11-19T19:10:45.591935995Z [err]    position: '141',
+2025-11-19T19:10:45.591942918Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.591950112Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.591957724Z [err]    where: undefined,
+2025-11-19T19:10:45.591970584Z [err]    schema: undefined,
+2025-11-19T19:10:45.591977260Z [err]    table: undefined,
+2025-11-19T19:10:45.592201708Z [inf]  Found 12092 props from The Odds API
+2025-11-19T19:10:45.592207542Z [inf]  Fetching props from PrizePicks for NFL...
+2025-11-19T19:10:45.592213647Z [err]  The Odds API fetch error: relation "props" does not exist
+2025-11-19T19:10:45.592223990Z [err]  Rate limit check error for prizepicks: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.592230528Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.592236634Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.592242359Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.592249412Z [err]    code: '42P01',
+2025-11-19T19:10:45.592256644Z [err]    detail: undefined,
+2025-11-19T19:10:45.592263300Z [err]    hint: undefined,
+2025-11-19T19:10:45.592269880Z [err]    position: '141',
+2025-11-19T19:10:45.592275886Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.592283236Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.592290029Z [err]    where: undefined,
+2025-11-19T19:10:45.592296078Z [err]    schema: undefined,
+2025-11-19T19:10:45.592302245Z [err]    table: undefined,
+2025-11-19T19:10:45.592307925Z [err]    column: undefined,
+2025-11-19T19:10:45.592319160Z [err]    dataType: undefined,
+2025-11-19T19:10:45.592326866Z [err]    constraint: undefined,
+2025-11-19T19:10:45.592332470Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.592339389Z [err]    line: '1449',
+2025-11-19T19:10:45.592345152Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.592351613Z [err]    sourceError: undefined
+2025-11-19T19:10:45.592358475Z [err]  }
+2025-11-19T19:10:45.592364918Z [err]  Integration error for prizepicks: Error: HTTP 403: Forbidden
+2025-11-19T19:10:45.592371581Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:10:45.596388839Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:10:45.596395142Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:10:45.596401080Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:10:45.596406590Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:10:45.596414351Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:10:45.596420393Z [err]  Cache read error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:45.596426673Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.596433263Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.596439148Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.596446297Z [err]    code: '42P01',
+2025-11-19T19:10:45.596454377Z [err]    detail: undefined,
+2025-11-19T19:10:45.596461247Z [err]    hint: undefined,
+2025-11-19T19:10:45.596467583Z [err]    position: '93',
+2025-11-19T19:10:45.596473321Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.596487157Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.596492517Z [err]    where: undefined,
+2025-11-19T19:10:45.596499932Z [err]    schema: undefined,
+2025-11-19T19:10:45.596506140Z [err]    table: undefined,
+2025-11-19T19:10:45.596511674Z [err]    column: undefined,
+2025-11-19T19:10:45.596517982Z [err]    dataType: undefined,
+2025-11-19T19:10:45.596524327Z [err]    constraint: undefined,
+2025-11-19T19:10:45.596530695Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.596536904Z [err]    line: '1449',
+2025-11-19T19:10:45.596544098Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.603109028Z [err]    sourceError: undefined
+2025-11-19T19:10:45.603116962Z [err]  }
+2025-11-19T19:10:45.603125181Z [err]  PrizePicks fetch error: HTTP 403: Forbidden
+2025-11-19T19:10:45.603133120Z [inf]  Fetching props from Underdog for NFL...
+2025-11-19T19:10:45.603141902Z [err]  Rate limit check error for underdog: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.603147062Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.603152744Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.603158510Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.603165528Z [err]    code: '42P01',
+2025-11-19T19:10:45.603172886Z [err]    detail: undefined,
+2025-11-19T19:10:45.603179378Z [err]    hint: undefined,
+2025-11-19T19:10:45.603185058Z [err]    position: '141',
+2025-11-19T19:10:45.603857056Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.603864016Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.603870168Z [err]    where: undefined,
+2025-11-19T19:10:45.603876735Z [err]    schema: undefined,
+2025-11-19T19:10:45.603883334Z [err]    table: undefined,
+2025-11-19T19:10:45.603890857Z [err]    column: undefined,
+2025-11-19T19:10:45.603897634Z [err]    dataType: undefined,
+2025-11-19T19:10:45.603903737Z [err]    constraint: undefined,
+2025-11-19T19:10:45.603909991Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.603916587Z [err]    line: '1449',
+2025-11-19T19:10:45.603928102Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.603933932Z [err]    sourceError: undefined
+2025-11-19T19:10:45.603940678Z [err]  }
+2025-11-19T19:10:45.603947435Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:10:45.603953424Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:10:45.605525138Z [err]    where: undefined,
+2025-11-19T19:10:45.605536105Z [err]    schema: undefined,
+2025-11-19T19:10:45.605542397Z [err]    table: undefined,
+2025-11-19T19:10:45.605547849Z [err]    column: undefined,
+2025-11-19T19:10:45.605554320Z [err]    dataType: undefined,
+2025-11-19T19:10:45.605565795Z [err]    constraint: undefined,
+2025-11-19T19:10:45.605572168Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.605580330Z [err]    line: '1449',
+2025-11-19T19:10:45.605587887Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.605643798Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:10:45.605653420Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:10:45.605661098Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:10:45.605666525Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:10:45.605672048Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:10:45.605677496Z [err]  Cache read error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:45.605684417Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.605690689Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.605697155Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.605703059Z [err]    code: '42P01',
+2025-11-19T19:10:45.605709605Z [err]    detail: undefined,
+2025-11-19T19:10:45.605715696Z [err]    hint: undefined,
+2025-11-19T19:10:45.605721495Z [err]    position: '93',
+2025-11-19T19:10:45.605727123Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.605732799Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.608838512Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:10:45.608849542Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:10:45.608910487Z [inf]  No props found on Underdog for NFL
+2025-11-19T19:10:45.608919215Z [inf]  Fetching props from The Odds API for NFL...
+2025-11-19T19:10:45.608927456Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.608934375Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.608940761Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.608946886Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.608952838Z [err]    code: '42P01',
+2025-11-19T19:10:45.608959229Z [err]    detail: undefined,
+2025-11-19T19:10:45.608965538Z [err]    hint: undefined,
+2025-11-19T19:10:45.608971958Z [err]    position: '141',
+2025-11-19T19:10:45.608979792Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.608987343Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.608993457Z [err]    where: undefined,
+2025-11-19T19:10:45.609102616Z [err]    sourceError: undefined
+2025-11-19T19:10:45.609108302Z [err]  }
+2025-11-19T19:10:45.609112605Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:10:45.609240804Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:10:45.609253668Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:10:45.609264004Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:10:45.609269818Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:10:45.613229421Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.613239477Z [err]    where: undefined,
+2025-11-19T19:10:45.613245598Z [err]    schema: undefined,
+2025-11-19T19:10:45.613250545Z [err]    table: undefined,
+2025-11-19T19:10:45.613257598Z [err]    column: undefined,
+2025-11-19T19:10:45.613264568Z [err]    dataType: undefined,
+2025-11-19T19:10:45.613269220Z [err]    constraint: undefined,
+2025-11-19T19:10:45.613273692Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.613278843Z [err]    line: '1449',
+2025-11-19T19:10:45.613285491Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.613411634Z [err]    schema: undefined,
+2025-11-19T19:10:45.613417996Z [err]    table: undefined,
+2025-11-19T19:10:45.613424041Z [err]    column: undefined,
+2025-11-19T19:10:45.613428513Z [err]    dataType: undefined,
+2025-11-19T19:10:45.613433111Z [err]    constraint: undefined,
+2025-11-19T19:10:45.613439415Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.613444255Z [err]    line: '1449',
+2025-11-19T19:10:45.613448748Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.613453475Z [err]    sourceError: undefined
+2025-11-19T19:10:45.613458717Z [err]  }
+2025-11-19T19:10:45.613463225Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.613468638Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.613474883Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.613539835Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.613546744Z [err]    code: '42P01',
+2025-11-19T19:10:45.613552758Z [err]    detail: undefined,
+2025-11-19T19:10:45.613559556Z [err]    hint: undefined,
+2025-11-19T19:10:45.613581046Z [err]    position: '141',
+2025-11-19T19:10:45.613588388Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.618121263Z [err]    sourceError: undefined
+2025-11-19T19:10:45.618125170Z [err]  }
+2025-11-19T19:10:45.618129259Z [inf]  Found 30 upcoming americanfootball_nfl events, fetching player props...
+2025-11-19T19:10:45.618132929Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:45.618136800Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.618140698Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.618144484Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.618148353Z [err]    code: '42P01',
+2025-11-19T19:10:45.618152000Z [err]    detail: undefined,
+2025-11-19T19:10:45.618156015Z [err]    hint: undefined,
+2025-11-19T19:10:45.618160144Z [err]    position: '13',
+2025-11-19T19:10:45.618163890Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.618167756Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.618171486Z [err]    where: undefined,
+2025-11-19T19:10:45.618176238Z [err]    schema: undefined,
+2025-11-19T19:10:45.618180227Z [err]    table: undefined,
+2025-11-19T19:10:45.618184096Z [err]    column: undefined,
+2025-11-19T19:10:45.618187736Z [err]    dataType: undefined,
+2025-11-19T19:10:45.618191468Z [err]    constraint: undefined,
+2025-11-19T19:10:45.618195112Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.618198727Z [err]    line: '1449',
+2025-11-19T19:10:45.618202946Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.618206835Z [err]    sourceError: undefined
+2025-11-19T19:10:45.618214100Z [err]  }
+2025-11-19T19:10:45.618219385Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.618224051Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.618229343Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.624280764Z [err]    code: '42P01',
+2025-11-19T19:10:45.624288439Z [err]    position: '141',
+2025-11-19T19:10:45.624300237Z [err]    code: '42P01',
+2025-11-19T19:10:45.624305441Z [err]    detail: undefined,
+2025-11-19T19:10:45.624307208Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.624312947Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.624314210Z [err]    detail: undefined,
+2025-11-19T19:10:45.624322963Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.624324542Z [err]    hint: undefined,
+2025-11-19T19:10:45.624333862Z [err]    sourceError: undefined
+2025-11-19T19:10:45.624337314Z [err]    where: undefined,
+2025-11-19T19:10:45.624344664Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.624344962Z [err]    hint: undefined,
+2025-11-19T19:10:45.624345631Z [err]    position: '141',
+2025-11-19T19:10:45.624350336Z [err]  }
+2025-11-19T19:10:45.624365960Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.624367757Z [err]    column: undefined,
+2025-11-19T19:10:45.624377154Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.624379839Z [err]    dataType: undefined,
+2025-11-19T19:10:45.624388075Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.624389414Z [err]    constraint: undefined,
+2025-11-19T19:10:45.624397890Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.624399416Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.624406951Z [err]    line: '1449',
+2025-11-19T19:10:45.624607046Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.624620218Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.624628103Z [err]    where: undefined,
+2025-11-19T19:10:45.624636224Z [err]    schema: undefined,
+2025-11-19T19:10:45.624646622Z [err]    table: undefined,
+2025-11-19T19:10:45.628919428Z [err]    line: '1449',
+2025-11-19T19:10:45.628920278Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.628943720Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.628944489Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.628954867Z [err]    column: undefined,
+2025-11-19T19:10:45.628969356Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.628969560Z [err]    schema: undefined,
+2025-11-19T19:10:45.628971418Z [err]    dataType: undefined,
+2025-11-19T19:10:45.628975238Z [err]    detail: undefined,
+2025-11-19T19:10:45.628991243Z [err]    hint: undefined,
+2025-11-19T19:10:45.628992628Z [err]    constraint: undefined,
+2025-11-19T19:10:45.628993183Z [err]    where: undefined,
+2025-11-19T19:10:45.628999658Z [err]    table: undefined,
+2025-11-19T19:10:45.629007038Z [err]    position: '13',
+2025-11-19T19:10:45.629007753Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.629013871Z [err]    schema: undefined,
+2025-11-19T19:10:45.629015529Z [err]    column: undefined,
+2025-11-19T19:10:45.629015720Z [err]    sourceError: undefined
+2025-11-19T19:10:45.629031920Z [err]    dataType: undefined,
+2025-11-19T19:10:45.629032575Z [err]    table: undefined,
+2025-11-19T19:10:45.629032826Z [err]  }
+2025-11-19T19:10:45.629045621Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:45.629046382Z [err]    constraint: undefined,
+2025-11-19T19:10:45.629057171Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.629060335Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.629067044Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.629071600Z [err]    line: '1449',
+2025-11-19T19:10:45.629080790Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.629087773Z [err]    code: '42P01',
+2025-11-19T19:10:45.630784606Z [err]    sourceError: undefined
+2025-11-19T19:10:45.630792172Z [err]  }
+2025-11-19T19:10:45.630800620Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.630807750Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.630815470Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.630822580Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.630829672Z [err]    code: '42P01',
+2025-11-19T19:10:45.630836792Z [err]    detail: undefined,
+2025-11-19T19:10:45.630843509Z [err]    hint: undefined,
+2025-11-19T19:10:45.630849852Z [err]    position: '141',
+2025-11-19T19:10:45.630856908Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.632032145Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.632054464Z [err]    where: undefined,
+2025-11-19T19:10:45.632060990Z [err]    schema: undefined,
+2025-11-19T19:10:45.632066727Z [err]    table: undefined,
+2025-11-19T19:10:45.632072809Z [err]    column: undefined,
+2025-11-19T19:10:45.632078354Z [err]    dataType: undefined,
+2025-11-19T19:10:45.632082676Z [err]    constraint: undefined,
+2025-11-19T19:10:45.632087208Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.632095832Z [err]    line: '1449',
+2025-11-19T19:10:45.632100690Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.632105277Z [err]    sourceError: undefined
+2025-11-19T19:10:45.632109261Z [err]  }
+2025-11-19T19:10:45.632113992Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:45.632123001Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:45.632128757Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:45.635658150Z [err]    severity: 'ERROR',
+2025-11-19T19:10:45.635662405Z [err]    code: '42P01',
+2025-11-19T19:10:45.635666370Z [err]    detail: undefined,
+2025-11-19T19:10:45.635670718Z [err]    hint: undefined,
+2025-11-19T19:10:45.635677098Z [err]    position: '141',
+2025-11-19T19:10:45.635698350Z [err]    internalPosition: undefined,
+2025-11-19T19:10:45.635704462Z [err]    internalQuery: undefined,
+2025-11-19T19:10:45.635710974Z [err]    where: undefined,
+2025-11-19T19:10:45.635716889Z [err]    schema: undefined,
+2025-11-19T19:10:45.635722425Z [err]    table: undefined,
+2025-11-19T19:10:45.635728113Z [err]    column: undefined,
+2025-11-19T19:10:45.635733174Z [err]    dataType: undefined,
+2025-11-19T19:10:45.635737100Z [err]    constraint: undefined,
+2025-11-19T19:10:45.635741032Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:45.635744995Z [err]    line: '1449',
+2025-11-19T19:10:45.635749020Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:45.635752946Z [err]    sourceError: undefined
+2025-11-19T19:10:45.635757763Z [err]  }
+2025-11-19T19:10:46.527730051Z [err]    detail: undefined,
+2025-11-19T19:10:46.527739459Z [err]    hint: undefined,
+2025-11-19T19:10:46.527754786Z [err]    position: '141',
+2025-11-19T19:10:46.527755283Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.527758082Z [err]    line: '1449',
+2025-11-19T19:10:46.527769291Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.527776452Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.527784398Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.527786385Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.527791178Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:46.527793363Z [err]    sourceError: undefined
+2025-11-19T19:10:46.527800579Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.527805417Z [err]    where: undefined,
+2025-11-19T19:10:46.527811880Z [err]  }
+2025-11-19T19:10:46.527822135Z [err]    code: '42P01',
+2025-11-19T19:10:46.527823568Z [err]    schema: undefined,
+2025-11-19T19:10:46.527827090Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.527829688Z [err]    table: undefined,
+2025-11-19T19:10:46.527830696Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:46.527841915Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.527842870Z [err]    detail: undefined,
+2025-11-19T19:10:46.527845222Z [err]    table: undefined,
+2025-11-19T19:10:46.527848646Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.527859258Z [err]    code: '42P01',
+2025-11-19T19:10:46.527859517Z [err]    hint: undefined,
+2025-11-19T19:10:46.527864059Z [err]    where: undefined,
+2025-11-19T19:10:46.527864253Z [err]    column: undefined,
+2025-11-19T19:10:46.527868574Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.527869483Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.527877380Z [err]    line: '1449',
+2025-11-19T19:10:46.527879469Z [err]    dataType: undefined,
+2025-11-19T19:10:46.527881882Z [err]    detail: undefined,
+2025-11-19T19:10:46.527888971Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.527889080Z [err]    schema: undefined,
+2025-11-19T19:10:46.527891845Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.527892846Z [err]    dataType: undefined,
+2025-11-19T19:10:46.527895752Z [err]    position: '141',
+2025-11-19T19:10:46.527901410Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.527903296Z [err]    hint: undefined,
+2025-11-19T19:10:46.527903480Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.527917232Z [err]    constraint: undefined,
+2025-11-19T19:10:46.527921972Z [err]    position: '13',
+2025-11-19T19:10:46.527925304Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.527925371Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.527926388Z [err]    sourceError: undefined
+2025-11-19T19:10:46.527926914Z [err]    sourceError: undefined
+2025-11-19T19:10:46.527926954Z [err]  }
+2025-11-19T19:10:46.527927534Z [err]    constraint: undefined,
+2025-11-19T19:10:46.527935402Z [err]    hint: undefined,
+2025-11-19T19:10:46.527937378Z [err]    column: undefined,
+2025-11-19T19:10:46.527938561Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.527943566Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.527946534Z [err]    code: '42P01',
+2025-11-19T19:10:46.527949553Z [err]    where: undefined,
+2025-11-19T19:10:46.527950800Z [err]    column: undefined,
+2025-11-19T19:10:46.527952843Z [err]  }
+2025-11-19T19:10:46.527955116Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.527958480Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:46.527959013Z [err]    schema: undefined,
+2025-11-19T19:10:46.527959380Z [err]    position: '13',
+2025-11-19T19:10:46.527961194Z [err]    dataType: undefined,
+2025-11-19T19:10:46.527965047Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.527967241Z [err]    line: '1449',
+2025-11-19T19:10:46.527967565Z [err]    detail: undefined,
+2025-11-19T19:10:46.527980484Z [err]    table: undefined,
+2025-11-19T19:10:46.527980727Z [err]    constraint: undefined,
+2025-11-19T19:10:46.527984470Z [err]    where: undefined,
+2025-11-19T19:10:46.527993241Z [err]    schema: undefined,
+2025-11-19T19:10:46.527994608Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.528002115Z [err]    table: undefined,
+2025-11-19T19:10:46.528008944Z [err]    column: undefined,
+2025-11-19T19:10:46.528016027Z [err]    dataType: undefined,
+2025-11-19T19:10:46.528022737Z [err]    constraint: undefined,
+2025-11-19T19:10:46.528028231Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.528033620Z [err]    line: '1449',
+2025-11-19T19:10:46.528038801Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.528045197Z [err]    sourceError: undefined
+2025-11-19T19:10:46.528051914Z [err]  }
+2025-11-19T19:10:46.528059926Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:46.528065871Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.528073903Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.528080557Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.528087587Z [err]    code: '42P01',
+2025-11-19T19:10:46.528110811Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.532733761Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:46.532738274Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.532746197Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.532751166Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.532756096Z [err]    code: '42P01',
+2025-11-19T19:10:46.532761704Z [err]    detail: undefined,
+2025-11-19T19:10:46.532766544Z [err]    hint: undefined,
+2025-11-19T19:10:46.532771805Z [err]    position: '141',
+2025-11-19T19:10:46.532776532Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.532783435Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.532789019Z [err]    where: undefined,
+2025-11-19T19:10:46.532794406Z [err]    schema: undefined,
+2025-11-19T19:10:46.532798723Z [err]    table: undefined,
+2025-11-19T19:10:46.532803067Z [err]    column: undefined,
+2025-11-19T19:10:46.532808135Z [err]    dataType: undefined,
+2025-11-19T19:10:46.532813496Z [err]    constraint: undefined,
+2025-11-19T19:10:46.532822164Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.532826774Z [err]    line: '1449',
+2025-11-19T19:10:46.533382006Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.533392048Z [err]    sourceError: undefined
+2025-11-19T19:10:46.533399562Z [err]  }
+2025-11-19T19:10:46.533415598Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:46.533423805Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.533432282Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.533440029Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.533446968Z [err]    code: '42P01',
+2025-11-19T19:10:46.533503239Z [err]    detail: undefined,
+2025-11-19T19:10:46.533512224Z [err]    hint: undefined,
+2025-11-19T19:10:46.533519338Z [err]    position: '141',
+2025-11-19T19:10:46.533528477Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.533534441Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.533541706Z [err]    where: undefined,
+2025-11-19T19:10:46.533549302Z [err]    schema: undefined,
+2025-11-19T19:10:46.533558925Z [err]    table: undefined,
+2025-11-19T19:10:46.533566740Z [err]    column: undefined,
+2025-11-19T19:10:46.533574324Z [err]    dataType: undefined,
+2025-11-19T19:10:46.533581623Z [err]    constraint: undefined,
+2025-11-19T19:10:46.533589053Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.533596551Z [err]    line: '1449',
+2025-11-19T19:10:46.533603796Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.533612992Z [err]    sourceError: undefined
+2025-11-19T19:10:46.533618502Z [err]  }
+2025-11-19T19:10:46.533624523Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:46.533629519Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.533635028Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.533641200Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.533648757Z [err]    code: '42P01',
+2025-11-19T19:10:46.533656909Z [err]    detail: undefined,
+2025-11-19T19:10:46.533662858Z [err]    hint: undefined,
+2025-11-19T19:10:46.533668981Z [err]    position: '13',
+2025-11-19T19:10:46.533674945Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.533681198Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.533686630Z [err]    where: undefined,
+2025-11-19T19:10:46.533692456Z [err]    schema: undefined,
+2025-11-19T19:10:46.533700020Z [err]    table: undefined,
+2025-11-19T19:10:46.537658466Z [err]    column: undefined,
+2025-11-19T19:10:46.537664406Z [err]    dataType: undefined,
+2025-11-19T19:10:46.537671070Z [err]    constraint: undefined,
+2025-11-19T19:10:46.537676922Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.537681767Z [err]    line: '1449',
+2025-11-19T19:10:46.537687247Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.537693097Z [err]    sourceError: undefined
+2025-11-19T19:10:46.537699818Z [err]  }
+2025-11-19T19:10:46.537705100Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:46.537710321Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:46.537914866Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:46.537922905Z [err]    severity: 'ERROR',
+2025-11-19T19:10:46.537930164Z [err]    code: '42P01',
+2025-11-19T19:10:46.537937728Z [err]    detail: undefined,
+2025-11-19T19:10:46.537944051Z [err]    hint: undefined,
+2025-11-19T19:10:46.537953360Z [err]    position: '141',
+2025-11-19T19:10:46.537959194Z [err]    internalPosition: undefined,
+2025-11-19T19:10:46.537965705Z [err]    internalQuery: undefined,
+2025-11-19T19:10:46.537972543Z [err]    where: undefined,
+2025-11-19T19:10:46.537980695Z [err]    schema: undefined,
+2025-11-19T19:10:46.537988069Z [err]    table: undefined,
+2025-11-19T19:10:46.537994857Z [err]    column: undefined,
+2025-11-19T19:10:46.538001411Z [err]    dataType: undefined,
+2025-11-19T19:10:46.538007070Z [err]    constraint: undefined,
+2025-11-19T19:10:46.538013166Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:46.538020863Z [err]    line: '1449',
+2025-11-19T19:10:46.538031117Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:46.538039218Z [err]    sourceError: undefined
+2025-11-19T19:10:46.538048625Z [err]  }
+2025-11-19T19:10:47.611607380Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:47.611612091Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.611616626Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.611621858Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.611626695Z [err]    code: '42P01',
+2025-11-19T19:10:47.611632081Z [err]    detail: undefined,
+2025-11-19T19:10:47.611637870Z [err]    hint: undefined,
+2025-11-19T19:10:47.611643859Z [err]    position: '141',
+2025-11-19T19:10:47.611647841Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.611651773Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.611655716Z [err]    where: undefined,
+2025-11-19T19:10:47.611660028Z [err]    schema: undefined,
+2025-11-19T19:10:47.611663917Z [err]    table: undefined,
+2025-11-19T19:10:47.611670012Z [err]    column: undefined,
+2025-11-19T19:10:47.611675515Z [err]    dataType: undefined,
+2025-11-19T19:10:47.611679946Z [err]    constraint: undefined,
+2025-11-19T19:10:47.611684593Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.611688918Z [err]    line: '1449',
+2025-11-19T19:10:47.611696950Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.611700841Z [err]    sourceError: undefined
+2025-11-19T19:10:47.611705094Z [err]  }
+2025-11-19T19:10:47.611710112Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:47.611715058Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.611718997Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.611723170Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.611727415Z [err]    code: '42P01',
+2025-11-19T19:10:47.619764713Z [err]    where: undefined,
+2025-11-19T19:10:47.619776155Z [err]    schema: undefined,
+2025-11-19T19:10:47.619811403Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.619820795Z [err]    sourceError: undefined
+2025-11-19T19:10:47.619827984Z [err]  }
+2025-11-19T19:10:47.619836632Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:47.619840473Z [err]    column: undefined,
+2025-11-19T19:10:47.619845568Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.619850647Z [err]    dataType: undefined,
+2025-11-19T19:10:47.619861236Z [err]    detail: undefined,
+2025-11-19T19:10:47.619866658Z [err]    constraint: undefined,
+2025-11-19T19:10:47.619868530Z [err]    detail: undefined,
+2025-11-19T19:10:47.619872920Z [err]    table: undefined,
+2025-11-19T19:10:47.619872963Z [err]    hint: undefined,
+2025-11-19T19:10:47.619880750Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.619884450Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.619884643Z [err]    position: '13',
+2025-11-19T19:10:47.619891799Z [err]    line: '1449',
+2025-11-19T19:10:47.619895576Z [err]    hint: undefined,
+2025-11-19T19:10:47.619896381Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.619906134Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.619909685Z [err]    position: '141',
+2025-11-19T19:10:47.619915534Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.619918425Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.619922517Z [err]    code: '42P01',
+2025-11-19T19:10:47.619939952Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.619949439Z [err]    where: undefined,
+2025-11-19T19:10:47.619956134Z [err]    schema: undefined,
+2025-11-19T19:10:47.621616381Z [err]    table: undefined,
+2025-11-19T19:10:47.625071146Z [err]    column: undefined,
+2025-11-19T19:10:47.625077342Z [err]    dataType: undefined,
+2025-11-19T19:10:47.625087261Z [err]    constraint: undefined,
+2025-11-19T19:10:47.625099136Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.625109376Z [err]    line: '1449',
+2025-11-19T19:10:47.625116926Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.625126759Z [err]    sourceError: undefined
+2025-11-19T19:10:47.625133238Z [err]  }
+2025-11-19T19:10:47.625138669Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:47.625144450Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.625152375Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.625159180Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.625166646Z [err]    code: '42P01',
+2025-11-19T19:10:47.625211844Z [err]    detail: undefined,
+2025-11-19T19:10:47.625217834Z [err]    hint: undefined,
+2025-11-19T19:10:47.625223563Z [err]    position: '141',
+2025-11-19T19:10:47.625230787Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.625236796Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.625242596Z [err]    where: undefined,
+2025-11-19T19:10:47.625248634Z [err]    schema: undefined,
+2025-11-19T19:10:47.625254548Z [err]    table: undefined,
+2025-11-19T19:10:47.625260420Z [err]    column: undefined,
+2025-11-19T19:10:47.625266581Z [err]    dataType: undefined,
+2025-11-19T19:10:47.625277272Z [err]    constraint: undefined,
+2025-11-19T19:10:47.625284225Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.625290738Z [err]    line: '1449',
+2025-11-19T19:10:47.625298303Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.625304050Z [err]    sourceError: undefined
+2025-11-19T19:10:47.628037986Z [err]  }
+2025-11-19T19:10:47.628043121Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:47.628062683Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.628068490Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.628082847Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.628088282Z [err]    code: '42P01',
+2025-11-19T19:10:47.628092591Z [err]    detail: undefined,
+2025-11-19T19:10:47.628097147Z [err]    hint: undefined,
+2025-11-19T19:10:47.628101389Z [err]    position: '13',
+2025-11-19T19:10:47.628119793Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.628125815Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.628130284Z [err]    where: undefined,
+2025-11-19T19:10:47.628145898Z [err]    schema: undefined,
+2025-11-19T19:10:47.628150824Z [err]    table: undefined,
+2025-11-19T19:10:47.628155925Z [err]    column: undefined,
+2025-11-19T19:10:47.628160516Z [err]    dataType: undefined,
+2025-11-19T19:10:47.628164976Z [err]    constraint: undefined,
+2025-11-19T19:10:47.628169035Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.628173380Z [err]    line: '1449',
+2025-11-19T19:10:47.628182411Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.628188253Z [err]    sourceError: undefined
+2025-11-19T19:10:47.628192127Z [err]  }
+2025-11-19T19:10:47.628196606Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:47.628201116Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.628207180Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.628212833Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.633101562Z [err]    hint: undefined,
+2025-11-19T19:10:47.633114579Z [err]    position: '141',
+2025-11-19T19:10:47.633122388Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.633129846Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.633143134Z [err]    where: undefined,
+2025-11-19T19:10:47.633152758Z [err]    schema: undefined,
+2025-11-19T19:10:47.633228881Z [err]    code: '42P01',
+2025-11-19T19:10:47.633234558Z [err]    detail: undefined,
+2025-11-19T19:10:47.633240176Z [err]    hint: undefined,
+2025-11-19T19:10:47.633245698Z [err]    position: '141',
+2025-11-19T19:10:47.633251862Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.633258053Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.633264484Z [err]    where: undefined,
+2025-11-19T19:10:47.633270575Z [err]    schema: undefined,
+2025-11-19T19:10:47.633275228Z [err]    table: undefined,
+2025-11-19T19:10:47.633280753Z [err]    column: undefined,
+2025-11-19T19:10:47.633286680Z [err]    dataType: undefined,
+2025-11-19T19:10:47.633292526Z [err]    constraint: undefined,
+2025-11-19T19:10:47.633297837Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.633302969Z [err]    line: '1449',
+2025-11-19T19:10:47.633308973Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.633314131Z [err]    sourceError: undefined
+2025-11-19T19:10:47.633320321Z [err]  }
+2025-11-19T19:10:47.633326055Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:47.633331417Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.633336473Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.633342706Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.633348430Z [err]    code: '42P01',
+2025-11-19T19:10:47.633354799Z [err]    detail: undefined,
+2025-11-19T19:10:47.638638572Z [err]    constraint: undefined,
+2025-11-19T19:10:47.638651210Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.638660270Z [err]    line: '1449',
+2025-11-19T19:10:47.638665993Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.638672768Z [err]    sourceError: undefined
+2025-11-19T19:10:47.638856203Z [err]    table: undefined,
+2025-11-19T19:10:47.638862355Z [err]    column: undefined,
+2025-11-19T19:10:47.638869994Z [err]    dataType: undefined,
+2025-11-19T19:10:47.638877379Z [err]    constraint: undefined,
+2025-11-19T19:10:47.638885186Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.638891672Z [err]    line: '1449',
+2025-11-19T19:10:47.638900131Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.638906776Z [err]    sourceError: undefined
+2025-11-19T19:10:47.638913798Z [err]  }
+2025-11-19T19:10:47.638921100Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:47.638928783Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.638936389Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.638944402Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.638951404Z [err]    code: '42P01',
+2025-11-19T19:10:47.638960501Z [err]    detail: undefined,
+2025-11-19T19:10:47.638967359Z [err]    hint: undefined,
+2025-11-19T19:10:47.638975617Z [err]    position: '13',
+2025-11-19T19:10:47.638982351Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.638989225Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.638995601Z [err]    where: undefined,
+2025-11-19T19:10:47.639002983Z [err]    schema: undefined,
+2025-11-19T19:10:47.639013815Z [err]    table: undefined,
+2025-11-19T19:10:47.639021223Z [err]    column: undefined,
+2025-11-19T19:10:47.639028750Z [err]    dataType: undefined,
+2025-11-19T19:10:47.642523601Z [err]  }
+2025-11-19T19:10:47.642528947Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:47.642534115Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:47.642539197Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:47.642544554Z [err]    severity: 'ERROR',
+2025-11-19T19:10:47.642548912Z [err]    code: '42P01',
+2025-11-19T19:10:47.642552874Z [err]    detail: undefined,
+2025-11-19T19:10:47.642563307Z [err]    hint: undefined,
+2025-11-19T19:10:47.642570661Z [err]    position: '141',
+2025-11-19T19:10:47.642576475Z [err]    internalPosition: undefined,
+2025-11-19T19:10:47.642581513Z [err]    internalQuery: undefined,
+2025-11-19T19:10:47.642587215Z [err]    where: undefined,
+2025-11-19T19:10:47.642592340Z [err]    schema: undefined,
+2025-11-19T19:10:47.642597427Z [err]    table: undefined,
+2025-11-19T19:10:47.642602538Z [err]    column: undefined,
+2025-11-19T19:10:47.642607927Z [err]    dataType: undefined,
+2025-11-19T19:10:47.642613554Z [err]    constraint: undefined,
+2025-11-19T19:10:47.642622552Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:47.642628339Z [err]    line: '1449',
+2025-11-19T19:10:47.642633796Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:47.642637529Z [err]    sourceError: undefined
+2025-11-19T19:10:47.642641720Z [err]  }
+2025-11-19T19:10:48.499352877Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.499369465Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.499381039Z [err]    code: '42P01',
+2025-11-19T19:10:48.499399725Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:48.499405379Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.499410694Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.499415071Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.499419197Z [err]    code: '42P01',
+2025-11-19T19:10:48.499431710Z [err]    detail: undefined,
+2025-11-19T19:10:48.499436635Z [err]    hint: undefined,
+2025-11-19T19:10:48.499441434Z [err]    position: '141',
+2025-11-19T19:10:48.499447192Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.499453225Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.499459468Z [err]    where: undefined,
+2025-11-19T19:10:48.499464318Z [err]    schema: undefined,
+2025-11-19T19:10:48.499469019Z [err]    table: undefined,
+2025-11-19T19:10:48.499475759Z [err]    column: undefined,
+2025-11-19T19:10:48.499479930Z [err]    dataType: undefined,
+2025-11-19T19:10:48.499483912Z [err]    constraint: undefined,
+2025-11-19T19:10:48.499488462Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.499493168Z [err]    line: '1449',
+2025-11-19T19:10:48.499497684Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.499501912Z [err]    sourceError: undefined
+2025-11-19T19:10:48.499507033Z [err]  }
+2025-11-19T19:10:48.499512727Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:48.499518322Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.519712661Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.519720521Z [err]  }
+2025-11-19T19:10:48.519738160Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:48.519780649Z [err]    detail: undefined,
+2025-11-19T19:10:48.519786223Z [err]    hint: undefined,
+2025-11-19T19:10:48.519791919Z [err]    position: '13',
+2025-11-19T19:10:48.519797519Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.519802919Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.519808484Z [err]    where: undefined,
+2025-11-19T19:10:48.519814209Z [err]    schema: undefined,
+2025-11-19T19:10:48.519819975Z [err]    table: undefined,
+2025-11-19T19:10:48.519826216Z [err]    column: undefined,
+2025-11-19T19:10:48.519831598Z [err]    dataType: undefined,
+2025-11-19T19:10:48.519837473Z [err]    constraint: undefined,
+2025-11-19T19:10:48.519842922Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.519850015Z [err]    line: '1449',
+2025-11-19T19:10:48.519855984Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.519861644Z [err]    sourceError: undefined
+2025-11-19T19:10:48.519868140Z [err]  }
+2025-11-19T19:10:48.519873877Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:48.519879482Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.519884998Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.519891023Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.519896819Z [err]    code: '42P01',
+2025-11-19T19:10:48.519902184Z [err]    detail: undefined,
+2025-11-19T19:10:48.519907535Z [err]    hint: undefined,
+2025-11-19T19:10:48.519913334Z [err]    position: '141',
+2025-11-19T19:10:48.519918653Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.519923566Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.519932543Z [err]    where: undefined,
+2025-11-19T19:10:48.519938211Z [err]    schema: undefined,
+2025-11-19T19:10:48.519947441Z [err]    table: undefined,
+2025-11-19T19:10:48.520001318Z [err]    column: undefined,
+2025-11-19T19:10:48.520006938Z [err]    dataType: undefined,
+2025-11-19T19:10:48.520012553Z [err]    constraint: undefined,
+2025-11-19T19:10:48.520018695Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.520025161Z [err]    line: '1449',
+2025-11-19T19:10:48.520031061Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.520041707Z [err]    sourceError: undefined
+2025-11-19T19:10:48.520051252Z [err]  }
+2025-11-19T19:10:48.520057413Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:48.520062899Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.520068942Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.520074623Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.520080647Z [err]    code: '42P01',
+2025-11-19T19:10:48.520086043Z [err]    detail: undefined,
+2025-11-19T19:10:48.520091172Z [err]    hint: undefined,
+2025-11-19T19:10:48.520097442Z [err]    position: '141',
+2025-11-19T19:10:48.520110761Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.520118274Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.520123543Z [err]    where: undefined,
+2025-11-19T19:10:48.520128705Z [err]    schema: undefined,
+2025-11-19T19:10:48.520133900Z [err]    table: undefined,
+2025-11-19T19:10:48.520139865Z [err]    column: undefined,
+2025-11-19T19:10:48.520144927Z [err]    dataType: undefined,
+2025-11-19T19:10:48.520149835Z [err]    constraint: undefined,
+2025-11-19T19:10:48.520155596Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.520160626Z [err]    line: '1449',
+2025-11-19T19:10:48.520165648Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.520170860Z [err]    sourceError: undefined
+2025-11-19T19:10:48.520252604Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.520262706Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.520270349Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.520277576Z [err]    code: '42P01',
+2025-11-19T19:10:48.520286205Z [err]    detail: undefined,
+2025-11-19T19:10:48.520292833Z [err]    hint: undefined,
+2025-11-19T19:10:48.520301611Z [err]    position: '13',
+2025-11-19T19:10:48.520307961Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.520314784Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.520321701Z [err]    where: undefined,
+2025-11-19T19:10:48.520328194Z [err]    schema: undefined,
+2025-11-19T19:10:48.520334019Z [err]    table: undefined,
+2025-11-19T19:10:48.520560405Z [err]    column: undefined,
+2025-11-19T19:10:48.520569228Z [err]    dataType: undefined,
+2025-11-19T19:10:48.520576873Z [err]    constraint: undefined,
+2025-11-19T19:10:48.520584273Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.520591017Z [err]    line: '1449',
+2025-11-19T19:10:48.520601980Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.520609010Z [err]    sourceError: undefined
+2025-11-19T19:10:48.520615530Z [err]  }
+2025-11-19T19:10:48.520639676Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:48.520646388Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.520669813Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.521864067Z [err]    code: '42P01',
+2025-11-19T19:10:48.521869400Z [err]    detail: undefined,
+2025-11-19T19:10:48.521874001Z [err]    hint: undefined,
+2025-11-19T19:10:48.521878593Z [err]    position: '141',
+2025-11-19T19:10:48.521882738Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.521887570Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.521892784Z [err]    where: undefined,
+2025-11-19T19:10:48.521898043Z [err]    schema: undefined,
+2025-11-19T19:10:48.521903351Z [err]    table: undefined,
+2025-11-19T19:10:48.521907766Z [err]    column: undefined,
+2025-11-19T19:10:48.521911973Z [err]    dataType: undefined,
+2025-11-19T19:10:48.521916525Z [err]    constraint: undefined,
+2025-11-19T19:10:48.521921235Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.521925654Z [err]    line: '1449',
+2025-11-19T19:10:48.521930462Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.521934785Z [err]    sourceError: undefined
+2025-11-19T19:10:48.521939070Z [err]  }
+2025-11-19T19:10:48.521945739Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:48.521957797Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.521963537Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.521969441Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.521976375Z [err]    code: '42P01',
+2025-11-19T19:10:48.521982401Z [err]    detail: undefined,
+2025-11-19T19:10:48.521988665Z [err]    hint: undefined,
+2025-11-19T19:10:48.521994572Z [err]    position: '141',
+2025-11-19T19:10:48.522001049Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.522008506Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.522016234Z [err]    where: undefined,
+2025-11-19T19:10:48.522022750Z [err]    schema: undefined,
+2025-11-19T19:10:48.526780379Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.526793913Z [err]    sourceError: undefined
+2025-11-19T19:10:48.526802709Z [err]  }
+2025-11-19T19:10:48.526846827Z [err]    table: undefined,
+2025-11-19T19:10:48.526850981Z [err]    column: undefined,
+2025-11-19T19:10:48.526855434Z [err]    dataType: undefined,
+2025-11-19T19:10:48.526862096Z [err]    constraint: undefined,
+2025-11-19T19:10:48.526866965Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.526871050Z [err]    line: '1449',
+2025-11-19T19:10:48.541731015Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:48.541739234Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:48.541745630Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:48.541752074Z [err]    severity: 'ERROR',
+2025-11-19T19:10:48.541758805Z [err]    code: '42P01',
+2025-11-19T19:10:48.541815056Z [err]    detail: undefined,
+2025-11-19T19:10:48.541822202Z [err]    hint: undefined,
+2025-11-19T19:10:48.541828683Z [err]    position: '13',
+2025-11-19T19:10:48.541836140Z [err]    internalPosition: undefined,
+2025-11-19T19:10:48.541842578Z [err]    internalQuery: undefined,
+2025-11-19T19:10:48.541849326Z [err]    where: undefined,
+2025-11-19T19:10:48.541855123Z [err]    schema: undefined,
+2025-11-19T19:10:48.541862287Z [err]    table: undefined,
+2025-11-19T19:10:48.541868918Z [err]    column: undefined,
+2025-11-19T19:10:48.541875454Z [err]    dataType: undefined,
+2025-11-19T19:10:48.541886666Z [err]    constraint: undefined,
+2025-11-19T19:10:48.541892903Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:48.541910601Z [err]    line: '1449',
+2025-11-19T19:10:48.541916628Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:48.541922832Z [err]    sourceError: undefined
+2025-11-19T19:10:48.541928989Z [err]  }
+2025-11-19T19:10:48.541934855Z [inf]  Found 0 props from The Odds API
+2025-11-19T19:10:48.619894089Z [err]  The Odds API fetch error: relation "props" does not exist
+2025-11-19T19:10:48.619900984Z [inf]  Fetching props from PrizePicks for NHL...
+2025-11-19T19:10:49.686198665Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:10:49.686205141Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:10:49.686220058Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:10:49.686233837Z [inf]  Fetching props from Underdog for NHL...
+2025-11-19T19:10:49.686239352Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.686244743Z [err]    hint: undefined,
+2025-11-19T19:10:49.686260299Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.686261158Z [err]    table: undefined,
+2025-11-19T19:10:49.686262217Z [err]    position: '93',
+2025-11-19T19:10:49.686279675Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.686279955Z [err]    column: undefined,
+2025-11-19T19:10:49.686281136Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.686292452Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.686306063Z [err]    where: undefined,
+2025-11-19T19:10:49.686306479Z [err]    line: '1449',
+2025-11-19T19:10:49.686308815Z [err]  Cache read error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:49.686318255Z [err]    schema: undefined,
+2025-11-19T19:10:49.686327090Z [err]    dataType: undefined,
+2025-11-19T19:10:49.686341001Z [err]    constraint: undefined,
+2025-11-19T19:10:49.686341183Z [err]    code: '42P01',
+2025-11-19T19:10:49.686359703Z [err]    detail: undefined,
+2025-11-19T19:10:49.686360165Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.686372375Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.686387558Z [err]    sourceError: undefined
+2025-11-19T19:10:49.686396267Z [err]  }
+2025-11-19T19:10:49.686545582Z [err]    code: '42P01',
+2025-11-19T19:10:49.686557587Z [err]    detail: undefined,
+2025-11-19T19:10:49.686567953Z [err]    hint: undefined,
+2025-11-19T19:10:49.686576429Z [err]    position: '141',
+2025-11-19T19:10:49.686577672Z [err]  PrizePicks fetch error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T19:10:49.686586696Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.686587940Z [err]  Rate limit check error for underdog: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:49.686596450Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.686605759Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.686610266Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:10:49.686610345Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.686620271Z [err]    where: undefined,
+2025-11-19T19:10:49.686622185Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.686626212Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.686630060Z [err]    schema: undefined,
+2025-11-19T19:10:49.686638679Z [err]    table: undefined,
+2025-11-19T19:10:49.686642375Z [err]    sourceError: undefined
+2025-11-19T19:10:49.686648356Z [err]    column: undefined,
+2025-11-19T19:10:49.686653471Z [err]  }
+2025-11-19T19:10:49.686659101Z [err]    dataType: undefined,
+2025-11-19T19:10:49.686663967Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:10:49.686668472Z [err]    constraint: undefined,
+2025-11-19T19:10:49.686676316Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:10:49.686679319Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.686689088Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:10:49.686689510Z [err]    line: '1449',
+2025-11-19T19:10:49.686712015Z [err]  Rate limit check error for prizepicks: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:49.686719081Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.686727504Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.686735303Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.686743056Z [err]    code: '42P01',
+2025-11-19T19:10:49.686751992Z [err]    detail: undefined,
+2025-11-19T19:10:49.686760519Z [err]    hint: undefined,
+2025-11-19T19:10:49.686767329Z [err]    position: '141',
+2025-11-19T19:10:49.686776565Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.686783171Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.686790181Z [err]    where: undefined,
+2025-11-19T19:10:49.686797160Z [err]    schema: undefined,
+2025-11-19T19:10:49.686804544Z [err]    table: undefined,
+2025-11-19T19:10:49.686810607Z [err]    column: undefined,
+2025-11-19T19:10:49.686817520Z [err]    dataType: undefined,
+2025-11-19T19:10:49.686824046Z [err]    constraint: undefined,
+2025-11-19T19:10:49.686831694Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.686838568Z [err]    line: '1449',
+2025-11-19T19:10:49.686844655Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.686850604Z [err]    sourceError: undefined
+2025-11-19T19:10:49.686857764Z [err]  }
+2025-11-19T19:10:49.686864151Z [err]  Integration error for prizepicks: Error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T19:10:49.686870518Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:10:49.686877963Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:10:49.686886002Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:10:49.687039410Z [err]    position: '93',
+2025-11-19T19:10:49.687046337Z [err]    column: undefined,
+2025-11-19T19:10:49.687053292Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.687060320Z [err]    dataType: undefined,
+2025-11-19T19:10:49.687071038Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.687076122Z [err]    constraint: undefined,
+2025-11-19T19:10:49.687084190Z [err]    where: undefined,
+2025-11-19T19:10:49.687096139Z [err]    schema: undefined,
+2025-11-19T19:10:49.687097089Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.687109945Z [err]    table: undefined,
+2025-11-19T19:10:49.687114881Z [err]    line: '1449',
+2025-11-19T19:10:49.687164122Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:10:49.687171409Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:10:49.687178825Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:10:49.687188428Z [inf]  No props found on Underdog for NHL
+2025-11-19T19:10:49.687197527Z [inf]  Fetching props from The Odds API for NHL...
+2025-11-19T19:10:49.687204085Z [err]  Cache read error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:49.687210618Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.687216191Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.687222597Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.687228261Z [err]    code: '42P01',
+2025-11-19T19:10:49.687238884Z [err]    detail: undefined,
+2025-11-19T19:10:49.687244600Z [err]    hint: undefined,
+2025-11-19T19:10:49.692924799Z [err]    sourceError: undefined
+2025-11-19T19:10:49.692939545Z [err]  }
+2025-11-19T19:10:49.692948468Z [inf]  Found 16 upcoming icehockey_nhl events, fetching player props...
+2025-11-19T19:10:49.692958178Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:49.692966133Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.693133146Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.693199630Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.693207778Z [err]    sourceError: undefined
+2025-11-19T19:10:49.693221884Z [err]  }
+2025-11-19T19:10:49.693230183Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:10:49.693238242Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:10:49.693245866Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:10:49.693253118Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:10:49.693260421Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:10:49.693267632Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:10:49.693275319Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:10:49.693282219Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:49.693291764Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.693298823Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.693308504Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.693315544Z [err]    code: '42P01',
+2025-11-19T19:10:49.693322538Z [err]    detail: undefined,
+2025-11-19T19:10:49.693329802Z [err]    hint: undefined,
+2025-11-19T19:10:49.693336801Z [err]    position: '141',
+2025-11-19T19:10:49.693343925Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.693350851Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.693361362Z [err]    where: undefined,
+2025-11-19T19:10:49.693368056Z [err]    schema: undefined,
+2025-11-19T19:10:49.693408788Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.693416057Z [err]    code: '42P01',
+2025-11-19T19:10:49.693427814Z [err]    detail: undefined,
+2025-11-19T19:10:49.693475236Z [err]    hint: undefined,
+2025-11-19T19:10:49.693519299Z [err]    position: '141',
+2025-11-19T19:10:49.693531718Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.693746789Z [err]    table: undefined,
+2025-11-19T19:10:49.693754103Z [err]    column: undefined,
+2025-11-19T19:10:49.693761810Z [err]    dataType: undefined,
+2025-11-19T19:10:49.693767949Z [err]    constraint: undefined,
+2025-11-19T19:10:49.693774560Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.693781333Z [err]    line: '1449',
+2025-11-19T19:10:49.693788570Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.693795388Z [err]    sourceError: undefined
+2025-11-19T19:10:49.693801519Z [err]  }
+2025-11-19T19:10:49.693808992Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:49.693815602Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.693823573Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.693832813Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.693845396Z [err]    code: '42P01',
+2025-11-19T19:10:49.693848269Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.693856672Z [err]    sourceError: undefined
+2025-11-19T19:10:49.693856792Z [err]    detail: undefined,
+2025-11-19T19:10:49.693872521Z [err]    hint: undefined,
+2025-11-19T19:10:49.693873939Z [err]    where: undefined,
+2025-11-19T19:10:49.693878728Z [err]  }
+2025-11-19T19:10:49.693886899Z [err]    position: '141',
+2025-11-19T19:10:49.693891265Z [err]    schema: undefined,
+2025-11-19T19:10:49.693898093Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.693905649Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.693912675Z [err]    where: undefined,
+2025-11-19T19:10:49.693919517Z [err]    schema: undefined,
+2025-11-19T19:10:49.693927437Z [err]    table: undefined,
+2025-11-19T19:10:49.693931320Z [err]    table: undefined,
+2025-11-19T19:10:49.693940159Z [err]    column: undefined,
+2025-11-19T19:10:49.693946502Z [err]    constraint: undefined,
+2025-11-19T19:10:49.693948548Z [err]    column: undefined,
+2025-11-19T19:10:49.693954872Z [err]    dataType: undefined,
+2025-11-19T19:10:49.693963559Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.693969161Z [err]    constraint: undefined,
+2025-11-19T19:10:49.693975853Z [err]    dataType: undefined,
+2025-11-19T19:10:49.693983793Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.693986032Z [err]    line: '1449',
+2025-11-19T19:10:49.693997565Z [err]    line: '1449',
+2025-11-19T19:10:49.694001891Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.694007840Z [err]  }
+2025-11-19T19:10:49.694010127Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.694020976Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:49.694023487Z [err]    sourceError: undefined
+2025-11-19T19:10:49.694030452Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.694036635Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.694043244Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.694053137Z [err]    code: '42P01',
+2025-11-19T19:10:49.694059953Z [err]    detail: undefined,
+2025-11-19T19:10:49.694065814Z [err]    hint: undefined,
+2025-11-19T19:10:49.694073330Z [err]    position: '13',
+2025-11-19T19:10:49.694084017Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.694091987Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.694098057Z [err]    where: undefined,
+2025-11-19T19:10:49.694105551Z [err]    schema: undefined,
+2025-11-19T19:10:49.694112115Z [err]    table: undefined,
+2025-11-19T19:10:49.694119333Z [err]    column: undefined,
+2025-11-19T19:10:49.694124458Z [err]    dataType: undefined,
+2025-11-19T19:10:49.694129605Z [err]    constraint: undefined,
+2025-11-19T19:10:49.694134313Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.694139552Z [err]    line: '1449',
+2025-11-19T19:10:49.694144398Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.706853062Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:49.706858956Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:49.706864414Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:49.706871577Z [err]    severity: 'ERROR',
+2025-11-19T19:10:49.706877643Z [err]    code: '42P01',
+2025-11-19T19:10:49.706883903Z [err]    detail: undefined,
+2025-11-19T19:10:49.706891377Z [err]    hint: undefined,
+2025-11-19T19:10:49.706897359Z [err]    position: '141',
+2025-11-19T19:10:49.706902781Z [err]    internalPosition: undefined,
+2025-11-19T19:10:49.706908711Z [err]    internalQuery: undefined,
+2025-11-19T19:10:49.706915490Z [err]    where: undefined,
+2025-11-19T19:10:49.706921509Z [err]    schema: undefined,
+2025-11-19T19:10:49.706927968Z [err]    table: undefined,
+2025-11-19T19:10:49.706934364Z [err]    column: undefined,
+2025-11-19T19:10:49.706940602Z [err]    dataType: undefined,
+2025-11-19T19:10:49.706947797Z [err]    constraint: undefined,
+2025-11-19T19:10:49.706954107Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:49.706960786Z [err]    line: '1449',
+2025-11-19T19:10:49.706967104Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:49.706972074Z [err]    sourceError: undefined
+2025-11-19T19:10:49.706976190Z [err]  }
+2025-11-19T19:10:50.543003646Z [err]    constraint: undefined,
+2025-11-19T19:10:50.543017555Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.543026555Z [err]    line: '1449',
+2025-11-19T19:10:50.543033732Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.543041741Z [err]    sourceError: undefined
+2025-11-19T19:10:50.543052092Z [err]    detail: undefined,
+2025-11-19T19:10:50.543052330Z [err]  }
+2025-11-19T19:10:50.543062669Z [err]    hint: undefined,
+2025-11-19T19:10:50.543068599Z [err]    position: '141',
+2025-11-19T19:10:50.543203563Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.543217279Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.543222133Z [err]    line: '1449',
+2025-11-19T19:10:50.543226763Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.543236565Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.543240118Z [err]    line: '1449',
+2025-11-19T19:10:50.543245554Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.543253196Z [err]    sourceError: undefined
+2025-11-19T19:10:50.543268163Z [err]  }
+2025-11-19T19:10:50.543270476Z [err]    where: undefined,
+2025-11-19T19:10:50.543270671Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.543276654Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:50.543278422Z [err]    column: undefined,
+2025-11-19T19:10:50.543287286Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:50.543292523Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.543297522Z [err]    dataType: undefined,
+2025-11-19T19:10:50.543299521Z [err]    schema: undefined,
+2025-11-19T19:10:50.543303177Z [err]    table: undefined,
+2025-11-19T19:10:50.543307468Z [err]    hint: undefined,
+2025-11-19T19:10:50.543309961Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.543313041Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.543313329Z [err]    code: '42P01',
+2025-11-19T19:10:50.543316874Z [err]    where: undefined,
+2025-11-19T19:10:50.543319243Z [err]    constraint: undefined,
+2025-11-19T19:10:50.543325227Z [err]    table: undefined,
+2025-11-19T19:10:50.543329303Z [err]    column: undefined,
+2025-11-19T19:10:50.543333929Z [err]    detail: undefined,
+2025-11-19T19:10:50.543334472Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.543340492Z [err]    schema: undefined,
+2025-11-19T19:10:50.543348729Z [err]    dataType: undefined,
+2025-11-19T19:10:50.543353315Z [err]    position: '13',
+2025-11-19T19:10:50.543353467Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.543358884Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.543369106Z [err]    code: '42P01',
+2025-11-19T19:10:50.543374233Z [err]    constraint: undefined,
+2025-11-19T19:10:50.543375846Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:50.543376385Z [err]    sourceError: undefined
+2025-11-19T19:10:50.543393019Z [err]  }
+2025-11-19T19:10:50.543394083Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.543397123Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.543414949Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.543415142Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.543426265Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.543434069Z [err]    code: '42P01',
+2025-11-19T19:10:50.543449871Z [err]    detail: undefined,
+2025-11-19T19:10:50.543457359Z [err]    hint: undefined,
+2025-11-19T19:10:50.543468787Z [err]    position: '13',
+2025-11-19T19:10:50.543476188Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.543483627Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.543490754Z [err]    where: undefined,
+2025-11-19T19:10:50.543534087Z [err]    schema: undefined,
+2025-11-19T19:10:50.543543640Z [err]    table: undefined,
+2025-11-19T19:10:50.543554547Z [err]    column: undefined,
+2025-11-19T19:10:50.543561591Z [err]    dataType: undefined,
+2025-11-19T19:10:50.543570765Z [err]    constraint: undefined,
+2025-11-19T19:10:50.543577698Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.543584300Z [err]    line: '1449',
+2025-11-19T19:10:50.543605032Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.543614687Z [err]    sourceError: undefined
+2025-11-19T19:10:50.543620661Z [err]  }
+2025-11-19T19:10:50.543628552Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:50.543636879Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.543643974Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.543651403Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.543658243Z [err]    code: '42P01',
+2025-11-19T19:10:50.543917572Z [err]    detail: undefined,
+2025-11-19T19:10:50.543924900Z [err]    hint: undefined,
+2025-11-19T19:10:50.543931895Z [err]    position: '141',
+2025-11-19T19:10:50.543938261Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.543945170Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.543957158Z [err]    where: undefined,
+2025-11-19T19:10:50.543965075Z [err]    schema: undefined,
+2025-11-19T19:10:50.543971818Z [err]    table: undefined,
+2025-11-19T19:10:50.543980341Z [err]    column: undefined,
+2025-11-19T19:10:50.543989307Z [err]    dataType: undefined,
+2025-11-19T19:10:50.547799750Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.547801826Z [err]    detail: undefined,
+2025-11-19T19:10:50.547805293Z [err]    column: undefined,
+2025-11-19T19:10:50.547815818Z [err]    code: '42P01',
+2025-11-19T19:10:50.547822592Z [err]    dataType: undefined,
+2025-11-19T19:10:50.547833388Z [err]    constraint: undefined,
+2025-11-19T19:10:50.547840155Z [err]    hint: undefined,
+2025-11-19T19:10:50.547846780Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.547860798Z [err]    position: '141',
+2025-11-19T19:10:50.547864438Z [err]    line: '1449',
+2025-11-19T19:10:50.547864468Z [err]  }
+2025-11-19T19:10:50.547867573Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.547878075Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.547882204Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:50.547893012Z [err]    sourceError: undefined
+2025-11-19T19:10:50.547895767Z [err]    where: undefined,
+2025-11-19T19:10:50.547902682Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.547911208Z [err]    schema: undefined,
+2025-11-19T19:10:50.547913176Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.547925760Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.547927794Z [err]    table: undefined,
+2025-11-19T19:10:50.547934618Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:50.547942724Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.547952516Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.547961257Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.547968731Z [err]    code: '42P01',
+2025-11-19T19:10:50.551013431Z [err]    detail: undefined,
+2025-11-19T19:10:50.551018966Z [err]    hint: undefined,
+2025-11-19T19:10:50.551026113Z [err]    position: '141',
+2025-11-19T19:10:50.551031943Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.551037940Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.551045117Z [err]    where: undefined,
+2025-11-19T19:10:50.551052224Z [err]    schema: undefined,
+2025-11-19T19:10:50.551058061Z [err]    table: undefined,
+2025-11-19T19:10:50.551063946Z [err]    column: undefined,
+2025-11-19T19:10:50.551071166Z [err]    dataType: undefined,
+2025-11-19T19:10:50.551077728Z [err]    constraint: undefined,
+2025-11-19T19:10:50.551084576Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.551090615Z [err]    line: '1449',
+2025-11-19T19:10:50.551097633Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.551103432Z [err]    sourceError: undefined
+2025-11-19T19:10:50.551109310Z [err]  }
+2025-11-19T19:10:50.668984300Z [err]    position: '13',
+2025-11-19T19:10:50.668999221Z [err]    internalPosition: undefined,
+2025-11-19T19:10:50.669007362Z [err]    internalQuery: undefined,
+2025-11-19T19:10:50.669014083Z [err]    where: undefined,
+2025-11-19T19:10:50.669022425Z [err]    schema: undefined,
+2025-11-19T19:10:50.669030462Z [err]    table: undefined,
+2025-11-19T19:10:50.669037688Z [err]    column: undefined,
+2025-11-19T19:10:50.669043510Z [err]    dataType: undefined,
+2025-11-19T19:10:50.669050435Z [err]    constraint: undefined,
+2025-11-19T19:10:50.669056903Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:50.669062632Z [err]    line: '1449',
+2025-11-19T19:10:50.669068674Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:50.669075930Z [err]    sourceError: undefined
+2025-11-19T19:10:50.669081225Z [err]  }
+2025-11-19T19:10:50.669154208Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:50.669161683Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:50.669200826Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:50.669208177Z [err]    severity: 'ERROR',
+2025-11-19T19:10:50.669213621Z [err]    code: '42P01',
+2025-11-19T19:10:50.669218467Z [err]    detail: undefined,
+2025-11-19T19:10:50.669223389Z [err]    hint: undefined,
+2025-11-19T19:10:51.422079882Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.422081551Z [err]    hint: undefined,
+2025-11-19T19:10:51.422096997Z [err]    code: '42P01',
+2025-11-19T19:10:51.422098858Z [err]    where: undefined,
+2025-11-19T19:10:51.422102375Z [err]    position: '141',
+2025-11-19T19:10:51.422110126Z [err]    detail: undefined,
+2025-11-19T19:10:51.422116054Z [err]    schema: undefined,
+2025-11-19T19:10:51.422120311Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.422131265Z [err]    constraint: undefined,
+2025-11-19T19:10:51.422137546Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.422138372Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.422140329Z [err]    table: undefined,
+2025-11-19T19:10:51.422148417Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.422155407Z [err]    column: undefined,
+2025-11-19T19:10:51.422161820Z [err]    sourceError: undefined
+2025-11-19T19:10:51.422162330Z [err]    line: '1449',
+2025-11-19T19:10:51.422181296Z [err]  }
+2025-11-19T19:10:51.422188311Z [err]    dataType: undefined,
+2025-11-19T19:10:51.422194296Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:51.422201005Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.422207757Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.422231801Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.422243216Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.422253878Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:51.422258795Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.422265954Z [err]    code: '42P01',
+2025-11-19T19:10:51.427677788Z [err]    detail: undefined,
+2025-11-19T19:10:51.427683808Z [err]    hint: undefined,
+2025-11-19T19:10:51.427690096Z [err]    position: '141',
+2025-11-19T19:10:51.427696224Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.427704133Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.427710803Z [err]    where: undefined,
+2025-11-19T19:10:51.427730651Z [err]    schema: undefined,
+2025-11-19T19:10:51.427736924Z [err]    table: undefined,
+2025-11-19T19:10:51.427743350Z [err]    column: undefined,
+2025-11-19T19:10:51.427749438Z [err]    dataType: undefined,
+2025-11-19T19:10:51.427754461Z [err]    constraint: undefined,
+2025-11-19T19:10:51.427761284Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.427766542Z [err]    line: '1449',
+2025-11-19T19:10:51.427826566Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.427833191Z [err]    sourceError: undefined
+2025-11-19T19:10:51.427851739Z [err]  }
+2025-11-19T19:10:51.427858271Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:51.427862621Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.427867345Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.427871908Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.427878672Z [err]    code: '42P01',
+2025-11-19T19:10:51.427883069Z [err]    detail: undefined,
+2025-11-19T19:10:51.427886857Z [err]    hint: undefined,
+2025-11-19T19:10:51.427893191Z [err]    position: '13',
+2025-11-19T19:10:51.427897306Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.427901737Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.427906365Z [err]    where: undefined,
+2025-11-19T19:10:51.427916748Z [err]    schema: undefined,
+2025-11-19T19:10:51.427923096Z [err]    table: undefined,
+2025-11-19T19:10:51.428546908Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.428555582Z [err]    line: '1449',
+2025-11-19T19:10:51.428561205Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.428568832Z [err]    sourceError: undefined
+2025-11-19T19:10:51.428575977Z [err]  }
+2025-11-19T19:10:51.428855693Z [err]    column: undefined,
+2025-11-19T19:10:51.428862390Z [err]    dataType: undefined,
+2025-11-19T19:10:51.428867083Z [err]    constraint: undefined,
+2025-11-19T19:10:51.428872882Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.428878514Z [err]    line: '1449',
+2025-11-19T19:10:51.428884522Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.428890573Z [err]    sourceError: undefined
+2025-11-19T19:10:51.428898317Z [err]  }
+2025-11-19T19:10:51.428904959Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:51.428910404Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.428915575Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.428920487Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.428925225Z [err]    code: '42P01',
+2025-11-19T19:10:51.428930215Z [err]    detail: undefined,
+2025-11-19T19:10:51.428934592Z [err]    hint: undefined,
+2025-11-19T19:10:51.428939948Z [err]    position: '141',
+2025-11-19T19:10:51.428945265Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.428949957Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.428954806Z [err]    where: undefined,
+2025-11-19T19:10:51.428958948Z [err]    schema: undefined,
+2025-11-19T19:10:51.428964424Z [err]    table: undefined,
+2025-11-19T19:10:51.428969902Z [err]    column: undefined,
+2025-11-19T19:10:51.428975503Z [err]    dataType: undefined,
+2025-11-19T19:10:51.428979959Z [err]    constraint: undefined,
+2025-11-19T19:10:51.431845720Z [err]    dataType: undefined,
+2025-11-19T19:10:51.431872209Z [err]    constraint: undefined,
+2025-11-19T19:10:51.431893222Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.431895416Z [err]    sourceError: undefined
+2025-11-19T19:10:51.431905689Z [err]    line: '1449',
+2025-11-19T19:10:51.431910904Z [err]  }
+2025-11-19T19:10:51.431914379Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.431919891Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:51.431928235Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.431934455Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.431941632Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.431950846Z [err]    code: '42P01',
+2025-11-19T19:10:51.431963315Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:51.431969494Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.431980910Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.431987843Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.431993373Z [err]    code: '42P01',
+2025-11-19T19:10:51.431999239Z [err]    detail: undefined,
+2025-11-19T19:10:51.432004765Z [err]    hint: undefined,
+2025-11-19T19:10:51.432010431Z [err]    position: '141',
+2025-11-19T19:10:51.432016612Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.432027173Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.432037854Z [err]    where: undefined,
+2025-11-19T19:10:51.432044469Z [err]    schema: undefined,
+2025-11-19T19:10:51.432060567Z [err]    table: undefined,
+2025-11-19T19:10:51.432066712Z [err]    column: undefined,
+2025-11-19T19:10:51.434102081Z [err]    detail: undefined,
+2025-11-19T19:10:51.434106923Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.434115583Z [err]    hint: undefined,
+2025-11-19T19:10:51.434125956Z [err]    position: '13',
+2025-11-19T19:10:51.434128328Z [err]    sourceError: undefined
+2025-11-19T19:10:51.434137091Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.434143819Z [err]  }
+2025-11-19T19:10:51.434148328Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.434156889Z [err]    where: undefined,
+2025-11-19T19:10:51.434163291Z [err]    schema: undefined,
+2025-11-19T19:10:51.434169418Z [err]    table: undefined,
+2025-11-19T19:10:51.434176482Z [err]    column: undefined,
+2025-11-19T19:10:51.434182636Z [err]    dataType: undefined,
+2025-11-19T19:10:51.434189059Z [err]    constraint: undefined,
+2025-11-19T19:10:51.434195236Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.434201189Z [err]    line: '1449',
+2025-11-19T19:10:51.455436879Z [err]    sourceError: undefined
+2025-11-19T19:10:51.455453026Z [err]  }
+2025-11-19T19:10:51.455453251Z [err]    detail: undefined,
+2025-11-19T19:10:51.455462374Z [err]    column: undefined,
+2025-11-19T19:10:51.455474063Z [err]    hint: undefined,
+2025-11-19T19:10:51.455478055Z [err]    constraint: undefined,
+2025-11-19T19:10:51.455486850Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.455495540Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:51.455506643Z [err]    line: '1449',
+2025-11-19T19:10:51.455508045Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.455513442Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.455520965Z [err]    dataType: undefined,
+2025-11-19T19:10:51.455523146Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.455527789Z [err]    position: '141',
+2025-11-19T19:10:51.455530475Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.455533537Z [err]    where: undefined,
+2025-11-19T19:10:51.455545942Z [err]    code: '42P01',
+2025-11-19T19:10:51.455547913Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.455549969Z [err]    schema: undefined,
+2025-11-19T19:10:51.455565719Z [err]    table: undefined,
+2025-11-19T19:10:51.455566377Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.634763205Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:51.634775648Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:51.634782617Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:51.634789444Z [err]    severity: 'ERROR',
+2025-11-19T19:10:51.634795476Z [err]    code: '42P01',
+2025-11-19T19:10:51.634801727Z [err]    detail: undefined,
+2025-11-19T19:10:51.634807569Z [err]    hint: undefined,
+2025-11-19T19:10:51.634813772Z [err]    position: '141',
+2025-11-19T19:10:51.635303193Z [err]    internalPosition: undefined,
+2025-11-19T19:10:51.635309947Z [err]    internalQuery: undefined,
+2025-11-19T19:10:51.635319978Z [err]    where: undefined,
+2025-11-19T19:10:51.635326311Z [err]    schema: undefined,
+2025-11-19T19:10:51.635332166Z [err]    table: undefined,
+2025-11-19T19:10:51.635340286Z [err]    column: undefined,
+2025-11-19T19:10:51.635346348Z [err]    dataType: undefined,
+2025-11-19T19:10:51.635352878Z [err]    constraint: undefined,
+2025-11-19T19:10:51.635358800Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:51.635366237Z [err]    line: '1449',
+2025-11-19T19:10:51.635373066Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:51.635379712Z [err]    sourceError: undefined
+2025-11-19T19:10:51.635386296Z [err]  }
+2025-11-19T19:10:52.637630861Z [err]    position: '141',
+2025-11-19T19:10:52.637638612Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.637645640Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.637653222Z [err]    where: undefined,
+2025-11-19T19:10:52.637658582Z [err]    schema: undefined,
+2025-11-19T19:10:52.637673188Z [err]    table: undefined,
+2025-11-19T19:10:52.637680844Z [err]    column: undefined,
+2025-11-19T19:10:52.637727667Z [err]    detail: undefined,
+2025-11-19T19:10:52.637735257Z [err]    hint: undefined,
+2025-11-19T19:10:52.637745204Z [err]    dataType: undefined,
+2025-11-19T19:10:52.637760925Z [err]    constraint: undefined,
+2025-11-19T19:10:52.637772196Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.637780652Z [err]    line: '1449',
+2025-11-19T19:10:52.637789551Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.637822070Z [err]    sourceError: undefined
+2025-11-19T19:10:52.637830704Z [err]  }
+2025-11-19T19:10:52.637838915Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:52.637966074Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:52.637971034Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.637975695Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.637982498Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.637988950Z [err]    code: '42P01',
+2025-11-19T19:10:52.637999710Z [err]    detail: undefined,
+2025-11-19T19:10:52.638005178Z [err]    hint: undefined,
+2025-11-19T19:10:52.638009109Z [err]    position: '13',
+2025-11-19T19:10:52.638016478Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.638023702Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.638031803Z [err]    where: undefined,
+2025-11-19T19:10:52.638038363Z [err]    schema: undefined,
+2025-11-19T19:10:52.638045485Z [err]    table: undefined,
+2025-11-19T19:10:52.638051590Z [err]    column: undefined,
+2025-11-19T19:10:52.638058245Z [err]    dataType: undefined,
+2025-11-19T19:10:52.638064766Z [err]    constraint: undefined,
+2025-11-19T19:10:52.638157527Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.638187131Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.638193243Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.638198821Z [err]    code: '42P01',
+2025-11-19T19:10:52.638203613Z [err]    detail: undefined,
+2025-11-19T19:10:52.638208747Z [err]    hint: undefined,
+2025-11-19T19:10:52.638214802Z [err]    position: '141',
+2025-11-19T19:10:52.638218874Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.638223203Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.638228398Z [err]    where: undefined,
+2025-11-19T19:10:52.638232804Z [err]    schema: undefined,
+2025-11-19T19:10:52.638237335Z [err]    table: undefined,
+2025-11-19T19:10:52.638529007Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.638539524Z [err]    line: '1449',
+2025-11-19T19:10:52.638546380Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.638554781Z [err]    sourceError: undefined
+2025-11-19T19:10:52.638561235Z [err]  }
+2025-11-19T19:10:52.638568699Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:52.638575352Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.638581534Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.638589592Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.638596541Z [err]    code: '42P01',
+2025-11-19T19:10:52.645710920Z [err]    column: undefined,
+2025-11-19T19:10:52.645716431Z [err]    dataType: undefined,
+2025-11-19T19:10:52.645721231Z [err]    constraint: undefined,
+2025-11-19T19:10:52.645726439Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.645731534Z [err]    line: '1449',
+2025-11-19T19:10:52.645735802Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.645740605Z [err]    sourceError: undefined
+2025-11-19T19:10:52.645753551Z [err]  }
+2025-11-19T19:10:52.645759647Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:52.645768459Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.645775009Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.645788598Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.645793325Z [err]    code: '42P01',
+2025-11-19T19:10:52.645797779Z [err]    detail: undefined,
+2025-11-19T19:10:52.645802774Z [err]    hint: undefined,
+2025-11-19T19:10:52.645807032Z [err]    position: '13',
+2025-11-19T19:10:52.645811420Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.645816158Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.645820368Z [err]    where: undefined,
+2025-11-19T19:10:52.645826999Z [err]    schema: undefined,
+2025-11-19T19:10:52.645831346Z [err]    table: undefined,
+2025-11-19T19:10:52.645835608Z [err]    column: undefined,
+2025-11-19T19:10:52.645840890Z [err]    dataType: undefined,
+2025-11-19T19:10:52.645845375Z [err]    constraint: undefined,
+2025-11-19T19:10:52.645850319Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.645865776Z [err]    line: '1449',
+2025-11-19T19:10:52.645873411Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.645879200Z [err]    sourceError: undefined
+2025-11-19T19:10:52.645887533Z [err]  }
+2025-11-19T19:10:52.646081380Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.646095209Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.646104506Z [err]    code: '42P01',
+2025-11-19T19:10:52.646270474Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:52.646276989Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.646283019Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.646291937Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.646298373Z [err]    code: '42P01',
+2025-11-19T19:10:52.646305556Z [err]    detail: undefined,
+2025-11-19T19:10:52.646317929Z [err]    hint: undefined,
+2025-11-19T19:10:52.646323573Z [err]    position: '141',
+2025-11-19T19:10:52.646329398Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.646336127Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.646343433Z [err]    where: undefined,
+2025-11-19T19:10:52.646349134Z [err]    schema: undefined,
+2025-11-19T19:10:52.646355863Z [err]    table: undefined,
+2025-11-19T19:10:52.646362541Z [err]    column: undefined,
+2025-11-19T19:10:52.646373264Z [err]    dataType: undefined,
+2025-11-19T19:10:52.646378625Z [err]    constraint: undefined,
+2025-11-19T19:10:52.646383263Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.646392471Z [err]    line: '1449',
+2025-11-19T19:10:52.646396629Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.646401488Z [err]    sourceError: undefined
+2025-11-19T19:10:52.646409633Z [err]  }
+2025-11-19T19:10:52.646415687Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:52.646421615Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.647990868Z [err]    code: '42P01',
+2025-11-19T19:10:52.648002017Z [err]    detail: undefined,
+2025-11-19T19:10:52.648009293Z [err]    hint: undefined,
+2025-11-19T19:10:52.648017570Z [err]    position: '13',
+2025-11-19T19:10:52.648025500Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.648035121Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.648044612Z [err]    where: undefined,
+2025-11-19T19:10:52.648046861Z [err]    hint: undefined,
+2025-11-19T19:10:52.648054339Z [err]    schema: undefined,
+2025-11-19T19:10:52.648062061Z [err]    position: '141',
+2025-11-19T19:10:52.648066260Z [err]    table: undefined,
+2025-11-19T19:10:52.648071628Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.648077523Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.648085073Z [err]    where: undefined,
+2025-11-19T19:10:52.648092235Z [err]    schema: undefined,
+2025-11-19T19:10:52.648097588Z [err]    table: undefined,
+2025-11-19T19:10:52.648102793Z [err]    column: undefined,
+2025-11-19T19:10:52.648109305Z [err]    dataType: undefined,
+2025-11-19T19:10:52.648114490Z [err]    constraint: undefined,
+2025-11-19T19:10:52.648119263Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.648125923Z [err]    line: '1449',
+2025-11-19T19:10:52.648133304Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.648139392Z [err]    sourceError: undefined
+2025-11-19T19:10:52.648144940Z [err]  }
+2025-11-19T19:10:52.648151976Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:52.648157698Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.648163971Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.648174841Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.648179621Z [err]    detail: undefined,
+2025-11-19T19:10:52.652060211Z [err]    internalPosition: undefined,
+2025-11-19T19:10:52.652077397Z [err]    internalQuery: undefined,
+2025-11-19T19:10:52.652087117Z [err]    where: undefined,
+2025-11-19T19:10:52.652095268Z [err]    schema: undefined,
+2025-11-19T19:10:52.652104139Z [err]    table: undefined,
+2025-11-19T19:10:52.652113489Z [err]    column: undefined,
+2025-11-19T19:10:52.652121892Z [err]    dataType: undefined,
+2025-11-19T19:10:52.652130692Z [err]    constraint: undefined,
+2025-11-19T19:10:52.652140040Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.652149814Z [err]    line: '1449',
+2025-11-19T19:10:52.652160337Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.652169244Z [err]    sourceError: undefined
+2025-11-19T19:10:52.652178087Z [err]  }
+2025-11-19T19:10:52.652322266Z [err]    column: undefined,
+2025-11-19T19:10:52.652330507Z [err]    dataType: undefined,
+2025-11-19T19:10:52.652337814Z [err]    constraint: undefined,
+2025-11-19T19:10:52.652345669Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:52.652353210Z [err]    line: '1449',
+2025-11-19T19:10:52.652360850Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:52.652368573Z [err]    sourceError: undefined
+2025-11-19T19:10:52.652375789Z [err]  }
+2025-11-19T19:10:52.652383217Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:52.652390390Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:52.652398179Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:52.652405850Z [err]    severity: 'ERROR',
+2025-11-19T19:10:52.652413902Z [err]    code: '42P01',
+2025-11-19T19:10:52.652422039Z [err]    detail: undefined,
+2025-11-19T19:10:52.652429231Z [err]    hint: undefined,
+2025-11-19T19:10:52.652436536Z [err]    position: '141',
+2025-11-19T19:10:53.500644399Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:53.500653480Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:53.500662303Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:53.500669860Z [err]    severity: 'ERROR',
+2025-11-19T19:10:53.500677460Z [err]    code: '42P01',
+2025-11-19T19:10:53.500685463Z [err]    detail: undefined,
+2025-11-19T19:10:53.500692498Z [err]    hint: undefined,
+2025-11-19T19:10:53.500699289Z [err]    position: '141',
+2025-11-19T19:10:53.500706776Z [err]    internalPosition: undefined,
+2025-11-19T19:10:53.500714133Z [err]    internalQuery: undefined,
+2025-11-19T19:10:53.500723032Z [err]    where: undefined,
+2025-11-19T19:10:53.500732133Z [err]    schema: undefined,
+2025-11-19T19:10:53.504575671Z [err]    table: undefined,
+2025-11-19T19:10:53.504591809Z [err]    column: undefined,
+2025-11-19T19:10:53.504599956Z [err]    dataType: undefined,
+2025-11-19T19:10:53.504606188Z [err]    constraint: undefined,
+2025-11-19T19:10:53.504614153Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:53.504621413Z [err]    line: '1449',
+2025-11-19T19:10:53.504630033Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:53.504637565Z [err]    sourceError: undefined
+2025-11-19T19:10:53.504644197Z [err]  }
+2025-11-19T19:10:53.504651375Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:53.504657923Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:53.504664624Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:53.504672489Z [err]    severity: 'ERROR',
+2025-11-19T19:10:53.504678395Z [err]    code: '42P01',
+2025-11-19T19:10:53.504805174Z [err]    detail: undefined,
+2025-11-19T19:10:53.504811726Z [err]    hint: undefined,
+2025-11-19T19:10:53.504818115Z [err]    position: '13',
+2025-11-19T19:10:53.504825053Z [err]    internalPosition: undefined,
+2025-11-19T19:10:53.504832479Z [err]    internalQuery: undefined,
+2025-11-19T19:10:53.504838829Z [err]    where: undefined,
+2025-11-19T19:10:53.504845804Z [err]    schema: undefined,
+2025-11-19T19:10:53.504852435Z [err]    table: undefined,
+2025-11-19T19:10:53.504861321Z [err]    column: undefined,
+2025-11-19T19:10:53.504872109Z [err]    dataType: undefined,
+2025-11-19T19:10:53.504880231Z [err]    constraint: undefined,
+2025-11-19T19:10:53.504886168Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:53.504891064Z [err]    line: '1449',
+2025-11-19T19:10:53.504896199Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:53.504900947Z [err]    sourceError: undefined
+2025-11-19T19:10:53.504905359Z [err]  }
+2025-11-19T19:10:53.504910540Z [err]  Rate limit check error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:53.504915093Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:53.504919152Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:53.504923364Z [err]    severity: 'ERROR',
+2025-11-19T19:10:53.504927580Z [err]    code: '42P01',
+2025-11-19T19:10:53.504932654Z [err]    detail: undefined,
+2025-11-19T19:10:53.504936891Z [err]    hint: undefined,
+2025-11-19T19:10:53.504942933Z [err]    position: '141',
+2025-11-19T19:10:53.504948025Z [err]    internalPosition: undefined,
+2025-11-19T19:10:53.504953421Z [err]    internalQuery: undefined,
+2025-11-19T19:10:53.504958635Z [err]    where: undefined,
+2025-11-19T19:10:53.504963986Z [err]    schema: undefined,
+2025-11-19T19:10:53.504969865Z [err]    table: undefined,
+2025-11-19T19:10:53.505662438Z [err]    column: undefined,
+2025-11-19T19:10:53.505670096Z [err]    dataType: undefined,
+2025-11-19T19:10:53.505677798Z [err]    constraint: undefined,
+2025-11-19T19:10:53.505685634Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:53.505693103Z [err]    line: '1449',
+2025-11-19T19:10:53.505711872Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:53.505719161Z [err]    sourceError: undefined
+2025-11-19T19:10:53.505725950Z [err]  }
+2025-11-19T19:10:53.505734287Z [err]  Rate limit increment error for odds_api: NeonDbError: relation "provider_limits" does not exist
+2025-11-19T19:10:53.505741925Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:53.505756630Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:53.505763916Z [err]    severity: 'ERROR',
+2025-11-19T19:10:53.505771074Z [err]    code: '42P01',
+2025-11-19T19:10:53.505778792Z [err]    detail: undefined,
+2025-11-19T19:10:53.505785816Z [err]    hint: undefined,
+2025-11-19T19:10:53.505793583Z [err]    position: '141',
+2025-11-19T19:10:53.505800454Z [err]    internalPosition: undefined,
+2025-11-19T19:10:53.505807169Z [err]    internalQuery: undefined,
+2025-11-19T19:10:53.505814888Z [err]    where: undefined,
+2025-11-19T19:10:53.505822576Z [err]    schema: undefined,
+2025-11-19T19:10:53.505829332Z [err]    table: undefined,
+2025-11-19T19:10:53.505836378Z [err]    column: undefined,
+2025-11-19T19:10:53.505861810Z [err]    dataType: undefined,
+2025-11-19T19:10:53.505868596Z [err]    constraint: undefined,
+2025-11-19T19:10:53.505875807Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:53.505882379Z [err]    line: '1449',
+2025-11-19T19:10:53.505889930Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:53.505896737Z [err]    sourceError: undefined
+2025-11-19T19:10:53.507508174Z [err]    position: '13',
+2025-11-19T19:10:53.507528082Z [err]    internalPosition: undefined,
+2025-11-19T19:10:53.507533078Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:10:53.507541404Z [err]    internalQuery: undefined,
+2025-11-19T19:10:53.507544971Z [inf]  Total errors: 6
+2025-11-19T19:10:53.507546757Z [err]    column: undefined,
+2025-11-19T19:10:53.507548584Z [err]    severity: 'ERROR',
+2025-11-19T19:10:53.507566526Z [err]  }
+2025-11-19T19:10:53.507566756Z [err]    dataType: undefined,
+2025-11-19T19:10:53.507567656Z [err]    line: '1449',
+2025-11-19T19:10:53.507569462Z [err]    code: '42P01',
+2025-11-19T19:10:53.507571701Z [err]    sourceError: undefined
+2025-11-19T19:10:53.507573863Z [err]    where: undefined,
+2025-11-19T19:10:53.507574828Z [err]    constraint: undefined,
+2025-11-19T19:10:53.507590114Z [err]  Cache write error: NeonDbError: relation "data_feeds" does not exist
+2025-11-19T19:10:53.507596420Z [err]    detail: undefined,
+2025-11-19T19:10:53.507597515Z [err]    routine: 'parserOpenTable',
+2025-11-19T19:10:53.507604858Z [err]    schema: undefined,
+2025-11-19T19:10:53.507607036Z [inf]  
+2025-11-19T19:10:53.507608966Z [err]    file: 'parse_relation.c',
+2025-11-19T19:10:53.507616662Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T19:10:53.507620490Z [err]    table: undefined,
+2025-11-19T19:10:53.507621604Z [err]    hint: undefined,
+2025-11-19T19:10:53.507632618Z [inf]  === Multi-Platform Refresh Summary ===
+2025-11-19T19:10:53.507643321Z [inf]  Found 1308 props from The Odds API
+2025-11-19T19:10:53.507646569Z [inf]  Total props fetched: 13400
+2025-11-19T19:10:53.507663384Z [err]  The Odds API fetch error: relation "props" does not exist
+2025-11-19T19:10:53.507666878Z [inf]  Total props created: 0
+2025-11-19T19:10:53.507851613Z [err]  }
+2025-11-19T19:10:53.508878360Z [inf]  ========================================
+2025-11-19T19:10:53.508886789Z [inf]  
+2025-11-19T19:10:53.508896547Z [err]  ❌ Prop refresh failed - all platforms returned errors
