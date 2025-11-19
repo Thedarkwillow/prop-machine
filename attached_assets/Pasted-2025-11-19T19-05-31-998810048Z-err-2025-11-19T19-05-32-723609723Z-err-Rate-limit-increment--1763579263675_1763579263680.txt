@@ -1,0 +1,1001 @@
+2025-11-19T19:05:31.998810048Z [err]  }
+2025-11-19T19:05:32.723609723Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.723613984Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.723619924Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.723623943Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.723627591Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.723631923Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.723635891Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.723640318Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.723645437Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.723650891Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.723657461Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.723662973Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.723669240Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.723677171Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.723681771Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.723686284Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.723690434Z [err]  }
+2025-11-19T19:05:32.723696036Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.726482967Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.726491704Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.726496551Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.726501394Z [err]  }
+2025-11-19T19:05:32.726506231Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.726512313Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.726530486Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.726545124Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.726552022Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.726558311Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.726564730Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.726571799Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.726578589Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.726588277Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:32.726594550Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.726601400Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:32.726608071Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.726669015Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.728079512Z [err]  }
+2025-11-19T19:05:32.728088930Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.728095359Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.728102893Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.728109654Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.728114934Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.728120156Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.728125374Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.728129533Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.728134924Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.728140783Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.728146827Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.728152881Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.728159274Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.728164550Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.728168976Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.728173170Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.728177352Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.729819330Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.729828065Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.729837823Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.729848788Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.729857010Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.729863617Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.729868994Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.729873446Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.729884024Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.729891210Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.729899622Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.729906491Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.729914129Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.729919144Z [err]  }
+2025-11-19T19:05:32.729924856Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.729931074Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.729938566Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.729946195Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.731495033Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.731506356Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.731506549Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.731511598Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:32.731522103Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.731524788Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.731525714Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.731535401Z [err]  }
+2025-11-19T19:05:32.731540565Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:32.731540795Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.731550022Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.731552466Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.731560096Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.731563323Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.731566385Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.731572156Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.731575787Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.731581092Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.732880184Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.732884015Z [err]  }
+2025-11-19T19:05:32.732887365Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.732893834Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.732897350Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.732898974Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.732904280Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.732906744Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.732909740Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.732915940Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.732915954Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.732936195Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.732937927Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.732945056Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.732946072Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.732953541Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.732953881Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.732960605Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.734806028Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.734817382Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.734825051Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.734832305Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.734839067Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.734846264Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.734853836Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.734861628Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.734868148Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.734875423Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.734881686Z [err]  }
+2025-11-19T19:05:32.734888182Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.734895025Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.734901641Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.734910637Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.734920560Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.734927909Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.734941788Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.736403414Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.736414004Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.736422496Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:32.736427892Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.736432871Z [inf]  Found 12084 props from The Odds API
+2025-11-19T19:05:32.736433480Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:32.736439662Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.736442728Z [err]  The Odds API fetch error: Invalid URL
+2025-11-19T19:05:32.736445924Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.736451261Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.736452866Z [inf]  Fetching props from PrizePicks for NFL...
+2025-11-19T19:05:32.736456665Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.736460980Z [err]  Rate limit check error for prizepicks: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.736462808Z [err]  }
+2025-11-19T19:05:32.736467653Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.736473791Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.736478557Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.736483848Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.736488463Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.738172566Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:05:32.738189577Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.738196789Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.738203573Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.738210291Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.738216913Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.738223825Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.738230041Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.738236480Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.738242313Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.738248508Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.738254621Z [err]  }
+2025-11-19T19:05:32.738260861Z [err]  Integration error for prizepicks: Error: HTTP 403: Forbidden
+2025-11-19T19:05:32.738269731Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:05:32.738276105Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:05:32.738281834Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:05:32.738287489Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:05:32.739608458Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:05:32.739618400Z [err]  Cache read error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.739627367Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.739634332Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.739640082Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.739646639Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.739654702Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.739662354Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.739668191Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.739676763Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.739682536Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.739688486Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.739694218Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.739699816Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.739705853Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.739712458Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.739719276Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.740943840Z [err]  }
+2025-11-19T19:05:32.740954641Z [err]  PrizePicks fetch error: HTTP 403: Forbidden
+2025-11-19T19:05:32.740961658Z [inf]  Fetching props from Underdog for NFL...
+2025-11-19T19:05:32.740969793Z [err]  Rate limit check error for underdog: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.740971766Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.740978440Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.740986973Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.740989283Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.740997286Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.741000286Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.741012161Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.741014786Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.741021828Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.741026285Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.741030694Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.741034794Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.741039649Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.741043978Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.742488711Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:05:32.742504820Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:05:32.742506640Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.742514737Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:05:32.742523314Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:05:32.742529262Z [err]  Cache read error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.742538260Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.742545450Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.742552741Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.742558323Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.742569010Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.742569582Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.742569999Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.742585803Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.742589696Z [err]  }
+2025-11-19T19:05:32.742607640Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:05:32.742616608Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:05:32.742624925Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:05:32.743970076Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:05:32.743973549Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.743978450Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:05:32.743981061Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.743987196Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:05:32.743987944Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.743994103Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.743995784Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:05:32.744001138Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.744002783Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:05:32.744009257Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.744009406Z [inf]  No props found on Underdog for NFL
+2025-11-19T19:05:32.744015456Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.744015540Z [inf]  Fetching props from The Odds API for NFL...
+2025-11-19T19:05:32.744024230Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.744024342Z [err]  }
+2025-11-19T19:05:32.744029819Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:05:32.744034355Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:05:32.745938970Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.745943602Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.745949510Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.745955129Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.745961270Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.745966626Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.745972112Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.745977671Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.745982999Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.745987200Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.745993780Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.745998275Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.746002370Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.746006538Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.746010394Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.746014143Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.746018445Z [err]  }
+2025-11-19T19:05:32.746022436Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.747528893Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.747539748Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.747547521Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.747552967Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.747559853Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.747567511Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.747574080Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.747580503Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.747587081Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.747593380Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.747604160Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.747612678Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.747619547Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.747626107Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.747632774Z [err]  }
+2025-11-19T19:05:32.747639309Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.747646068Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.747652213Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.749456131Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.749463082Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.749467540Z [err]  }
+2025-11-19T19:05:32.749468182Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.749472671Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.749477705Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.749482881Z [inf]  Found 30 upcoming americanfootball_nfl events, fetching player props...
+2025-11-19T19:05:32.749485576Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.749491166Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:32.749491753Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.749497146Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.749501932Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.749502464Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:32.749508712Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.749512980Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.749517291Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.749521654Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.751253460Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.751253620Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.751263096Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.751265968Z [err]  }
+2025-11-19T19:05:32.751270305Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.751275512Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.751280045Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.751285278Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.751289969Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.751295821Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.751300747Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.751305834Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.751311309Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.751316984Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.751321586Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.863743623Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.863748643Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.863756142Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.863763033Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.863764069Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.863771890Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.863773156Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.863781343Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.863781940Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.863789655Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.863791356Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.863798583Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.863799887Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.863808538Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.863808932Z [err]  }
+2025-11-19T19:05:32.863816579Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.863823129Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.865650739Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.865650924Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:32.865662992Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.865663726Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.865671342Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.865672782Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.865681114Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.865681324Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.865688909Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.865691544Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:32.865696207Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.865701248Z [err]  }
+2025-11-19T19:05:32.865704937Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.865708909Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:32.865712636Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.865718796Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.865724581Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:32.865730236Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.867799601Z [err]  }
+2025-11-19T19:05:32.867813885Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:32.867819177Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:32.867823608Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:32.867827964Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:32.867833370Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:32.867838650Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:32.867843123Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:32.867847232Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:32.867851335Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:32.867855533Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:32.867859680Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:32.867864056Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:32.867868496Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:32.867872548Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:32.867876400Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.738049834Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.738057307Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.738068967Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.738071533Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.738080851Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.738081292Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.738089646Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.738090060Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.738097784Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.738098778Z [err]  }
+2025-11-19T19:05:33.738107281Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.738151350Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.738158209Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.738158981Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.738185252Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.738195405Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.738204895Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.738214849Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.741053485Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.741066092Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.741079718Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.741086336Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.741092214Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.741099554Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.741105322Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.741111277Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.741118952Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.741126298Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.741132770Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.741140459Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.741147828Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.741154682Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.741161430Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.741167457Z [err]  }
+2025-11-19T19:05:33.741173452Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.741180196Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.742070580Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.742080612Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.742087773Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.742094191Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.742098600Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.742103515Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.742108356Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.742112634Z [err]  }
+2025-11-19T19:05:33.742117738Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.742122599Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.742126849Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.742200944Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.742207360Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.742214063Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.742219265Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.742224145Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.742229572Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.742234695Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.742976810Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.742980919Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.742984907Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.742989079Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.742995585Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.743001333Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.743006459Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.743012271Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.743017305Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.743022450Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.743027861Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.743033523Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.743038923Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.743075015Z [err]  }
+2025-11-19T19:05:33.743082045Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.743087676Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.743093720Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.743099031Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.744078019Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.744085763Z [err]  }
+2025-11-19T19:05:33.744091692Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.744097942Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.744103948Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.744111316Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.744112717Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.744120795Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.744134048Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.744150872Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.744161209Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.744172318Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.744181786Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.744190608Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.744199885Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.744208556Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.744220100Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.744229558Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.745728758Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.745741768Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.745745723Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.745759513Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.745764542Z [err]  }
+2025-11-19T19:05:33.745772943Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.745782687Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.745785339Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.745796290Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.745798872Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.745811496Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.745812452Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.745823825Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.745824636Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.745836433Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.745838820Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.745849799Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.745852326Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.747023066Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.747023444Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.747035509Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.747041183Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.747077138Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.747083001Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.747086704Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.747096402Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.747099468Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.747103622Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.747109191Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.747114378Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.747119601Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.747126847Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.747132070Z [err]  }
+2025-11-19T19:05:33.747137739Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.747143076Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.747148248Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.748733753Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.748744462Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.748752328Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.748759474Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.748765978Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.748772697Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.748779096Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.748787106Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.748794177Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.748800455Z [err]  }
+2025-11-19T19:05:33.748806972Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.748812998Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.748818885Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.748825849Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.748832167Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.748838164Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.748844573Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.748851065Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.750675644Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.750680081Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.750685156Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.750689857Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.750694412Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.750699279Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.750703776Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.750708743Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.750713418Z [err]  }
+2025-11-19T19:05:33.750717770Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.750724235Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.750728823Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.750732943Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.750738796Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.750743261Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.750747656Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.750754860Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.750796442Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.752338257Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.752347676Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.752354083Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.752360065Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.752364282Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.752365778Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.752372188Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.752373009Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.752378044Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.752382288Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.752386733Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.752391020Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.752396628Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.752400582Z [err]  }
+2025-11-19T19:05:33.752404478Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.752408706Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.752413306Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.752417614Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.753906554Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.753912881Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.753919563Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.753925760Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.753932264Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.753939065Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.753945323Z [err]  }
+2025-11-19T19:05:33.753950855Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.753957719Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.753962314Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.753966698Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.753970817Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.753976025Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.753979714Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.753983492Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.753987815Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.753992147Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.753996926Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.755770506Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.755771755Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.755780475Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.755787213Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.755798236Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.755802387Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.755808075Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.755817271Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.755818717Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.755830329Z [err]  }
+2025-11-19T19:05:33.755832047Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.755837968Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.755843592Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.755848261Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.755855303Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.755864348Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.755869899Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.755875391Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.760789500Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.760801994Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.760816536Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.760828426Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.760835816Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.760843771Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.760852129Z [err]  }
+2025-11-19T19:05:33.760861000Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.760868953Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.760876217Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.760883493Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.760892935Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.760900189Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.760909573Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.760916961Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.761150099Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.761159805Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.761166844Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.761173533Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.761180501Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.761187191Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.761193619Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.761200863Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.761208472Z [err]  }
+2025-11-19T19:05:33.761216077Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.761223402Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.761238618Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.761246109Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.761254451Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.761271591Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.761279355Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.761288946Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.761295841Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.761302872Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.761309774Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.761316397Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.761322739Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.761329038Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.761336364Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.761350697Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.761361934Z [err]  }
+2025-11-19T19:05:33.761370029Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.761377497Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.761385254Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.761392047Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.761399105Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.761405291Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.761411080Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.761417985Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.761423946Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.761430835Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.761444255Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.761451288Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.761458542Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.762459154Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.762472942Z [err]  }
+2025-11-19T19:05:33.762481212Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.762488360Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.762495264Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.762501953Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.762508693Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.762514714Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.762522852Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.762529364Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.762535827Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.762542921Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.762549266Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.762555531Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.762561593Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.762567544Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.762574519Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.762580937Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.763370502Z [err]  }
+2025-11-19T19:05:33.763379138Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.763386601Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.763387297Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.763394758Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.763399943Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.763403447Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.763410723Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.763411933Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.763420592Z [err]  }
+2025-11-19T19:05:33.763424339Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.763440672Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.763461006Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.763483984Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.763500259Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.763509838Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.763521831Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.763530374Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.855322308Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.855326492Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.855331122Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.855336037Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.855340289Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.855344615Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.855348806Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.855353087Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.855358989Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.855365890Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.855370558Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.855374629Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.855378578Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.855382835Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.855387222Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.855392142Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.855398309Z [err]  }
+2025-11-19T19:05:33.857767300Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.857782724Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.857793204Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.857802766Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.857811253Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.857832049Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.857841821Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.857849613Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.857857365Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.857865688Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.857878554Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.857886615Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.857895191Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.857904360Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.857914084Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.857923625Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.857941066Z [err]  }
+2025-11-19T19:05:33.859510310Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.859521343Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.859523811Z [err]  }
+2025-11-19T19:05:33.859536274Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.859544331Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.859551056Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.859557107Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.859562732Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.859568823Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.859573939Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.859579606Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.859584738Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.859593597Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.859597823Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.859602272Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.859608433Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.859614263Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.966101431Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.966119385Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.966132124Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.966141334Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.966146616Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.966152012Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.966158058Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.966164094Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.966171007Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.966177436Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.966181958Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.966186769Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.966190599Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.966194476Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.966199851Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.966206802Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.966216699Z [err]  }
+2025-11-19T19:05:33.966223372Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.967732899Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.967738680Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.967742710Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.967746966Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.967751629Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.967757816Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.967762291Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.967765892Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.967769455Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:33.967773480Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.967778043Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:33.967782261Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.967786130Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.967790218Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.967794193Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.967797582Z [err]  }
+2025-11-19T19:05:33.967801519Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:33.967805233Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:33.969872303Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:33.969883087Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:33.969889370Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:33.969898261Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:33.969903983Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:33.969910335Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:33.969916564Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:33.969922567Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:33.969928567Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:33.969934820Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:33.969941541Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:33.969947729Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:33.969953476Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:33.969959231Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:33.969964817Z [err]  }
+2025-11-19T19:05:34.101608667Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.101624169Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.101630516Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.101637710Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.101644202Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.101650132Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.101656471Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.101664219Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:34.101671618Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:34.101677619Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:34.101683386Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:34.101688951Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:34.101694763Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:34.101700639Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:34.101706147Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:34.101711717Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:34.101717446Z [err]  }
+2025-11-19T19:05:34.101724565Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.102743161Z [inf]  Found 0 props from The Odds API
+2025-11-19T19:05:34.102749320Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.102753882Z [inf]  Fetching props from PrizePicks for NHL...
+2025-11-19T19:05:34.102761109Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.102768419Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.102791585Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.102798197Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.102804976Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.102811001Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:34.102821860Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:34.102830529Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:34.102839412Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:34.102848015Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:34.102854254Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:34.102860247Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:34.102866236Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:34.102872920Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:34.102879203Z [err]  }
+2025-11-19T19:05:34.104194318Z [err]  The Odds API fetch error: Invalid URL
+2025-11-19T19:05:34.104202585Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:34.104204598Z [err]  Rate limit check error for prizepicks: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.104207939Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.104211947Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.104218884Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.104221269Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:34.104226606Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.104229301Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:34.104236043Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.104236547Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:34.104244888Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.104246202Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:34.104252836Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:34.104261110Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:34.104267271Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:34.104273415Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:34.105435352Z [err]  }
+2025-11-19T19:05:34.107458096Z [err]  Integration error for prizepicks: Error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T19:05:34.107470067Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:05:34.107477941Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:05:34.107484960Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:05:34.107492570Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:05:34.107499452Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:05:34.107507192Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:05:34.623351343Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.623359734Z [err]  Cache read error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.623366127Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.623372141Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.623382408Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.623394470Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.626253249Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.626265871Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:34.626274307Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:34.626282184Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:34.626289968Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:34.626297373Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:34.626304783Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:34.626311583Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:34.626318613Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:34.626325431Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:34.626332918Z [err]  }
+2025-11-19T19:05:34.626341281Z [err]  PrizePicks fetch error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T19:05:34.626351003Z [inf]  Fetching props from Underdog for NHL...
+2025-11-19T19:05:34.626358139Z [err]  Rate limit check error for underdog: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.626365254Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.626371894Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.626378179Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.626386360Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.626393707Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.626401224Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.626408763Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:34.626418546Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:34.626424894Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:34.626431778Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:34.626439531Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:34.626445822Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:34.626451972Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:34.626458528Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:34.626465126Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:34.627904655Z [err]  }
+2025-11-19T19:05:34.627905861Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.627915928Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.627916098Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:05:34.627925789Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.627926017Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:05:34.627931981Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:34.627936253Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:05:34.627937125Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:34.627943936Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:34.627945158Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:05:34.627952044Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:05:34.627958460Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:05:34.627964222Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:05:34.627969977Z [err]  Cache read error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.627975692Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.627981750Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.627987358Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.629923194Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:34.629931886Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:34.629937665Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:34.629942889Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:34.629949928Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:34.629955190Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:34.629960802Z [err]  }
+2025-11-19T19:05:34.629965680Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:05:34.629971097Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:05:34.629977315Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:05:34.629982636Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:05:34.629987643Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:05:34.629992562Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:05:34.629997483Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:05:34.630002131Z [inf]  No props found on Underdog for NHL
+2025-11-19T19:05:34.630007130Z [inf]  Fetching props from The Odds API for NHL...
+2025-11-19T19:05:34.630012030Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:34.630017734Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:34.632242225Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:34.632257627Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:34.632272781Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:34.632281652Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:34.632289421Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:34.632295791Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.037954369Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:35.037966999Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:35.037974083Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:35.037980298Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:35.037987109Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:35.037998135Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:35.038005850Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:35.038013412Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.038019931Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:35.038026945Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:35.038032869Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:35.038038772Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:35.038046346Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:35.038052030Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:35.038057685Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:35.038063304Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:35.038069075Z [err]  }
+2025-11-19T19:05:35.038075714Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:35.040486551Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:35.040495673Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:35.040501808Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:35.040507045Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:35.040512811Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:35.040518593Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:35.040524356Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.040529073Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:35.040534316Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:35.040540064Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:35.040545405Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:35.040550913Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:35.040555678Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:35.040561980Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:35.040567913Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:35.040575829Z [err]  }
+2025-11-19T19:05:35.040583273Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:35.040589355Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:35.042419798Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:35.042432560Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:35.042440842Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:35.042450339Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:35.042457720Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:35.042464946Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.042471111Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:35.042477290Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:35.042482825Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:35.042490535Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:35.042495997Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:35.042501128Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:35.042507280Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:35.042513366Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:35.042959351Z [err]  }
+2025-11-19T19:05:35.646382001Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:35.646395960Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:35.646403869Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:35.646410318Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.646418057Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:35.646425820Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:35.646432624Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:35.646441309Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
+2025-11-19T19:05:35.646448111Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:35.646456288Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:35.646462529Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:35.646470438Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:35.646477782Z [err]  }
+2025-11-19T19:05:35.646484395Z [err]  Cache write error: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:35.646599418Z [err]  Rate limit increment error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:35.646604638Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:35.646609786Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:35.646615252Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:35.650054757Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:35.650061896Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:35.650070083Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:35.650077098Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:35.650083357Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:35.650089844Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:35.650095728Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.650103006Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:35.650109115Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/insert.ts:414:27)
+2025-11-19T19:05:35.650114885Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:35.650121714Z [err]      at QueryPromise.execute (/app/node_modules/src/pg-core/query-builders/insert.ts:413:17)
+2025-11-19T19:05:35.650128194Z [err]      at QueryPromise.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:35.650135273Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:35.650141295Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:35.650147117Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:35.650152769Z [err]  }
+2025-11-19T19:05:35.650158503Z [err]  Rate limit check error for odds_api: TypeError [ERR_INVALID_URL]: Invalid URL
+2025-11-19T19:05:35.650164803Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T19:05:35.651580928Z [err]      at PgSelectBase.then (/app/node_modules/src/query-promise.ts:31:15)
+2025-11-19T19:05:35.651591850Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T19:05:35.651593396Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T19:05:35.651598811Z [err]    input: "psql%20'postgresql://neondb_owner:npg_gfHtsCpQ4vn8@ep-hidden-night-a4ncezc0-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'",
+2025-11-19T19:05:35.651605031Z [err]    code: 'ERR_INVALID_URL'
+2025-11-19T19:05:35.651606303Z [err]      at new URL (node:internal/url:676:13)
+2025-11-19T19:05:35.651611186Z [err]  }
+2025-11-19T19:05:35.651621156Z [err]      at Object.parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:841:225)
+2025-11-19T19:05:35.651629932Z [err]      at parse (file:///app/node_modules/@neondatabase/serverless/index.mjs:848:1)
+2025-11-19T19:05:35.651637937Z [err]      at new ConnectionParameters (file:///app/node_modules/@neondatabase/serverless/index.mjs:869:23)
+2025-11-19T19:05:35.651643717Z [err]      at Cn.query (file:///app/node_modules/@neondatabase/serverless/index.mjs:1624:27)
+2025-11-19T19:05:35.651650941Z [err]      at NeonPreparedQuery.execute (/app/node_modules/src/neon-serverless/session.ts:102:31)
+2025-11-19T19:05:35.651657404Z [err]      at <anonymous> (/app/node_modules/src/pg-core/query-builders/select.ts:1006:27)
+2025-11-19T19:05:35.651662924Z [err]      at Object.startActiveSpan (/app/node_modules/src/tracing.ts:27:11)
+2025-11-19T19:05:35.651669355Z [err]      at PgSelectBase.execute (/app/node_modules/src/pg-core/query-builders/select.ts:1005:17)
