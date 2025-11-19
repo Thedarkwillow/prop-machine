@@ -66,7 +66,12 @@ const server = app.listen(5000, "0.0.0.0", () => {
   console.log(`[express] serving on port 5000`);
   
   // Start automatic prop refresh scheduler (every 15 minutes)
-  propSchedulerService.start(15);
+  // Can be disabled with DISABLE_PROP_SCHEDULER=true
+  if (process.env.DISABLE_PROP_SCHEDULER === 'true') {
+    console.log('⏸️  Prop scheduler disabled (DISABLE_PROP_SCHEDULER=true)');
+  } else {
+    propSchedulerService.start(15);
+  }
 });
 
 // Development: setup Vite dev server AFTER server starts

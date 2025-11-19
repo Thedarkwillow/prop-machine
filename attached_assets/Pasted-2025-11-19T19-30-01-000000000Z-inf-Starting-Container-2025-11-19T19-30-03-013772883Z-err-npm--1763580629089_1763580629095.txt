@@ -1,0 +1,519 @@
+2025-11-19T19:30:01.000000000Z [inf]  Starting Container
+2025-11-19T19:30:03.013772883Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T19:30:03.013778714Z [inf]  
+2025-11-19T19:30:03.013785427Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T19:30:03.013791058Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T19:30:03.013796551Z [inf]  
+2025-11-19T19:30:03.873011686Z [err]  The `fetchConnectionCache` option is deprecated (now always `true`)
+2025-11-19T19:30:03.873054098Z [inf]  🔧 Using Neon HTTP fetch (production mode)
+2025-11-19T19:30:03.873063769Z [inf]  🔐 Using Google OAuth (Railway production)
+2025-11-19T19:30:03.873069363Z [inf]  📦 Serving static files from: /app/dist/public
+2025-11-19T19:30:03.873074038Z [inf]  [express] serving on port 5000
+2025-11-19T19:30:03.873078978Z [inf]  Starting prop refresh scheduler (every 15 minutes)
+2025-11-19T19:30:03.873083840Z [inf]  
+2025-11-19T19:30:03.873090575Z [inf]  ========================================
+2025-11-19T19:30:03.873094817Z [inf]  🔄 Running scheduled prop refresh...
+2025-11-19T19:30:03.873099320Z [inf]  ⏰ Time: 11/19/2025, 7:30:03 PM
+2025-11-19T19:30:03.873104216Z [inf]  ========================================
+2025-11-19T19:30:03.876128505Z [inf]  
+2025-11-19T19:30:03.876139494Z [inf]  Starting multi-platform prop refresh for: NBA, NFL, NHL
+2025-11-19T19:30:03.876144940Z [inf]  Platforms: PrizePicks, Underdog, The Odds API
+2025-11-19T19:30:03.876149366Z [inf]  Fetching props from PrizePicks for NBA...
+2025-11-19T19:30:03.876153871Z [inf]  Database already seeded
+2025-11-19T19:30:03.891863995Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:30:03.891874037Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:30:03.891882967Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:30:03.891891966Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:03.891899829Z [err]  Integration error for prizepicks: Error: HTTP 403: Forbidden
+2025-11-19T19:30:03.891908749Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:03.891917352Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:03.966883746Z [err]  PrizePicks fetch error: HTTP 403: Forbidden
+2025-11-19T19:30:03.966889426Z [inf]  Fetching props from Underdog for NBA...
+2025-11-19T19:30:04.181615275Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:30:04.181619660Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:04.181623963Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:04.181628025Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:30:04.181631852Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:30:04.181637156Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:30:04.181641491Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:04.941006630Z [inf]  Found 9 upcoming basketball_nba events, fetching player props...
+2025-11-19T19:30:04.941052436Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:04.941059936Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:04.941066644Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:30:04.941072949Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:30:04.941079086Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:30:04.941085678Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:04.941092163Z [inf]  No props found on Underdog for NBA
+2025-11-19T19:30:04.941099707Z [inf]  Fetching props from The Odds API for NBA...
+2025-11-19T19:30:04.941131029Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:30:07.854330392Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:07.854337013Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:07.854343027Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:07.854350840Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:07.854358956Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:07.854365534Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:07.854371537Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:07.854378431Z [err]  Error fetching props for event bffc94ea34d3aceace2f4536d77c5925: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:07.854384411Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:07.854389930Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:07.854395733Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:07.854402202Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:07.854407779Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:07.855947338Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:07.855958374Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:07.855966949Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:07.855974004Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:07.855981064Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:07.855988210Z [err]  Error fetching props for event 1c9e418efd98eb8040dc783345e4bc24: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:07.855995244Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:07.856002961Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:07.856009775Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:07.856018339Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:07.856074887Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:07.856083037Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:07.856089044Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:07.858509750Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:07.858515548Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:07.858522171Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:07.858527300Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:07.858531906Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:07.858536999Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:07.858542686Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:07.858547913Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:07.858553538Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:07.884514172Z [err]  Error fetching props for event ee79094a98d3645115a3e9c083f01a74: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:07.884543019Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:07.884549730Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:07.884554955Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:07.884559592Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:07.884581947Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:07.884588050Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.051999836Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.052007113Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.052015497Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.052021383Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.052030156Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.052035695Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.052041820Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.124508734Z [err]  Error fetching props for event 301506911df04b3ac148721fae1aceae: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.124513575Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.124518923Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.124524109Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.124532299Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.124537850Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.124543164Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.891604586Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.891608687Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.891612466Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.891616456Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.891620309Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.891624220Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.891628109Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.891632833Z [err]  Error fetching props for event ffc5a7963fb53f25e210c1acc25e2fd2: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.891641696Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.891651786Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.891656782Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.891661603Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.891666196Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.891966985Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.891971087Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.891976037Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.891980222Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.891984359Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.891988753Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.891994192Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.891998196Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.892002307Z [err]  Error fetching props for event f43516e89095a0b6edbe793745a2e6ca: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.892006267Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.892012914Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.892017311Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.892021893Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.892510862Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.892704587Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.904514462Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.904516963Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.904528543Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.904528840Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.904535778Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.904542303Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.904549412Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:08.976737830Z [err]  Error fetching props for event 6a4ab9a1ce6d4f90b0dafd6d6461c5eb: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:08.976742629Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:08.976748030Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:08.976753191Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:08.976757925Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:08.976763633Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:08.976769142Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:09.151590933Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:09.151596588Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:09.151603086Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:09.151608984Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:09.151616373Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:09.151622286Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:09.151629606Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:09.816052956Z [err]  Error fetching props for event 0bba63ebea7fd06ccc1a76376361195c: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:09.816057676Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:09.816062038Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:09.816066376Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:09.816071474Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:09.816076535Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:09.816080838Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:09.844773108Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:09.844790283Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:09.844798035Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:09.844804994Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:09.844856653Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:09.844858445Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:09.844867384Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:09.919005296Z [err]  Error fetching props for event 27a47dd17db5b4e2788c58cb75b827df: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:09.919012306Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:09.919016485Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:09.919021010Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:09.919025258Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:09.919030153Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:09.919034238Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:09.919039007Z [inf]  No games found on The Odds API for NBA
+2025-11-19T19:30:09.919043568Z [inf]  Fetching props from PrizePicks for NFL...
+2025-11-19T19:30:10.151873601Z [err]  Integration error for prizepicks: Error: HTTP 403: Forbidden
+2025-11-19T19:30:10.151877840Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:10.151881969Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:10.151887892Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:30:10.151891832Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:30:10.151896916Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:30:10.151900840Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:10.842227192Z [err]  PrizePicks fetch error: HTTP 403: Forbidden
+2025-11-19T19:30:10.842233996Z [inf]  Fetching props from Underdog for NFL...
+2025-11-19T19:30:10.842239517Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:30:10.842244955Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:10.842252585Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:10.842488536Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:30:10.842495570Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:30:10.842501204Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:30:10.842506178Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:10.842512416Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:30:10.842517121Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:10.845465472Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:10.845474313Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:30:10.845479213Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:30:10.845483677Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:30:10.845488241Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:10.845492899Z [inf]  No props found on Underdog for NFL
+2025-11-19T19:30:10.845651624Z [inf]  Fetching props from The Odds API for NFL...
+2025-11-19T19:30:10.956569632Z [inf]  Found 30 upcoming americanfootball_nfl events, fetching player props...
+2025-11-19T19:30:11.122044184Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.122053150Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.122058985Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.122066135Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.122072652Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.122079449Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.122088564Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.202661774Z [err]  Error fetching props for event cd2e0964817c30ad3f5144ea49b55f2b: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.202669958Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.202675613Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.202680965Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.202687106Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.202692636Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.202697748Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.747659262Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.747672420Z [err]  Error fetching props for event 7159d60c7a31c7d593167637723d7663: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.747680725Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.747688503Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.747693626Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.747699289Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.747704652Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.747793975Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.747798527Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.747803356Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.747808401Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.747814824Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.747820728Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.750658862Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.750664242Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.750670054Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.750674926Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.750679523Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.750684362Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.750688997Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.750693387Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.750699885Z [err]  Error fetching props for event c8913b70b63ae247f23a4e1dec08c668: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.750704261Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.750708768Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.750713085Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.750717772Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.752891412Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.752900918Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.834789451Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.834794114Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.834799083Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.834805884Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.834815043Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.834819851Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.834824774Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:11.943681435Z [err]  Error fetching props for event 1a8f3d70399a5cad83c95196795ed77b: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:11.943686628Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:11.943691553Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:11.943696504Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:11.943702051Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:11.943708213Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:11.943713165Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.142330434Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.142345202Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.142423045Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.142429345Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.142436227Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.142442234Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.142448763Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.843101179Z [err]  Error fetching props for event 535bbe97d4e56494b039ade88459c338: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.843106923Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.843108988Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.843116566Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.843123556Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.843128674Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.843133100Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.843139805Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.843145346Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.843148136Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.843154822Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.843161183Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.843169654Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.846985983Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.847009561Z [err]  Error fetching props for event 91019a528f43cd28965fdc68a3f3ef85: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.847014583Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.847019645Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.847025518Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.847030264Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.847034856Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.847039759Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.847044829Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.847077787Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.847084095Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.847090596Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.847095522Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.848433053Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.848437636Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.848441443Z [err]  Error fetching props for event 8b39d8dc550ced94f9faa91878ebf6b6: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.848445231Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.848449449Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.848453520Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.848458251Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.848462146Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.848465736Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:12.966460190Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:12.966466480Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:12.966470579Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:12.966478919Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:12.966484936Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:12.966488993Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:12.966492581Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.043723421Z [err]  Error fetching props for event 0ff4e68cf39cc57ca7cf1276e4a44d2f: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:13.043734954Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.043741091Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.043746073Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:13.043750798Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:13.043755869Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:13.043760569Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.199234746Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:13.199240351Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.199244878Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.199249193Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:13.199253572Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:13.199258033Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:13.199263708Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.816381657Z [err]  Error fetching props for event e32e0030899c06fdf2c74745ca27d85a: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:13.816390968Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.816395700Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.816400306Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:13.816406882Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:13.816411822Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:13.816417371Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.816422141Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:13.816426609Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.816431253Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.816436312Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:13.816440986Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:13.816445925Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:13.819259841Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.819263556Z [err]  Error fetching props for event 27f50ddbc4c3fbad10398c5187a28dc7: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:13.819267214Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.819270924Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.819274813Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:13.819278403Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:13.819281901Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:13.819285575Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.819290035Z [inf]  No games found on The Odds API for NFL
+2025-11-19T19:30:13.819293685Z [inf]  Fetching props from PrizePicks for NHL...
+2025-11-19T19:30:13.819297843Z [err]  Integration error for prizepicks: Error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T19:30:13.819303931Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.819307901Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.819311458Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T19:30:13.819314938Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T19:30:13.830971353Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T19:30:13.830977383Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.830983563Z [err]  PrizePicks fetch error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T19:30:13.830990051Z [inf]  Fetching props from Underdog for NHL...
+2025-11-19T19:30:13.865178418Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:30:13.865190111Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.865304923Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T19:30:13.865311067Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.865318679Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.865324505Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:30:13.865330375Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:30:13.935019267Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T19:30:13.935025784Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:13.935033136Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:13.935039380Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T19:30:13.935045148Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T19:30:13.935078830Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T19:30:13.935085765Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:13.935091860Z [inf]  No props found on Underdog for NHL
+2025-11-19T19:30:13.935098312Z [inf]  Fetching props from The Odds API for NHL...
+2025-11-19T19:30:14.899090313Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:14.899098933Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:14.899120760Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:14.899133116Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:14.899138387Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:14.899142936Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:14.899150193Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:14.899154731Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:14.899159807Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:14.899166520Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:14.899182310Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:14.899187705Z [err]  Error fetching props for event 85e0c6534ca732e9ce47e114f9c16cee: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:14.899192418Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:14.899513956Z [inf]  Found 16 upcoming icehockey_nhl events, fetching player props...
+2025-11-19T19:30:14.899521560Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:14.899527749Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:14.899532944Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:14.899538438Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:14.899543948Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:14.899550192Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:14.899555904Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:14.899563036Z [err]  Error fetching props for event 468435042f0076960c4c1e43f7f33551: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:14.899568927Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:14.899576258Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:14.899582734Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:14.899589408Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:14.899910371Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:14.899914375Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:14.899918244Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.009024995Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.009035827Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.009042724Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.009060837Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.009067887Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.009074634Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.009080751Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.086019339Z [err]  Error fetching props for event 1798d5d182480a49bdb6f284a10e171c: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.086031526Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.086040723Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.086046792Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.086052539Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.086059087Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.086065299Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.888982191Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.888986722Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.888991157Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.888995588Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.888999403Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.889003184Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.889006931Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.889011480Z [err]  Error fetching props for event 28b4a90a54a42431709d3831ccdf166e: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.889019924Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.889023774Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.889027913Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.889033998Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.889039308Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.889924567Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.889925817Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.889935948Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.889938621Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.889944156Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.889950863Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.889956778Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.889962976Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.889968945Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.889975325Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.889981868Z [err]  Error fetching props for event fada3121c5e0cb9ba6fff552d43ffc96: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.889987782Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.889993186Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.892640893Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.892645179Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.910561369Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:15.910835327Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.910842974Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.910850789Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.910858639Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.910866860Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.910875039Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.983632533Z [err]  Error fetching props for event 8a22b7924bea68b6761edbb59484e07f: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:15.983640124Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:15.983648275Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:15.983655365Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:15.983662149Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:15.983668978Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:15.983676850Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.150458668Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.150463161Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.150467451Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.150471966Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.150477913Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.150482030Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.150486745Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.219759376Z [err]  Error fetching props for event 688c329bcb1860abe45d05be7297814d: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.219765665Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.219770605Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.219775662Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.219784089Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.219789608Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.219795513Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.915159567Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.915162232Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.915171483Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.915171988Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.915179676Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.923672820Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.923685011Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.923693530Z [err]  Error fetching props for event a796fd73eb237f89885826fd14e8abeb: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.923701367Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.923708928Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.923715608Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.923721384Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.923726516Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.923797359Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.923805817Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.924689427Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.924693529Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.924697472Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.924702074Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.924706583Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.924711720Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.924716459Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.924720982Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.924725190Z [err]  Error fetching props for event 5522fb1a10f5c187605df6ddb50c2741: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.924729806Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.924734532Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.924738650Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.924743003Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.927896692Z [err]  Integration error for odds_api: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.927900973Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.927905377Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.927909644Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.927914734Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.927919255Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.927923330Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.998397772Z [err]  Error fetching props for event e1b8715f5a766a496a772b078b063d8e: Error: HTTP 401: {"message":"Usage quota has been reached. See usage plans at https://the-odds-api.com","error_code":"OUT_OF_USAGE_CREDITS","details_url":"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits"}
+2025-11-19T19:30:16.998407265Z [err]      at OddsApiClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T19:30:16.998413380Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T19:30:16.998418215Z [err]      at OddsApiClient.getPlayerProps (/app/server/integrations/oddsApiClient.ts:118:28)
+2025-11-19T19:30:16.998430824Z [err]      at PropRefreshService.refreshFromOddsApi (/app/server/services/propRefreshService.ts:275:24)
+2025-11-19T19:30:16.998436712Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:373:29)
+2025-11-19T19:30:16.998441841Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T19:30:16.998446796Z [inf]  No games found on The Odds API for NHL
+2025-11-19T19:30:16.998452172Z [inf]  
+2025-11-19T19:30:16.998459562Z [inf]  === Multi-Platform Refresh Summary ===
+2025-11-19T19:30:16.998464999Z [inf]  Total props fetched: 0
+2025-11-19T19:30:16.998470104Z [inf]  Total props created: 0
+2025-11-19T19:30:16.998475449Z [inf]  Total errors: 3
+2025-11-19T19:30:16.998482589Z [inf]  ========================================
+2025-11-19T19:30:16.998490747Z [inf]  
+2025-11-19T19:30:16.998499214Z [err]  ❌ Prop refresh failed - all platforms returned errors
