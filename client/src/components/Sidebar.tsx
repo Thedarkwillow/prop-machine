@@ -7,11 +7,11 @@ export default function Sidebar() {
   const [location] = useLocation();
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, path: '/' },
+    { id: 'dashboard', label: 'Live Props', icon: Target, path: '/' },
+    { id: 'slips', label: 'Build Slip', icon: Sparkles, path: '/build-slip' },
     { id: 'history', label: 'Bet History', icon: History, path: '/history' },
-    { id: 'slips', label: 'Slips', icon: Sparkles, path: '/slips' },
-    { id: 'props', label: 'Props Feed', icon: Target, path: '/props' },
     { id: 'performance', label: 'Performance', icon: TrendingUp, path: '/performance' },
+    { id: 'scoreboard', label: 'Live Scores', icon: Activity, path: '/scoreboard' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/settings/notifications' }
   ];
 

@@ -299,4 +299,60 @@ router.get("/line-movements/recent", async (req, res) => {
   }
 });
 
+// ==================== NOTIFICATION PREFERENCES ROUTES ====================
+router.get("/notifications/preferences", requireAuth, async (req, res) => {
+  try {
+    const userId = (req.session as any)?.user?.claims?.sub;
+    const user = await storage.getUser(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    // Return default notification preferences
+    // In the future, this could be stored in a separate preferences table
+    res.json({
+      emailEnabled: true,
+      newPropsEnabled: true,
+      highConfidenceOnly: false,
+      minConfidence: 70,
+      sports: ["NHL", "NBA", "NFL", "MLB"],
+      platforms: ["PrizePicks", "Underdog"],
+    });
+  } catch (error) {
+    console.error("Error fetching notification preferences:", error);
+    res.status(500).json({ error: "Failed to fetch notification preferences" });
+  }
+});
+
+router.patch("/notifications/preferences", requireAuth, async (req, res) => {
+  try {
+    const userId = (req.session as any)?.user?.claims?.sub;
+    
+    // For now, just acknowledge the update
+    // In the future, store preferences in database
+    res.json({ success: true, preferences: req.body });
+  } catch (error) {
+    console.error("Error updating notification preferences:", error);
+    res.status(500).json({ error: "Failed to update notification preferences" });
+  }
+});
+
+// ==================== SCOREBOARD ROUTES ====================
+router.get("/scoreboard", async (req, res) => {
+  try {
+    // For now, return no games (scoreboard integration pending)
+    // In the future, integrate with ESPN/The Odds API for live scores
+    res.json({
+      NHL: [],
+      NBA: [],
+      NFL: [],
+      MLB: [],
+    });
+  } catch (error) {
+    console.error("Error fetching scoreboard:", error);
+    res.status(500).json({ error: "Failed to fetch scoreboard" });
+  }
+});
+
 export default router;

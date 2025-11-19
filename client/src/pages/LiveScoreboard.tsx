@@ -12,6 +12,8 @@ export default function LiveScoreboard() {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  const hasGames = allScores && Object.values(allScores).some((games: any) => games?.length > 0);
+
   const renderGame = (game: any) => {
     const isLive = game.status === 'in_progress';
     const isFinal = game.status === 'final';
