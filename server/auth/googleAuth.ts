@@ -1,152 +1,217 @@
-import { Issuer, generators } from "openid-client";
-import dotenv from "dotenv";
-import type { Express } from "express";
+// server/auth/googleAuth.ts
+import passport from "passport";
+import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
 import session from "express-session";
 import createMemoryStore from "memorystore";
+import type { Express } from "express";
 import { storage } from "../storage.js";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const MemoryStore = createMemoryStore(session);
 
-const redirectUri =
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+const CALLBACK_PATH = "/auth/google/callback"; // must match Google console
+const CALLBACK_FULL =
   process.env.GOOGLE_REDIRECT_URI ||
-  "https://prop-machine-production.up.railway.app/auth/google/callback";
+  `${process.env.APP_BASE_URL || "https://prop-machine-production.up.railway.app"}${CALLBACK_PATH}`;
 
-let googleClient = null;
-const codeVerifiers = new Map();
+if (!CLIENT_ID || !CLIENT_SECRET) {
+  console.warn("Google OAuth client id/secret not configured. Google login will not work.");
+}
 
-export async function getGoogleClient() {
-  if (googleClient) return googleClient;
+/**
+ * Normalized user shape stored in session
+ * {
+ *   id: string,
+ *   email: string | null,
+ *   name: string | null,
+ *   picture: string | null,
+ *   provider: "google"
+ * }
+ */
 
-  const GoogleIssuer = await Issuer.discover("https://accounts.google.com");
-
-  googleClient = new GoogleIssuer.Client({
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uris: [redirectUri],
-    response_types: ["code"],
+export function getSessionMiddleware() {
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+  return session({
+    secret: process.env.SESSION_SECRET || "replace-me-with-long-random-secret",
+    store: new MemoryStore({ checkPeriod: sessionTtl }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: sessionTtl,
+    },
   });
+}
 
-  return googleClient;
+function buildNormalizedUserFromProfile(profile: any, tokens: { accessToken?: string; refreshToken?: string } = {}) {
+  return {
+    id: profile.id,
+    email: profile.emails?.[0]?.value || null,
+    name: profile.displayName || null,
+    picture: profile.photos?.[0]?.value || null,
+    provider: "google" as const,
+    // optional token fields kept in session.userTokens (not in normalized user)
+  };
 }
 
 export async function setupGoogleAuth(app: Express) {
-  /* ------------------------- SESSION ------------------------- */
+  // Required when behind Railway / proxies so secure cookies work
+  app.set("trust proxy", 1);
 
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "your-secret-key",
-      resave: false,
-      saveUninitialized: false,
-      store: new MemoryStore({ checkPeriod: 86400000 }),
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+  // Session middleware (ensure it's mounted before passport.session())
+  app.use(getSessionMiddleware());
+
+  // Initialize passport
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Passport serialize/deserialize: store minimal user in session (we'll store normalized object)
+  passport.serializeUser((user: any, done) => {
+    // user should already be normalized
+    done(null, user);
+  });
+
+  passport.deserializeUser((user: any, done) => {
+    done(null, user);
+  });
+
+  // Configure strategy
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        callbackURL: CALLBACK_FULL,
+        passReqToCallback: false,
       },
-    })
+      // verify callback
+      async (accessToken: string, refreshToken: string | undefined, profile: any, done: VerifyCallback) => {
+        try {
+          // Find or create DB user
+          const email = profile.emails?.[0]?.value;
+          let user = null;
+          if (email) {
+            user = await storage.getUserByEmail(email);
+          }
+          if (!user) {
+            // Create with normalized fields similar to your other flows
+            user = await storage.createUser({
+              email: email || "",
+              username: profile.displayName || profile.username || "unknown",
+              bankroll: 1000,
+              kellySizing: "full",
+              riskTolerance: "moderate",
+              isAdmin: false,
+            });
+          } else {
+            // optionally update user profile fields if you want
+            // await storage.updateUserProfile(user.id, { username: profile.displayName, profileImageUrl: profile.photos?.[0]?.value })
+          }
+
+          const normalized = buildNormalizedUserFromProfile(profile, { accessToken, refreshToken });
+
+          // Attach DB id as string to normalized
+          normalized.id = user.id.toString();
+
+          // Return normalized + tokens (tokens saved to session separately)
+          return done(null, { normalized, tokens: { accessToken, refreshToken } });
+        } catch (err) {
+          return done(err as Error);
+        }
+      }
+    )
   );
 
-  /* ------------------------- LOGIN ------------------------- */
-
-  app.get("/api/login", (req, res) => {
-    res.redirect("/auth/google");
+  // Wrap passport authenticate callback to persist normalized shape cleanly
+  app.get("/api/login", (req, res, next) => {
+    // alias the frontend's expected login URL
+    // this will start the passport flow
+    passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account" })(req, res, next);
   });
 
-  /* ------------------------- START AUTH ------------------------- */
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account" })
+  );
 
-  app.get("/auth/google", async (_req, res) => {
-    try {
-      const client = await getGoogleClient();
+  app.get(
+    "/auth/google/callback",
+    // passport middleware handles the exchange and calls our verify callback
+    (req, res, next) => {
+      passport.authenticate("google", (err: any, result: any) => {
+        if (err) {
+          console.error("Passport authenticate error:", err);
+          return res.status(500).send("Authentication failed");
+        }
+        if (!result) {
+          // no user/result returned
+          return res.status(401).send("Authentication failed");
+        }
 
-      const codeVerifier = generators.codeVerifier();
-      const codeChallenge = generators.codeChallenge(codeVerifier);
-      const state = generators.state();
+        // result is { normalized, tokens }
+        const { normalized, tokens } = result as { normalized: any; tokens: { accessToken?: string; refreshToken?: string } };
 
-      codeVerifiers.set(state, codeVerifier);
+        // Persist normalized user object into req.session.user (flat shape)
+        req.session.user = {
+          id: normalized.id,
+          email: normalized.email,
+          name: normalized.name,
+          picture: normalized.picture,
+          provider: "google",
+        };
 
-      const url = client.authorizationUrl({
-        scope: "openid email profile",
-        code_challenge: codeChallenge,
-        code_challenge_method: "S256",
-        redirect_uri: redirectUri,
-        state,
-      });
+        // Save tokens in session for possible refresh flows (kept separate)
+        req.session.userTokens = {
+          accessToken: tokens.accessToken || null,
+          refreshToken: tokens.refreshToken || null,
+        };
 
-      res.redirect(url);
-    } catch (err) {
-      console.error("Google auth error:", err);
-      res.status(500).send("Authentication failed");
-    }
-  });
+        // mark userId also for compatibility
+        req.session.userId = normalized.id;
 
-  /* ------------------------- CALLBACK ------------------------- */
-
-  app.get("/auth/google/callback", async (req, res) => {
-    try {
-      const { code, state } = req.query;
-      const client = await getGoogleClient();
-
-      const codeVerifier = codeVerifiers.get(state);
-      if (!codeVerifier) throw new Error("Invalid state parameter");
-
-      codeVerifiers.delete(state);
-
-      const tokenSet = await client.callback(
-        redirectUri,
-        { code, state },
-        { code_verifier: codeVerifier }
-      );
-
-      const userinfo = await client.userinfo(tokenSet.access_token);
-
-      // Look up or create the user in your DB (unchanged)
-      let user = await storage.getUserByEmail(userinfo.email);
-      if (!user) {
-        user = await storage.createUser({
-          email: userinfo.email,
-          username: userinfo.name,
-          bankroll: 1000,
-          kellySizing: "full",
-          riskTolerance: "moderate",
-          isAdmin: false,
+        // finish login
+        req.logIn(req.session.user, (loginErr) => {
+          if (loginErr) {
+            console.error("req.logIn error:", loginErr);
+            return res.status(500).send("Authentication failed");
+          }
+          // redirect to home (or where you want)
+          return res.redirect("/");
         });
-      }
+      })(req, res, next);
+    }
+  );
 
-      /* ------------------------- NORMALIZED SESSION ------------------------- */
-      req.session.user = {
-        id: user.id.toString(),
-        email: userinfo.email || null,
-        name: userinfo.name || null,
-        picture: userinfo.picture || null,
-        provider: "google",
-      };
+  // Return current user (normalized)
+  app.get("/api/user", async (req: any, res) => {
+    if (!req.session?.userId || !req.session?.user) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
 
-      res.redirect("/");
+    try {
+      const dbUser = await storage.getUser(Number(req.session.userId));
+      return res.json({ session: req.session.user, db: dbUser });
     } catch (err) {
-      console.error("Google callback error:", err);
-      res.status(500).send("Authentication callback failed");
+      console.error("Error fetching user for /api/user:", err);
+      return res.status(500).json({ error: "Failed to fetch user" });
     }
   });
 
-  /* ------------------------- USER ENDPOINT ------------------------- */
-
-  app.get("/api/user", async (req, res) => {
-    if (!req.session?.user)
-      return res.status(401).json({ error: "Not authenticated" });
-
-    // Also return the DB row (optional)
-    const dbUser = await storage.getUser(Number(req.session.user.id));
-    res.json({ session: req.session.user, db: dbUser });
-  });
-
-  /* ------------------------- LOGOUT ------------------------- */
-
-  app.post("/api/logout", (req, res) => {
+  // Logout (destroy session)
+  app.post("/api/logout", (req: any, res) => {
     req.session?.destroy((err) => {
-      if (err) return res.status(500).json({ error: "Logout failed" });
+      if (err) {
+        console.error("Logout error:", err);
+        return res.status(500).json({ error: "Logout failed" });
+      }
       res.json({ success: true });
     });
   });
+
+  console.log("✅ Google OAuth (Passport) configured. Callback URL:", CALLBACK_FULL);
 }
