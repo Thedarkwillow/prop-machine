@@ -35,10 +35,16 @@ export async function setupAuth(app: Express) {
   const issuerUrl = process.env.ISSUER_URL ?? "https://replit.com/oidc";
   const clientId = process.env.REPL_ID!;
 
-  app.get("/api/login", (req, res) => {
+  app.get("/api/login", async (req, res) => {
     const state = nanoid();
     const codeVerifier = nanoid(64);
-    const codeChallenge = Buffer.from(codeVerifier).toString("base64url");
+    
+    // Create SHA-256 hash of code verifier for PKCE
+    const crypto = await import("crypto");
+    const codeChallenge = crypto
+      .createHash("sha256")
+      .update(codeVerifier)
+      .digest("base64url");
 
     req.session!.state = state;
     req.session!.codeVerifier = codeVerifier;
@@ -52,7 +58,7 @@ export async function setupAuth(app: Express) {
     authUrl.searchParams.set("scope", "openid email profile");
     authUrl.searchParams.set("state", state);
     authUrl.searchParams.set("code_challenge", codeChallenge);
-    authUrl.searchParams.set("code_challenge_method", "plain");
+    authUrl.searchParams.set("code_challenge_method", "S256");
 
     res.redirect(authUrl.toString());
   });

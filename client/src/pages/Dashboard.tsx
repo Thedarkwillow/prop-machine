@@ -21,8 +21,6 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
-const USER_ID = 1; // Default user ID
-
 // Helper to format numbers without unnecessary decimals (50.0 → 50, 75.5 → 75.5)
 const formatNumber = (value: number, decimals: number = 1): string => {
   const fixed = value.toFixed(decimals);
@@ -54,9 +52,9 @@ export default function Dashboard() {
     setSelectedStat('all');
   }, [selectedSport]);
 
-  // Fetch dashboard data
+  // Fetch dashboard data (uses authenticated session user)
   const { data: dashboardData, isLoading: dashboardLoading, isError: dashboardError } = useQuery({
-    queryKey: ['/api/dashboard', USER_ID],
+    queryKey: ['/api/dashboard'],
   });
 
   // Fetch props
@@ -64,9 +62,9 @@ export default function Dashboard() {
     queryKey: ['/api/props', selectedSport],
   });
 
-  // Fetch performance history
+  // Fetch performance history (uses authenticated session user)
   const { data: performanceHistory = [], isLoading: perfLoading, isError: perfError } = useQuery({
-    queryKey: ['/api/performance', USER_ID, 'history'],
+    queryKey: ['/api/performance/history'],
   });
 
   // Show error toasts
@@ -123,20 +121,20 @@ export default function Dashboard() {
   }
 
   const user = dashboardData?.user;
-  const metrics = dashboardData?.metrics || {};
+  const stats = dashboardData?.stats || {};
   const pendingSlips = dashboardData?.pendingSlips || [];
-  const week1Progress = dashboardData?.week1Progress || { betsPlaced: 0, targetBets: 20 };
+  const week1Progress = { betsPlaced: stats.totalBets || 0, targetBets: 20 };
 
   // Transform performance history for charts
-  const bankrollData = performanceHistory.map((snapshot: any) => ({
+  const bankrollData = Array.isArray(performanceHistory) ? performanceHistory.map((snapshot: any) => ({
     date: new Date(snapshot.date).toLocaleDateString('en-US', { weekday: 'short' }),
     value: parseFloat(snapshot.bankroll),
-  }));
+  })) : [];
 
-  const winRateData = performanceHistory.map((snapshot: any) => ({
+  const winRateData = Array.isArray(performanceHistory) ? performanceHistory.map((snapshot: any) => ({
     date: new Date(snapshot.date).toLocaleDateString('en-US', { weekday: 'short' }),
     value: parseFloat(snapshot.winRate),
-  }));
+  })) : [];
 
   // Transform slips for SlipCard component
   const transformedSlips = pendingSlips.map((slip: any) => ({
@@ -150,7 +148,7 @@ export default function Dashboard() {
   }));
 
   // Transform props for PropsTable component
-  const transformedProps = props.map((prop: any) => ({
+  const transformedProps = Array.isArray(props) ? props.map((prop: any) => ({
     id: prop.id.toString(),
     player: prop.player,
     team: prop.team,
@@ -161,7 +159,7 @@ export default function Dashboard() {
     ev: parseFloat(prop.ev),
     platform: prop.platform,
     lineMovement: prop.lineMovement || null,
-  }));
+  })) : [];
 
   // Filter props by search query and stat type
   const filteredProps = transformedProps.filter((prop: any) => {
@@ -175,14 +173,14 @@ export default function Dashboard() {
     {
       label: 'Win Rate',
       target: '50%+',
-      current: `${metrics.winRate}%`,
-      achieved: parseFloat(metrics.winRate || 0) >= 50,
+      current: `${formatNumber(stats.winRate || 0)}%`,
+      achieved: parseFloat(stats.winRate || '0') >= 50,
     },
     {
       label: 'CLV Positive',
       target: '55%+',
-      current: `${metrics.avgClv >= 0 ? '+' : ''}${metrics.avgClv}%`,
-      achieved: parseFloat(metrics.avgClv || 0) >= 0,
+      current: `${(stats.avgClv || 0) >= 0 ? '+' : ''}${formatNumber(stats.avgClv || 0)}%`,
+      achieved: parseFloat(stats.avgClv || '0') >= 0,
     },
     {
       label: 'Bets Placed',
@@ -193,8 +191,8 @@ export default function Dashboard() {
     {
       label: 'ROI',
       target: '5%+',
-      current: `${metrics.roi >= 0 ? '+' : ''}${metrics.roi}%`,
-      achieved: parseFloat(metrics.roi || 0) >= 5,
+      current: `${(stats.roi || 0) >= 0 ? '+' : ''}${formatNumber(stats.roi || 0)}%`,
+      achieved: parseFloat(stats.roi || '0') >= 5,
     },
   ];
 
@@ -246,19 +244,19 @@ export default function Dashboard() {
               />
               <MetricCard
                 label="Win Rate"
-                value={formatNumber(parseFloat(metrics.winRate || 0))}
+                value={formatNumber(parseFloat(stats.winRate || '0'))}
                 suffix="%"
                 change={8.2}
               />
               <MetricCard
                 label="CLV"
-                value={`${metrics.avgClv >= 0 ? '+' : ''}${formatNumber(parseFloat(metrics.avgClv || 0))}`}
+                value={`${(stats.avgClv || 0) >= 0 ? '+' : ''}${formatNumber(parseFloat(stats.avgClv || '0'))}`}
                 suffix="%"
                 change={12.5}
               />
               <MetricCard
                 label="ROI"
-                value={formatNumber(parseFloat(metrics.roi || 0))}
+                value={formatNumber(parseFloat(stats.roi || '0'))}
                 suffix="%"
                 change={-1.2}
               />
@@ -342,7 +340,7 @@ export default function Dashboard() {
                   Loading props...
                 </div>
               ) : filteredProps.length > 0 ? (
-                <PropsTable props={filteredProps} userId={USER_ID} />
+                <PropsTable props={filteredProps} userId={user?.id || ''} />
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   No props found matching your criteria

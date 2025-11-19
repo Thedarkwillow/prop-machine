@@ -15,6 +15,53 @@ router.get("/", (req, res) => {
   });
 });
 
+// ==================== DASHBOARD ROUTE ====================
+router.get("/dashboard", requireAuth, async (req, res) => {
+  try {
+    const userId = req.session!.userId!;
+    
+    // Get user data
+    const user = await storage.getUser(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    // Get user's bets for stats
+    const bets = await storage.getBetsWithProps(userId);
+    const settledBets = bets.filter((b: any) => b.status === 'won' || b.status === 'lost');
+    const wonBets = settledBets.filter((b: any) => b.status === 'won');
+    
+    // Calculate stats
+    const totalBets = settledBets.length;
+    const winRate = totalBets > 0 ? (wonBets.length / totalBets) * 100 : 0;
+    const totalWagered = settledBets.reduce((sum: number, b: any) => sum + b.amount, 0);
+    const totalProfit = settledBets.reduce((sum: number, b: any) => {
+      if (b.status === 'won') return sum + (b.payout - b.amount);
+      if (b.status === 'lost') return sum - b.amount;
+      return sum;
+    }, 0);
+    const roi = totalWagered > 0 ? (totalProfit / totalWagered) * 100 : 0;
+    
+    // Get pending slips
+    const slips = await storage.getPendingSlips(userId);
+    
+    res.json({
+      user,
+      stats: {
+        totalBets,
+        winRate,
+        roi,
+        totalProfit,
+        bankroll: user.bankroll,
+      },
+      pendingSlips: slips,
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard:", error);
+    res.status(500).json({ error: "Failed to fetch dashboard data" });
+  }
+});
+
 // ==================== PROPS ROUTES ====================
 router.get("/props", async (req, res) => {
   try {
