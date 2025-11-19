@@ -6,6 +6,13 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 
 ## Recent Changes (November 19, 2025)
 
+### NBA Player Search Integration
+- **BallDontLie API**: Integrated BallDontLie API for NBA player search with authenticated requests
+- **Multi-Sport Search**: `/api/players/search` now supports NBA (BallDontLie), NHL/NFL (ESPN)
+- **Rate Limiting**: Configured proper free tier limits (5 req/min) with caching layer
+- **Player Search UI**: PlayerSearchDropdown works across all sports on PlayerComparison and PropComparison pages
+- **End-to-End Tested**: Verified NBA player search with LeBron James, Stephen Curry, Kevin Durant
+
 ### Live Scoreboard Integration
 - **ESPN API Integration**: Integrated ESPN API for live game scores across all four major sports (NBA, NHL, NFL, MLB)
 - **Real-time Game Data**: Live Scoreboard now displays scheduled, in-progress, and completed games
