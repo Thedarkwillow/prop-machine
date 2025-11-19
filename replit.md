@@ -6,6 +6,22 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 
 ## Recent Changes (November 19, 2025)
 
+### Railway Production Deployment (November 19, 2025)
+- **Database Architecture**: Replit uses built-in PostgreSQL, Railway uses separate Neon database (both share same schema)
+- **Shared Database Strategy**: Both Replit and Railway now connect to Railway's Neon database for data consistency
+- **Decimal Normalization Fix**: Implemented `normalizeDecimals()` helper in `server/storage.ts` to convert PostgreSQL DECIMAL columns (returned as strings by Drizzle) to numbers at the storage layer
+  - Applied to `getActiveProps()`, `getAllActiveProps()`, and `getUser()` methods
+  - Fixes `.toFixed() is not a function` errors across the entire frontend
+  - Eliminates need for individual component-level parseFloat() patches
+- **Prop Scheduler Control**: Added `DISABLE_PROP_SCHEDULER` environment variable support to disable scheduler on Railway
+- **Production Configuration**: Railway uses Google OAuth, Neon HTTP fetch, serves static files from `dist/public/`
+- **Deployment Status**: Railway successfully deployed and running (scheduler disabled to conserve API credits)
+
+### API Integration Status
+- **The Odds API**: Working perfectly with paid tier (15,000+ NBA props, 1,100+ NHL props, NFL props)
+- **PrizePicks API**: Returns HTTP 403 Forbidden (access restricted)
+- **Underdog Fantasy API**: Returns HTTP 404 Not Found (endpoint unavailable)
+
 ### NBA Player Search Integration
 - **BallDontLie API**: Integrated BallDontLie API for NBA player search with authenticated requests
 - **Multi-Sport Search**: `/api/players/search` now supports NBA (BallDontLie), NHL/NFL (ESPN)

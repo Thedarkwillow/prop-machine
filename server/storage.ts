@@ -16,6 +16,36 @@ import type {
   DiscordSettings, InsertDiscordSettings
 } from "@shared/schema";
 
+/**
+ * Helper to convert PostgreSQL DECIMAL columns (returned as strings by Drizzle) to numbers
+ * This ensures the frontend can use .toFixed() and numeric operations without errors
+ */
+function normalizeDecimals<T extends Record<string, any>>(
+  record: T | undefined,
+  decimalFields: (keyof T)[]
+): T | undefined {
+  if (!record) return undefined;
+  
+  const normalized = { ...record };
+  for (const field of decimalFields) {
+    const value = normalized[field];
+    if (value !== null && value !== undefined) {
+      normalized[field] = typeof value === 'string' ? parseFloat(value) : value;
+    }
+  }
+  return normalized as T;
+}
+
+/**
+ * Normalize arrays of records with decimal fields
+ */
+function normalizeDecimalsArray<T extends Record<string, any>>(
+  records: T[],
+  decimalFields: (keyof T)[]
+): T[] {
+  return records.map(record => normalizeDecimals(record, decimalFields)!);
+}
+
 // Extended prop type with line movement data
 export type PropWithLineMovement = Prop & {
   latestLineMovement?: {
@@ -739,8 +769,9 @@ import { eq, and, desc, gte, sql, inArray, or } from "drizzle-orm";
 class DbStorage implements IStorage {
   // User management
   async getUser(userId: string): Promise<User | undefined> {
+    const userDecimalFields: (keyof User)[] = ['bankroll', 'initialBankroll', 'kellySizing'];
     const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-    return result[0];
+    return normalizeDecimals(result[0], userDecimalFields);
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -795,13 +826,19 @@ class DbStorage implements IStorage {
 
   // Props
   async getActiveProps(sport?: string): Promise<Prop[]> {
+    const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
+    
+    let results: Prop[];
     if (sport) {
-      return await db
+      results = await db
         .select()
         .from(props)
         .where(and(eq(props.isActive, true), eq(props.sport, sport)));
+    } else {
+      results = await db.select().from(props).where(eq(props.isActive, true));
     }
-    return await db.select().from(props).where(eq(props.isActive, true));
+    
+    return normalizeDecimalsArray(results, propDecimalFields);
   }
 
   async getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]> {
@@ -858,7 +895,9 @@ class DbStorage implements IStorage {
   }
 
   async getAllActiveProps(): Promise<Prop[]> {
-    return await db.select().from(props).where(eq(props.isActive, true));
+    const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
+    const results = await db.select().from(props).where(eq(props.isActive, true));
+    return normalizeDecimalsArray(results, propDecimalFields);
   }
 
   async createProp(prop: InsertProp): Promise<Prop> {
