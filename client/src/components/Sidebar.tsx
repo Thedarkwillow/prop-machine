@@ -6,7 +6,13 @@ import { Link, useLocation } from "wouter";
 export default function Sidebar() {
   const [location] = useLocation();
 
-  const menuItems = [
+  const menuItems: Array<{
+    id: string;
+    label: string;
+    icon: any;
+    path: string;
+    badge?: number;
+  }> = [
     { id: 'dashboard', label: 'Live Props', icon: Target, path: '/' },
     { id: 'slips', label: 'Build Slip', icon: Sparkles, path: '/build-slip' },
     { id: 'history', label: 'Bet History', icon: History, path: '/history' },

@@ -26,6 +26,14 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
   setupAuth(app);
 }
 
+// Middleware to set req.user from session for compatibility with notification routes
+app.use((req: any, res, next) => {
+  if (req.session?.user) {
+    req.user = req.session.user;
+  }
+  next();
+});
+
 app.use("/api/admin", adminRoutes());
 app.use("/api/analytics", createAnalyticsRoutes(storage));
 app.use("/api/notifications", createNotificationRoutes(storage));

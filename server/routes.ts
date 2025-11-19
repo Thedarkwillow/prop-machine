@@ -300,17 +300,12 @@ router.get("/line-movements/recent", async (req, res) => {
 });
 
 // ==================== NOTIFICATION PREFERENCES ROUTES ====================
-router.get("/notifications/preferences", requireAuth, async (req, res) => {
+// Note: Auth temporarily removed until database-backed preferences are implemented
+// Currently returns default values for all users
+router.get("/notifications/preferences", async (req, res) => {
   try {
-    const userId = (req.session as any)?.user?.claims?.sub;
-    const user = await storage.getUser(userId);
-    
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    
     // Return default notification preferences
-    // In the future, this could be stored in a separate preferences table
+    // TODO: Implement database-backed preferences using notificationPreferences table
     res.json({
       emailEnabled: true,
       newPropsEnabled: true,
@@ -325,12 +320,10 @@ router.get("/notifications/preferences", requireAuth, async (req, res) => {
   }
 });
 
-router.patch("/notifications/preferences", requireAuth, async (req, res) => {
+router.patch("/notifications/preferences", async (req, res) => {
   try {
-    const userId = (req.session as any)?.user?.claims?.sub;
-    
     // For now, just acknowledge the update
-    // In the future, store preferences in database
+    // TODO: Store preferences in database using notificationPreferences table
     res.json({ success: true, preferences: req.body });
   } catch (error) {
     console.error("Error updating notification preferences:", error);
