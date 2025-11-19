@@ -1,0 +1,889 @@
+2025-11-19T17:25:09.137566757Z [inf]  
+2025-11-19T17:25:09.833708085Z [inf]  [35m[Region: us-west1][0m
+2025-11-19T17:25:09.849780504Z [inf]  [35m==============
+2025-11-19T17:25:09.849815562Z [inf]  Using Nixpacks
+2025-11-19T17:25:09.849819411Z [inf]  ==============
+2025-11-19T17:25:09.849823144Z [inf]  [0m
+2025-11-19T17:25:09.849910189Z [inf]  context: hllz-02w
+2025-11-19T17:25:09.948126058Z [inf]  ╔═════════════════════ Nixpacks v1.38.0 ═════════════════════╗
+2025-11-19T17:25:09.948188715Z [inf]  ║ setup      │ nodejs_18, npm-9_x, openssl                   ║
+2025-11-19T17:25:09.948197887Z [inf]  ║────────────────────────────────────────────────────────────║
+2025-11-19T17:25:09.948201381Z [inf]  ║ caddy      │ pkgs: caddy                                   ║
+2025-11-19T17:25:09.948206214Z [inf]  ║            │ cmds: caddy fmt --overwrite /assets/Caddyfile ║
+2025-11-19T17:25:09.948211088Z [inf]  ║────────────────────────────────────────────────────────────║
+2025-11-19T17:25:09.948214533Z [inf]  ║ install    │ npm ci                                        ║
+2025-11-19T17:25:09.948217956Z [inf]  ║────────────────────────────────────────────────────────────║
+2025-11-19T17:25:09.948221164Z [inf]  ║ build      │ npm run build                                 ║
+2025-11-19T17:25:09.948224566Z [inf]  ║────────────────────────────────────────────────────────────║
+2025-11-19T17:25:09.948227886Z [inf]  ║ start      │ npm start                                     ║
+2025-11-19T17:25:09.948230916Z [inf]  ╚════════════════════════════════════════════════════════════╝
+2025-11-19T17:25:10.132942857Z [inf]  [internal] load build definition from Dockerfile
+2025-11-19T17:25:10.133009854Z [inf]  [internal] load build definition from Dockerfile
+2025-11-19T17:25:10.133023551Z [inf]  [internal] load build definition from Dockerfile
+2025-11-19T17:25:10.142179324Z [inf]  [internal] load build definition from Dockerfile
+2025-11-19T17:25:10.143809648Z [inf]  [internal] load metadata for ghcr.io/railwayapp/nixpacks:ubuntu-1745885067
+2025-11-19T17:25:10.867321650Z [inf]  [internal] load metadata for ghcr.io/railwayapp/nixpacks:ubuntu-1745885067
+2025-11-19T17:25:10.867602120Z [inf]  [internal] load .dockerignore
+2025-11-19T17:25:10.867635293Z [inf]  [internal] load .dockerignore
+2025-11-19T17:25:10.867656774Z [inf]  [internal] load .dockerignore
+2025-11-19T17:25:10.875143723Z [inf]  [internal] load .dockerignore
+2025-11-19T17:25:10.881283618Z [inf]  [stage-0 11/15] RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-/root/npm,target=/root/.npm npm ci
+2025-11-19T17:25:10.881329864Z [inf]  [stage-0 10/15] COPY . /app/.
+2025-11-19T17:25:10.881363008Z [inf]  [stage-0  9/15] RUN  caddy fmt --overwrite /assets/Caddyfile
+2025-11-19T17:25:10.881372113Z [inf]  [stage-0  6/15] RUN nix-env -if .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix && nix-collect-garbage -d
+2025-11-19T17:25:10.881392902Z [inf]  [stage-0  7/15] COPY .nixpacks/assets /assets/
+2025-11-19T17:25:10.881405966Z [inf]  [stage-0 13/15] RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-node_modules/cache,target=/app/node_modules/.cache npm run build
+2025-11-19T17:25:10.881412493Z [inf]  [stage-0 15/15] COPY . /app
+2025-11-19T17:25:10.881418350Z [inf]  [stage-0  4/15] RUN nix-env -if .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix && nix-collect-garbage -d
+2025-11-19T17:25:10.881433835Z [inf]  [stage-0  3/15] COPY .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix
+2025-11-19T17:25:10.881444836Z [inf]  [internal] load build context
+2025-11-19T17:25:10.881451448Z [inf]  [stage-0  2/15] WORKDIR /app/
+2025-11-19T17:25:10.881461420Z [inf]  [stage-0 12/15] COPY . /app/.
+2025-11-19T17:25:10.881467863Z [inf]  [stage-0 14/15] RUN printf '\nPATH=/app/node_modules/.bin:$PATH' >> /root/.profile
+2025-11-19T17:25:10.881478285Z [inf]  [stage-0  5/15] COPY .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix
+2025-11-19T17:25:10.881486304Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.881491876Z [inf]  [stage-0  8/15] COPY . /app/.
+2025-11-19T17:25:10.881507861Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.881521220Z [inf]  [internal] load build context
+2025-11-19T17:25:10.881533648Z [inf]  [internal] load build context
+2025-11-19T17:25:10.889220324Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.890323615Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.890352228Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.891027225Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.908279026Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.909748980Z [inf]  [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+2025-11-19T17:25:10.927171093Z [inf]  [internal] load build context
+2025-11-19T17:25:13.668373414Z [inf]  [stage-0  2/15] WORKDIR /app/
+2025-11-19T17:25:13.821563937Z [inf]  [stage-0  2/15] WORKDIR /app/
+2025-11-19T17:25:13.823689412Z [inf]  [stage-0  3/15] COPY .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix
+2025-11-19T17:25:13.842873733Z [inf]  [stage-0  3/15] COPY .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix
+2025-11-19T17:25:13.843734303Z [inf]  [stage-0  4/15] RUN nix-env -if .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix && nix-collect-garbage -d
+2025-11-19T17:25:13.995329237Z [inf]  unpacking 'https://github.com/NixOS/nixpkgs/archive/ba913eda2df8eb72147259189d55932012df6301.tar.gz' into the Git cache...
+
+2025-11-19T17:25:37.074702612Z [inf]  installing 'ba913eda2df8eb72147259189d55932012df6301-env'
+
+2025-11-19T17:25:37.915347589Z [inf]  these 3 derivations will be built:
+  /nix/store/x9qrr2jb0d9d7gjg77imaric1nr9wl3s-libraries.drv
+  /nix/store/4vjgp6bh2gja20gkg167x66kgk10c24j-ba913eda2df8eb72147259189d55932012df6301-env.drv
+  /nix/store/llvngay9gncvs8l6dw01c6wlbh35zzf0-ba913eda2df8eb72147259189d55932012df6301-env.drv
+
+2025-11-19T17:25:37.915363921Z [inf]  these 39 paths will be fetched (32.50 MiB download, 164.57 MiB unpacked):
+  /nix/store/mjgi65m3hgzqqvqcix848gskkw5zzwi9-acl-2.3.2
+  /nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2
+  /nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26
+  /nix/store/4vkw8ifh2naxmxl323vzq0scm0l36c1v-builder.pl
+  /nix/store/xwcf1rw3ackqp2vxms9myf9jq2ny6ynv-bzip2-1.0.8
+  /nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin
+  /nix/store/1iz89fy5fi998g43z1m4j7s5f095di68-caddy-2.8.4
+  /nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5
+  /nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10
+  /nix/store/1sffjkg6c6ff16fz5yr0pnz3j7vja42h-ed-1.20.2
+  /nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45
+  /nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0
+
+2025-11-19T17:25:37.915392748Z [inf]    /nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2
+  /nix/store/xvzz97yk73hw03v5dhhz3j47ggwf1yq1-gcc-13.2.0-lib
+  /nix/store/0rxb3ixzk4zaqivc9s795m0a3679wbw2-gcc-13.2.0-libgcc
+  /nix/store/k7zgvzp2r31zkg9xqgjim7mbknryv6bs-glibc-2.39-52
+  /nix/store/7ivacs3m2fm19hyxdmrs05xisj82v6y5-gmp-with-cxx-6.3.0
+  /nix/store/4i0j14zymvlngyyhq2254f4g9m9my98y-gnu-config-2024-01-01
+  /nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11
+
+2025-11-19T17:25:37.915398947Z [inf]    /nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1
+  /nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9
+  /nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35
+  /nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13
+  /nix/store/dzsby2vk02jcn0s43fkna2qqqix6ccy1-iana-etc-20240318
+  /nix/store/ic63ay0py10fyryaw7345k4ps32da33w-libidn2-2.3.7
+  /nix/store/yfp7dr8m7zi7kxk49wd714gwvhb105hf-libunistring-1.1
+
+2025-11-19T17:25:37.915428056Z [inf]    /nix/store/5xynf9c9ml7d97q70kpq9rpqqmx13xl8-libxcrypt-4.4.36
+  /nix/store/zk9ybjjixdwyv3jmpg2i7s8p7iqi5vhh-mailcap-2.1.53
+  /nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6
+  /nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0
+  /nix/store/g3vi60zgyjsvij7xkk6dxky1hkwh0ynd-pcre2-10.43
+  /nix/store/1iscdpbd3x9x3s3s25jd5ppl7yra0b77-perl-5.38.2
+  /nix/store/rg6agzlb4gcl4w2126m16qm4mgr8jgi6-stdenv-linux
+  /nix/store/y6hmqbmbwq0rmx1fzix5c5jszla2pzmp-tzdata-2024a
+  /nix/store/bq6xbl9cq6hkcn65mz2fzc2k38xiv87h-update-autotools-gnu-config-scripts-hook
+
+2025-11-19T17:25:37.915433869Z [inf]    /nix/store/1q9vc0lq7qjlfjz47mfmlzdf86c543jy-xgcc-13.2.0-libgcc
+  /nix/store/lphbn1va4i43fj7f3m9xskf9y86khzf3-xz-5.4.6
+  /nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin
+  /nix/store/lv6nackqis28gg7l2ic43f6nk52hb39g-zlib-1.3.1
+
+2025-11-19T17:25:37.920525264Z [inf]  copying path '/nix/store/4vkw8ifh2naxmxl323vzq0scm0l36c1v-builder.pl' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.922781959Z [inf]  copying path '/nix/store/dzsby2vk02jcn0s43fkna2qqqix6ccy1-iana-etc-20240318' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.92289348Z [inf]  copying path '/nix/store/zk9ybjjixdwyv3jmpg2i7s8p7iqi5vhh-mailcap-2.1.53' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.923132575Z [inf]  copying path '/nix/store/y6hmqbmbwq0rmx1fzix5c5jszla2pzmp-tzdata-2024a' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.923494317Z [inf]  copying path '/nix/store/4i0j14zymvlngyyhq2254f4g9m9my98y-gnu-config-2024-01-01' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.923714443Z [inf]  copying path '/nix/store/1q9vc0lq7qjlfjz47mfmlzdf86c543jy-xgcc-13.2.0-libgcc' from 'https://cache.nixos.org'...
+copying path '/nix/store/0rxb3ixzk4zaqivc9s795m0a3679wbw2-gcc-13.2.0-libgcc' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.923748489Z [inf]  copying path '/nix/store/yfp7dr8m7zi7kxk49wd714gwvhb105hf-libunistring-1.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:37.934016498Z [inf]  copying path '/nix/store/bq6xbl9cq6hkcn65mz2fzc2k38xiv87h-update-autotools-gnu-config-scripts-hook' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:38.731543416Z [inf]  copying path '/nix/store/ic63ay0py10fyryaw7345k4ps32da33w-libidn2-2.3.7' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:38.840810788Z [inf]  copying path '/nix/store/k7zgvzp2r31zkg9xqgjim7mbknryv6bs-glibc-2.39-52' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381101619Z [inf]  copying path '/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381303066Z [inf]  copying path '/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26' from 'https://cache.nixos.org'...
+copying path '/nix/store/xwcf1rw3ackqp2vxms9myf9jq2ny6ynv-bzip2-1.0.8' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381312964Z [inf]  copying path '/nix/store/1iz89fy5fi998g43z1m4j7s5f095di68-caddy-2.8.4' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381376589Z [inf]  copying path '/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2' from 'https://cache.nixos.org'...
+copying path '/nix/store/1sffjkg6c6ff16fz5yr0pnz3j7vja42h-ed-1.20.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381489089Z [inf]  copying path '/nix/store/xvzz97yk73hw03v5dhhz3j47ggwf1yq1-gcc-13.2.0-lib' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381783149Z [inf]  copying path '/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381816991Z [inf]  copying path '/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381865413Z [inf]  copying path '/nix/store/5xynf9c9ml7d97q70kpq9rpqqmx13xl8-libxcrypt-4.4.36' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381912572Z [inf]  copying path '/nix/store/g3vi60zgyjsvij7xkk6dxky1hkwh0ynd-pcre2-10.43' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.381959964Z [inf]  copying path '/nix/store/lphbn1va4i43fj7f3m9xskf9y86khzf3-xz-5.4.6' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.382007844Z [inf]  copying path '/nix/store/lv6nackqis28gg7l2ic43f6nk52hb39g-zlib-1.3.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.431702464Z [inf]  copying path '/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.431826945Z [inf]  copying path '/nix/store/mjgi65m3hgzqqvqcix848gskkw5zzwi9-acl-2.3.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.433614623Z [inf]  copying path '/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.433671769Z [inf]  copying path '/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.444433053Z [inf]  copying path '/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.453617702Z [inf]  copying path '/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.459268613Z [inf]  copying path '/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.461265102Z [inf]  copying path '/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.569272703Z [inf]  copying path '/nix/store/7ivacs3m2fm19hyxdmrs05xisj82v6y5-gmp-with-cxx-6.3.0' from 'https://cache.nixos.org'...
+copying path '/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.598862486Z [inf]  copying path '/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.647273442Z [inf]  copying path '/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10' from 'https://cache.nixos.org'...
+copying path '/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0' from 'https://cache.nixos.org'...
+copying path '/nix/store/1iscdpbd3x9x3s3s25jd5ppl7yra0b77-perl-5.38.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.696304947Z [inf]  copying path '/nix/store/rg6agzlb4gcl4w2126m16qm4mgr8jgi6-stdenv-linux' from 'https://cache.nixos.org'...
+
+2025-11-19T17:25:39.723774903Z [inf]  building '/nix/store/x9qrr2jb0d9d7gjg77imaric1nr9wl3s-libraries.drv'...
+
+2025-11-19T17:25:39.793290105Z [inf]  building '/nix/store/4vjgp6bh2gja20gkg167x66kgk10c24j-ba913eda2df8eb72147259189d55932012df6301-env.drv'...
+
+2025-11-19T17:25:40.557057247Z [inf]  building '/nix/store/llvngay9gncvs8l6dw01c6wlbh35zzf0-ba913eda2df8eb72147259189d55932012df6301-env.drv'...
+
+2025-11-19T17:25:40.604810884Z [inf]  created 4 symlinks in user environment
+
+2025-11-19T17:25:40.711282641Z [inf]  building '/nix/store/5q154c0kqyja8hjj5iqvrflg2znnawb0-user-environment.drv'...
+
+2025-11-19T17:25:40.807855174Z [inf]  removing old generations of profile /nix/var/nix/profiles/per-user/root/profile
+
+2025-11-19T17:25:40.807868216Z [inf]  removing profile version 1
+
+2025-11-19T17:25:40.807996395Z [inf]  removing old generations of profile /nix/var/nix/profiles/per-user/root/channels
+
+2025-11-19T17:25:40.808135632Z [inf]  removing old generations of profile /nix/var/nix/profiles/per-user/root/profile
+
+2025-11-19T17:25:40.808217586Z [inf]  removing old generations of profile /nix/var/nix/profiles/per-user/root/channels
+
+2025-11-19T17:25:40.809842551Z [inf]  finding garbage collector roots...
+
+2025-11-19T17:25:40.80996645Z [inf]  removing stale link from '/nix/var/nix/gcroots/auto/lzjbmb2ry0z7lma2fvpqprb12921pnb5' to '/nix/var/nix/profiles/per-user/root/profile-1-link'
+
+2025-11-19T17:25:40.813727154Z [inf]  deleting garbage...
+
+2025-11-19T17:25:40.816570828Z [inf]  deleting '/nix/store/a9qf4wwhympzs35ncp80r185j6a21w07-user-environment'
+
+2025-11-19T17:25:40.817342729Z [inf]  deleting '/nix/store/253kwn1730vnay87xkjgxa2v97w3y079-user-environment.drv'
+
+2025-11-19T17:25:40.837753406Z [inf]  deleting '/nix/store/hn5mrh362n52x8wwab9s1v6bgn4n5c94-env-manifest.nix'
+
+2025-11-19T17:25:40.83832234Z [inf]  deleting '/nix/store/rg6agzlb4gcl4w2126m16qm4mgr8jgi6-stdenv-linux'
+
+2025-11-19T17:25:40.838499337Z [inf]  deleting '/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0'
+
+2025-11-19T17:25:40.840417212Z [inf]  deleting '/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10'
+
+2025-11-19T17:25:40.842134153Z [inf]  deleting '/nix/store/1iscdpbd3x9x3s3s25jd5ppl7yra0b77-perl-5.38.2'
+
+2025-11-19T17:25:40.858943012Z [inf]  deleting '/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5'
+
+2025-11-19T17:25:40.859850885Z [inf]  deleting '/nix/store/7ivacs3m2fm19hyxdmrs05xisj82v6y5-gmp-with-cxx-6.3.0'
+
+2025-11-19T17:25:40.860381667Z [inf]  deleting '/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9'
+
+2025-11-19T17:25:40.86247921Z [inf]  deleting '/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35'
+
+2025-11-19T17:25:40.864357294Z [inf]  deleting '/nix/store/p5l041qdj83dg93parxblr0q0al3hhsc-source'
+
+2025-11-19T17:25:41.59296687Z [inf]  deleting '/nix/store/mjgi65m3hgzqqvqcix848gskkw5zzwi9-acl-2.3.2'
+
+2025-11-19T17:25:41.594005836Z [inf]  deleting '/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2'
+
+2025-11-19T17:25:41.595750408Z [inf]  deleting '/nix/store/bq6xbl9cq6hkcn65mz2fzc2k38xiv87h-update-autotools-gnu-config-scripts-hook'
+
+2025-11-19T17:25:41.595821767Z [inf]  deleting '/nix/store/4i0j14zymvlngyyhq2254f4g9m9my98y-gnu-config-2024-01-01'
+
+2025-11-19T17:25:41.596040186Z [inf]  deleting '/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45'
+
+2025-11-19T17:25:41.596265795Z [inf]  deleting '/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6'
+
+2025-11-19T17:25:41.596598548Z [inf]  deleting '/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0'
+
+2025-11-19T17:25:41.596860429Z [inf]  deleting '/nix/store/xvzz97yk73hw03v5dhhz3j47ggwf1yq1-gcc-13.2.0-lib'
+
+2025-11-19T17:25:41.597444833Z [inf]  deleting '/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1'
+
+2025-11-19T17:25:41.598999954Z [inf]  deleting '/nix/store/0rxb3ixzk4zaqivc9s795m0a3679wbw2-gcc-13.2.0-libgcc'
+
+2025-11-19T17:25:41.599276864Z [inf]  deleting '/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin'
+
+2025-11-19T17:25:41.599631336Z [inf]  deleting '/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin'
+
+2025-11-19T17:25:41.599817513Z [inf]  deleting '/nix/store/xwcf1rw3ackqp2vxms9myf9jq2ny6ynv-bzip2-1.0.8'
+
+2025-11-19T17:25:41.600094173Z [inf]  deleting '/nix/store/1sffjkg6c6ff16fz5yr0pnz3j7vja42h-ed-1.20.2'
+
+2025-11-19T17:25:41.600389705Z [inf]  deleting '/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11'
+
+2025-11-19T17:25:41.602044087Z [inf]  deleting '/nix/store/g3vi60zgyjsvij7xkk6dxky1hkwh0ynd-pcre2-10.43'
+
+2025-11-19T17:25:41.602294302Z [inf]  deleting '/nix/store/lphbn1va4i43fj7f3m9xskf9y86khzf3-xz-5.4.6'
+
+2025-11-19T17:25:41.603219917Z [inf]  deleting '/nix/store/5xynf9c9ml7d97q70kpq9rpqqmx13xl8-libxcrypt-4.4.36'
+
+2025-11-19T17:25:41.6035754Z [inf]  deleting '/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13'
+
+2025-11-19T17:25:41.603841476Z [inf]  deleting '/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2'
+
+2025-11-19T17:25:41.604905052Z [inf]  deleting '/nix/store/lv6nackqis28gg7l2ic43f6nk52hb39g-zlib-1.3.1'
+
+2025-11-19T17:25:41.605387585Z [inf]  deleting '/nix/store/jdxlsyfxs63rxxhrzgc3mnhx0mz6s595-libraries'
+
+2025-11-19T17:25:41.605790528Z [inf]  deleting '/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26'
+
+2025-11-19T17:25:41.606410622Z [inf]  deleting '/nix/store/4vkw8ifh2naxmxl323vzq0scm0l36c1v-builder.pl'
+
+2025-11-19T17:25:41.606760135Z [inf]  deleting unused links...
+
+2025-11-19T17:25:42.654224053Z [inf]  note: currently hard linking saves -3.10 MiB
+
+2025-11-19T17:25:42.66290211Z [inf]  36 store paths deleted, 243.63 MiB freed
+
+2025-11-19T17:25:42.774056489Z [inf]  [stage-0  4/15] RUN nix-env -if .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix && nix-collect-garbage -d
+2025-11-19T17:25:42.774775968Z [inf]  [stage-0  5/15] COPY .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix
+2025-11-19T17:25:42.808063994Z [inf]  [stage-0  5/15] COPY .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix
+2025-11-19T17:25:42.809240485Z [inf]  [stage-0  6/15] RUN nix-env -if .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix && nix-collect-garbage -d
+2025-11-19T17:25:42.901878004Z [inf]  unpacking 'https://github.com/NixOS/nixpkgs/archive/ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.tar.gz' into the Git cache...
+
+2025-11-19T17:26:09.740154313Z [inf]  unpacking 'https://github.com/railwayapp/nix-npm-overlay/archive/main.tar.gz' into the Git cache...
+
+2025-11-19T17:26:10.237614599Z [inf]  installing 'ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7-env'
+
+2025-11-19T17:26:11.362938084Z [inf]  these 5 derivations will be built:
+
+2025-11-19T17:26:11.36295731Z [inf]    /nix/store/6vy68gykpxfphbmmyd59ya88xvrwvvaa-npm-9.9.4.tgz.drv
+  /nix/store/cjdjkmr6gy2h8l0cra71whgrvy030kx1-libraries.drv
+  /nix/store/bs6g8vhkfynvlzidhlqbsvnc9wijbaaz-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7-env.drv
+  /nix/store/w9h0z1lhfwxc0m38f3w5brfdqrzm4wyj-npm.drv
+  /nix/store/z6kw8c00bs9m7041byi27mb8vfwrl17a-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7-env.drv
+these 76 paths will be fetched (118.54 MiB download, 558.32 MiB unpacked):
+
+2025-11-19T17:26:11.362979701Z [inf]    /nix/store/cf7gkacyxmm66lwl5nj6j6yykbrg4q5c-acl-2.3.2
+  /nix/store/a9jgnlhkjkxav6qrc3rzg2q84pkl2wvr-attr-2.5.2
+  /nix/store/5mh7kaj2fyv8mk4sfq1brwxgc02884wi-bash-5.2p37
+  /nix/store/j7p46r8v9gcpbxx89pbqlh61zhd33gzv-binutils-2.43.1
+  /nix/store/df2a8k58k00f2dh2x930dg6xs6g6mliv-binutils-2.43.1-lib
+  /nix/store/srcmmqi8kxjfygd0hyy42c8hv6cws83b-binutils-wrapper-2.43.1
+  /nix/store/wf5zj2gbib3gjqllkabxaw4dh0gzcla3-builder.pl
+  /nix/store/ivl2v8rgg7qh1jkj5pwpqycax3rc2hnl-bzip2-1.0.8
+
+2025-11-19T17:26:11.362989776Z [inf]    /nix/store/mglixp03lsp0w986svwdvm7vcy17rdax-bzip2-1.0.8-bin
+  /nix/store/4s9rah4cwaxflicsk5cndnknqlk9n4p3-coreutils-9.5
+  /nix/store/pkc7mb4a4qvyz73srkqh4mwl70w98dsv-curl-8.11.0
+  /nix/store/p123cq20klajcl9hj8jnkjip5nw6awhz-curl-8.11.0-bin
+  /nix/store/5f5linrxzhhb3mrclkwdpm9bd8ygldna-curl-8.11.0-dev
+
+2025-11-19T17:26:11.362994257Z [inf]    /nix/store/agvks3qmzja0yj54szi3vja6vx3cwkkw-curl-8.11.0-man
+  /nix/store/00g69vw7c9lycy63h45ximy0wmzqx5y6-diffutils-3.10
+  /nix/store/74h4z8k82pmp24xryflv4lxkz8jlpqqd-ed-1.20.2
+  /nix/store/qbry6090vlr9ar33kdmmbq2p5apzbga8-expand-response-params
+
+2025-11-19T17:26:11.363012458Z [inf]    /nix/store/c4rj90r2m89rxs64hmm857mipwjhig5d-file-5.46
+  /nix/store/jqrz1vq5nz4lnv9pqzydj0ir58wbjfy1-findutils-4.10.0
+  /nix/store/a3c47r5z1q2c4rz0kvq8hlilkhx2s718-gawk-5.3.1
+  /nix/store/l89iqc7am6i60y8vk507zwrzxf0wcd3v-gcc-14-20241116
+  /nix/store/bpq1s72cw9qb2fs8mnmlw6hn2c7iy0ss-gcc-14-20241116-lib
+  /nix/store/17v0ywnr3akp85pvdi56gwl99ljv95kx-gcc-14-20241116-libgcc
+
+2025-11-19T17:26:11.363016394Z [inf]    /nix/store/xcn9p4xxfbvlkpah7pwchpav4ab9d135-gcc-wrapper-14-20241116
+  /nix/store/65h17wjrrlsj2rj540igylrx7fqcd6vq-glibc-2.40-36
+  /nix/store/1c6bmxrrhm8bd26ai2rjqld2yyjrxhds-glibc-2.40-36-bin
+
+2025-11-19T17:26:11.36303992Z [inf]    /nix/store/kj8hbqx4ds9qm9mq7hyikxyfwwg13kzj-glibc-2.40-36-dev
+  /nix/store/kryrg7ds05iwcmy81amavk8w13y4lxbs-gmp-6.3.0
+  /nix/store/a2byxfv4lc8f2g5xfzw8cz5q8k05wi29-gmp-with-cxx-6.3.0
+  /nix/store/1m67ipsk39xvhyqrxnzv2m2p48pil8kl-gnu-config-2024-01-01
+
+2025-11-19T17:26:11.363054412Z [inf]    /nix/store/aap6cq56amx4mzbyxp2wpgsf1kqjcr1f-gnugrep-3.11
+  /nix/store/fp6cjl1zcmm6mawsnrb5yak1wkz2ma8l-gnumake-4.4.1
+  /nix/store/abm77lnrkrkb58z6xp1qwjcr1xgkcfwm-gnused-4.9
+  /nix/store/9cwwj1c9csmc85l2cqzs3h9hbf1vwl6c-gnutar-1.35
+  /nix/store/nvvj6sk0k6px48436drlblf4gafgbvzr-gzip-1.13
+  /nix/store/wwipgdqb4p2fr46kmw9c5wlk799kbl68-icu4c-74.2
+  /nix/store/m8w3mf0i4862q22bxad0wspkgdy4jnkk-icu4c-74.2-dev
+  /nix/store/xmbv8s4p4i4dbxgkgdrdfb0ym25wh6gk-isl-0.20
+  /nix/store/2wh1gqyzf5xsvxpdz2k0bxiz583wwq29-keyutils-1.6.3-lib
+  /nix/store/milph81dilrh96isyivh5n50agpx39k2-krb5-1.21.3
+
+2025-11-19T17:26:11.363057204Z [inf]    /nix/store/b56mswksrql15knpb1bnhv3ysif340kd-krb5-1.21.3-dev
+  /nix/store/v9c1s50x7magpiqgycxxkn36avzbcg0g-krb5-1.21.3-lib
+  /nix/store/34z2792zyd4ayl5186vx0s98ckdaccz9-libidn2-2.3.7
+  /nix/store/2a3anh8vl3fcgk0fvaravlimrqawawza-libmpc-1.3.1
+
+2025-11-19T17:26:11.363060052Z [inf]    /nix/store/8675pnfr4fqnwv4pzjl67hdwls4q13aa-libssh2-1.11.1
+  /nix/store/d7zhcrcc7q3yfbm3qkqpgc3daq82spwi-libssh2-1.11.1-dev
+
+2025-11-19T17:26:11.363094175Z [inf]    /nix/store/xcqcgqazykf6s7fsn08k0blnh0wisdcl-libunistring-1.3
+  /nix/store/r9ac2hwnmb0nxwsrvr6gi9wsqf2whfqj-libuv-1.49.2
+  /nix/store/ll14czvpxglf6nnwmmrmygplm830fvlv-libuv-1.49.2-dev
+  /nix/store/6cr0spsvymmrp1hj5n0kbaxw55w1lqyp-libxcrypt-4.4.36
+  /nix/store/pc74azbkr19rkd5bjalq2xwx86cj3cga-linux-headers-6.12
+  /nix/store/fv7gpnvg922frkh81w5hkdhpz0nw3iiz-mirrors-list
+  /nix/store/qs22aazzrdd4dnjf9vffl0n31hvls43h-mpfr-4.2.1
+  /nix/store/grixvx878884hy8x3xs0c0s1i00j632k-nghttp2-1.64.0
+  /nix/store/dz97fw51rm5bl9kz1vg0haj1j1a7r1mr-nghttp2-1.64.0-dev
+  /nix/store/qcghigzrz56vczwlzg9c02vbs6zr9jkz-nghttp2-1.64.0-lib
+  /nix/store/wlpq101dsifq98z2bk300x4dk80wcybr-nodejs-18.20.5
+  /nix/store/9l9n7a0v4aibcz0sgd0crs209an9p7dz-openssl-3.3.2
+
+2025-11-19T17:26:11.36310038Z [inf]    /nix/store/h1ydpxkw9qhjdxjpic1pdc2nirggyy6f-openssl-3.3.2
+  /nix/store/lygl27c44xv73kx1spskcgvzwq7z337c-openssl-3.3.2-bin
+  /nix/store/qq5q0alyzywdazhmybi7m69akz0ppk05-openssl-3.3.2-bin
+
+2025-11-19T17:26:11.363105088Z [inf]    /nix/store/kqm7wpqkzc4bwjlzqizcbz0mgkj06a9x-openssl-3.3.2-dev
+  /nix/store/pp2zf8bdgyz60ds8vcshk2603gcjgp72-openssl-3.3.2-dev
+
+2025-11-19T17:26:11.363108895Z [inf]    /nix/store/q10wlq1brcnc21v5qvhbj9fwlf806dgm-openssl-3.3.2-man
+  /nix/store/5yja5dpk2qw1v5mbfbl2d7klcdfrh90w-patch-2.7.6
+  /nix/store/srfxqk119fijwnprgsqvn68ys9kiw0bn-patchelf-0.15.0
+  /nix/store/3j1p598fivxs69wx3a657ysv3rw8k06l-pcre2-10.44
+
+2025-11-19T17:26:11.363142495Z [inf]    /nix/store/1i003ijlh9i0mzp6alqby5hg3090pjdx-perl-5.40.0
+  /nix/store/4ig84cyqi6qy4n0sanrbzsw1ixa497jx-stdenv-linux
+  /nix/store/d0gfdcag8bxzvg7ww4s7px4lf8sxisyx-stdenv-linux
+  /nix/store/d29r1bdmlvwmj52apgcdxfl1mm9c5782-update-autotools-gnu-config-scripts-hook
+  /nix/store/acfkqzj5qrqs88a4a6ixnybbjxja663d-xgcc-14-20241116-libgcc
+  /nix/store/c2njy6bv84kw1i4bjf5k5gn7gz8hn57n-xz-5.6.3
+  /nix/store/h18s640fnhhj2qdh5vivcfbxvz377srg-xz-5.6.3-bin
+
+2025-11-19T17:26:11.36315007Z [inf]    /nix/store/cqlaa2xf6lslnizyj9xqa8j0ii1yqw0x-zlib-1.3.1
+  /nix/store/1lggwqzapn5mn49l9zy4h566ysv9kzdb-zlib-1.3.1-dev
+
+2025-11-19T17:26:11.369465318Z [inf]  copying path '/nix/store/wf5zj2gbib3gjqllkabxaw4dh0gzcla3-builder.pl' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:11.39058986Z [inf]  copying path '/nix/store/acfkqzj5qrqs88a4a6ixnybbjxja663d-xgcc-14-20241116-libgcc' from 'https://cache.nixos.org'...
+copying path '/nix/store/q10wlq1brcnc21v5qvhbj9fwlf806dgm-openssl-3.3.2-man' from 'https://cache.nixos.org'...
+copying path '/nix/store/xcqcgqazykf6s7fsn08k0blnh0wisdcl-libunistring-1.3' from 'https://cache.nixos.org'...
+copying path '/nix/store/1m67ipsk39xvhyqrxnzv2m2p48pil8kl-gnu-config-2024-01-01' from 'https://cache.nixos.org'...
+copying path '/nix/store/17v0ywnr3akp85pvdi56gwl99ljv95kx-gcc-14-20241116-libgcc' from 'https://cache.nixos.org'...
+copying path '/nix/store/pc74azbkr19rkd5bjalq2xwx86cj3cga-linux-headers-6.12' from 'https://cache.nixos.org'...
+copying path '/nix/store/agvks3qmzja0yj54szi3vja6vx3cwkkw-curl-8.11.0-man' from 'https://cache.nixos.org'...
+copying path '/nix/store/grixvx878884hy8x3xs0c0s1i00j632k-nghttp2-1.64.0' from 'https://cache.nixos.org'...
+copying path '/nix/store/fv7gpnvg922frkh81w5hkdhpz0nw3iiz-mirrors-list' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:11.397742969Z [inf]  copying path '/nix/store/d29r1bdmlvwmj52apgcdxfl1mm9c5782-update-autotools-gnu-config-scripts-hook' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:11.462669422Z [inf]  copying path '/nix/store/34z2792zyd4ayl5186vx0s98ckdaccz9-libidn2-2.3.7' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:11.539348025Z [inf]  copying path '/nix/store/65h17wjrrlsj2rj540igylrx7fqcd6vq-glibc-2.40-36' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.466362183Z [inf]  copying path '/nix/store/a9jgnlhkjkxav6qrc3rzg2q84pkl2wvr-attr-2.5.2' from 'https://cache.nixos.org'...
+copying path '/nix/store/ivl2v8rgg7qh1jkj5pwpqycax3rc2hnl-bzip2-1.0.8' from 'https://cache.nixos.org'...
+copying path '/nix/store/kryrg7ds05iwcmy81amavk8w13y4lxbs-gmp-6.3.0' from 'https://cache.nixos.org'...
+copying path '/nix/store/fp6cjl1zcmm6mawsnrb5yak1wkz2ma8l-gnumake-4.4.1' from 'https://cache.nixos.org'...
+copying path '/nix/store/qbry6090vlr9ar33kdmmbq2p5apzbga8-expand-response-params' from 'https://cache.nixos.org'...
+copying path '/nix/store/a3c47r5z1q2c4rz0kvq8hlilkhx2s718-gawk-5.3.1' from 'https://cache.nixos.org'...
+copying path '/nix/store/bpq1s72cw9qb2fs8mnmlw6hn2c7iy0ss-gcc-14-20241116-lib' from 'https://cache.nixos.org'...
+copying path '/nix/store/1c6bmxrrhm8bd26ai2rjqld2yyjrxhds-glibc-2.40-36-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.477978837Z [inf]  copying path '/nix/store/5mh7kaj2fyv8mk4sfq1brwxgc02884wi-bash-5.2p37' from 'https://cache.nixos.org'...
+copying path '/nix/store/abm77lnrkrkb58z6xp1qwjcr1xgkcfwm-gnused-4.9' from 'https://cache.nixos.org'...
+copying path '/nix/store/74h4z8k82pmp24xryflv4lxkz8jlpqqd-ed-1.20.2' from 'https://cache.nixos.org'...
+copying path '/nix/store/r9ac2hwnmb0nxwsrvr6gi9wsqf2whfqj-libuv-1.49.2' from 'https://cache.nixos.org'...
+copying path '/nix/store/6cr0spsvymmrp1hj5n0kbaxw55w1lqyp-libxcrypt-4.4.36' from 'https://cache.nixos.org'...
+copying path '/nix/store/2wh1gqyzf5xsvxpdz2k0bxiz583wwq29-keyutils-1.6.3-lib' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.48165332Z [inf]  copying path '/nix/store/qcghigzrz56vczwlzg9c02vbs6zr9jkz-nghttp2-1.64.0-lib' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.539002581Z [inf]  copying path '/nix/store/9l9n7a0v4aibcz0sgd0crs209an9p7dz-openssl-3.3.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.553314658Z [inf]  copying path '/nix/store/h1ydpxkw9qhjdxjpic1pdc2nirggyy6f-openssl-3.3.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.566360358Z [inf]  copying path '/nix/store/mglixp03lsp0w986svwdvm7vcy17rdax-bzip2-1.0.8-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.580391779Z [inf]  copying path '/nix/store/5yja5dpk2qw1v5mbfbl2d7klcdfrh90w-patch-2.7.6' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.601605568Z [inf]  copying path '/nix/store/xmbv8s4p4i4dbxgkgdrdfb0ym25wh6gk-isl-0.20' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.610312199Z [inf]  copying path '/nix/store/qs22aazzrdd4dnjf9vffl0n31hvls43h-mpfr-4.2.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.626768398Z [inf]  copying path '/nix/store/3j1p598fivxs69wx3a657ysv3rw8k06l-pcre2-10.44' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.786026036Z [inf]  copying path '/nix/store/kj8hbqx4ds9qm9mq7hyikxyfwwg13kzj-glibc-2.40-36-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.789420411Z [inf]  copying path '/nix/store/cf7gkacyxmm66lwl5nj6j6yykbrg4q5c-acl-2.3.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.865308635Z [inf]  copying path '/nix/store/a2byxfv4lc8f2g5xfzw8cz5q8k05wi29-gmp-with-cxx-6.3.0' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:13.960531649Z [inf]  copying path '/nix/store/nvvj6sk0k6px48436drlblf4gafgbvzr-gzip-1.13' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.073869582Z [inf]  copying path '/nix/store/wwipgdqb4p2fr46kmw9c5wlk799kbl68-icu4c-74.2' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.141963703Z [inf]  copying path '/nix/store/srfxqk119fijwnprgsqvn68ys9kiw0bn-patchelf-0.15.0' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.302299725Z [inf]  copying path '/nix/store/c2njy6bv84kw1i4bjf5k5gn7gz8hn57n-xz-5.6.3' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.366328091Z [inf]  copying path '/nix/store/cqlaa2xf6lslnizyj9xqa8j0ii1yqw0x-zlib-1.3.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.370445562Z [inf]  copying path '/nix/store/9cwwj1c9csmc85l2cqzs3h9hbf1vwl6c-gnutar-1.35' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.374021483Z [inf]  copying path '/nix/store/dz97fw51rm5bl9kz1vg0haj1j1a7r1mr-nghttp2-1.64.0-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.402365193Z [inf]  copying path '/nix/store/ll14czvpxglf6nnwmmrmygplm830fvlv-libuv-1.49.2-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.409603453Z [inf]  copying path '/nix/store/df2a8k58k00f2dh2x930dg6xs6g6mliv-binutils-2.43.1-lib' from 'https://cache.nixos.org'...
+copying path '/nix/store/c4rj90r2m89rxs64hmm857mipwjhig5d-file-5.46' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.421889809Z [inf]  copying path '/nix/store/4s9rah4cwaxflicsk5cndnknqlk9n4p3-coreutils-9.5' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.426041809Z [inf]  copying path '/nix/store/2a3anh8vl3fcgk0fvaravlimrqawawza-libmpc-1.3.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.428555736Z [inf]  copying path '/nix/store/1lggwqzapn5mn49l9zy4h566ysv9kzdb-zlib-1.3.1-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.455443177Z [inf]  copying path '/nix/store/aap6cq56amx4mzbyxp2wpgsf1kqjcr1f-gnugrep-3.11' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.465650926Z [inf]  copying path '/nix/store/h18s640fnhhj2qdh5vivcfbxvz377srg-xz-5.6.3-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.630245388Z [inf]  copying path '/nix/store/00g69vw7c9lycy63h45ximy0wmzqx5y6-diffutils-3.10' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.632952839Z [inf]  copying path '/nix/store/jqrz1vq5nz4lnv9pqzydj0ir58wbjfy1-findutils-4.10.0' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.633391641Z [inf]  copying path '/nix/store/1i003ijlh9i0mzp6alqby5hg3090pjdx-perl-5.40.0' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.633943399Z [inf]  copying path '/nix/store/j7p46r8v9gcpbxx89pbqlh61zhd33gzv-binutils-2.43.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.673598269Z [inf]  copying path '/nix/store/l89iqc7am6i60y8vk507zwrzxf0wcd3v-gcc-14-20241116' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.692995222Z [inf]  copying path '/nix/store/8675pnfr4fqnwv4pzjl67hdwls4q13aa-libssh2-1.11.1' from 'https://cache.nixos.org'...
+copying path '/nix/store/v9c1s50x7magpiqgycxxkn36avzbcg0g-krb5-1.21.3-lib' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.694722638Z [inf]  copying path '/nix/store/qq5q0alyzywdazhmybi7m69akz0ppk05-openssl-3.3.2-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.704039691Z [inf]  copying path '/nix/store/lygl27c44xv73kx1spskcgvzwq7z337c-openssl-3.3.2-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.740042274Z [inf]  copying path '/nix/store/4ig84cyqi6qy4n0sanrbzsw1ixa497jx-stdenv-linux' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.77018006Z [inf]  copying path '/nix/store/kqm7wpqkzc4bwjlzqizcbz0mgkj06a9x-openssl-3.3.2-dev' from 'https://cache.nixos.org'...
+copying path '/nix/store/pp2zf8bdgyz60ds8vcshk2603gcjgp72-openssl-3.3.2-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.829578132Z [inf]  building '/nix/store/cjdjkmr6gy2h8l0cra71whgrvy030kx1-libraries.drv'...
+
+2025-11-19T17:26:14.855886582Z [inf]  copying path '/nix/store/milph81dilrh96isyivh5n50agpx39k2-krb5-1.21.3' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:14.859582344Z [inf]  copying path '/nix/store/pkc7mb4a4qvyz73srkqh4mwl70w98dsv-curl-8.11.0' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.05260036Z [inf]  building '/nix/store/bs6g8vhkfynvlzidhlqbsvnc9wijbaaz-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7-env.drv'...
+
+2025-11-19T17:26:15.057615422Z [inf]  copying path '/nix/store/b56mswksrql15knpb1bnhv3ysif340kd-krb5-1.21.3-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.058020333Z [inf]  copying path '/nix/store/p123cq20klajcl9hj8jnkjip5nw6awhz-curl-8.11.0-bin' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.060192544Z [inf]  copying path '/nix/store/d7zhcrcc7q3yfbm3qkqpgc3daq82spwi-libssh2-1.11.1-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.125169108Z [inf]  copying path '/nix/store/5f5linrxzhhb3mrclkwdpm9bd8ygldna-curl-8.11.0-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.205613364Z [inf]  building '/nix/store/6vy68gykpxfphbmmyd59ya88xvrwvvaa-npm-9.9.4.tgz.drv'...
+
+2025-11-19T17:26:15.441745007Z [inf]  copying path '/nix/store/srcmmqi8kxjfygd0hyy42c8hv6cws83b-binutils-wrapper-2.43.1' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.562896664Z [inf]  
+trying https://registry.npmjs.org/npm/-/npm-9.9.4.tgz
+
+2025-11-19T17:26:15.569563967Z [inf]    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+2025-11-19T17:26:15.585558295Z [inf]  copying path '/nix/store/m8w3mf0i4862q22bxad0wspkgdy4jnkk-icu4c-74.2-dev' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:15.669118308Z [inf]  100 2648k  100 2648k    0     0  25.6M      0 --:--:-- --:--:-- --:--:-- 25.8M
+
+2025-11-19T17:26:15.733433348Z [inf]  copying path '/nix/store/wlpq101dsifq98z2bk300x4dk80wcybr-nodejs-18.20.5' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:20.192493501Z [inf]  copying path '/nix/store/xcn9p4xxfbvlkpah7pwchpav4ab9d135-gcc-wrapper-14-20241116' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:20.208833802Z [inf]  copying path '/nix/store/d0gfdcag8bxzvg7ww4s7px4lf8sxisyx-stdenv-linux' from 'https://cache.nixos.org'...
+
+2025-11-19T17:26:20.241055531Z [inf]  building '/nix/store/w9h0z1lhfwxc0m38f3w5brfdqrzm4wyj-npm.drv'...
+
+2025-11-19T17:26:20.309103882Z [inf]  Running phase: unpackPhase
+unpacking source archive /nix/store/fkd1ma3nify8r9wp463yg5rqz9hdcyf1-npm-9.9.4.tgz
+
+2025-11-19T17:26:20.434074626Z [inf]  source root is package
+
+2025-11-19T17:26:20.470514121Z [inf]  setting SOURCE_DATE_EPOCH to timestamp 499162500 of file package/package.json
+
+2025-11-19T17:26:20.474533981Z [inf]  Running phase: installPhase
+
+2025-11-19T17:26:21.128179563Z [inf]  building '/nix/store/z6kw8c00bs9m7041byi27mb8vfwrl17a-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7-env.drv'...
+
+2025-11-19T17:26:21.221421714Z [inf]  created 424 symlinks in user environment
+
+2025-11-19T17:26:21.379122588Z [inf]  building '/nix/store/pfi7dmiw5q83mjpds5fy0ap4pns9wfiz-user-environment.drv'...
+
+2025-11-19T17:26:21.581606623Z [inf]  removing old generations of profile /nix/var/nix/profiles/per-user/root/profile
+removing profile version 2
+removing old generations of profile /nix/var/nix/profiles/per-user/root/channels
+removing old generations of profile /nix/var/nix/profiles/per-user/root/profile
+removing old generations of profile /nix/var/nix/profiles/per-user/root/channels
+
+2025-11-19T17:26:21.58572265Z [inf]  finding garbage collector roots...
+removing stale link from '/nix/var/nix/gcroots/auto/v73nmmh5d8van4ja5c8jn0gjlwhxbz3a' to '/nix/var/nix/profiles/per-user/root/profile-2-link'
+
+2025-11-19T17:26:21.589596224Z [inf]  deleting garbage...
+
+2025-11-19T17:26:21.653555924Z [inf]  deleting '/nix/store/1i003ijlh9i0mzp6alqby5hg3090pjdx-perl-5.40.0'
+
+2025-11-19T17:26:21.672088034Z [inf]  deleting '/nix/store/6cr0spsvymmrp1hj5n0kbaxw55w1lqyp-libxcrypt-4.4.36'
+deleting '/nix/store/d0gfdcag8bxzvg7ww4s7px4lf8sxisyx-stdenv-linux'
+deleting '/nix/store/4ig84cyqi6qy4n0sanrbzsw1ixa497jx-stdenv-linux'
+deleting '/nix/store/h18s640fnhhj2qdh5vivcfbxvz377srg-xz-5.6.3-bin'
+
+2025-11-19T17:26:21.672641621Z [inf]  deleting '/nix/store/xcn9p4xxfbvlkpah7pwchpav4ab9d135-gcc-wrapper-14-20241116'
+
+2025-11-19T17:26:21.67417417Z [inf]  deleting '/nix/store/l89iqc7am6i60y8vk507zwrzxf0wcd3v-gcc-14-20241116'
+
+2025-11-19T17:26:21.691754049Z [inf]  deleting '/nix/store/srcmmqi8kxjfygd0hyy42c8hv6cws83b-binutils-wrapper-2.43.1'
+
+2025-11-19T17:26:21.692853021Z [inf]  deleting '/nix/store/qbry6090vlr9ar33kdmmbq2p5apzbga8-expand-response-params'
+deleting '/nix/store/abm77lnrkrkb58z6xp1qwjcr1xgkcfwm-gnused-4.9'
+
+2025-11-19T17:26:21.69763864Z [inf]  deleting '/nix/store/kj8hbqx4ds9qm9mq7hyikxyfwwg13kzj-glibc-2.40-36-dev'
+
+2025-11-19T17:26:21.70000266Z [inf]  deleting '/nix/store/pc74azbkr19rkd5bjalq2xwx86cj3cga-linux-headers-6.12'
+
+2025-11-19T17:26:21.712472555Z [inf]  deleting '/nix/store/2a3anh8vl3fcgk0fvaravlimrqawawza-libmpc-1.3.1'
+deleting '/nix/store/qs22aazzrdd4dnjf9vffl0n31hvls43h-mpfr-4.2.1'
+
+2025-11-19T17:26:21.715171614Z [inf]  deleting '/nix/store/5f5linrxzhhb3mrclkwdpm9bd8ygldna-curl-8.11.0-dev'
+deleting '/nix/store/dz97fw51rm5bl9kz1vg0haj1j1a7r1mr-nghttp2-1.64.0-dev'
+deleting '/nix/store/p123cq20klajcl9hj8jnkjip5nw6awhz-curl-8.11.0-bin'
+deleting '/nix/store/pkc7mb4a4qvyz73srkqh4mwl70w98dsv-curl-8.11.0'
+deleting '/nix/store/d7zhcrcc7q3yfbm3qkqpgc3daq82spwi-libssh2-1.11.1-dev'
+deleting '/nix/store/kqm7wpqkzc4bwjlzqizcbz0mgkj06a9x-openssl-3.3.2-dev'
+
+2025-11-19T17:26:21.719767637Z [inf]  deleting '/nix/store/qq5q0alyzywdazhmybi7m69akz0ppk05-openssl-3.3.2-bin'
+deleting '/nix/store/b56mswksrql15knpb1bnhv3ysif340kd-krb5-1.21.3-dev'
+deleting '/nix/store/milph81dilrh96isyivh5n50agpx39k2-krb5-1.21.3'
+deleting '/nix/store/v9c1s50x7magpiqgycxxkn36avzbcg0g-krb5-1.21.3-lib'
+
+2025-11-19T17:26:21.721298285Z [inf]  deleting '/nix/store/8675pnfr4fqnwv4pzjl67hdwls4q13aa-libssh2-1.11.1'
+deleting '/nix/store/9l9n7a0v4aibcz0sgd0crs209an9p7dz-openssl-3.3.2'
+
+2025-11-19T17:26:21.722020456Z [inf]  deleting '/nix/store/jqrz1vq5nz4lnv9pqzydj0ir58wbjfy1-findutils-4.10.0'
+
+2025-11-19T17:26:21.725203809Z [inf]  deleting '/nix/store/c4rj90r2m89rxs64hmm857mipwjhig5d-file-5.46'
+deleting '/nix/store/j7p46r8v9gcpbxx89pbqlh61zhd33gzv-binutils-2.43.1'
+
+2025-11-19T17:26:21.729924191Z [inf]  deleting '/nix/store/df2a8k58k00f2dh2x930dg6xs6g6mliv-binutils-2.43.1-lib'
+
+2025-11-19T17:26:21.734056314Z [inf]  deleting '/nix/store/2wh1gqyzf5xsvxpdz2k0bxiz583wwq29-keyutils-1.6.3-lib'
+deleting '/nix/store/nvvj6sk0k6px48436drlblf4gafgbvzr-gzip-1.13'
+deleting '/nix/store/9cwwj1c9csmc85l2cqzs3h9hbf1vwl6c-gnutar-1.35'
+deleting '/nix/store/00g69vw7c9lycy63h45ximy0wmzqx5y6-diffutils-3.10'
+
+2025-11-19T17:26:21.7393745Z [inf]  deleting '/nix/store/d29r1bdmlvwmj52apgcdxfl1mm9c5782-update-autotools-gnu-config-scripts-hook'
+deleting '/nix/store/1m67ipsk39xvhyqrxnzv2m2p48pil8kl-gnu-config-2024-01-01'
+deleting '/nix/store/fv7gpnvg922frkh81w5hkdhpz0nw3iiz-mirrors-list'
+deleting '/nix/store/mglixp03lsp0w986svwdvm7vcy17rdax-bzip2-1.0.8-bin'
+deleting '/nix/store/c2njy6bv84kw1i4bjf5k5gn7gz8hn57n-xz-5.6.3'
+
+2025-11-19T17:26:21.745564048Z [inf]  deleting '/nix/store/xmbv8s4p4i4dbxgkgdrdfb0ym25wh6gk-isl-0.20'
+deleting '/nix/store/fkd1ma3nify8r9wp463yg5rqz9hdcyf1-npm-9.9.4.tgz'
+deleting '/nix/store/agvks3qmzja0yj54szi3vja6vx3cwkkw-curl-8.11.0-man'
+deleting '/nix/store/5yja5dpk2qw1v5mbfbl2d7klcdfrh90w-patch-2.7.6'
+deleting '/nix/store/1c6bmxrrhm8bd26ai2rjqld2yyjrxhds-glibc-2.40-36-bin'
+
+2025-11-19T17:26:21.746951365Z [inf]  deleting '/nix/store/srfxqk119fijwnprgsqvn68ys9kiw0bn-patchelf-0.15.0'
+deleting '/nix/store/cq7spyiisamd2arvssmh3cds0hw8gzy0-source'
+deleting '/nix/store/qcghigzrz56vczwlzg9c02vbs6zr9jkz-nghttp2-1.64.0-lib'
+deleting '/nix/store/ivl2v8rgg7qh1jkj5pwpqycax3rc2hnl-bzip2-1.0.8'
+deleting '/nix/store/74h4z8k82pmp24xryflv4lxkz8jlpqqd-ed-1.20.2'
+deleting '/nix/store/aap6cq56amx4mzbyxp2wpgsf1kqjcr1f-gnugrep-3.11'
+
+2025-11-19T17:26:21.748261685Z [inf]  deleting '/nix/store/3j1p598fivxs69wx3a657ysv3rw8k06l-pcre2-10.44'
+deleting '/nix/store/lwi59jcfwk2lnrakmm1y5vw85hj3n1bi-source'
+
+2025-11-19T17:26:22.868851386Z [inf]  deleting '/nix/store/1c0dv2pdlshjz5kmjd4dfp3c96yncr23-libraries'
+
+2025-11-19T17:26:22.869055546Z [inf]  deleting '/nix/store/kryrg7ds05iwcmy81amavk8w13y4lxbs-gmp-6.3.0'
+
+2025-11-19T17:26:22.869362803Z [inf]  deleting '/nix/store/a3c47r5z1q2c4rz0kvq8hlilkhx2s718-gawk-5.3.1'
+
+2025-11-19T17:26:22.871260376Z [inf]  deleting '/nix/store/fp6cjl1zcmm6mawsnrb5yak1wkz2ma8l-gnumake-4.4.1'
+
+2025-11-19T17:26:22.872528558Z [inf]  deleting '/nix/store/wf5zj2gbib3gjqllkabxaw4dh0gzcla3-builder.pl'
+
+2025-11-19T17:26:22.87256425Z [inf]  deleting '/nix/store/grixvx878884hy8x3xs0c0s1i00j632k-nghttp2-1.64.0'
+
+2025-11-19T17:26:22.873340188Z [inf]  deleting '/nix/store/3jjimb9v9hc78vyp8g6mj86xwz4qqwxm-user-environment'
+
+2025-11-19T17:26:22.875613537Z [inf]  deleting '/nix/store/5q154c0kqyja8hjj5iqvrflg2znnawb0-user-environment.drv'
+
+2025-11-19T17:26:22.875740155Z [inf]  deleting '/nix/store/9virg6mk4pgjf5j8k9p9ibby40x8qvfr-env-manifest.nix'
+
+2025-11-19T17:26:22.876734183Z [inf]  deleting unused links...
+
+2025-11-19T17:26:24.577015097Z [inf]  note: currently hard linking saves 2.42 MiB
+
+2025-11-19T17:26:24.632653909Z [inf]  61 store paths deleted, 559.56 MiB freed
+
+2025-11-19T17:26:24.791797656Z [inf]  [stage-0  6/15] RUN nix-env -if .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix && nix-collect-garbage -d
+2025-11-19T17:26:24.792687287Z [inf]  [stage-0  7/15] COPY .nixpacks/assets /assets/
+2025-11-19T17:26:24.918236641Z [inf]  [stage-0  7/15] COPY .nixpacks/assets /assets/
+2025-11-19T17:26:24.920055762Z [inf]  [stage-0  8/15] COPY . /app/.
+2025-11-19T17:26:25.049660696Z [inf]  [stage-0  8/15] COPY . /app/.
+2025-11-19T17:26:25.050578940Z [inf]  [stage-0  9/15] RUN  caddy fmt --overwrite /assets/Caddyfile
+2025-11-19T17:26:25.254660289Z [inf]  [stage-0  9/15] RUN  caddy fmt --overwrite /assets/Caddyfile
+2025-11-19T17:26:25.255522367Z [inf]  [stage-0 10/15] COPY . /app/.
+2025-11-19T17:26:25.362485380Z [inf]  [stage-0 10/15] COPY . /app/.
+2025-11-19T17:26:25.363599800Z [inf]  [stage-0 11/15] RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-/root/npm,target=/root/.npm npm ci
+2025-11-19T17:26:25.639753677Z [inf]  npm warn config production Use `--omit=dev` instead.
+
+2025-11-19T17:26:29.031740726Z [inf]  npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+
+2025-11-19T17:26:29.040134491Z [inf]  npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+2025-11-19T17:26:33.490420632Z [inf]  
+added 493 packages, and audited 494 packages in 8s
+
+67 packages are looking for funding
+
+2025-11-19T17:26:33.490439322Z [inf]    run `npm fund` for details
+
+2025-11-19T17:26:33.523155012Z [inf]  
+9 vulnerabilities (3 low, 5 moderate, 1 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+2025-11-19T17:26:33.795030469Z [inf]  [stage-0 11/15] RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-/root/npm,target=/root/.npm npm ci
+2025-11-19T17:26:33.795787857Z [inf]  [stage-0 12/15] COPY . /app/.
+2025-11-19T17:26:34.130744251Z [inf]  [stage-0 12/15] COPY . /app/.
+2025-11-19T17:26:34.132296475Z [inf]  [stage-0 13/15] RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-node_modules/cache,target=/app/node_modules/.cache npm run build
+2025-11-19T17:26:35.220166212Z [inf]  npm warn config production Use `--omit=dev` instead.
+
+2025-11-19T17:26:35.248386964Z [inf]  
+> prop-machine@1.0.0 build
+> vite build && tsc --project tsconfig.server.json
+
+
+2025-11-19T17:26:35.448206467Z [inf]  [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+
+2025-11-19T17:26:35.500361674Z [inf]  transforming...
+
+2025-11-19T17:26:36.557488348Z [inf]  
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+
+2025-11-19T17:26:41.489461187Z [inf]  [32m✓[39m 2782 modules transformed.
+
+2025-11-19T17:26:42.058009637Z [inf]  rendering chunks...
+
+2025-11-19T17:26:42.07203304Z [inf]  computing gzip size...
+
+2025-11-19T17:26:42.110800894Z [inf]  [2m../dist/public/[22m[32mindex.html                 [39m[1m[2m    2.01 kB[22m[1m[22m[2m │ gzip:   0.76 kB[22m
+
+2025-11-19T17:26:42.110815197Z [inf]  [2m../dist/public/[22m[2massets/[22m[35mindex-yFdQ0Bpt.css  [39m[1m[2m   76.81 kB[22m[1m[22m[2m │ gzip:  12.42 kB[22m
+
+2025-11-19T17:26:42.110893866Z [inf]  [2m../dist/public/[22m[2massets/[22m[36mindex-kz2Y01y9.js   [39m[1m[33m1,065.57 kB[39m[22m[2m │ gzip: 298.24 kB[22m
+
+2025-11-19T17:26:42.110921627Z [inf]  [33m
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+
+2025-11-19T17:26:42.111274864Z [inf]  [32m✓ built in 6.64s[39m
+
+2025-11-19T17:26:45.589493716Z [inf]  server/adminRoutes.ts(90,37): error TS7006: Parameter 'r' implicitly has an 'any' type.
+
+2025-11-19T17:26:45.589843927Z [inf]  server/auth/googleAuth.ts(95,32): error TS2339: Property 'getUserByEmail' does not exist on type 'DbStorage'.
+server/auth/googleAuth.ts(101,11): error TS2322: Type 'number' is not assignable to type 'string'.
+
+2025-11-19T17:26:45.589855784Z [inf]  server/auth/googleAuth.ts(103,11): error TS2322: Type '"moderate"' is not assignable to type '"conservative" | "balanced" | "aggressive" | undefined'.
+
+2025-11-19T17:26:45.589994515Z [inf]  server/integrations/integrationClient.ts(63,40): error TS2339: Property 'lastReset' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+
+2025-11-19T17:26:45.590060668Z [inf]  server/integrations/integrationClient.ts(68,11): error TS2353: Object literal may only specify known properties, and 'currentMinute' does not exist in type 'Partial<Omit<{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }, "id" | "provider">>'.
+server/integrations/integrationClient.ts(77,17): error TS2339: Property 'currentDay' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+server/integrations/integrationClient.ts(82,17): error TS2339: Property 'currentHour' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+server/integrations/integrationClient.ts(87,17): error TS2339: Property 'currentMinute' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+
+2025-11-19T17:26:45.590228296Z [inf]  server/integrations/integrationClient.ts(115,11): error TS2353: Object literal may only specify known properties, and 'currentMinute' does not exist in type 'Partial<Omit<{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }, "id" | "provider">>'.
+server/integrations/integrationClient.ts(115,32): error TS2339: Property 'currentMinute' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+server/integrations/integrationClient.ts(116,30): error TS2339: Property 'currentHour' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+
+2025-11-19T17:26:45.590239154Z [inf]  server/integrations/integrationClient.ts(117,29): error TS2339: Property 'currentDay' does not exist on type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+
+2025-11-19T17:26:45.590293821Z [inf]  server/integrations/openMeteoClient.ts(42,25): error TS18046: 'data' is of type 'unknown'.
+server/integrations/openMeteoClient.ts(45,56): error TS18046: 'data' is of type 'unknown'.
+server/replitAuth.ts(63,20): error TS2551: Property 'code_verifier' does not exist on type 'Session & Partial<SessionData>'. Did you mean 'codeVerifier'?
+
+2025-11-19T17:26:45.590330528Z [inf]  server/replitAuth.ts(84,42): error TS2551: Property 'code_verifier' does not exist on type 'Session & Partial<SessionData>'. Did you mean 'codeVerifier'?
+server/replitAuth.ts(116,23): error TS18046: 'tokens' is of type 'unknown'.
+server/replitAuth.ts(129,20): error TS2339: Property 'user' does not exist on type 'Session & Partial<SessionData>'.
+
+2025-11-19T17:26:45.590440683Z [inf]  server/replitAuth.ts(131,23): error TS18046: 'tokens' is of type 'unknown'.
+server/replitAuth.ts(132,24): error TS18046: 'tokens' is of type 'unknown'.
+
+2025-11-19T17:26:45.590451106Z [inf]  server/replitAuth.ts(136,27): error TS2551: Property 'code_verifier' does not exist on type 'Session & Partial<SessionData>'. Did you mean 'codeVerifier'?
+server/replitAuth.ts(207,21): error TS18046: 'tokens' is of type 'unknown'.
+
+2025-11-19T17:26:45.590455891Z [inf]  server/replitAuth.ts(213,21): error TS18046: 'tokens' is of type 'unknown'.
+
+2025-11-19T17:26:45.590561121Z [inf]  server/replitAuth.ts(214,22): error TS18046: 'tokens' is of type 'unknown'.
+server/services/propAnalysisService.ts(43,54): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+
+2025-11-19T17:26:45.590569536Z [inf]  server/services/propAnalysisService.ts(99,69): error TS2345: Argument of type 'string | number | symbol' is not assignable to parameter of type 'string'.
+  Type 'number' is not assignable to type 'string'.
+server/services/propAnalysisService.ts(100,69): error TS2345: Argument of type 'string | number | symbol' is not assignable to parameter of type 'string'.
+  Type 'number' is not assignable to type 'string'.
+
+2025-11-19T17:26:45.59059467Z [inf]  server/services/propComparisonService.ts(106,32): error TS2802: Type 'MapIterator<[string, { id: number; createdAt: Date; sport: string; player: string; team: string; opponent: string; stat: string; line: string; currentLine: string | null; direction: "over" | "under"; ... 6 more ...; isActive: boolean; }[]]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/services/propComparisonService.ts(107,38): error TS7006: Parameter 'p' implicitly has an 'any' type.
+
+2025-11-19T17:26:45.590599582Z [inf]  server/services/propComparisonService.ts(108,39): error TS7006: Parameter 'p' implicitly has an 'any' type.
+server/services/propComparisonService.ts(112,44): error TS7006: Parameter 'best' implicitly has an 'any' type.
+
+2025-11-19T17:26:45.59062839Z [inf]  server/services/propComparisonService.ts(112,50): error TS7006: Parameter 'p' implicitly has an 'any' type.
+server/services/propComparisonService.ts(115,46): error TS7006: Parameter 'best' implicitly has an 'any' type.
+server/services/propComparisonService.ts(115,52): error TS7006: Parameter 'p' implicitly has an 'any' type.
+server/services/propComparisonService.ts(156,33): error TS2802: Type 'MapIterator<[string, { id: number; createdAt: Date; sport: string; player: string; team: string; opponent: string; stat: string; line: string; currentLine: string | null; direction: "over" | "under"; ... 6 more ...; isActive: boolean; }[]]>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+
+2025-11-19T17:26:45.590656841Z [inf]  server/storage.ts(157,11): error TS2322: Type '{ id: string; createdAt: Date; updatedAt: Date; email?: string | null | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; profileImageUrl?: string | ... 1 more ... | undefined; ... 4 more ...; isAdmin?: boolean | undefined; }' is not assignable to type '{ id: string; email: string | null; firstName: string | null; lastName: string | null; profileImageUrl: string | null; bankroll: string; initialBankroll: string; kellySizing: string; riskTolerance: "conservative" | ... 1 more ... | "aggressive"; isAdmin: boolean; createdAt: Date; updatedAt: Date; }'.
+  Types of property 'email' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+server/storage.ts(169,11): error TS2322: Type '{ createdAt: Date; updatedAt: Date; email?: string | null | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; profileImageUrl?: string | null | undefined; ... 5 more ...; id: `${string}-${string}-${string}-${string}-${string}`; }' is not assignable to type '{ id: string; email: string | null; firstName: string | null; lastName: string | null; profileImageUrl: string | null; bankroll: string; initialBankroll: string; kellySizing: string; riskTolerance: "conservative" | ... 1 more ... | "aggressive"; isAdmin: boolean; createdAt: Date; updatedAt: Date; }'.
+  Types of property 'email' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+
+2025-11-19T17:26:45.59067926Z [inf]  server/storage.ts(205,11): error TS2322: Type '{ createdAt: Date; sport: string; player: string; team: string; opponent: string; stat: string; line: string; direction: "over" | "under"; platform: string; confidence: number; ev: string; ... 5 more ...; id: number; }' is not assignable to type '{ id: number; createdAt: Date; sport: string; player: string; team: string; opponent: string; stat: string; line: string; currentLine: string | null; direction: "over" | "under"; period: "full_game" | ... 3 more ... | "4Q"; ... 5 more ...; isActive: boolean; }'.
+  Types of property 'currentLine' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+server/storage.ts(223,24): error TS2802: Type 'MapIterator<{ id: number; createdAt: Date; sport: string; player: string; team: string; opponent: string; stat: string; line: string; currentLine: string | null; direction: "over" | "under"; period: "full_game" | ... 3 more ... | "4Q"; ... 5 more ...; isActive: boolean; }>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+
+2025-11-19T17:26:45.590684611Z [inf]  server/storage.ts(233,24): error TS2802: Type 'MapIterator<{ id: number; createdAt: Date; sport: string; player: string; team: string; opponent: string; stat: string; line: string; currentLine: string | null; direction: "over" | "under"; period: "full_game" | ... 3 more ... | "4Q"; ... 5 more ...; isActive: boolean; }>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/storage.ts(265,11): error TS2322: Type '{ createdAt: Date; type: "conservative" | "balanced" | "aggressive"; platform: string; confidence: number; userId: string; title: string; picks: Json; suggestedBet: string; potentialReturn: string; status?: "pending" | ... 4 more ... | undefined; id: number; }' is not assignable to type '{ id: number; createdAt: Date; type: "conservative" | "balanced" | "aggressive"; status: "pending" | "placed" | "won" | "lost" | "pushed"; platform: string; confidence: number; ... 4 more ...; potentialReturn: string; }'.
+  Types of property 'status' are incompatible.
+    Type '"pending" | "placed" | "won" | "lost" | "pushed" | undefined' is not assignable to type '"pending" | "placed" | "won" | "lost" | "pushed"'.
+      Type 'undefined' is not assignable to type '"pending" | "placed" | "won" | "lost" | "pushed"'.
+
+2025-11-19T17:26:45.590710191Z [inf]  server/storage.ts(302,11): error TS2322: Type '{ createdAt: Date; userId: string; potentialReturn: string; amount: string; odds: string; status?: "pending" | "won" | "lost" | "pushed" | undefined; direction?: "over" | "under" | null | undefined; ... 6 more ...; id: number; }' is not assignable to type '{ id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }'.
+  Types of property 'status' are incompatible.
+    Type '"pending" | "won" | "lost" | "pushed" | undefined' is not assignable to type '"pending" | "won" | "lost" | "pushed"'.
+      Type 'undefined' is not assignable to type '"pending" | "won" | "lost" | "pushed"'.
+server/storage.ts(336,13): error TS2322: Type '{ createdAt: Date; userId: string; potentialReturn: string; amount: string; odds: string; status?: "pending" | "won" | "lost" | "pushed" | undefined; direction?: "over" | "under" | null | undefined; ... 6 more ...; id: number; }' is not assignable to type '{ id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }'.
+  Types of property 'status' are incompatible.
+    Type '"pending" | "won" | "lost" | "pushed" | undefined' is not assignable to type '"pending" | "won" | "lost" | "pushed"'.
+      Type 'undefined' is not assignable to type '"pending" | "won" | "lost" | "pushed"'.
+
+2025-11-19T17:26:45.591277279Z [inf]  server/storage.ts(364,9): error TS2367: This comparison appears to be unintentional because the types 'Promise<void> | undefined' and 'Promise<{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; } | { ...; } | { ...; }>' have no overlap.
+server/storage.ts(368,5): error TS2322: Type '{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; } | { ...; } | { ...; }' is not assignable to type '{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; } | { ...; }'.
+  Type '{ success: boolean; error: any; }' is not assignable to type '{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; } | { ...; }'.
+    Type '{ success: boolean; error: any; }' is not assignable to type '{ success: false; error: string; }'.
+      Types of property 'success' are incompatible.
+        Type 'boolean' is not assignable to type 'false'.
+
+2025-11-19T17:26:45.591296162Z [inf]  server/storage.ts(441,9): error TS2367: This comparison appears to be unintentional because the types 'Promise<void> | undefined' and 'Promise<{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; bankrollChange: number; } | { ...; } | { ...; }>' have no overlap.
+server/storage.ts(445,5): error TS2322: Type '{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; bankrollChange: number; } | { ...; } | { ...; }' is not assignable to type '{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; bankrollChange: number; } | { ...; }'.
+  Type '{ success: boolean; error: any; }' is not assignable to type '{ success: true; bet: { id: number; createdAt: Date; status: "pending" | "won" | "lost" | "pushed"; direction: "over" | "under" | null; userId: string; potentialReturn: string; slipId: number | null; ... 6 more ...; settledAt: Date | null; }; bankrollChange: number; } | { ...; }'.
+    Type '{ success: boolean; error: any; }' is not assignable to type '{ success: false; error: string; }'.
+      Types of property 'success' are incompatible.
+        Type 'boolean' is not assignable to type 'false'.
+server/storage.ts(479,11): error TS2322: Type '{ createdAt: Date; date: Date; bankroll: string; userId: string; totalBets: number; wins: number; losses: number; pushes: number; winRate: string; roi: string; avgClv?: string | null | undefined; kellyCompliance?: string | ... 1 more ... | undefined; id: number; }' is not assignable to type '{ date: Date; id: number; bankroll: string; createdAt: Date; userId: string; totalBets: number; wins: number; losses: number; pushes: number; winRate: string; roi: string; avgClv: string | null; kellyCompliance: string | null; }'.
+  Types of property 'avgClv' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+server/storage.ts(497,11): error TS2322: Type '{ createdAt: Date; provider: string; endpoint: string; response: Json; etag?: string | null | undefined; lastModified?: string | null | undefined; id: number; }' is not assignable to type '{ id: number; createdAt: Date; provider: string; endpoint: string; response: unknown; etag: string | null; lastModified: string | null; }'.
+  Types of property 'etag' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+server/storage.ts(513,11): error TS2322: Type '{ createdAt: Date; updatedAt: Date; sport: string; gameTime: Date; gameId: string; homeTeam: string; awayTeam: string; status?: "scheduled" | "in_progress" | "final" | "postponed" | undefined; ... 4 more ...; id: number; }' is not assignable to type '{ id: number; createdAt: Date; updatedAt: Date; status: "scheduled" | "in_progress" | "final" | "postponed"; sport: string; gameTime: Date; gameId: string; homeTeam: string; ... 4 more ...; finalizedAt: Date | null; }'.
+  Types of property 'status' are incompatible.
+    Type '"scheduled" | "in_progress" | "final" | "postponed" | undefined' is not assignable to type '"scheduled" | "in_progress" | "final" | "postponed"'.
+      Type 'undefined' is not assignable to type '"scheduled" | "in_progress" | "final" | "postponed"'.
+server/storage.ts(556,7): error TS2353: Object literal may only specify known properties, and 'lastReset' does not exist in type '{ id: number; createdAt: Date; updatedAt: Date; provider: string; callsToday: number; lastCallAt: Date | null; dailyLimit: number | null; rateLimitPerMinute: number | null; resetAt: Date | null; }'.
+server/storage.ts(581,11): error TS2322: Type '{ createdAt: Date; sport: string; version: string; modelType: string; trainedAt: Date; isActive?: boolean | undefined; artifact?: Json | undefined; performance?: Json | undefined; id: number; }' is not assignable to type '{ id: number; createdAt: Date; sport: string; isActive: boolean; version: string; modelType: string; artifact: unknown; performance: unknown; trainedAt: Date; }'.
+  Types of property 'isActive' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+server/storage.ts(602,11): error TS2322: Type '{ createdAt: Date; gameId: string; stadium: string; latitude: string; longitude: string; forecastTime: Date; temperature?: string | null | undefined; windSpeed?: string | null | undefined; ... 6 more ...; id: number; }' is not assignable to type '{ id: number; createdAt: Date; gameId: string; stadium: string; latitude: string; longitude: string; temperature: string | null; windSpeed: string | null; windGusts: string | null; ... 5 more ...; forecastTime: Date; }'.
+  Types of property 'temperature' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+server/storage.ts(618,11): error TS2322: Type '{ createdAt: Date; updatedAt: Date; userId: string; emailEnabled?: boolean | undefined; newPropsEnabled?: boolean | undefined; highConfidenceOnly?: boolean | undefined; minConfidence?: number | undefined; sports?: Json | undefined; platforms?: Json | undefined; id: number; }' is not assignable to type '{ id: number; createdAt: Date; updatedAt: Date; userId: string; emailEnabled: boolean; newPropsEnabled: boolean; highConfidenceOnly: boolean; minConfidence: number; sports: unknown; platforms: unknown; }'.
+  Types of property 'emailEnabled' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+server/storage.ts(650,11): error TS2322: Type '{ createdAt: Date; message: string; type: "new_props" | "high_confidence_prop" | "bet_settled" | "performance_alert"; userId: string; title: string; propIds?: Json | undefined; isRead?: boolean | undefined; id: number; }' is not assignable to type '{ id: number; createdAt: Date; message: string; type: "new_props" | "high_confidence_prop" | "bet_settled" | "performance_alert"; userId: string; title: string; propIds: unknown; isRead: boolean; }'.
+  Property 'propIds' is optional in type '{ createdAt: Date; message: string; type: "new_props" | "high_confidence_prop" | "bet_settled" | "performance_alert"; userId: string; title: string; propIds?: Json | undefined; isRead?: boolean | undefined; id: number; }' but required in type '{ id: number; createdAt: Date; message: string; type: "new_props" | "high_confidence_prop" | "bet_settled" | "performance_alert"; userId: string; title: string; propIds: unknown; isRead: boolean; }'.
+server/storage.ts(679,11): error TS2322: Type '{ createdAt: Date; date: Date; userId: string; platformStats?: Json | undefined; sportStats?: Json | undefined; confidenceBrackets?: Json | undefined; ... 6 more ...; id: number; }' is not assignable to type '{ date: Date; id: number; createdAt: Date; userId: string; platformStats: unknown; sportStats: unknown; confidenceBrackets: unknown; hotStreak: number; coldStreak: number; bestSport: string | null; bestPlatform: string | null; bestTimeOfWeek: string | null; avgBetSize: string | null; }'.
+  Property 'platformStats' is optional in type '{ createdAt: Date; date: Date; userId: string; platformStats?: Json | undefined; sportStats?: Json | undefined; confidenceBrackets?: Json | undefined; ... 6 more ...; id: number; }' but required in type '{ date: Date; id: number; createdAt: Date; userId: string; platformStats: unknown; sportStats: unknown; confidenceBrackets: unknown; hotStreak: number; coldStreak: number; bestSport: string | null; bestPlatform: string | null; bestTimeOfWeek: string | null; avgBetSize: string | null; }'.
+server/storage.ts(753,11): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "users"; dataType: "string"; columnType: "PgVarchar"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'undefined' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | undefined>, right: string | SQLWrapper | undefined): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "users"; dataType: "string"; columnType: "PgVarchar"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | undefined>'.
+      Type 'PgColumn<{ name: "id"; tableName: "users"; dataType: "string"; columnType: "PgVarchar"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | undefined>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "users"; dataType: "string"; columnType: "PgVarchar"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/storage.ts(962,27): error TS2802: Type 'Set<number>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+server/storage.ts(975,27): error TS2802: Type 'Set<number>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
+
+2025-11-19T17:26:45.750226086Z [err]  [stage-0 13/15] RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-node_modules/cache,target=/app/node_modules/.cache npm run build
+2025-11-19T17:26:45.770292666Z [err]  Dockerfile:30
+2025-11-19T17:26:45.770324196Z [err]  -------------------
+2025-11-19T17:26:45.770328176Z [err]  28 |     # build phase
+2025-11-19T17:26:45.770331842Z [err]  29 |     COPY . /app/.
+2025-11-19T17:26:45.770336605Z [err]  30 | >>> RUN --mount=type=cache,id=s/ae0ed310-f7f1-4183-99d5-369ed4031ffe-node_modules/cache,target=/app/node_modules/.cache npm run build
+2025-11-19T17:26:45.770340237Z [err]  31 |
+2025-11-19T17:26:45.770343813Z [err]  32 |
+2025-11-19T17:26:45.770347312Z [err]  -------------------
+2025-11-19T17:26:45.770350696Z [err]  ERROR: failed to build: failed to solve: process "/bin/bash -ol pipefail -c npm run build" did not complete successfully: exit code: 2
+2025-11-19T17:26:45.774409709Z [err]  Error: Docker build failed
