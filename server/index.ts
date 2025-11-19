@@ -64,7 +64,7 @@ seedDatabase().catch((error) => {
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
   
   // Start automatic prop refresh scheduler (every 15 minutes)
