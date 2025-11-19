@@ -9,7 +9,8 @@ let replitClient: any = null;
 async function getReplitClient() {
   if (replitClient) return replitClient;
   
-  const ReplitIssuer = await Issuer.discover(process.env.ISSUER_URL ?? "https://replit.com/oidc");
+  const issuerUrl = process.env.ISSUER_URL ?? "https://replit.com/oidc";
+  const ReplitIssuer = await Issuer.discover(issuerUrl);
   
   replitClient = new ReplitIssuer.Client({
     client_id: process.env.REPL_ID!,
@@ -17,6 +18,9 @@ async function getReplitClient() {
     response_types: ["code"],
     token_endpoint_auth_method: "none",
   });
+  
+  // Disable strict issuer validation for Replit OIDC
+  replitClient[Symbol.for('openid-client.custom.expect_iss')] = false;
   
   return replitClient;
 }
@@ -57,12 +61,15 @@ export async function setupAuth(app: Express) {
       req.session!.codeVerifier = codeVerifier;
       req.session!.state = state;
       
+      // Get the correct hostname including port for local dev
+      const redirectUri = `${req.protocol}://${req.get('host')}/api/callback`;
+      
       const authUrl = client.authorizationUrl({
         scope: "openid email profile",
         code_challenge: codeChallenge,
         code_challenge_method: "S256",
         state,
-        redirect_uri: `https://${req.hostname}/api/callback`,
+        redirect_uri: redirectUri,
       });
       
       res.redirect(authUrl);
@@ -87,11 +94,19 @@ export async function setupAuth(app: Express) {
         return res.status(400).send("State mismatch - possible CSRF attack");
       }
       
+      const redirectUri = `${req.protocol}://${req.get('host')}/api/callback`;
+      const params = client.callbackParams(req);
       const tokenSet = await client.callback(
-        `https://${req.hostname}/api/callback`,
-        { code: code as string, state: state as string },
-        { code_verifier: codeVerifier, state: sessionState }
-      );
+        redirectUri,
+        params,
+        { 
+          code_verifier: codeVerifier, 
+          state: sessionState,
+        }
+      ).catch((err) => {
+        console.error("Token exchange error:", err);
+        throw err;
+      });
       
       const userinfo = await client.userinfo(tokenSet.access_token!);
       
