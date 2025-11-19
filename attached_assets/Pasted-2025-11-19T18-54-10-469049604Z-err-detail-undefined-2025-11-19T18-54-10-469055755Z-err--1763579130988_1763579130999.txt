@@ -1,0 +1,1001 @@
+2025-11-19T18:54:10.469049604Z [err]    detail: undefined,
+2025-11-19T18:54:10.469055755Z [err]    schema: undefined,
+2025-11-19T18:54:10.469056971Z [err]    hint: undefined,
+2025-11-19T18:54:10.469059674Z [err]    table: undefined,
+2025-11-19T18:54:10.469061997Z [err]  }
+2025-11-19T18:54:10.469065177Z [err]    position: undefined,
+2025-11-19T18:54:10.469071723Z [err]    severity: '',
+2025-11-19T18:54:10.469072002Z [err]    column: undefined,
+2025-11-19T18:54:10.469072059Z [err]    internalPosition: undefined,
+2025-11-19T18:54:10.469079920Z [err]    internalQuery: undefined,
+2025-11-19T18:54:10.469080579Z [err]    code: '',
+2025-11-19T18:54:10.469082181Z [err]    dataType: undefined,
+2025-11-19T18:54:10.469083355Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:10.469089202Z [err]    where: undefined,
+2025-11-19T18:54:10.469090245Z [err]    detail: undefined,
+2025-11-19T18:54:10.469091701Z [err]    constraint: undefined,
+2025-11-19T18:54:10.469094039Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:10.469097326Z [err]    schema: undefined,
+2025-11-19T18:54:10.469101377Z [err]    file: undefined,
+2025-11-19T18:54:10.469103349Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:10.469103694Z [err]    hint: undefined,
+2025-11-19T18:54:10.469110852Z [err]    line: undefined,
+2025-11-19T18:54:10.469111039Z [err]    position: undefined,
+2025-11-19T18:54:10.469114949Z [err]    internalQuery: undefined,
+2025-11-19T18:54:10.469120248Z [err]    routine: undefined,
+2025-11-19T18:54:10.469120790Z [err]    internalPosition: undefined,
+2025-11-19T18:54:10.469129828Z [err]    where: undefined,
+2025-11-19T18:54:10.469130242Z [err]    sourceError: undefined
+2025-11-19T18:54:10.470471332Z [err]    table: undefined,
+2025-11-19T18:54:10.470480529Z [err]    column: undefined,
+2025-11-19T18:54:10.470488590Z [err]    dataType: undefined,
+2025-11-19T18:54:10.470495912Z [err]    constraint: undefined,
+2025-11-19T18:54:10.470502426Z [err]    file: undefined,
+2025-11-19T18:54:10.470509370Z [err]    line: undefined,
+2025-11-19T18:54:10.470520845Z [err]    routine: undefined,
+2025-11-19T18:54:10.470526627Z [err]    sourceError: undefined
+2025-11-19T18:54:10.470532614Z [err]  }
+2025-11-19T18:54:10.530443563Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:10.530453051Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:10.530458322Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:10.530469471Z [err]    severity: '',
+2025-11-19T18:54:10.530474154Z [err]    code: '',
+2025-11-19T18:54:10.530480043Z [err]    detail: undefined,
+2025-11-19T18:54:10.530486774Z [err]    hint: undefined,
+2025-11-19T18:54:10.530491494Z [err]    position: undefined,
+2025-11-19T18:54:10.530496069Z [err]    internalPosition: undefined,
+2025-11-19T18:54:10.530501145Z [err]    internalQuery: undefined,
+2025-11-19T18:54:10.530505795Z [err]    where: undefined,
+2025-11-19T18:54:10.530513069Z [err]    schema: undefined,
+2025-11-19T18:54:10.530518489Z [err]    table: undefined,
+2025-11-19T18:54:10.530523902Z [err]    column: undefined,
+2025-11-19T18:54:10.530528912Z [err]    dataType: undefined,
+2025-11-19T18:54:10.530533682Z [err]    constraint: undefined,
+2025-11-19T18:54:10.530538539Z [err]    file: undefined,
+2025-11-19T18:54:10.530543717Z [err]    line: undefined,
+2025-11-19T18:54:10.530547894Z [err]    routine: undefined,
+2025-11-19T18:54:10.532822734Z [err]    sourceError: undefined
+2025-11-19T18:54:10.532835320Z [err]  }
+2025-11-19T18:54:10.595788836Z [err]  }
+2025-11-19T18:54:10.595795288Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:10.595800240Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:10.595804914Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:10.595809324Z [err]    severity: '',
+2025-11-19T18:54:10.595814069Z [err]    code: '',
+2025-11-19T18:54:10.595819116Z [err]    detail: undefined,
+2025-11-19T18:54:10.595824186Z [err]    hint: undefined,
+2025-11-19T18:54:10.595829341Z [err]    position: undefined,
+2025-11-19T18:54:10.595834477Z [err]    internalPosition: undefined,
+2025-11-19T18:54:10.595839151Z [err]    internalQuery: undefined,
+2025-11-19T18:54:10.595843928Z [err]    where: undefined,
+2025-11-19T18:54:10.595848492Z [err]    schema: undefined,
+2025-11-19T18:54:10.595854786Z [err]    table: undefined,
+2025-11-19T18:54:10.595859624Z [err]    column: undefined,
+2025-11-19T18:54:10.595896284Z [err]    dataType: undefined,
+2025-11-19T18:54:10.595903397Z [err]    constraint: undefined,
+2025-11-19T18:54:10.595909825Z [err]    file: undefined,
+2025-11-19T18:54:10.595915951Z [err]    line: undefined,
+2025-11-19T18:54:10.595922694Z [err]    routine: undefined,
+2025-11-19T18:54:10.595927792Z [err]    sourceError: undefined
+2025-11-19T18:54:11.394730756Z [err]    schema: undefined,
+2025-11-19T18:54:11.394741177Z [err]    table: undefined,
+2025-11-19T18:54:11.394749729Z [err]    column: undefined,
+2025-11-19T18:54:11.394761533Z [err]  }
+2025-11-19T18:54:11.394767081Z [err]    severity: '',
+2025-11-19T18:54:11.394772745Z [err]    code: '',
+2025-11-19T18:54:11.394779062Z [err]    detail: undefined,
+2025-11-19T18:54:11.394782168Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.394782613Z [err]    dataType: undefined,
+2025-11-19T18:54:11.394785102Z [err]    hint: undefined,
+2025-11-19T18:54:11.394793221Z [err]    constraint: undefined,
+2025-11-19T18:54:11.394793767Z [err]    position: undefined,
+2025-11-19T18:54:11.394795557Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.394797292Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.394804785Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.394806114Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.394806717Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.394812887Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.394813132Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.394818684Z [err]    severity: '',
+2025-11-19T18:54:11.394819400Z [err]    where: undefined,
+2025-11-19T18:54:11.394822073Z [err]    line: undefined,
+2025-11-19T18:54:11.394827280Z [err]    file: undefined,
+2025-11-19T18:54:11.394827723Z [err]    code: '',
+2025-11-19T18:54:11.394830651Z [err]    routine: undefined,
+2025-11-19T18:54:11.394833810Z [err]    sourceError: undefined
+2025-11-19T18:54:11.398744058Z [err]    constraint: undefined,
+2025-11-19T18:54:11.398749194Z [err]    where: undefined,
+2025-11-19T18:54:11.398753488Z [err]    file: undefined,
+2025-11-19T18:54:11.398755123Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.398758403Z [err]    schema: undefined,
+2025-11-19T18:54:11.398762336Z [err]    line: undefined,
+2025-11-19T18:54:11.398764949Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.398768269Z [err]    severity: '',
+2025-11-19T18:54:11.398771006Z [err]    routine: undefined,
+2025-11-19T18:54:11.398775437Z [err]    hint: undefined,
+2025-11-19T18:54:11.398775724Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.398779666Z [err]    sourceError: undefined
+2025-11-19T18:54:11.398781653Z [err]    code: '',
+2025-11-19T18:54:11.398784358Z [err]    position: undefined,
+2025-11-19T18:54:11.398789700Z [err]  }
+2025-11-19T18:54:11.398789762Z [err]    hint: undefined,
+2025-11-19T18:54:11.398791779Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.398794199Z [err]    detail: undefined,
+2025-11-19T18:54:11.398798781Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.398805764Z [err]    where: undefined,
+2025-11-19T18:54:11.398811139Z [err]    position: undefined,
+2025-11-19T18:54:11.398813989Z [err]    schema: undefined,
+2025-11-19T18:54:11.398816791Z [err]    detail: undefined,
+2025-11-19T18:54:11.398819721Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.398821934Z [err]    table: undefined,
+2025-11-19T18:54:11.398826139Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.398834727Z [err]    column: undefined,
+2025-11-19T18:54:11.398840201Z [err]    dataType: undefined,
+2025-11-19T18:54:11.400112789Z [err]    routine: undefined,
+2025-11-19T18:54:11.400116382Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.400125609Z [err]    sourceError: undefined
+2025-11-19T18:54:11.400129901Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.400131253Z [err]    table: undefined,
+2025-11-19T18:54:11.400136807Z [err]    column: undefined,
+2025-11-19T18:54:11.400138948Z [err]    severity: '',
+2025-11-19T18:54:11.400141678Z [err]    dataType: undefined,
+2025-11-19T18:54:11.400146899Z [err]    code: '',
+2025-11-19T18:54:11.400147011Z [err]    constraint: undefined,
+2025-11-19T18:54:11.400152183Z [err]    file: undefined,
+2025-11-19T18:54:11.400155786Z [err]    detail: undefined,
+2025-11-19T18:54:11.400159110Z [err]    line: undefined,
+2025-11-19T18:54:11.400163915Z [err]    hint: undefined,
+2025-11-19T18:54:11.400164006Z [err]    routine: undefined,
+2025-11-19T18:54:11.400169463Z [err]    sourceError: undefined
+2025-11-19T18:54:11.400172081Z [err]    position: undefined,
+2025-11-19T18:54:11.400177666Z [err]  }
+2025-11-19T18:54:11.400180338Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.400182821Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.400187085Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.400192737Z [err]    where: undefined,
+2025-11-19T18:54:11.400198303Z [err]    schema: undefined,
+2025-11-19T18:54:11.400208971Z [err]    table: undefined,
+2025-11-19T18:54:11.400215272Z [err]    column: undefined,
+2025-11-19T18:54:11.400221665Z [err]    dataType: undefined,
+2025-11-19T18:54:11.400235178Z [err]    constraint: undefined,
+2025-11-19T18:54:11.400242308Z [err]    file: undefined,
+2025-11-19T18:54:11.400249698Z [err]    line: undefined,
+2025-11-19T18:54:11.402538769Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.402541434Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.402548060Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.402552373Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.402557967Z [err]    severity: '',
+2025-11-19T18:54:11.402561127Z [err]    where: undefined,
+2025-11-19T18:54:11.402567321Z [err]    schema: undefined,
+2025-11-19T18:54:11.402573316Z [err]    table: undefined,
+2025-11-19T18:54:11.402579540Z [err]    column: undefined,
+2025-11-19T18:54:11.402586828Z [err]    line: undefined,
+2025-11-19T18:54:11.402589677Z [err]    dataType: undefined,
+2025-11-19T18:54:11.402597135Z [err]    routine: undefined,
+2025-11-19T18:54:11.402598600Z [err]    constraint: undefined,
+2025-11-19T18:54:11.402600900Z [err]  }
+2025-11-19T18:54:11.402603807Z [err]    sourceError: undefined
+2025-11-19T18:54:11.402609612Z [err]    file: undefined,
+2025-11-19T18:54:11.402610140Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.402612913Z [err]  }
+2025-11-19T18:54:11.402619218Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.402619957Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.402627336Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.402633188Z [err]    severity: '',
+2025-11-19T18:54:11.402638810Z [err]    code: '',
+2025-11-19T18:54:11.402645357Z [err]    detail: undefined,
+2025-11-19T18:54:11.402655524Z [err]    hint: undefined,
+2025-11-19T18:54:11.402661286Z [err]    position: undefined,
+2025-11-19T18:54:11.404696849Z [err]    code: '',
+2025-11-19T18:54:11.404701534Z [err]    detail: undefined,
+2025-11-19T18:54:11.404707246Z [err]    hint: undefined,
+2025-11-19T18:54:11.404717921Z [err]    position: undefined,
+2025-11-19T18:54:11.404722280Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.404726464Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.404730508Z [err]    where: undefined,
+2025-11-19T18:54:11.404735223Z [err]    schema: undefined,
+2025-11-19T18:54:11.404739915Z [err]    table: undefined,
+2025-11-19T18:54:11.404744678Z [err]    column: undefined,
+2025-11-19T18:54:11.404748875Z [err]    dataType: undefined,
+2025-11-19T18:54:11.404753393Z [err]    constraint: undefined,
+2025-11-19T18:54:11.404757488Z [err]    file: undefined,
+2025-11-19T18:54:11.404761920Z [err]    line: undefined,
+2025-11-19T18:54:11.404766795Z [err]    routine: undefined,
+2025-11-19T18:54:11.404772502Z [err]    sourceError: undefined
+2025-11-19T18:54:11.404778105Z [err]  }
+2025-11-19T18:54:11.454843173Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.454856557Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.454867022Z [err]    where: undefined,
+2025-11-19T18:54:11.454875541Z [err]    schema: undefined,
+2025-11-19T18:54:11.454881591Z [err]    table: undefined,
+2025-11-19T18:54:11.454887893Z [err]    column: undefined,
+2025-11-19T18:54:11.454894350Z [err]    dataType: undefined,
+2025-11-19T18:54:11.454900022Z [err]    constraint: undefined,
+2025-11-19T18:54:11.454906382Z [err]    file: undefined,
+2025-11-19T18:54:11.454911678Z [err]    line: undefined,
+2025-11-19T18:54:11.454918736Z [err]    routine: undefined,
+2025-11-19T18:54:11.454926315Z [err]    sourceError: undefined
+2025-11-19T18:54:11.454931996Z [err]  }
+2025-11-19T18:54:11.454948323Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.454955060Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.454960683Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.454966671Z [err]    severity: '',
+2025-11-19T18:54:11.454974328Z [err]    code: '',
+2025-11-19T18:54:11.454980792Z [err]    detail: undefined,
+2025-11-19T18:54:11.454986477Z [err]    hint: undefined,
+2025-11-19T18:54:11.454993718Z [err]    position: undefined,
+2025-11-19T18:54:11.516349012Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.516357662Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.516362465Z [err]    sourceError: undefined
+2025-11-19T18:54:11.516366462Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.516372333Z [err]    severity: '',
+2025-11-19T18:54:11.516374970Z [err]  }
+2025-11-19T18:54:11.516375319Z [err]    schema: undefined,
+2025-11-19T18:54:11.516380625Z [err]    code: '',
+2025-11-19T18:54:11.516386796Z [err]    detail: undefined,
+2025-11-19T18:54:11.516390012Z [err]    table: undefined,
+2025-11-19T18:54:11.516394973Z [err]    hint: undefined,
+2025-11-19T18:54:11.516399771Z [err]    column: undefined,
+2025-11-19T18:54:11.516403014Z [err]    position: undefined,
+2025-11-19T18:54:11.516410290Z [err]    dataType: undefined,
+2025-11-19T18:54:11.516410355Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.516419308Z [err]    constraint: undefined,
+2025-11-19T18:54:11.516420078Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.516426500Z [err]    where: undefined,
+2025-11-19T18:54:11.516429561Z [err]    file: undefined,
+2025-11-19T18:54:11.516435669Z [err]    line: undefined,
+2025-11-19T18:54:11.516442207Z [err]    routine: undefined,
+2025-11-19T18:54:11.604359964Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.604366052Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.604372991Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.604381902Z [err]    severity: '',
+2025-11-19T18:54:11.604388258Z [err]    code: '',
+2025-11-19T18:54:11.604394776Z [err]    detail: undefined,
+2025-11-19T18:54:11.604403738Z [err]    hint: undefined,
+2025-11-19T18:54:11.604423590Z [err]    position: undefined,
+2025-11-19T18:54:11.604434668Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.604442217Z [err]    internalQuery: undefined,
+2025-11-19T18:54:11.604449081Z [err]    where: undefined,
+2025-11-19T18:54:11.604455612Z [err]    schema: undefined,
+2025-11-19T18:54:11.604461872Z [err]    table: undefined,
+2025-11-19T18:54:11.604468516Z [err]    column: undefined,
+2025-11-19T18:54:11.604483248Z [err]    dataType: undefined,
+2025-11-19T18:54:11.604490274Z [err]    constraint: undefined,
+2025-11-19T18:54:11.604496955Z [err]    file: undefined,
+2025-11-19T18:54:11.604503370Z [err]    line: undefined,
+2025-11-19T18:54:11.604509848Z [err]    routine: undefined,
+2025-11-19T18:54:11.604515033Z [err]    sourceError: undefined
+2025-11-19T18:54:11.604519885Z [err]  }
+2025-11-19T18:54:11.765203545Z [err]    where: undefined,
+2025-11-19T18:54:11.765215017Z [err]    schema: undefined,
+2025-11-19T18:54:11.765228593Z [err]    table: undefined,
+2025-11-19T18:54:11.765235094Z [err]    column: undefined,
+2025-11-19T18:54:11.765242331Z [err]    dataType: undefined,
+2025-11-19T18:54:11.765243231Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:11.765249053Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:11.765251495Z [err]    constraint: undefined,
+2025-11-19T18:54:11.765255071Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:11.765259460Z [err]    file: undefined,
+2025-11-19T18:54:11.765261435Z [err]    severity: '',
+2025-11-19T18:54:11.765267703Z [err]    line: undefined,
+2025-11-19T18:54:11.765268329Z [err]    code: '',
+2025-11-19T18:54:11.765275425Z [err]    routine: undefined,
+2025-11-19T18:54:11.765276205Z [err]    detail: undefined,
+2025-11-19T18:54:11.765283078Z [err]    hint: undefined,
+2025-11-19T18:54:11.765285160Z [err]    sourceError: undefined
+2025-11-19T18:54:11.765288391Z [err]    position: undefined,
+2025-11-19T18:54:11.765293814Z [err]  }
+2025-11-19T18:54:11.765294138Z [err]    internalPosition: undefined,
+2025-11-19T18:54:11.765298908Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.319142533Z [err]    where: undefined,
+2025-11-19T18:54:12.319150676Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.319151209Z [err]    schema: undefined,
+2025-11-19T18:54:12.319159450Z [err]    table: undefined,
+2025-11-19T18:54:12.319161307Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.319167497Z [err]    column: undefined,
+2025-11-19T18:54:12.319169080Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.319176132Z [err]    dataType: undefined,
+2025-11-19T18:54:12.319177166Z [err]    severity: '',
+2025-11-19T18:54:12.319184576Z [err]    code: '',
+2025-11-19T18:54:12.319186134Z [err]    constraint: undefined,
+2025-11-19T18:54:12.319189940Z [inf]  Found 0 props from The Odds API
+2025-11-19T18:54:12.319193449Z [err]    detail: undefined,
+2025-11-19T18:54:12.319197315Z [err]    file: undefined,
+2025-11-19T18:54:12.319198708Z [err]  The Odds API fetch error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.319202742Z [err]    hint: undefined,
+2025-11-19T18:54:12.319207097Z [inf]  Fetching props from PrizePicks for NHL...
+2025-11-19T18:54:12.319207594Z [err]    line: undefined,
+2025-11-19T18:54:12.319211480Z [err]    position: undefined,
+2025-11-19T18:54:12.319215636Z [err]  Rate limit check error for prizepicks: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.319218816Z [err]    routine: undefined,
+2025-11-19T18:54:12.319219749Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.319226164Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.319227953Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.319230544Z [err]    sourceError: undefined
+2025-11-19T18:54:12.319236904Z [err]  }
+2025-11-19T18:54:12.324686509Z [err]    table: undefined,
+2025-11-19T18:54:12.324699726Z [err]    column: undefined,
+2025-11-19T18:54:12.324706166Z [err]    dataType: undefined,
+2025-11-19T18:54:12.324713216Z [err]    constraint: undefined,
+2025-11-19T18:54:12.324719337Z [err]    file: undefined,
+2025-11-19T18:54:12.324726063Z [err]    line: undefined,
+2025-11-19T18:54:12.324732193Z [err]    routine: undefined,
+2025-11-19T18:54:12.324738585Z [err]    sourceError: undefined
+2025-11-19T18:54:12.324746264Z [err]  }
+2025-11-19T18:54:12.324752622Z [err]  Integration error for prizepicks: Error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T18:54:12.324758110Z [err]      at PrizePicksClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T18:54:12.324764295Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:54:12.324770401Z [err]      at PrizePicksClient.getProjections (/app/server/integrations/prizepicksClient.ts:95:22)
+2025-11-19T18:54:12.324781469Z [err]      at PropRefreshService.refreshFromPrizePicks (/app/server/services/propRefreshService.ts:42:24)
+2025-11-19T18:54:12.324792281Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:367:32)
+2025-11-19T18:54:12.324905946Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.324912384Z [err]    severity: '',
+2025-11-19T18:54:12.324918148Z [err]    code: '',
+2025-11-19T18:54:12.324922393Z [err]    detail: undefined,
+2025-11-19T18:54:12.324926606Z [err]    hint: undefined,
+2025-11-19T18:54:12.324935777Z [err]    position: undefined,
+2025-11-19T18:54:12.324940398Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.324948772Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.324953745Z [err]    where: undefined,
+2025-11-19T18:54:12.324958269Z [err]    schema: undefined,
+2025-11-19T18:54:12.328006142Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.328014765Z [err]    where: undefined,
+2025-11-19T18:54:12.328020153Z [err]    schema: undefined,
+2025-11-19T18:54:12.328025196Z [err]    table: undefined,
+2025-11-19T18:54:12.328030032Z [err]    column: undefined,
+2025-11-19T18:54:12.328035745Z [err]    dataType: undefined,
+2025-11-19T18:54:12.328040922Z [err]    constraint: undefined,
+2025-11-19T18:54:12.328045905Z [err]    file: undefined,
+2025-11-19T18:54:12.328050953Z [err]    line: undefined,
+2025-11-19T18:54:12.328055801Z [err]    routine: undefined,
+2025-11-19T18:54:12.328081327Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T18:54:12.328086159Z [inf]  Fetching props from Underdog for NHL...
+2025-11-19T18:54:12.328091596Z [err]  Cache read error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.328098831Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.328100763Z [err]    sourceError: undefined
+2025-11-19T18:54:12.328105452Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.328106916Z [err]  }
+2025-11-19T18:54:12.328112051Z [err]    severity: '',
+2025-11-19T18:54:12.328114038Z [err]  PrizePicks fetch error: HTTP 429: {"error":"There was a problem processing your request. 1ed91b4c-925b-4593-b6ff-2afbdc9530da"}
+2025-11-19T18:54:12.328119693Z [err]  Rate limit check error for underdog: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.328130700Z [err]    code: '',
+2025-11-19T18:54:12.328136081Z [err]    detail: undefined,
+2025-11-19T18:54:12.328142408Z [err]    hint: undefined,
+2025-11-19T18:54:12.328147465Z [err]    position: undefined,
+2025-11-19T18:54:12.328152640Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.331772590Z [err]    where: undefined,
+2025-11-19T18:54:12.331784864Z [err]    schema: undefined,
+2025-11-19T18:54:12.331793796Z [err]    table: undefined,
+2025-11-19T18:54:12.331799173Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.331802479Z [err]    column: undefined,
+2025-11-19T18:54:12.331808512Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.331811087Z [err]    dataType: undefined,
+2025-11-19T18:54:12.331817743Z [err]    severity: '',
+2025-11-19T18:54:12.331819382Z [err]    constraint: undefined,
+2025-11-19T18:54:12.331825458Z [err]    code: '',
+2025-11-19T18:54:12.331828340Z [err]    file: undefined,
+2025-11-19T18:54:12.331833410Z [err]    detail: undefined,
+2025-11-19T18:54:12.331836235Z [err]    line: undefined,
+2025-11-19T18:54:12.331840890Z [err]    hint: undefined,
+2025-11-19T18:54:12.331848136Z [err]    position: undefined,
+2025-11-19T18:54:12.331853517Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.331859571Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.332142158Z [err]    routine: undefined,
+2025-11-19T18:54:12.332153009Z [err]    sourceError: undefined
+2025-11-19T18:54:12.332157515Z [err]  }
+2025-11-19T18:54:12.332162360Z [err]  Integration error for underdog: Error: HTTP 404: Not Found
+2025-11-19T18:54:12.332166955Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T18:54:12.332172935Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:54:12.332178130Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T18:54:12.332183644Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T18:54:12.332189600Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T18:54:12.337167185Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T18:54:12.337169701Z [err]    sourceError: undefined
+2025-11-19T18:54:12.337178657Z [err]  Cache read error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.337180015Z [err]  }
+2025-11-19T18:54:12.337187308Z [err]  Underdog API error: Error: HTTP 404: Not Found
+2025-11-19T18:54:12.337188416Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.337193625Z [err]      at UnderdogClient.get (/app/server/integrations/integrationClient.ts:160:15)
+2025-11-19T18:54:12.337196350Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.337199588Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-11-19T18:54:12.337205456Z [err]      at UnderdogClient.getAppearances (/app/server/integrations/underdogClient.ts:102:24)
+2025-11-19T18:54:12.337206611Z [err]    severity: '',
+2025-11-19T18:54:12.337213011Z [err]    code: '',
+2025-11-19T18:54:12.337219968Z [err]    detail: undefined,
+2025-11-19T18:54:12.337225587Z [err]    hint: undefined,
+2025-11-19T18:54:12.337231647Z [err]    position: undefined,
+2025-11-19T18:54:12.337237664Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.337244136Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.337251105Z [err]    where: undefined,
+2025-11-19T18:54:12.337256745Z [err]    schema: undefined,
+2025-11-19T18:54:12.337263955Z [err]    table: undefined,
+2025-11-19T18:54:12.337270220Z [err]    column: undefined,
+2025-11-19T18:54:12.337276760Z [err]    dataType: undefined,
+2025-11-19T18:54:12.337283561Z [err]    constraint: undefined,
+2025-11-19T18:54:12.337290982Z [err]    file: undefined,
+2025-11-19T18:54:12.337297899Z [err]    line: undefined,
+2025-11-19T18:54:12.337306097Z [err]    routine: undefined,
+2025-11-19T18:54:12.340579681Z [err]      at PropRefreshService.refreshFromUnderdog (/app/server/services/propRefreshService.ts:151:24)
+2025-11-19T18:54:12.340589590Z [err]      at PropRefreshService.refreshAllPlatforms (/app/server/services/propRefreshService.ts:370:30)
+2025-11-19T18:54:12.340595938Z [err]      at PropSchedulerService.runRefresh (/app/server/services/propSchedulerService.ts:91:22)
+2025-11-19T18:54:12.340600537Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.340602091Z [inf]  No props found on Underdog for NHL
+2025-11-19T18:54:12.340608650Z [inf]  Fetching props from The Odds API for NHL...
+2025-11-19T18:54:12.340611271Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.340615497Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.340620119Z [err]    where: undefined,
+2025-11-19T18:54:12.340623974Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.340643113Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.340644181Z [err]    schema: undefined,
+2025-11-19T18:54:12.340650950Z [err]    severity: '',
+2025-11-19T18:54:12.340652702Z [err]    table: undefined,
+2025-11-19T18:54:12.340659477Z [err]    code: '',
+2025-11-19T18:54:12.340661509Z [err]    column: undefined,
+2025-11-19T18:54:12.340665180Z [err]    detail: undefined,
+2025-11-19T18:54:12.340670708Z [err]    dataType: undefined,
+2025-11-19T18:54:12.340670839Z [err]    hint: undefined,
+2025-11-19T18:54:12.340677653Z [err]    position: undefined,
+2025-11-19T18:54:12.340679517Z [err]    constraint: undefined,
+2025-11-19T18:54:12.340684964Z [err]    file: undefined,
+2025-11-19T18:54:12.340690136Z [err]    line: undefined,
+2025-11-19T18:54:12.340698218Z [err]    routine: undefined,
+2025-11-19T18:54:12.341994587Z [err]    sourceError: undefined
+2025-11-19T18:54:12.342003408Z [err]  }
+2025-11-19T18:54:12.464220751Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.464222092Z [err]    table: undefined,
+2025-11-19T18:54:12.464228881Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.464232421Z [err]    column: undefined,
+2025-11-19T18:54:12.464235137Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.464239810Z [err]    severity: '',
+2025-11-19T18:54:12.464245567Z [err]    dataType: undefined,
+2025-11-19T18:54:12.464247314Z [err]    code: '',
+2025-11-19T18:54:12.464254450Z [err]    constraint: undefined,
+2025-11-19T18:54:12.464255123Z [err]    detail: undefined,
+2025-11-19T18:54:12.464261466Z [err]    file: undefined,
+2025-11-19T18:54:12.464263215Z [err]    hint: undefined,
+2025-11-19T18:54:12.464270013Z [err]    line: undefined,
+2025-11-19T18:54:12.464271099Z [err]    position: undefined,
+2025-11-19T18:54:12.464276568Z [err]    routine: undefined,
+2025-11-19T18:54:12.464278269Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.464282953Z [err]    sourceError: undefined
+2025-11-19T18:54:12.464284686Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.464289763Z [err]  }
+2025-11-19T18:54:12.464291722Z [err]    where: undefined,
+2025-11-19T18:54:12.464297115Z [err]    schema: undefined,
+2025-11-19T18:54:12.527694665Z [inf]  Found 16 upcoming icehockey_nhl events, fetching player props...
+2025-11-19T18:54:12.527710392Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.527721011Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.527729192Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.527739360Z [err]    severity: '',
+2025-11-19T18:54:12.527747170Z [err]    code: '',
+2025-11-19T18:54:12.527753613Z [err]    detail: undefined,
+2025-11-19T18:54:12.527760201Z [err]    hint: undefined,
+2025-11-19T18:54:12.527767774Z [err]    position: undefined,
+2025-11-19T18:54:12.527777801Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.527783444Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.527793879Z [err]    where: undefined,
+2025-11-19T18:54:12.527800248Z [err]    schema: undefined,
+2025-11-19T18:54:12.527806690Z [err]    table: undefined,
+2025-11-19T18:54:12.527812831Z [err]    column: undefined,
+2025-11-19T18:54:12.527818767Z [err]    dataType: undefined,
+2025-11-19T18:54:12.527825192Z [err]    constraint: undefined,
+2025-11-19T18:54:12.527832356Z [err]    file: undefined,
+2025-11-19T18:54:12.527838231Z [err]    line: undefined,
+2025-11-19T18:54:12.527844551Z [err]    routine: undefined,
+2025-11-19T18:54:12.527850445Z [err]    sourceError: undefined
+2025-11-19T18:54:12.527858144Z [err]  }
+2025-11-19T18:54:12.582831171Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:12.582837553Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:12.582843987Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:12.582851721Z [err]    file: undefined,
+2025-11-19T18:54:12.582851891Z [err]    severity: '',
+2025-11-19T18:54:12.582858534Z [err]    code: '',
+2025-11-19T18:54:12.582865848Z [err]    detail: undefined,
+2025-11-19T18:54:12.582872348Z [err]    line: undefined,
+2025-11-19T18:54:12.582877807Z [err]    hint: undefined,
+2025-11-19T18:54:12.582885793Z [err]    routine: undefined,
+2025-11-19T18:54:12.582896102Z [err]    sourceError: undefined
+2025-11-19T18:54:12.582898389Z [err]    position: undefined,
+2025-11-19T18:54:12.582910531Z [err]    internalPosition: undefined,
+2025-11-19T18:54:12.582916384Z [err]  }
+2025-11-19T18:54:12.582919341Z [err]    internalQuery: undefined,
+2025-11-19T18:54:12.582927745Z [err]    where: undefined,
+2025-11-19T18:54:12.582934514Z [err]    schema: undefined,
+2025-11-19T18:54:12.582940891Z [err]    table: undefined,
+2025-11-19T18:54:12.582949360Z [err]    column: undefined,
+2025-11-19T18:54:12.582954557Z [err]    dataType: undefined,
+2025-11-19T18:54:12.582961452Z [err]    constraint: undefined,
+2025-11-19T18:54:13.446739529Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.446750754Z [err]    severity: '',
+2025-11-19T18:54:13.446754958Z [err]    severity: '',
+2025-11-19T18:54:13.446761857Z [err]    code: '',
+2025-11-19T18:54:13.446766887Z [err]    code: '',
+2025-11-19T18:54:13.446782983Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.446790400Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.446794859Z [err]    line: undefined,
+2025-11-19T18:54:13.446807633Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.446808037Z [err]    detail: undefined,
+2025-11-19T18:54:13.446810483Z [err]    routine: undefined,
+2025-11-19T18:54:13.446818371Z [err]    where: undefined,
+2025-11-19T18:54:13.446819558Z [err]    hint: undefined,
+2025-11-19T18:54:13.446821892Z [err]    sourceError: undefined
+2025-11-19T18:54:13.446828619Z [err]    position: undefined,
+2025-11-19T18:54:13.446829551Z [err]    schema: undefined,
+2025-11-19T18:54:13.446832411Z [err]  }
+2025-11-19T18:54:13.446838860Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.446839818Z [err]    table: undefined,
+2025-11-19T18:54:13.446845236Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.446848577Z [err]    column: undefined,
+2025-11-19T18:54:13.446857036Z [err]    dataType: undefined,
+2025-11-19T18:54:13.446872100Z [err]    constraint: undefined,
+2025-11-19T18:54:13.446878692Z [err]    file: undefined,
+2025-11-19T18:54:13.446911618Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.446920228Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.450786556Z [err]    detail: undefined,
+2025-11-19T18:54:13.450790949Z [err]    hint: undefined,
+2025-11-19T18:54:13.450796004Z [err]    position: undefined,
+2025-11-19T18:54:13.450800123Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.450804154Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.450808983Z [err]    where: undefined,
+2025-11-19T18:54:13.450814035Z [err]    schema: undefined,
+2025-11-19T18:54:13.450820051Z [err]    table: undefined,
+2025-11-19T18:54:13.450825515Z [err]    column: undefined,
+2025-11-19T18:54:13.450831277Z [err]    dataType: undefined,
+2025-11-19T18:54:13.450838664Z [err]    constraint: undefined,
+2025-11-19T18:54:13.450845272Z [err]    file: undefined,
+2025-11-19T18:54:13.450849846Z [err]    line: undefined,
+2025-11-19T18:54:13.450855363Z [err]    routine: undefined,
+2025-11-19T18:54:13.450859768Z [err]    sourceError: undefined
+2025-11-19T18:54:13.450865134Z [err]  }
+2025-11-19T18:54:13.450870606Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.450876508Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.450882234Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.450887817Z [err]    severity: '',
+2025-11-19T18:54:13.450893015Z [err]    code: '',
+2025-11-19T18:54:13.450899011Z [err]    detail: undefined,
+2025-11-19T18:54:13.450904415Z [err]    hint: undefined,
+2025-11-19T18:54:13.450915816Z [err]    position: undefined,
+2025-11-19T18:54:13.450920333Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.450925416Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.450929765Z [err]    where: undefined,
+2025-11-19T18:54:13.450934140Z [err]    schema: undefined,
+2025-11-19T18:54:13.451386796Z [err]    table: undefined,
+2025-11-19T18:54:13.451391185Z [err]    column: undefined,
+2025-11-19T18:54:13.451396222Z [err]    dataType: undefined,
+2025-11-19T18:54:13.451400620Z [err]    constraint: undefined,
+2025-11-19T18:54:13.451404474Z [err]    file: undefined,
+2025-11-19T18:54:13.451408284Z [err]    line: undefined,
+2025-11-19T18:54:13.451412948Z [err]    routine: undefined,
+2025-11-19T18:54:13.451416905Z [err]    sourceError: undefined
+2025-11-19T18:54:13.451424099Z [err]  }
+2025-11-19T18:54:13.451428248Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.451434214Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.451438062Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.451442052Z [err]    severity: '',
+2025-11-19T18:54:13.451446477Z [err]    code: '',
+2025-11-19T18:54:13.451450249Z [err]    detail: undefined,
+2025-11-19T18:54:13.451455503Z [err]    hint: undefined,
+2025-11-19T18:54:13.451459489Z [err]    position: undefined,
+2025-11-19T18:54:13.451463283Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.451467141Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.451475980Z [err]    where: undefined,
+2025-11-19T18:54:13.451480519Z [err]    schema: undefined,
+2025-11-19T18:54:13.451484154Z [err]    table: undefined,
+2025-11-19T18:54:13.451487759Z [err]    column: undefined,
+2025-11-19T18:54:13.451491466Z [err]    dataType: undefined,
+2025-11-19T18:54:13.451496092Z [err]    constraint: undefined,
+2025-11-19T18:54:13.451500852Z [err]    file: undefined,
+2025-11-19T18:54:13.451505628Z [err]    line: undefined,
+2025-11-19T18:54:13.451512560Z [err]    routine: undefined,
+2025-11-19T18:54:13.451517552Z [err]    sourceError: undefined
+2025-11-19T18:54:13.453015158Z [err]  }
+2025-11-19T18:54:13.453019185Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.453023187Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.453027191Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.453031240Z [err]    severity: '',
+2025-11-19T18:54:13.453035109Z [err]    code: '',
+2025-11-19T18:54:13.453039146Z [err]    detail: undefined,
+2025-11-19T18:54:13.453044361Z [err]    hint: undefined,
+2025-11-19T18:54:13.453049215Z [err]    position: undefined,
+2025-11-19T18:54:13.453054684Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.453061225Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.453066683Z [err]    where: undefined,
+2025-11-19T18:54:13.453072199Z [err]    schema: undefined,
+2025-11-19T18:54:13.453076601Z [err]    table: undefined,
+2025-11-19T18:54:13.453083741Z [err]    column: undefined,
+2025-11-19T18:54:13.453089031Z [err]    dataType: undefined,
+2025-11-19T18:54:13.453095640Z [err]    constraint: undefined,
+2025-11-19T18:54:13.453101991Z [err]    file: undefined,
+2025-11-19T18:54:13.453107351Z [err]    line: undefined,
+2025-11-19T18:54:13.453112604Z [err]    routine: undefined,
+2025-11-19T18:54:13.453118556Z [err]    sourceError: undefined
+2025-11-19T18:54:13.453126208Z [err]  }
+2025-11-19T18:54:13.453132178Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.453137582Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.453142839Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.453148900Z [err]    severity: '',
+2025-11-19T18:54:13.455381996Z [err]    column: undefined,
+2025-11-19T18:54:13.455392869Z [err]    dataType: undefined,
+2025-11-19T18:54:13.455399379Z [err]    constraint: undefined,
+2025-11-19T18:54:13.455405698Z [err]    file: undefined,
+2025-11-19T18:54:13.455413427Z [err]    line: undefined,
+2025-11-19T18:54:13.455416685Z [err]    code: '',
+2025-11-19T18:54:13.455421125Z [err]    routine: undefined,
+2025-11-19T18:54:13.455424931Z [err]    detail: undefined,
+2025-11-19T18:54:13.455431574Z [err]    sourceError: undefined
+2025-11-19T18:54:13.455433027Z [err]    hint: undefined,
+2025-11-19T18:54:13.455441165Z [err]  }
+2025-11-19T18:54:13.455441424Z [err]    position: undefined,
+2025-11-19T18:54:13.455448612Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.455454308Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.455460068Z [err]    where: undefined,
+2025-11-19T18:54:13.455468760Z [err]    schema: undefined,
+2025-11-19T18:54:13.455474731Z [err]    table: undefined,
+2025-11-19T18:54:13.476960401Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.476973363Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.476981283Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.476987975Z [err]    severity: '',
+2025-11-19T18:54:13.476995481Z [err]    code: '',
+2025-11-19T18:54:13.477002821Z [err]    detail: undefined,
+2025-11-19T18:54:13.477008733Z [err]    hint: undefined,
+2025-11-19T18:54:13.477015900Z [err]    position: undefined,
+2025-11-19T18:54:13.477023038Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.477031073Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.477040552Z [err]    where: undefined,
+2025-11-19T18:54:13.477047591Z [err]    schema: undefined,
+2025-11-19T18:54:13.477054689Z [err]    table: undefined,
+2025-11-19T18:54:13.477061033Z [err]    column: undefined,
+2025-11-19T18:54:13.477086187Z [err]    dataType: undefined,
+2025-11-19T18:54:13.477094769Z [err]    constraint: undefined,
+2025-11-19T18:54:13.477101791Z [err]    file: undefined,
+2025-11-19T18:54:13.477108701Z [err]    line: undefined,
+2025-11-19T18:54:13.477115450Z [err]    routine: undefined,
+2025-11-19T18:54:13.477124374Z [err]    sourceError: undefined
+2025-11-19T18:54:13.477131106Z [err]  }
+2025-11-19T18:54:13.592853906Z [err]    line: undefined,
+2025-11-19T18:54:13.592867441Z [err]    routine: undefined,
+2025-11-19T18:54:13.592874060Z [err]    sourceError: undefined
+2025-11-19T18:54:13.592881864Z [err]  }
+2025-11-19T18:54:13.592887141Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.592898588Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.592905559Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.592911651Z [err]    severity: '',
+2025-11-19T18:54:13.592919706Z [err]    code: '',
+2025-11-19T18:54:13.592925991Z [err]    detail: undefined,
+2025-11-19T18:54:13.592931622Z [err]    hint: undefined,
+2025-11-19T18:54:13.592938083Z [err]    position: undefined,
+2025-11-19T18:54:13.592947378Z [err]    internalPosition: undefined,
+2025-11-19T18:54:13.592953456Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.592959974Z [err]    where: undefined,
+2025-11-19T18:54:13.592967526Z [err]    schema: undefined,
+2025-11-19T18:54:13.592973458Z [err]    table: undefined,
+2025-11-19T18:54:13.592978962Z [err]    column: undefined,
+2025-11-19T18:54:13.592985730Z [err]    dataType: undefined,
+2025-11-19T18:54:13.592992859Z [err]    constraint: undefined,
+2025-11-19T18:54:13.592998711Z [err]    file: undefined,
+2025-11-19T18:54:13.654841928Z [err]    internalQuery: undefined,
+2025-11-19T18:54:13.654872444Z [err]    where: undefined,
+2025-11-19T18:54:13.654879466Z [err]    schema: undefined,
+2025-11-19T18:54:13.654886941Z [err]    table: undefined,
+2025-11-19T18:54:13.654893456Z [err]    column: undefined,
+2025-11-19T18:54:13.654900696Z [err]    dataType: undefined,
+2025-11-19T18:54:13.654907220Z [err]    constraint: undefined,
+2025-11-19T18:54:13.654913908Z [err]    file: undefined,
+2025-11-19T18:54:13.654920459Z [err]    line: undefined,
+2025-11-19T18:54:13.654928314Z [err]    routine: undefined,
+2025-11-19T18:54:13.654934419Z [err]    sourceError: undefined
+2025-11-19T18:54:13.654941141Z [err]  }
+2025-11-19T18:54:13.655065336Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:13.655078193Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:13.655084362Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:13.655091907Z [err]    severity: '',
+2025-11-19T18:54:13.655098577Z [err]    code: '',
+2025-11-19T18:54:13.655104286Z [err]    detail: undefined,
+2025-11-19T18:54:13.655165990Z [err]    hint: undefined,
+2025-11-19T18:54:13.655174242Z [err]    position: undefined,
+2025-11-19T18:54:13.655180946Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.629008950Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.630289262Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.630309381Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.630318348Z [err]    severity: '',
+2025-11-19T18:54:14.630325408Z [err]    code: '',
+2025-11-19T18:54:14.630332805Z [err]    detail: undefined,
+2025-11-19T18:54:14.630340887Z [err]    hint: undefined,
+2025-11-19T18:54:14.630348457Z [err]    position: undefined,
+2025-11-19T18:54:14.630358143Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.630367348Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.630374135Z [err]    where: undefined,
+2025-11-19T18:54:14.630381047Z [err]    schema: undefined,
+2025-11-19T18:54:14.630387082Z [err]    table: undefined,
+2025-11-19T18:54:14.630393219Z [err]    column: undefined,
+2025-11-19T18:54:14.630399223Z [err]    dataType: undefined,
+2025-11-19T18:54:14.630407962Z [err]    constraint: undefined,
+2025-11-19T18:54:14.630413711Z [err]    file: undefined,
+2025-11-19T18:54:14.630419237Z [err]    line: undefined,
+2025-11-19T18:54:14.630425129Z [err]    routine: undefined,
+2025-11-19T18:54:14.630430706Z [err]    sourceError: undefined
+2025-11-19T18:54:14.630436350Z [err]  }
+2025-11-19T18:54:14.630443309Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.630448223Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.630453364Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.630458181Z [err]    severity: '',
+2025-11-19T18:54:14.630463317Z [err]    code: '',
+2025-11-19T18:54:14.633899244Z [err]    detail: undefined,
+2025-11-19T18:54:14.633904775Z [err]    hint: undefined,
+2025-11-19T18:54:14.633908918Z [err]    position: undefined,
+2025-11-19T18:54:14.633913170Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.633918083Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.633922107Z [err]    where: undefined,
+2025-11-19T18:54:14.633927523Z [err]    schema: undefined,
+2025-11-19T18:54:14.633931441Z [err]    table: undefined,
+2025-11-19T18:54:14.633936656Z [err]    column: undefined,
+2025-11-19T18:54:14.633941058Z [err]    dataType: undefined,
+2025-11-19T18:54:14.633945045Z [err]    constraint: undefined,
+2025-11-19T18:54:14.633949004Z [err]    file: undefined,
+2025-11-19T18:54:14.633952991Z [err]    line: undefined,
+2025-11-19T18:54:14.633957240Z [err]    routine: undefined,
+2025-11-19T18:54:14.633962116Z [err]    sourceError: undefined
+2025-11-19T18:54:14.633968717Z [err]  }
+2025-11-19T18:54:14.633972842Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.633977105Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.633980828Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.633984542Z [err]    severity: '',
+2025-11-19T18:54:14.633988373Z [err]    code: '',
+2025-11-19T18:54:14.633992363Z [err]    detail: undefined,
+2025-11-19T18:54:14.633997970Z [err]    hint: undefined,
+2025-11-19T18:54:14.634001587Z [err]    position: undefined,
+2025-11-19T18:54:14.634005070Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.634008956Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.634013738Z [err]    where: undefined,
+2025-11-19T18:54:14.634017375Z [err]    schema: undefined,
+2025-11-19T18:54:14.635993182Z [err]    table: undefined,
+2025-11-19T18:54:14.635998582Z [err]    column: undefined,
+2025-11-19T18:54:14.636004240Z [err]    dataType: undefined,
+2025-11-19T18:54:14.636011538Z [err]    constraint: undefined,
+2025-11-19T18:54:14.636017537Z [err]    file: undefined,
+2025-11-19T18:54:14.636023170Z [err]    line: undefined,
+2025-11-19T18:54:14.636028115Z [err]    routine: undefined,
+2025-11-19T18:54:14.636048639Z [err]    sourceError: undefined
+2025-11-19T18:54:14.636054045Z [err]  }
+2025-11-19T18:54:14.636059122Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.636064635Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.636084813Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.636090243Z [err]    severity: '',
+2025-11-19T18:54:14.636098742Z [err]    code: '',
+2025-11-19T18:54:14.636105092Z [err]    detail: undefined,
+2025-11-19T18:54:14.636111221Z [err]    hint: undefined,
+2025-11-19T18:54:14.636190101Z [err]    position: undefined,
+2025-11-19T18:54:14.636195915Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.636202173Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.636207283Z [err]    where: undefined,
+2025-11-19T18:54:14.636213251Z [err]    schema: undefined,
+2025-11-19T18:54:14.636219024Z [err]    table: undefined,
+2025-11-19T18:54:14.636224780Z [err]    column: undefined,
+2025-11-19T18:54:14.636230248Z [err]    dataType: undefined,
+2025-11-19T18:54:14.636235481Z [err]    constraint: undefined,
+2025-11-19T18:54:14.636243662Z [err]    file: undefined,
+2025-11-19T18:54:14.636248999Z [err]    line: undefined,
+2025-11-19T18:54:14.636255533Z [err]    routine: undefined,
+2025-11-19T18:54:14.636261295Z [err]    sourceError: undefined
+2025-11-19T18:54:14.637831416Z [err]    schema: undefined,
+2025-11-19T18:54:14.637842495Z [err]    table: undefined,
+2025-11-19T18:54:14.637850026Z [err]    column: undefined,
+2025-11-19T18:54:14.637858048Z [err]    dataType: undefined,
+2025-11-19T18:54:14.637864944Z [err]    constraint: undefined,
+2025-11-19T18:54:14.637872523Z [err]    file: undefined,
+2025-11-19T18:54:14.637879262Z [err]    line: undefined,
+2025-11-19T18:54:14.637887136Z [err]    routine: undefined,
+2025-11-19T18:54:14.637889049Z [err]  }
+2025-11-19T18:54:14.637896653Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.637899794Z [err]    sourceError: undefined
+2025-11-19T18:54:14.637904131Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.637908857Z [err]  }
+2025-11-19T18:54:14.637910982Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.637916962Z [err]    severity: '',
+2025-11-19T18:54:14.637918721Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.637922660Z [err]    code: '',
+2025-11-19T18:54:14.637928543Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.637928639Z [err]    detail: undefined,
+2025-11-19T18:54:14.637934843Z [err]    hint: undefined,
+2025-11-19T18:54:14.637938522Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.637941618Z [err]    position: undefined,
+2025-11-19T18:54:14.637948564Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.637948904Z [err]    severity: '',
+2025-11-19T18:54:14.637954270Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.637961694Z [err]    where: undefined,
+2025-11-19T18:54:14.642065199Z [err]    schema: undefined,
+2025-11-19T18:54:14.642089055Z [err]    code: '',
+2025-11-19T18:54:14.642098172Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.642100214Z [err]    detail: undefined,
+2025-11-19T18:54:14.642109995Z [err]    hint: undefined,
+2025-11-19T18:54:14.642116382Z [err]    code: '',
+2025-11-19T18:54:14.642122338Z [err]    where: undefined,
+2025-11-19T18:54:14.642125779Z [err]    position: undefined,
+2025-11-19T18:54:14.642129757Z [err]    detail: undefined,
+2025-11-19T18:54:14.642140856Z [err]    schema: undefined,
+2025-11-19T18:54:14.642141624Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.642141650Z [err]    hint: undefined,
+2025-11-19T18:54:14.642156381Z [err]    position: undefined,
+2025-11-19T18:54:14.642158966Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.642167518Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.642172756Z [err]    where: undefined,
+2025-11-19T18:54:14.642173921Z [err]    table: undefined,
+2025-11-19T18:54:14.642186783Z [err]    column: undefined,
+2025-11-19T18:54:14.642197772Z [err]    dataType: undefined,
+2025-11-19T18:54:14.642206697Z [err]    constraint: undefined,
+2025-11-19T18:54:14.642214525Z [err]    file: undefined,
+2025-11-19T18:54:14.642225049Z [err]    line: undefined,
+2025-11-19T18:54:14.642239022Z [err]    routine: undefined,
+2025-11-19T18:54:14.642247754Z [err]    sourceError: undefined
+2025-11-19T18:54:14.642255946Z [err]  }
+2025-11-19T18:54:14.642266048Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.642274491Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.642283117Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.642290756Z [err]    severity: '',
+2025-11-19T18:54:14.643033281Z [err]    table: undefined,
+2025-11-19T18:54:14.643039828Z [err]    column: undefined,
+2025-11-19T18:54:14.643045754Z [err]    dataType: undefined,
+2025-11-19T18:54:14.643053877Z [err]    constraint: undefined,
+2025-11-19T18:54:14.643060276Z [err]    file: undefined,
+2025-11-19T18:54:14.643073995Z [err]    line: undefined,
+2025-11-19T18:54:14.643083705Z [err]    routine: undefined,
+2025-11-19T18:54:14.643089170Z [err]    sourceError: undefined
+2025-11-19T18:54:14.643094712Z [err]  }
+2025-11-19T18:54:14.643101339Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.643108672Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.643115117Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.643122341Z [err]    severity: '',
+2025-11-19T18:54:14.643128470Z [err]    code: '',
+2025-11-19T18:54:14.643134583Z [err]    detail: undefined,
+2025-11-19T18:54:14.643139619Z [err]    hint: undefined,
+2025-11-19T18:54:14.643144339Z [err]    position: undefined,
+2025-11-19T18:54:14.643149539Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.643155149Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.643160192Z [err]    where: undefined,
+2025-11-19T18:54:14.643165308Z [err]    schema: undefined,
+2025-11-19T18:54:14.643169974Z [err]    table: undefined,
+2025-11-19T18:54:14.643175817Z [err]    column: undefined,
+2025-11-19T18:54:14.643181788Z [err]    dataType: undefined,
+2025-11-19T18:54:14.643187257Z [err]    constraint: undefined,
+2025-11-19T18:54:14.643192806Z [err]    file: undefined,
+2025-11-19T18:54:14.643197420Z [err]    line: undefined,
+2025-11-19T18:54:14.643201960Z [err]    routine: undefined,
+2025-11-19T18:54:14.643206797Z [err]    sourceError: undefined
+2025-11-19T18:54:14.646668800Z [err]    table: undefined,
+2025-11-19T18:54:14.646679366Z [err]    column: undefined,
+2025-11-19T18:54:14.646684588Z [err]    dataType: undefined,
+2025-11-19T18:54:14.646693301Z [err]    constraint: undefined,
+2025-11-19T18:54:14.646702185Z [err]    file: undefined,
+2025-11-19T18:54:14.646709128Z [err]    line: undefined,
+2025-11-19T18:54:14.646713693Z [err]    routine: undefined,
+2025-11-19T18:54:14.646723300Z [err]    sourceError: undefined
+2025-11-19T18:54:14.646728159Z [err]  }
+2025-11-19T18:54:14.646835578Z [err]  }
+2025-11-19T18:54:14.646840069Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.646844610Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.646851924Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.646857466Z [err]    severity: '',
+2025-11-19T18:54:14.646861743Z [err]    code: '',
+2025-11-19T18:54:14.646866070Z [err]    detail: undefined,
+2025-11-19T18:54:14.646870910Z [err]    hint: undefined,
+2025-11-19T18:54:14.646875132Z [err]    position: undefined,
+2025-11-19T18:54:14.646879691Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.646883925Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.646890677Z [err]    where: undefined,
+2025-11-19T18:54:14.646895457Z [err]    schema: undefined,
+2025-11-19T18:54:14.702089388Z [err]    position: undefined,
+2025-11-19T18:54:14.702101660Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.702109717Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.702119020Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.702119276Z [err]    where: undefined,
+2025-11-19T18:54:14.702128061Z [err]    schema: undefined,
+2025-11-19T18:54:14.702128572Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.702137085Z [err]    table: undefined,
+2025-11-19T18:54:14.702149792Z [err]    column: undefined,
+2025-11-19T18:54:14.702153266Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.702156746Z [err]    dataType: undefined,
+2025-11-19T18:54:14.702161772Z [err]    severity: '',
+2025-11-19T18:54:14.702165574Z [err]    constraint: undefined,
+2025-11-19T18:54:14.702170485Z [err]    code: '',
+2025-11-19T18:54:14.702174268Z [err]    file: undefined,
+2025-11-19T18:54:14.702181691Z [err]    line: undefined,
+2025-11-19T18:54:14.702182521Z [err]    detail: undefined,
+2025-11-19T18:54:14.702189877Z [err]    routine: undefined,
+2025-11-19T18:54:14.702190973Z [err]    hint: undefined,
+2025-11-19T18:54:14.702198459Z [err]    sourceError: undefined
+2025-11-19T18:54:14.702204819Z [err]  }
+2025-11-19T18:54:14.770307561Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:14.770327816Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:14.770336741Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:14.770343417Z [err]    severity: '',
+2025-11-19T18:54:14.770350435Z [err]    code: '',
+2025-11-19T18:54:14.770359318Z [err]    detail: undefined,
+2025-11-19T18:54:14.770368786Z [err]    hint: undefined,
+2025-11-19T18:54:14.770375043Z [err]    position: undefined,
+2025-11-19T18:54:14.770381279Z [err]    internalPosition: undefined,
+2025-11-19T18:54:14.770387646Z [err]    internalQuery: undefined,
+2025-11-19T18:54:14.770394986Z [err]    where: undefined,
+2025-11-19T18:54:14.770402608Z [err]    schema: undefined,
+2025-11-19T18:54:14.770408767Z [err]    table: undefined,
+2025-11-19T18:54:14.770417577Z [err]    column: undefined,
+2025-11-19T18:54:14.770424713Z [err]    dataType: undefined,
+2025-11-19T18:54:14.770435545Z [err]    constraint: undefined,
+2025-11-19T18:54:14.770444219Z [err]    file: undefined,
+2025-11-19T18:54:14.770450943Z [err]    line: undefined,
+2025-11-19T18:54:14.770456909Z [err]    routine: undefined,
+2025-11-19T18:54:14.770462937Z [err]    sourceError: undefined
+2025-11-19T18:54:14.770468557Z [err]  }
+2025-11-19T18:54:15.514660303Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:15.514669499Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:15.514678070Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:15.514687522Z [err]    severity: '',
+2025-11-19T18:54:15.514694727Z [err]    code: '',
+2025-11-19T18:54:15.514701634Z [err]    detail: undefined,
+2025-11-19T18:54:15.514708088Z [err]    hint: undefined,
+2025-11-19T18:54:15.514715606Z [err]    position: undefined,
+2025-11-19T18:54:15.514722687Z [err]    internalPosition: undefined,
+2025-11-19T18:54:15.514729353Z [err]    internalQuery: undefined,
+2025-11-19T18:54:15.514736569Z [err]    where: undefined,
+2025-11-19T18:54:15.514744532Z [err]    schema: undefined,
+2025-11-19T18:54:15.514751945Z [err]    table: undefined,
+2025-11-19T18:54:15.514759279Z [err]    column: undefined,
+2025-11-19T18:54:15.514765688Z [err]    dataType: undefined,
+2025-11-19T18:54:15.514773645Z [err]    constraint: undefined,
+2025-11-19T18:54:15.514780582Z [err]    file: undefined,
+2025-11-19T18:54:15.514787325Z [err]    line: undefined,
+2025-11-19T18:54:15.514793576Z [err]    routine: undefined,
+2025-11-19T18:54:15.514800430Z [err]    sourceError: undefined
+2025-11-19T18:54:15.514807140Z [err]  }
+2025-11-19T18:54:15.514814429Z [err]  Rate limit increment error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:15.514821292Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:15.514827062Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:15.514833181Z [err]    severity: '',
+2025-11-19T18:54:15.517920332Z [err]    code: '',
+2025-11-19T18:54:15.517929388Z [err]    detail: undefined,
+2025-11-19T18:54:15.517938135Z [err]    hint: undefined,
+2025-11-19T18:54:15.517944764Z [err]    position: undefined,
+2025-11-19T18:54:15.517953489Z [err]    internalPosition: undefined,
+2025-11-19T18:54:15.517960046Z [err]    internalQuery: undefined,
+2025-11-19T18:54:15.517967306Z [err]    where: undefined,
+2025-11-19T18:54:15.517973993Z [err]    schema: undefined,
+2025-11-19T18:54:15.517981555Z [err]    table: undefined,
+2025-11-19T18:54:15.517988336Z [err]    column: undefined,
+2025-11-19T18:54:15.517995033Z [err]    dataType: undefined,
+2025-11-19T18:54:15.518001574Z [err]    constraint: undefined,
+2025-11-19T18:54:15.518009244Z [err]    file: undefined,
+2025-11-19T18:54:15.518020691Z [err]    line: undefined,
+2025-11-19T18:54:15.518028697Z [err]    routine: undefined,
+2025-11-19T18:54:15.518037073Z [err]    sourceError: undefined
+2025-11-19T18:54:15.518045511Z [err]  }
+2025-11-19T18:54:15.518053527Z [err]  Cache write error: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:15.518061612Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:15.518069842Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+2025-11-19T18:54:15.518077785Z [err]    severity: '',
+2025-11-19T18:54:15.518085351Z [err]    code: '',
+2025-11-19T18:54:15.518093571Z [err]    detail: undefined,
+2025-11-19T18:54:15.518100523Z [err]    hint: undefined,
+2025-11-19T18:54:15.518108034Z [err]    position: undefined,
+2025-11-19T18:54:15.518115587Z [err]    internalPosition: undefined,
+2025-11-19T18:54:15.518125809Z [err]    internalQuery: undefined,
+2025-11-19T18:54:15.518131797Z [err]    where: undefined,
+2025-11-19T18:54:15.518139174Z [err]    schema: undefined,
+2025-11-19T18:54:15.521427910Z [err]    table: undefined,
+2025-11-19T18:54:15.521434007Z [err]    column: undefined,
+2025-11-19T18:54:15.521441648Z [err]    dataType: undefined,
+2025-11-19T18:54:15.521447963Z [err]    constraint: undefined,
+2025-11-19T18:54:15.521454216Z [err]    file: undefined,
+2025-11-19T18:54:15.521460343Z [err]    line: undefined,
+2025-11-19T18:54:15.521465869Z [err]    routine: undefined,
+2025-11-19T18:54:15.521471964Z [err]    sourceError: undefined
+2025-11-19T18:54:15.521477791Z [err]  }
+2025-11-19T18:54:15.521482871Z [err]  Rate limit check error for odds_api: NeonDbError: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:15.521487206Z [err]      at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+2025-11-19T18:54:15.692386601Z [err]  The Odds API fetch error: The endpoint has been disabled. Enable it using Neon API and retry.
+2025-11-19T18:54:15.692392696Z [inf]  
+2025-11-19T18:54:15.692397985Z [inf]  === Multi-Platform Refresh Summary ===
+2025-11-19T18:54:15.692402223Z [inf]  Total props fetched: 13380
+2025-11-19T18:54:15.692406526Z [inf]  Total props created: 0
+2025-11-19T18:54:15.692410334Z [inf]  Total errors: 6
+2025-11-19T18:54:15.692414285Z [inf]  ========================================
+2025-11-19T18:54:15.692418115Z [inf]  
+2025-11-19T18:54:15.692422057Z [err]  ❌ Prop refresh failed - all platforms returned errors
