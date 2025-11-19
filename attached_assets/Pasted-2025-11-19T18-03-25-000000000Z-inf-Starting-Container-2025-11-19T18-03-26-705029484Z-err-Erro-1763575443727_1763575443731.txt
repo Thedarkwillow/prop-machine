@@ -1,0 +1,210 @@
+2025-11-19T18:03:25.000000000Z [inf]  Starting Container
+2025-11-19T18:03:26.705029484Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:26.705042494Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:26.705051111Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:26.705060407Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:26.705063610Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:26.705070193Z [inf]  
+2025-11-19T18:03:26.705076557Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:26.705080535Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:26.705089863Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:26.705091048Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:26.705098585Z [inf]  
+2025-11-19T18:03:26.705105119Z [err]    requireStack: []
+2025-11-19T18:03:26.705106424Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:26.705114859Z [err]    throw err;
+2025-11-19T18:03:26.705119576Z [err]  }
+2025-11-19T18:03:26.705124506Z [err]    ^
+2025-11-19T18:03:26.705133545Z [err]  
+2025-11-19T18:03:26.705134749Z [err]  
+2025-11-19T18:03:26.705145210Z [err]  Node.js v18.20.5
+2025-11-19T18:03:27.112731243Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:27.158212271Z [inf]  
+2025-11-19T18:03:27.158219752Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:27.158226380Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:27.158233403Z [inf]  
+2025-11-19T18:03:27.197224135Z [err]  Node.js v18.20.5
+2025-11-19T18:03:27.197247415Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:27.197263179Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:27.197271490Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:27.197279079Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:27.197284667Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:27.197287782Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:27.197290678Z [err]    throw err;
+2025-11-19T18:03:27.197296440Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:27.197297589Z [err]    ^
+2025-11-19T18:03:27.197303946Z [err]    requireStack: []
+2025-11-19T18:03:27.197304396Z [err]  
+2025-11-19T18:03:27.197310026Z [err]  }
+2025-11-19T18:03:27.197317012Z [err]  
+2025-11-19T18:03:28.107049700Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:28.144665096Z [inf]  
+2025-11-19T18:03:28.144670734Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:28.144675863Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:28.144681511Z [inf]  
+2025-11-19T18:03:28.185098080Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:28.185106676Z [err]    throw err;
+2025-11-19T18:03:28.185113098Z [err]    ^
+2025-11-19T18:03:28.185117780Z [err]  
+2025-11-19T18:03:28.185123094Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:28.185128764Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:28.185132877Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:28.185136865Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:28.185140863Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:28.185144610Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:28.185148702Z [err]    requireStack: []
+2025-11-19T18:03:28.185152846Z [err]  }
+2025-11-19T18:03:28.185156688Z [err]  
+2025-11-19T18:03:28.185160867Z [err]  Node.js v18.20.5
+2025-11-19T18:03:29.197632242Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:29.236467556Z [inf]  
+2025-11-19T18:03:29.236475077Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:29.236481688Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:29.236487530Z [inf]  
+2025-11-19T18:03:29.288429803Z [err]  Node.js v18.20.5
+2025-11-19T18:03:29.288457458Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:29.288463107Z [err]    throw err;
+2025-11-19T18:03:29.288469077Z [err]    ^
+2025-11-19T18:03:29.288473787Z [err]  
+2025-11-19T18:03:29.288477874Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:29.288482199Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:29.288485896Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:29.288489866Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:29.288493957Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:29.288498007Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:29.288501788Z [err]    requireStack: []
+2025-11-19T18:03:29.288505453Z [err]  }
+2025-11-19T18:03:29.288509824Z [err]  
+2025-11-19T18:03:30.151971939Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:30.179954268Z [inf]  
+2025-11-19T18:03:30.179958750Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:30.179963507Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:30.179967281Z [inf]  
+2025-11-19T18:03:30.218469797Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:30.218478474Z [err]    throw err;
+2025-11-19T18:03:30.218483491Z [err]    ^
+2025-11-19T18:03:30.218488490Z [err]  
+2025-11-19T18:03:30.218493533Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:30.218498782Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:30.218503118Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:30.218507361Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:30.218511709Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:30.218517232Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:30.218521380Z [err]    requireStack: []
+2025-11-19T18:03:30.218525359Z [err]  }
+2025-11-19T18:03:30.218529899Z [err]  
+2025-11-19T18:03:30.218534408Z [err]  Node.js v18.20.5
+2025-11-19T18:03:31.045106515Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:31.082837708Z [inf]  
+2025-11-19T18:03:31.082848122Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:31.082854230Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:31.082859521Z [inf]  
+2025-11-19T18:03:31.113292161Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:31.113306670Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:31.113314359Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:31.113320780Z [err]    requireStack: []
+2025-11-19T18:03:31.113326599Z [err]  }
+2025-11-19T18:03:31.113334004Z [err]  
+2025-11-19T18:03:31.113342827Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:31.113344914Z [err]  Node.js v18.20.5
+2025-11-19T18:03:31.113351638Z [err]    throw err;
+2025-11-19T18:03:31.113357922Z [err]    ^
+2025-11-19T18:03:31.113363478Z [err]  
+2025-11-19T18:03:31.113368219Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:31.113372742Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:31.113377795Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:31.944396021Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:31.973303073Z [inf]  
+2025-11-19T18:03:31.973307519Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:31.973312447Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:31.973316817Z [inf]  
+2025-11-19T18:03:32.009457993Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:32.009472678Z [err]    throw err;
+2025-11-19T18:03:32.009480763Z [err]    ^
+2025-11-19T18:03:32.009492946Z [err]  
+2025-11-19T18:03:32.009512539Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:32.009520196Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:32.009527487Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:32.009533524Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:32.009540213Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:32.009549663Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:32.009556749Z [err]    requireStack: []
+2025-11-19T18:03:32.009562898Z [err]  }
+2025-11-19T18:03:32.009568300Z [err]  
+2025-11-19T18:03:32.009578746Z [err]  Node.js v18.20.5
+2025-11-19T18:03:32.811470499Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:32.846653767Z [inf]  
+2025-11-19T18:03:32.846660169Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:32.846666213Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:32.846671648Z [inf]  
+2025-11-19T18:03:32.886007128Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:32.886018775Z [err]    throw err;
+2025-11-19T18:03:32.886024708Z [err]    ^
+2025-11-19T18:03:32.886031401Z [err]  
+2025-11-19T18:03:32.886037076Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:32.886044550Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:32.886050124Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:32.886055560Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:32.886070507Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:32.886075868Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:32.886080977Z [err]    requireStack: []
+2025-11-19T18:03:32.886085959Z [err]  }
+2025-11-19T18:03:32.886091243Z [err]  
+2025-11-19T18:03:32.886098465Z [err]  Node.js v18.20.5
+2025-11-19T18:03:33.953800169Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:34.001364028Z [inf]  
+2025-11-19T18:03:34.001368629Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:34.001373454Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:34.001379568Z [inf]  
+2025-11-19T18:03:34.032691329Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:34.032697534Z [err]    throw err;
+2025-11-19T18:03:34.032703549Z [err]    ^
+2025-11-19T18:03:34.032709680Z [err]  
+2025-11-19T18:03:34.032715469Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:34.032721189Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:34.032727043Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:34.032732400Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:34.032738902Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:34.032744399Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:34.032752244Z [err]    requireStack: []
+2025-11-19T18:03:34.032758059Z [err]  }
+2025-11-19T18:03:34.032763308Z [err]  
+2025-11-19T18:03:34.032768842Z [err]  Node.js v18.20.5
+2025-11-19T18:03:35.038505909Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:35.073451060Z [inf]  
+2025-11-19T18:03:35.073457056Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:35.073463184Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:35.073469137Z [inf]  
+2025-11-19T18:03:35.113530594Z [err]  Node.js v18.20.5
+2025-11-19T18:03:35.113603597Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:35.113609495Z [err]    throw err;
+2025-11-19T18:03:35.113616647Z [err]    ^
+2025-11-19T18:03:35.113623704Z [err]  
+2025-11-19T18:03:35.113631454Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:35.113637482Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:35.113643241Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:35.113649471Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:35.113655168Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:35.113660978Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:35.113669251Z [err]    requireStack: []
+2025-11-19T18:03:35.113675617Z [err]  }
+2025-11-19T18:03:35.113681970Z [err]  
+2025-11-19T18:03:35.862257987Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:03:35.901003574Z [inf]  
+2025-11-19T18:03:35.901011533Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:03:35.901018140Z [inf]  > NODE_ENV=production node dist-server/index.js
+2025-11-19T18:03:35.901024816Z [inf]  
+2025-11-19T18:03:35.939027808Z [err]  node:internal/modules/cjs/loader:1143
+2025-11-19T18:03:35.939032095Z [err]    throw err;
+2025-11-19T18:03:35.939036309Z [err]    ^
+2025-11-19T18:03:35.939040939Z [err]  
+2025-11-19T18:03:35.939045754Z [err]  Error: Cannot find module '/app/dist-server/index.js'
+2025-11-19T18:03:35.939049716Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-11-19T18:03:35.939053855Z [err]      at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-11-19T18:03:35.939057427Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-11-19T18:03:35.939062620Z [err]      at node:internal/main/run_main_module:28:49 {
+2025-11-19T18:03:35.939066527Z [err]    code: 'MODULE_NOT_FOUND',
+2025-11-19T18:03:35.939070028Z [err]    requireStack: []
+2025-11-19T18:03:35.939073676Z [err]  }
+2025-11-19T18:03:35.939077866Z [err]  
+2025-11-19T18:03:35.939081721Z [err]  Node.js v18.20.5
