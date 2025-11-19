@@ -146,9 +146,9 @@ export default function Dashboard() {
     );
   }
 
-  const user = dashboardData?.user;
-  const stats = dashboardData?.stats || {};
-  const pendingSlips = dashboardData?.pendingSlips || [];
+  const user = (dashboardData as any)?.user;
+  const stats = (dashboardData as any)?.stats || {};
+  const pendingSlips = (dashboardData as any)?.pendingSlips || [];
   const week1Progress = { betsPlaced: stats.totalBets || 0, targetBets: 20 };
 
   // Transform performance history for charts
@@ -361,15 +361,16 @@ export default function Dashboard() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <PlayerSearchDropdown
-                    onPlayerSelect={(player) => {
-                      setSearchQuery(player.displayName);
-                      toast({
-                        title: "Player selected",
-                        description: `${player.displayName} - ${player.team.name}`,
-                      });
-                    }}
-                  />
+                  <div className="relative flex-1 max-w-xs">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search player..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9"
+                      data-testid="input-search-player"
+                    />
+                  </div>
                 </div>
               </div>
               {propsLoading ? (
