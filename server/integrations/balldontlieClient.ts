@@ -112,6 +112,8 @@ interface PlayersResponse {
 }
 
 export class BalldontlieClient extends IntegrationClient {
+  private apiKey: string;
+
   constructor() {
     super(
       'https://api.balldontlie.io/v1',
@@ -123,11 +125,17 @@ export class BalldontlieClient extends IntegrationClient {
       },
       { ttl: 300, useETag: true, useLastModified: true }
     );
+    this.apiKey = process.env.BALLDONTLIE_API_KEY || "";
+  }
+
+  private getHeaders(): Record<string, string> | undefined {
+    return this.apiKey ? { 'Authorization': this.apiKey } : undefined;
   }
 
   async getPlayerStats(playerId: number, season: number): Promise<PlayerStatsResponse> {
     const response = await this.get<PlayerStatsResponse>(
-      `/stats?player_ids[]=${playerId}&seasons[]=${season}&per_page=100`
+      `/stats?player_ids[]=${playerId}&seasons[]=${season}&per_page=100`,
+      { headers: this.getHeaders() }
     );
     return response.data;
   }
@@ -135,7 +143,8 @@ export class BalldontlieClient extends IntegrationClient {
   async getRecentPlayerStats(playerId: number, games: number = 10): Promise<PlayerStatsResponse> {
     const currentSeason = new Date().getMonth() < 6 ? new Date().getFullYear() - 1 : new Date().getFullYear();
     const response = await this.get<PlayerStatsResponse>(
-      `/stats?player_ids[]=${playerId}&seasons[]=${currentSeason}&per_page=${games}`
+      `/stats?player_ids[]=${playerId}&seasons[]=${currentSeason}&per_page=${games}`,
+      { headers: this.getHeaders() }
     );
     return response.data;
   }
@@ -143,32 +152,39 @@ export class BalldontlieClient extends IntegrationClient {
   async getTodaysGames(): Promise<GamesResponse> {
     const today = new Date().toISOString().split('T')[0];
     const response = await this.get<GamesResponse>(
-      `/games?dates[]=${today}&per_page=100`
+      `/games?dates[]=${today}&per_page=100`,
+      { headers: this.getHeaders() }
     );
     return response.data;
   }
 
   async getGamesByDate(date: string): Promise<GamesResponse> {
     const response = await this.get<GamesResponse>(
-      `/games?dates[]=${date}&per_page=100`
+      `/games?dates[]=${date}&per_page=100`,
+      { headers: this.getHeaders() }
     );
     return response.data;
   }
 
   async getGame(gameId: number): Promise<Game> {
-    const response = await this.get<Game>(`/games/${gameId}`);
+    const response = await this.get<Game>(`/games/${gameId}`, {
+      headers: this.getHeaders()
+    });
     return response.data;
   }
 
   async searchPlayers(playerName: string): Promise<PlayersResponse> {
     const response = await this.get<PlayersResponse>(
-      `/players?search=${encodeURIComponent(playerName)}&per_page=25`
+      `/players?search=${encodeURIComponent(playerName)}&per_page=25`,
+      { headers: this.getHeaders() }
     );
     return response.data;
   }
 
   async getPlayer(playerId: number): Promise<Player> {
-    const response = await this.get<Player>(`/players/${playerId}`);
+    const response = await this.get<Player>(`/players/${playerId}`, {
+      headers: this.getHeaders()
+    });
     return response.data;
   }
 
