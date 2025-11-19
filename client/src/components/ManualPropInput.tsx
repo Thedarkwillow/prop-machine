@@ -291,11 +291,11 @@ export default function ManualPropInput() {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">EV:</span>
                       <span className={`font-mono font-bold ${
-                        result.ev >= 5 ? 'text-green-600 dark:text-green-400' : 
-                        result.ev >= 0 ? 'text-yellow-600 dark:text-yellow-400' : 
+                        parseFloat(result.ev) >= 5 ? 'text-green-600 dark:text-green-400' : 
+                        parseFloat(result.ev) >= 0 ? 'text-yellow-600 dark:text-yellow-400' : 
                         'text-red-600 dark:text-red-400'
                       }`}>
-                        {result.ev >= 0 ? '+' : ''}{result.ev.toFixed(1)}%
+                        {parseFloat(result.ev) >= 0 ? '+' : ''}{parseFloat(result.ev).toFixed(1)}%
                       </span>
                     </div>
                     <div className="flex justify-between">
