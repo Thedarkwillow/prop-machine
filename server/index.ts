@@ -66,6 +66,7 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Listening on 0.0.0.0:${PORT}`);
   
   // Start automatic prop refresh scheduler (every 15 minutes)
   // Can be disabled with DISABLE_PROP_SCHEDULER=true
@@ -74,6 +75,26 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   } else {
     propSchedulerService.start(15);
   }
+});
+
+// Catch server errors
+server.on('error', (err: any) => {
+  console.error('❌ Server error:', err);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use`);
+  }
+  process.exit(1);
+});
+
+// Catch unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// Catch uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  process.exit(1);
 });
 
 // Development: setup Vite dev server AFTER server starts
