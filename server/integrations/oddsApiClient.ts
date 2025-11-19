@@ -67,12 +67,71 @@ class OddsApiClient extends IntegrationClient {
     return { data: response?.data || [] };
   }
 
+  async getUpcomingEvents(sport: string = "basketball_nba"): Promise<Array<{ id: string; home_team: string; away_team: string; commence_time: string }>> {
+    if (!this.apiKey) {
+      console.warn("No ODDS_API_KEY configured");
+      return [];
+    }
+
+    const params = new URLSearchParams({
+      apiKey: this.apiKey,
+    });
+
+    const response = await this.get<Array<{ id: string; home_team: string; away_team: string; commence_time: string }>>(
+      `/sports/${sport}/events?${params.toString()}`
+    );
+
+    return response?.data || [];
+  }
+
   async getPlayerProps(sport: string = "basketball_nba", eventId?: string): Promise<OddsApiResponse> {
     if (!this.apiKey) {
       console.warn("No ODDS_API_KEY configured");
       return { data: [] };
     }
 
+    // If no eventId provided, get all upcoming events and fetch props for each
+    if (!eventId) {
+      const events = await this.getUpcomingEvents(sport);
+      
+      if (events.length === 0) {
+        console.log(`No upcoming events found for ${sport}`);
+        return { data: [] };
+      }
+
+      console.log(`Found ${events.length} upcoming ${sport} events, fetching player props...`);
+      
+      const allGames: OddsApiGame[] = [];
+      
+      // Fetch props for each event (limit to first 10 to avoid excessive API calls)
+      const eventsToFetch = events.slice(0, 10);
+      
+      for (const event of eventsToFetch) {
+        try {
+          const params = new URLSearchParams({
+            apiKey: this.apiKey,
+            regions: "us",
+            markets: "player_points,player_rebounds,player_assists,player_threes,player_blocks,player_steals",
+            oddsFormat: "american",
+          });
+
+          const response = await this.get<OddsApiGame>(
+            `/sports/${sport}/events/${event.id}/odds?${params.toString()}`
+          );
+
+          if (response?.data) {
+            allGames.push(response.data);
+          }
+        } catch (error) {
+          console.error(`Error fetching props for event ${event.id}:`, error);
+          // Continue with other events even if one fails
+        }
+      }
+
+      return { data: allGames };
+    }
+
+    // Single event request
     const params = new URLSearchParams({
       apiKey: this.apiKey,
       regions: "us",
@@ -80,16 +139,11 @@ class OddsApiClient extends IntegrationClient {
       oddsFormat: "american",
     });
 
-    let endpoint = `/sports/${sport}/odds`;
-    if (eventId) {
-      endpoint = `/sports/${sport}/events/${eventId}/odds`;
-    }
-
-    const response = await this.get<OddsApiGame[]>(
-      `${endpoint}?${params.toString()}`
+    const response = await this.get<OddsApiGame>(
+      `/sports/${sport}/events/${eventId}/odds?${params.toString()}`
     );
 
-    return { data: response?.data || [] };
+    return { data: response?.data ? [response.data] : [] };
   }
 
   async getSportsList(): Promise<Array<{ key: string; title: string; group: string }>> {
