@@ -4,7 +4,6 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 
-import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
 
 import router from "./routes.js";
@@ -25,15 +24,11 @@ app.use(express.json());
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
-if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
-  console.log("🔐 Using Google OAuth (Railway production)");
-  setupGoogleAuth(app);
-} else {
-  console.log("🔐 Using Replit Auth (default)");
-  setupAuth(app);
-}
+// ALWAYS use Google Auth now
+console.log("🔐 Using Google OAuth");
+setupGoogleAuth(app);
 
-/* Make req.user available (required for notifications) */
+/* Make req.user available */
 app.use((req: any, _res, next) => {
   if (req.session?.user) req.user = req.session.user;
   next();
@@ -48,7 +43,6 @@ app.use("/api", router);
 
 /* ------------------------- FIXED LOGIN ROUTE ------------------------- */
 app.get("/api/login", (_req, res) => {
-  // CORRECT REDIRECT — this route actually exists
   res.redirect("/auth/google");
 });
 
@@ -67,9 +61,8 @@ if (process.env.NODE_ENV === "production") {
 
   app.use(express.static(distPath));
 
-  // IMPORTANT: OAuth callback MUST be matched BEFORE fallback
+  // OAuth routes MUST be checked before SPA fallback
   app.get("*", (req, res) => {
-    // Let OAuth callback & API routes through
     if (req.path.startsWith("/auth/") || req.path.startsWith("/api/")) {
       return res.status(404).json({ error: "Not found" });
     }
@@ -93,7 +86,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
 
   if (process.env.DISABLE_PROP_SCHEDULER === "true") {
-    console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
+    console.log("⏸️ Scheduler disabled");
   } else {
     propSchedulerService.start(15);
   }
