@@ -23,7 +23,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ------------------- AUTH --------------------
+/* ------------------------- AUTH SETUP ------------------------- */
+
 if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
   console.log("🔐 Using Google OAuth (Railway production)");
   setupGoogleAuth(app);
@@ -32,29 +33,41 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
   setupAuth(app);
 }
 
-// Restore user from session
+/* Make req.user available (required for notifications) */
 app.use((req: any, _res, next) => {
   if (req.session?.user) req.user = req.session.user;
   next();
 });
 
-// ------------------- API ROUTES --------------------
+/* ------------------------- API ROUTES ------------------------- */
+
 app.use("/api/admin", adminRoutes());
 app.use("/api/analytics", createAnalyticsRoutes(storage));
 app.use("/api/notifications", createNotificationRoutes(storage));
 app.use("/api", router);
 
-// ------------------- STATIC BUILD (Railway) --------------------
+/* ------------------------- FIX: LOGIN ROUTE ------------------------- */
+/** 
+ * This makes `/api/login` work again.
+ * It cleanly redirects to Google OAuth in production.
+ */
+app.get("/api/login", (_req, res) => {
+  res.redirect("/api/auth/google");
+});
+
+/* ------------------------- PRODUCTION STATIC FILES ------------------------- */
+
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
     console.error(`❌ Build directory not found: ${distPath}`);
-    console.error("Make sure to run:  npm run build");
+    console.error("Run `npm run build` before deploying.");
     process.exit(1);
   }
 
   console.log(`📦 Serving static files from: ${distPath}`);
+
   app.use(express.static(distPath));
 
   // SPA fallback
@@ -63,15 +76,15 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// ------------------- DATABASE --------------------
-seedDatabase().catch((error) => {
-  console.error("❌ Error seeding database:", error);
+/* ------------------------- DATABASE SEED ------------------------- */
+
+seedDatabase().catch((err) => {
+  console.error("❌ Error seeding database:", err);
 });
 
-// ------------------- SERVER START --------------------
+/* ------------------------- SERVER START ------------------------- */
 
-// ❗ RAILWAY CRITICAL FIX — must use their assigned PORT
-const PORT = Number(process.env.PORT) || 8080;
+const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
@@ -85,25 +98,27 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   }
 });
 
-// ------------------- ERROR HANDLERS --------------------
+/* ------------------------- ERRORS ------------------------- */
+
 server.on("error", (err: any) => {
   console.error("❌ Server error:", err);
   if (err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} already in use`);
+    console.error(`Port ${PORT} is already in use`);
   }
   process.exit(1);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("❌ Unhandled Rejection:", reason);
+  console.error("❌ Unhandled Rejection:", promise, "reason:", reason);
 });
 
-process.on("uncaughtException", (error) => {
-  console.error("❌ Uncaught Exception:", error);
+process.on("uncaughtException", (err) => {
+  console.error("❌ Uncaught Exception:", err);
   process.exit(1);
 });
 
-// ------------------- DEV ONLY (Vite) --------------------
+/* ------------------------- DEV: VITE ------------------------- */
+
 if (process.env.NODE_ENV !== "production") {
   const { setupVite } = await import("./vite.js");
   setupVite(app, server);
