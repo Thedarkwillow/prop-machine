@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
+import fs from "fs";
 import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
 import router from "./routes.js";
@@ -8,7 +10,7 @@ import { adminRoutes } from "./adminRoutes.js";
 import { createAnalyticsRoutes } from "./analyticsRoutes.js";
 import { createNotificationRoutes } from "./notificationRoutes.js";
 import { storage } from "./storage.js";
-import { setupVite, log } from "./vite.js";
+import { log } from "./vite.js";
 import { seedDatabase } from "./seed.js";
 import { propSchedulerService } from "./services/propSchedulerService.js";
 
@@ -40,6 +42,23 @@ app.use("/api/analytics", createAnalyticsRoutes(storage));
 app.use("/api/notifications", createNotificationRoutes(storage));
 app.use("/api", router);
 
+// Production: serve static files BEFORE starting server
+if (process.env.NODE_ENV === "production") {
+  const distPath = path.join(process.cwd(), "dist", "public");
+  
+  if (!fs.existsSync(distPath)) {
+    console.error(`❌ Build directory not found: ${distPath}`);
+    console.error("Make sure to run 'npm run build' before starting in production mode");
+    process.exit(1);
+  }
+  
+  log(`📦 Serving static files from: ${distPath}`);
+  app.use(express.static(distPath));
+  app.use("*", (_req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
 seedDatabase().catch((error) => {
   console.error("Error seeding database:", error);
 });
@@ -51,4 +70,8 @@ const server = app.listen(5000, "0.0.0.0", () => {
   propSchedulerService.start(15);
 });
 
-setupVite(app, server);
+// Development: setup Vite dev server AFTER server starts
+if (process.env.NODE_ENV !== "production") {
+  const { setupVite } = await import("./vite.js");
+  setupVite(app, server);
+}

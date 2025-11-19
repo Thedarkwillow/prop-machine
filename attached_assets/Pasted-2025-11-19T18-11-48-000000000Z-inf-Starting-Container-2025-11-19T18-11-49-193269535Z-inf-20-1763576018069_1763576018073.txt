@@ -1,0 +1,254 @@
+2025-11-19T18:11:48.000000000Z [inf]  Starting Container
+2025-11-19T18:11:49.193269535Z [inf]  
+2025-11-19T18:11:49.193278760Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:11:49.193285271Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:11:49.193288468Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:11:49.193295125Z [inf]  
+2025-11-19T18:11:51.318538027Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:11:51.318538335Z [err]  Node.js v18.20.5
+2025-11-19T18:11:51.318553603Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:11:51.318570078Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:11:51.318578720Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:11:51.318587480Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:11:51.318595579Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:11:51.318602437Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:11:51.318608439Z [err]  node:internal/errors:496
+2025-11-19T18:11:51.318613946Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:11:51.318620977Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:11:51.318628062Z [err]  }
+2025-11-19T18:11:51.318633958Z [err]      ^
+2025-11-19T18:11:51.318637707Z [err]  
+2025-11-19T18:11:51.318644422Z [err]  
+2025-11-19T18:11:51.318650881Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:11:51.318656434Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:11:51.318663034Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:11:54.292645673Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:11:54.292652915Z [inf]  
+2025-11-19T18:11:54.292659977Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:11:54.292666653Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:11:54.292673188Z [inf]  
+2025-11-19T18:11:55.603357632Z [err]  node:internal/errors:496
+2025-11-19T18:11:55.603370440Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:11:55.603378061Z [err]      ^
+2025-11-19T18:11:55.603394428Z [err]  
+2025-11-19T18:11:55.603401890Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:11:55.603408579Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:11:55.603414160Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:11:55.603419993Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:11:55.603425405Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:11:55.603431611Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:11:55.603439398Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:11:55.603445291Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:11:55.603453163Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:11:55.603458382Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:11:55.603463375Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:11:55.603468483Z [err]  }
+2025-11-19T18:11:55.603473622Z [err]  
+2025-11-19T18:11:55.603481257Z [err]  Node.js v18.20.5
+2025-11-19T18:11:57.356420405Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:11:57.356426921Z [inf]  
+2025-11-19T18:11:57.356434527Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:11:57.356442391Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:11:57.356449366Z [inf]  
+2025-11-19T18:11:58.781639728Z [err]  node:internal/errors:496
+2025-11-19T18:11:58.781647767Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:11:58.781654495Z [err]      ^
+2025-11-19T18:11:58.781661235Z [err]  
+2025-11-19T18:11:58.781675366Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:11:58.781682880Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:11:58.781691307Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:11:58.781698735Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:11:58.781706263Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:11:58.781713065Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:11:58.781719346Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:11:58.781726261Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:11:58.781732764Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:11:58.781738890Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:11:58.781745622Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:11:58.781753516Z [err]  }
+2025-11-19T18:11:58.781765565Z [err]  
+2025-11-19T18:11:58.781772276Z [err]  Node.js v18.20.5
+2025-11-19T18:12:00.589421694Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:00.589431888Z [inf]  
+2025-11-19T18:12:00.589439852Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:00.589447197Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:00.589454228Z [inf]  
+2025-11-19T18:12:02.577542984Z [err]  node:internal/errors:496
+2025-11-19T18:12:02.577546626Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:02.577550465Z [err]      ^
+2025-11-19T18:12:02.577557511Z [err]  
+2025-11-19T18:12:02.577563112Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:02.577567056Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:02.577571039Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:02.577577099Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:02.577581186Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:02.577584871Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:02.577588767Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:02.577592190Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:02.577595774Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:02.577599641Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:02.577604895Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:02.577608460Z [err]  }
+2025-11-19T18:12:02.577612978Z [err]  
+2025-11-19T18:12:02.577616701Z [err]  Node.js v18.20.5
+2025-11-19T18:12:03.794108648Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:03.812413037Z [inf]  
+2025-11-19T18:12:03.812421629Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:03.812427649Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:03.812433463Z [inf]  
+2025-11-19T18:12:05.751639716Z [err]  node:internal/errors:496
+2025-11-19T18:12:05.751647085Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:05.751650959Z [err]      ^
+2025-11-19T18:12:05.751654728Z [err]  
+2025-11-19T18:12:05.751658853Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:05.751662720Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:05.751666471Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:05.751670177Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:05.751673725Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:05.751677507Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:05.751681035Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:05.751684442Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:05.751688072Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:05.751692083Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:05.751695664Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:05.751699132Z [err]  }
+2025-11-19T18:12:05.751702569Z [err]  
+2025-11-19T18:12:05.751707390Z [err]  Node.js v18.20.5
+2025-11-19T18:12:06.917053299Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:06.917065168Z [inf]  
+2025-11-19T18:12:06.917071250Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:06.917077063Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:06.917082577Z [inf]  
+2025-11-19T18:12:08.792941757Z [err]  node:internal/errors:496
+2025-11-19T18:12:08.792948401Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:08.792953194Z [err]      ^
+2025-11-19T18:12:08.792957995Z [err]  
+2025-11-19T18:12:08.792969623Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:08.792974233Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:08.792978022Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:08.792982078Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:08.792985896Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:08.792991083Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:08.792995218Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:08.793001552Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:08.793006394Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:08.793010615Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:08.793014385Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:08.793018714Z [err]  }
+2025-11-19T18:12:08.793022836Z [err]  
+2025-11-19T18:12:08.793027185Z [err]  Node.js v18.20.5
+2025-11-19T18:12:16.802151097Z [inf]  
+2025-11-19T18:12:16.802376797Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:16.802384395Z [inf]  
+2025-11-19T18:12:16.802391746Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:16.802400536Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:18.766837354Z [err]  node:internal/errors:496
+2025-11-19T18:12:18.766842652Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:18.766848468Z [err]      ^
+2025-11-19T18:12:18.766854504Z [err]  
+2025-11-19T18:12:18.766859781Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:18.766864849Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:18.766869826Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:18.766874588Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:18.766922444Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:18.766929266Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:18.766934578Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:18.766940041Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:18.766945560Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:18.766950959Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:18.766956241Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:18.766961285Z [err]  }
+2025-11-19T18:12:18.766968265Z [err]  
+2025-11-19T18:12:18.766973788Z [err]  Node.js v18.20.5
+2025-11-19T18:12:19.799193528Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:19.799197280Z [inf]  
+2025-11-19T18:12:19.799202578Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:19.799206621Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:19.799210353Z [inf]  
+2025-11-19T18:12:21.018080125Z [err]  node:internal/errors:496
+2025-11-19T18:12:21.018095761Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:21.018105215Z [err]      ^
+2025-11-19T18:12:21.018118934Z [err]  
+2025-11-19T18:12:21.018127547Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:21.018135720Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:21.018142655Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:21.018164202Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:21.018177188Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:21.018186203Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:21.018194920Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:21.018203920Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:21.018211926Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:21.018220522Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:21.018228094Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:21.018236058Z [err]  }
+2025-11-19T18:12:21.018245147Z [err]  
+2025-11-19T18:12:21.018253598Z [err]  Node.js v18.20.5
+2025-11-19T18:12:22.119523976Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:22.121197675Z [inf]  
+2025-11-19T18:12:22.121208120Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:22.121215156Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:22.121222084Z [inf]  
+2025-11-19T18:12:24.249132929Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:24.249143369Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:24.249149095Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:24.249155181Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:24.249159986Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:24.249164634Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:24.249168891Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:24.249174442Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:24.249178463Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:24.249183563Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:24.249187726Z [err]  }
+2025-11-19T18:12:24.249192266Z [err]  
+2025-11-19T18:12:24.249196496Z [err]  Node.js v18.20.5
+2025-11-19T18:12:24.249217361Z [err]  node:internal/errors:496
+2025-11-19T18:12:24.249224085Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:24.249228420Z [err]      ^
+2025-11-19T18:12:24.249232766Z [err]  
+2025-11-19T18:12:24.249237146Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:25.863895995Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:25.863899689Z [inf]  
+2025-11-19T18:12:25.863903456Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:25.863907149Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:25.863910807Z [inf]  
+2025-11-19T18:12:27.362848938Z [err]  node:internal/errors:496
+2025-11-19T18:12:27.362851042Z [err]  
+2025-11-19T18:12:27.362857046Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:27.362862636Z [err]  Node.js v18.20.5
+2025-11-19T18:12:27.362862956Z [err]      ^
+2025-11-19T18:12:27.362868097Z [err]  
+2025-11-19T18:12:27.362875012Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:27.362881106Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:27.362885473Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:27.362891182Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:27.362895201Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:27.362899218Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:27.362903412Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:27.362907732Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:27.362911519Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:27.362915384Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:27.362921426Z [err]    code: 'ERR_INVALID_ARG_TYPE'
+2025-11-19T18:12:27.362925326Z [err]  }
+2025-11-19T18:12:30.082543896Z [inf]  
+2025-11-19T18:12:30.082588908Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-19T18:12:30.082595811Z [inf]  
+2025-11-19T18:12:30.082660092Z [inf]  > prop-machine@1.0.0 start
+2025-11-19T18:12:30.082670771Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-19T18:12:31.947607335Z [err]  }
+2025-11-19T18:12:31.947618493Z [err]  
+2025-11-19T18:12:31.947626589Z [err]  Node.js v18.20.5
+2025-11-19T18:12:31.947627497Z [err]  node:internal/errors:496
+2025-11-19T18:12:31.947645832Z [err]      ErrorCaptureStackTrace(err);
+2025-11-19T18:12:31.947653319Z [err]      ^
+2025-11-19T18:12:31.947660493Z [err]  
+2025-11-19T18:12:31.947666422Z [err]  TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+2025-11-19T18:12:31.947676352Z [err]      at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+2025-11-19T18:12:31.947683442Z [err]      at new NodeError (node:internal/errors:405:5)
+2025-11-19T18:12:31.947691225Z [err]      at validateString (node:internal/validators:162:11)
+2025-11-19T18:12:31.947697234Z [err]      at Object.resolve (node:path:1097:7)
+2025-11-19T18:12:31.947706561Z [err]      at <anonymous> (/app/vite.config.ts:24:17)
+2025-11-19T18:12:31.947715265Z [err]      at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+2025-11-19T18:12:31.947721788Z [err]      at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+2025-11-19T18:12:31.947737797Z [err]      at async loadESM (node:internal/process/esm_loader:34:7)
+2025-11-19T18:12:31.947744038Z [err]      at async handleMainPromise (node:internal/modules/run_main:106:12) {
+2025-11-19T18:12:31.947751115Z [err]    code: 'ERR_INVALID_ARG_TYPE'
