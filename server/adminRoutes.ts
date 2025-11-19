@@ -5,6 +5,7 @@ import { modelScorer } from "./ml/modelScorer";
 import { storage } from "./storage";
 import { propFetcherService } from "./services/propFetcherService";
 import { propRefreshService } from "./services/propRefreshService";
+import { propSchedulerService } from "./services/propSchedulerService";
 import { refreshProps } from "./seed";
 
 // Admin middleware - require authentication AND admin role
@@ -42,10 +43,71 @@ async function requireAdmin(req: any, res: any, next: any) {
   }
 }
 
+// Require authentication (but not admin) for certain endpoints
+async function requireAuth(req: any, res: any, next: any) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.status(401).json({
+      success: false,
+      error: "Authentication required",
+    });
+  }
+  next();
+}
+
 export function adminRoutes(): Router {
   const router = Router();
   
-  // Apply admin role check to ALL admin routes
+  // Get prop scheduler status (public - read-only status info)
+  router.get("/props/scheduler/status", async (req, res) => {
+    try {
+      const status = propSchedulerService.getStatus();
+      res.json(status);
+    } catch (error) {
+      const err = error as Error;
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Multi-platform prop refresh (requires authentication, not admin)
+  router.post("/props/refresh", requireAuth, async (req, res) => {
+    try {
+      const { sports } = req.body;
+      const targetSports = sports || ['NBA', 'NFL', 'NHL'];
+      
+      console.log(`Starting multi-platform prop refresh for: ${targetSports.join(', ')}`);
+      const result = await propRefreshService.refreshAllPlatforms(targetSports);
+      
+      res.json({
+        success: result.success,
+        summary: {
+          totalPropsFetched: result.totalPropsFetched,
+          totalPropsCreated: result.totalPropsCreated,
+          totalErrors: result.totalErrors,
+        },
+        results: result.results.map(r => ({
+          platform: r.platform,
+          sport: r.sport,
+          propsFetched: r.propsFetched,
+          propsCreated: r.propsCreated,
+          propsSkipped: r.propsSkipped,
+          errorCount: r.errors.length,
+          errors: r.errors.slice(0, 5),
+        })),
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Prop refresh error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+  
+  // Apply admin role check to all routes below this point
   router.use(requireAdmin);
 
   // Manual settlement trigger
@@ -126,42 +188,6 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error("Sample props refresh error:", error);
-      res.status(500).json({
-        success: false,
-        error: err.message,
-      });
-    }
-  });
-
-  // Multi-platform prop refresh from PrizePicks and Underdog
-  router.post("/props/refresh", async (req, res) => {
-    try {
-      const { sports } = req.body;
-      const targetSports = sports || ['NBA', 'NFL', 'NHL'];
-      
-      console.log(`Starting multi-platform prop refresh for: ${targetSports.join(', ')}`);
-      const result = await propRefreshService.refreshAllPlatforms(targetSports);
-      
-      res.json({
-        success: result.success,
-        summary: {
-          totalPropsFetched: result.totalPropsFetched,
-          totalPropsCreated: result.totalPropsCreated,
-          totalErrors: result.totalErrors,
-        },
-        results: result.results.map(r => ({
-          platform: r.platform,
-          sport: r.sport,
-          propsFetched: r.propsFetched,
-          propsCreated: r.propsCreated,
-          propsSkipped: r.propsSkipped,
-          errorCount: r.errors.length,
-          errors: r.errors.slice(0, 5),
-        })),
-      });
-    } catch (error) {
-      const err = error as Error;
-      console.error("Prop refresh error:", error);
       res.status(500).json({
         success: false,
         error: err.message,

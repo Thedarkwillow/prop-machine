@@ -73,7 +73,10 @@ export default function Dashboard() {
       return await response.json();
     },
     onSuccess: (data: any) => {
+      // Invalidate both general and sport-specific prop queries
       queryClient.invalidateQueries({ queryKey: ['/api/props'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/props', selectedSport] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/props/scheduler/status'] });
       toast({
         title: "Props refreshed successfully",
         description: `Fetched ${data.summary.totalPropsFetched} props, created ${data.summary.totalPropsCreated} new props`,
@@ -91,6 +94,16 @@ export default function Dashboard() {
   // Fetch performance history (uses authenticated session user)
   const { data: performanceHistory = [], isLoading: perfLoading, isError: perfError } = useQuery({
     queryKey: ['/api/performance/history'],
+  });
+
+  // Fetch scheduler status for last updated timestamp
+  const { data: schedulerStatus, isError: schedulerError } = useQuery({
+    queryKey: ['/api/admin/props/scheduler/status'],
+    refetchInterval: 60000, // Refresh every minute
+    retry: false, // Don't retry on 401/403 errors
+    meta: {
+      errorMessage: false, // Don't show error toast for auth failures
+    },
   });
 
   // Show error toasts
@@ -321,12 +334,33 @@ export default function Dashboard() {
             <div>
               <div className="flex flex-col gap-4 mb-4">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h2 className="text-2xl font-bold">Live Props Feed</h2>
+                  <div className="flex flex-col">
+                    <h2 className="text-2xl font-bold">Live Props Feed</h2>
+                    {schedulerStatus && (schedulerStatus as any).lastSuccessfulRefresh && (
+                      <p className="text-sm text-muted-foreground mt-1" data-testid="text-last-updated">
+                        Last updated: {new Date((schedulerStatus as any).lastSuccessfulRefresh).toLocaleString()}
+                        {(schedulerStatus as any).nextRefresh && (
+                          <span className="ml-2">
+                            • Next: {new Date((schedulerStatus as any).nextRefresh).toLocaleTimeString()}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                    {schedulerStatus && (schedulerStatus as any).lastError && (
+                      <p className="text-sm text-destructive mt-1" data-testid="text-refresh-error">
+                        ⚠️ Last refresh failed: {(schedulerStatus as any).lastError}
+                      </p>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
                       size="default"
-                      onClick={() => refreshPropsMutation.mutate()}
+                      onClick={() => {
+                        if (!refreshPropsMutation.isPending) {
+                          refreshPropsMutation.mutate();
+                        }
+                      }}
                       disabled={refreshPropsMutation.isPending}
                       data-testid="button-refresh-props"
                     >
