@@ -299,38 +299,6 @@ router.get("/line-movements/recent", async (req, res) => {
   }
 });
 
-// ==================== NOTIFICATION PREFERENCES ROUTES ====================
-// Note: Auth temporarily removed until database-backed preferences are implemented
-// Currently returns default values for all users
-router.get("/notifications/preferences", async (req, res) => {
-  try {
-    // Return default notification preferences
-    // TODO: Implement database-backed preferences using notificationPreferences table
-    res.json({
-      emailEnabled: true,
-      newPropsEnabled: true,
-      highConfidenceOnly: false,
-      minConfidence: 70,
-      sports: ["NHL", "NBA", "NFL", "MLB"],
-      platforms: ["PrizePicks", "Underdog"],
-    });
-  } catch (error) {
-    console.error("Error fetching notification preferences:", error);
-    res.status(500).json({ error: "Failed to fetch notification preferences" });
-  }
-});
-
-router.patch("/notifications/preferences", async (req, res) => {
-  try {
-    // For now, just acknowledge the update
-    // TODO: Store preferences in database using notificationPreferences table
-    res.json({ success: true, preferences: req.body });
-  } catch (error) {
-    console.error("Error updating notification preferences:", error);
-    res.status(500).json({ error: "Failed to update notification preferences" });
-  }
-});
-
 // ==================== SCOREBOARD ROUTES ====================
 router.get("/scoreboard", async (req, res) => {
   try {

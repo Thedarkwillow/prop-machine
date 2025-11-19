@@ -37,9 +37,12 @@ export function createNotificationRoutes(storage: IStorage): Router {
     }
 
     try {
+      // Validate request body using Zod schema
+      const validatedData = updateNotificationPreferencesSchema.parse(req.body);
+      
       // Acknowledge the update (authenticated users only)
       // TODO: Store preferences in database per-user using notificationPreferences table
-      res.json({ success: true, preferences: req.body });
+      res.json({ success: true, preferences: validatedData });
     } catch (error: any) {
       if (error.name === 'ZodError') {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });
