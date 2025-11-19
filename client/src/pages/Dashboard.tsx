@@ -6,6 +6,7 @@ import PropsTable from "@/components/PropsTable";
 import Week1Progress from "@/components/Week1Progress";
 import PerformanceChart from "@/components/PerformanceChart";
 import ManualPropInput from "@/components/ManualPropInput";
+import { PlayerSearchDropdown } from "@/components/PlayerSearchDropdown";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -323,16 +324,15 @@ export default function Dashboard() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search players..."
-                      className="pl-10 w-64"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      data-testid="input-search"
-                    />
-                  </div>
+                  <PlayerSearchDropdown
+                    onPlayerSelect={(player) => {
+                      setSearchQuery(player.displayName);
+                      toast({
+                        title: "Player selected",
+                        description: `${player.displayName} - ${player.team.name}`,
+                      });
+                    }}
+                  />
                 </div>
               </div>
               {propsLoading ? (

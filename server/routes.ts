@@ -311,4 +311,45 @@ router.get("/scoreboard", async (req, res) => {
   }
 });
 
+// ==================== PLAYER SEARCH ROUTES ====================
+router.get("/players/search", async (req, res) => {
+  try {
+    const { search, sport } = req.query;
+    
+    if (!search || typeof search !== 'string' || search.length < 2) {
+      return res.json([]);
+    }
+
+    const { espnPlayerClient } = await import("./integrations/espnPlayerClient");
+    const selectedSport = sport && typeof sport === 'string' ? sport : "All";
+    
+    let results: any[] = [];
+    
+    if (selectedSport === "All" || selectedSport === "NBA") {
+      // NBA search would be added here when available
+      // For now, skip NBA
+    }
+    
+    if (selectedSport === "All" || selectedSport === "NHL") {
+      const nhlPlayers = await espnPlayerClient.searchNHLPlayers(search);
+      results.push(...nhlPlayers.map((p: any) => ({ ...p, sport: "NHL" })));
+    }
+    
+    if (selectedSport === "All" || selectedSport === "NFL") {
+      const nflPlayers = await espnPlayerClient.searchNFLPlayers(search);
+      results.push(...nflPlayers.map((p: any) => ({ ...p, sport: "NFL" })));
+    }
+    
+    if (selectedSport === "All" || selectedSport === "MLB") {
+      // MLB search would be added here when available
+      // For now, skip MLB
+    }
+    
+    res.json(results.slice(0, 20));
+  } catch (error) {
+    console.error("Error searching players:", error);
+    res.status(500).json({ error: "Failed to search players" });
+  }
+});
+
 export default router;
