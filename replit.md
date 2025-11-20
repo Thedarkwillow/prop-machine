@@ -9,9 +9,10 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 ### Google OAuth Authentication Refactor (November 20, 2025)
 - **Switched to Passport.js**: Migrated from `openid-client` to Passport's `GoogleStrategy` for cleaner, more maintainable OAuth implementation
 - **PostgreSQL-Backed Sessions**: Implemented `connect-pg-simple` for session persistence across Railway containers
-  - Sessions stored in PostgreSQL table (auto-created) instead of in-memory
+  - Sessions stored in PostgreSQL `sessions` table (managed by Drizzle schema)
   - Fixes "Invalid state parameter" error by sharing session state across multiple Railway instances
   - Shared session middleware in `server/index.ts` used by both Replit Auth and Google OAuth
+  - **Neon HTTP Mode Fix**: Disabled `createTableIfMissing` to prevent "cannot insert multiple commands into a prepared statement" error with Neon's HTTP fetch protocol
 - **Trust Proxy Configuration**: Added `app.set("trust proxy", 1)` for production to support secure cookies behind Railway's HTTPS proxy
 - **Conditional Session Security**: Session cookies use `secure: true` in production, `secure: false` in development
 - **Automatic State Management**: Passport's GoogleStrategy handles OAuth state parameter automatically with `state: true` configuration
