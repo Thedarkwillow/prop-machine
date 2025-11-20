@@ -40,8 +40,8 @@ app.use(
   session({
     store: new PgStore({
       pool,
-      tableName: "session", // Will be auto-created
-      createTableIfMissing: true,
+      tableName: "session",
+      createTableIfMissing: false, // Managed by Drizzle schema
     }),
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
