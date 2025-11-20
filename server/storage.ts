@@ -59,6 +59,7 @@ export type PropWithLineMovement = Prop & {
 export interface IStorage {
   // User management (required for Replit Auth)
   getUser(userId: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   createUser(user: InsertUser): Promise<User>;
   updateBankroll(userId: string, newBankroll: string): Promise<User>;
@@ -180,6 +181,10 @@ class MemStorage implements IStorage {
 
   async getUser(userId: string): Promise<User | undefined> {
     return this.users.get(userId);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.email === email);
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -771,6 +776,12 @@ class DbStorage implements IStorage {
   async getUser(userId: string): Promise<User | undefined> {
     const userDecimalFields: (keyof User)[] = ['bankroll', 'initialBankroll', 'kellySizing'];
     const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    return normalizeDecimals(result[0], userDecimalFields);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const userDecimalFields: (keyof User)[] = ['bankroll', 'initialBankroll', 'kellySizing'];
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
     return normalizeDecimals(result[0], userDecimalFields);
   }
 
