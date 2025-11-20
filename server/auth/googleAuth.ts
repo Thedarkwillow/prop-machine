@@ -10,9 +10,20 @@ dotenv.config();
 
 const MemoryStore = createMemoryStore(session);
 
-const redirectUri =
-  process.env.GOOGLE_REDIRECT_URI ||
-  "https://your-railway-domain.up.railway.app/auth/google/callback";
+// Use environment variable or construct based on environment
+const getRedirectUri = () => {
+  if (process.env.GOOGLE_REDIRECT_URI) {
+    return process.env.GOOGLE_REDIRECT_URI;
+  }
+  // For Railway production
+  if (process.env.NODE_ENV === "production") {
+    return "https://prop-machine-production.up.railway.app/api/auth/google/callback";
+  }
+  // For local development
+  return "http://localhost:5000/api/auth/google/callback";
+};
+
+const redirectUri = getRedirectUri();
 
 let googleClient: any = null;
 const codeVerifiers = new Map<string, string>();
@@ -49,12 +60,12 @@ export async function setupGoogleAuth(app: Express) {
     })
   );
 
-  // Alias /api/login to /auth/google for compatibility with Landing page
+  // Google OAuth initiation
   app.get("/api/login", async (req, res) => {
-    res.redirect("/auth/google");
+    res.redirect("/api/auth/google");
   });
 
-  app.get("/auth/google", async (req, res) => {
+  app.get("/api/auth/google", async (req, res) => {
     try {
       const client = await getGoogleClient();
       const codeVerifier = generators.codeVerifier();
@@ -78,7 +89,7 @@ export async function setupGoogleAuth(app: Express) {
     }
   });
 
-  app.get("/auth/google/callback", async (req, res) => {
+  app.get("/api/auth/google/callback", async (req, res) => {
     try {
       console.log("📥 Callback received:", { code: !!req.query.code, state: !!req.query.state });
       
@@ -112,15 +123,26 @@ export async function setupGoogleAuth(app: Express) {
       const userinfo = await client.userinfo(tokenSet.access_token!);
       console.log("✅ User info received:", { email: userinfo.email });
       
-      let user = await storage.getUserByEmail(userinfo.email as string);
+      // Validate required fields from Google
+      if (!userinfo.email) {
+        console.error("❌ Google did not provide email");
+        return res.status(400).send("Google account must have an email address");
+      }
+      
+      const email = userinfo.email as string;
+      const firstName = (userinfo.given_name as string | undefined) || null;
+      const lastName = (userinfo.family_name as string | undefined) || null;
+      const profileImageUrl = (userinfo.picture as string | undefined) || null;
+      
+      let user = await storage.getUserByEmail(email);
       
       if (!user) {
         console.log("🔄 Creating new user...");
         user = await storage.createUser({
-          email: userinfo.email as string,
-          firstName: userinfo.given_name as string,
-          lastName: userinfo.family_name as string,
-          profileImageUrl: userinfo.picture as string,
+          email,
+          firstName,
+          lastName,
+          profileImageUrl,
           bankroll: "1000.00",
           initialBankroll: "1000.00",
           kellySizing: "0.125",
@@ -132,7 +154,13 @@ export async function setupGoogleAuth(app: Express) {
         console.log("✅ Existing user found:", user.id);
       }
 
-      req.session!.userId = user.id;
+      // Check if session exists
+      if (!req.session) {
+        console.error("❌ Session not initialized");
+        return res.status(500).send("Session not initialized - please check server configuration");
+      }
+      
+      req.session.userId = user.id;
       await new Promise<void>((resolve, reject) => {
         req.session!.save((err) => {
           if (err) reject(err);

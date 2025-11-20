@@ -4,7 +4,21 @@
 
 Prop Machine is an AI-powered sports betting intelligence platform designed to assist users in making informed sports betting decisions. It leverages machine learning for prop analysis, confidence scoring, and integrates the Kelly criterion for bankroll management. The platform primarily focuses on NHL props but also supports NBA, NFL, and MLB. Key capabilities include automated slip generation, performance tracking, and closing line value (CLV) analysis to validate the model's effectiveness. The platform aims to provide a robust tool for users to gain an edge in sports betting.
 
-## Recent Changes (November 19, 2025)
+## Recent Changes
+
+### Google OAuth Authentication Fixes (November 20, 2025)
+- **Route Mismatch Fix**: Changed all Google OAuth routes from `/auth/google/*` to `/api/auth/google/*` to match Google OAuth configuration
+- **Type Error Fixes**: Fixed TypeScript errors in `googleAuth.ts` (bankroll as string "1000.00", riskTolerance as "balanced" instead of "moderate")
+- **Storage Type Safety**: Fixed all MemStorage create methods to properly handle undefined vs null for optional fields (converted undefined to null)
+- **Email Validation**: Added guard to check if Google provides email before creating/querying users
+- **Profile Fields**: Safely handle optional Google profile fields (firstName, lastName, profileImageUrl) by converting undefined to null
+- **Redirect URI**: Implemented smart redirect URI logic that respects `GOOGLE_REDIRECT_URI` env var with fallbacks for dev/prod environments
+- **Session Validation**: Added session existence check before using `req.session` to prevent crashes
+- **Detailed Logging**: Added comprehensive emoji-based logging throughout callback handler for debugging
+  - 📥 Callback received
+  - ✅ Success checkpoints
+  - ❌ Error conditions
+  - 🔄 Processing steps
 
 ### Railway Production Deployment (November 19, 2025)
 - **Database Architecture**: Replit uses built-in PostgreSQL, Railway uses separate Neon database (both share same schema)
