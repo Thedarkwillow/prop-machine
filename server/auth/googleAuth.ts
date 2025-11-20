@@ -115,7 +115,7 @@ export async function setupGoogleAuth(app: Express) {
       const tokenSet = await client.callback(
         redirectUri,
         { code: code as string, state: state as string },
-        { code_verifier: codeVerifier }
+        { code_verifier: codeVerifier, state: state as string }
       );
       console.log("✅ Tokens received");
 
