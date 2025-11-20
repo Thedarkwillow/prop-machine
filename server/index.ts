@@ -4,6 +4,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 
+import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
 
 import router from "./routes.js";
@@ -24,11 +25,15 @@ app.use(express.json());
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
-// ALWAYS use Google Auth now
-console.log("🔐 Using Google OAuth");
-setupGoogleAuth(app);
+if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
+  console.log("🔐 Using Google OAuth (Railway production)");
+  setupGoogleAuth(app);
+} else {
+  console.log("🔐 Using Replit Auth (default)");
+  setupAuth(app);
+}
 
-/* Make req.user available */
+/* Make req.user available (required for notifications) */
 app.use((req: any, _res, next) => {
   if (req.session?.user) req.user = req.session.user;
   next();
@@ -41,9 +46,13 @@ app.use("/api/analytics", createAnalyticsRoutes(storage));
 app.use("/api/notifications", createNotificationRoutes(storage));
 app.use("/api", router);
 
-/* ------------------------- FIXED LOGIN ROUTE ------------------------- */
+/* ------------------------- FIX: LOGIN ROUTE ------------------------- */
+/** 
+ * This makes `/api/login` work again.
+ * It cleanly redirects to Google OAuth in production.
+ */
 app.get("/api/login", (_req, res) => {
-  res.redirect("/auth/google");
+  res.redirect("/api/auth/google");
 });
 
 /* ------------------------- PRODUCTION STATIC FILES ------------------------- */
@@ -61,12 +70,8 @@ if (process.env.NODE_ENV === "production") {
 
   app.use(express.static(distPath));
 
-  // OAuth routes MUST be checked before SPA fallback
-  app.get("*", (req, res) => {
-    if (req.path.startsWith("/auth/") || req.path.startsWith("/api/")) {
-      return res.status(404).json({ error: "Not found" });
-    }
-
+  // SPA fallback
+  app.get("*", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
@@ -85,8 +90,9 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
 
+  // Scheduler
   if (process.env.DISABLE_PROP_SCHEDULER === "true") {
-    console.log("⏸️ Scheduler disabled");
+    console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
   } else {
     propSchedulerService.start(15);
   }
