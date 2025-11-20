@@ -134,31 +134,42 @@ export async function setupGoogleAuth(app: Express) {
 
   // Get current user (used by useAuth hook)
   app.get("/api/auth/user", async (req, res) => {
-    console.log("🔍 [/api/auth/user] Request received");
-    console.log("🔍 [/api/auth/user] req.user exists:", !!req.user);
-    console.log("🔍 [/api/auth/user] req.sessionID:", req.sessionID);
-    console.log("🔍 [/api/auth/user] Cookie header:", req.headers.cookie);
+    console.log("========================================");
+    console.log("👤 [/api/auth/user] Request received");
+    console.log("👤 [/api/auth/user] req.user:", JSON.stringify(req.user, null, 2));
+    console.log("👤 [/api/auth/user] req.sessionID:", req.sessionID);
+    console.log("👤 [/api/auth/user] req.session.passport:", JSON.stringify((req.session as any)?.passport, null, 2));
+    console.log("👤 [/api/auth/user] Cookie header:", req.headers.cookie);
     
     if (!req.user) {
       console.log("❌ [/api/auth/user] No req.user - returning 401");
+      console.log("========================================");
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const fullUser = await storage.getUser((req.user as any).id);
+      const userId = (req.user as any).id;
+      console.log("👤 [/api/auth/user] Fetching user ID:", userId);
+      
+      const fullUser = await storage.getUser(userId);
       console.log("✅ [/api/auth/user] User found:", { id: fullUser.id, email: fullUser.email });
       
       // Return format matching AuthUser interface
-      res.json({
+      const response = {
         id: fullUser.id,
         email: fullUser.email,
         firstName: fullUser.firstName || "",
         lastName: fullUser.lastName || "",
         profileImageUrl: fullUser.profileImageUrl || undefined,
         isAdmin: fullUser.isAdmin,
-      });
+      };
+      
+      console.log("✅ [/api/auth/user] Sending response");
+      console.log("========================================");
+      res.json(response);
     } catch (error) {
       console.error("❌ [/api/auth/user] Error fetching user:", error);
+      console.log("========================================");
       res.status(500).json({ error: "Failed to get user" });
     }
   });

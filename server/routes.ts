@@ -18,18 +18,36 @@ router.get("/", (req, res) => {
 // ==================== DASHBOARD ROUTE ====================
 router.get("/dashboard", requireAuth, async (req, res) => {
   try {
+    console.log("========================================");
+    console.log("📊 [DASHBOARD] Request received");
+    console.log("📊 [DASHBOARD] req.user:", JSON.stringify((req as any).user, null, 2));
+    console.log("📊 [DASHBOARD] req.session:", JSON.stringify({
+      id: (req as any).session?.id,
+      cookie: (req as any).session?.cookie,
+      passport: (req as any).session?.passport,
+      user: (req as any).session?.user,
+    }, null, 2));
+    
     // Support both Replit Auth (req.user.claims.sub) and Google OAuth (req.user.id)
     const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
     
+    console.log("📊 [DASHBOARD] Extracted userId:", userId);
+    
     if (!userId) {
+      console.log("❌ [DASHBOARD] No userId found - returning 401");
       return res.status(401).json({ error: "Not authenticated" });
     }
+    
+    console.log("📊 [DASHBOARD] Fetching user from database...");
     
     // Get user data
     const user = await storage.getUser(userId);
     if (!user) {
+      console.log("❌ [DASHBOARD] User not found in database");
       return res.status(404).json({ error: "User not found" });
     }
+    
+    console.log("✅ [DASHBOARD] User found:", { id: user.id, email: user.email });
     
     // Get user's bets for stats
     const bets = await storage.getBetsWithProps(userId);
@@ -50,7 +68,7 @@ router.get("/dashboard", requireAuth, async (req, res) => {
     // Get pending slips
     const slips = await storage.getPendingSlips(userId);
     
-    res.json({
+    const response = {
       user,
       stats: {
         totalBets,
@@ -60,9 +78,19 @@ router.get("/dashboard", requireAuth, async (req, res) => {
         bankroll: user.bankroll,
       },
       pendingSlips: slips,
+    };
+    
+    console.log("✅ [DASHBOARD] Sending response:", {
+      userId: user.id,
+      totalBets,
+      pendingSlipsCount: slips.length,
     });
+    console.log("========================================");
+    
+    res.json(response);
   } catch (error) {
-    console.error("Error fetching dashboard:", error);
+    console.error("❌ [DASHBOARD] Error:", error);
+    console.log("========================================");
     res.status(500).json({ error: "Failed to fetch dashboard data" });
   }
 });
