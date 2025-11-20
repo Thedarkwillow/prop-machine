@@ -7,22 +7,16 @@ import { propFetcherService } from "./services/propFetcherService";
 import { propRefreshService } from "./services/propRefreshService";
 import { propSchedulerService } from "./services/propSchedulerService";
 import { refreshProps } from "./seed";
+import { getUserId } from "./middleware/auth";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.status(401).json({
-      success: false,
-      error: "Authentication required for admin access",
-    });
-  }
-  
   try {
-    const userId = req.user?.claims?.sub;
+    const userId = getUserId(req);
     if (!userId) {
       return res.status(401).json({
         success: false,
-        error: "Invalid user session",
+        error: "Authentication required for admin access",
       });
     }
     
@@ -45,7 +39,8 @@ async function requireAdmin(req: any, res: any, next: any) {
 
 // Require authentication (but not admin) for certain endpoints
 async function requireAuth(req: any, res: any, next: any) {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
+  const userId = getUserId(req);
+  if (!userId) {
     return res.status(401).json({
       success: false,
       error: "Authentication required",

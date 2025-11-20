@@ -2,14 +2,15 @@ import { Router } from "express";
 import type { IStorage } from "./storage";
 import { NotificationService } from "./services/notificationService";
 import { updateNotificationPreferencesSchema } from "./validation";
+import { getUserId } from "./middleware/auth";
 
 export function createNotificationRoutes(storage: IStorage): Router {
   const router = Router();
   const notificationService = new NotificationService(storage);
 
   router.get("/preferences", async (req: any, res) => {
-    // Auth required - even for stub data to prevent future security issues
-    if (!req.user?.claims?.sub) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
@@ -31,9 +32,7 @@ export function createNotificationRoutes(storage: IStorage): Router {
   });
 
   router.patch("/preferences", async (req: any, res) => {
-    // Auth required - even for stub data to prevent future security issues
-    // Support both Replit Auth (req.user.claims.sub) and Google OAuth (req.user.id)
-    const userId = req.user?.claims?.sub || req.user?.id;
+    const userId = getUserId(req);
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
@@ -55,8 +54,7 @@ export function createNotificationRoutes(storage: IStorage): Router {
   });
 
   router.get("/", async (req: any, res) => {
-    // Support both Replit Auth (req.user.claims.sub) and Google OAuth (req.user.id)
-    const userId = req.user?.claims?.sub || req.user?.id;
+    const userId = getUserId(req);
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
@@ -72,12 +70,20 @@ export function createNotificationRoutes(storage: IStorage): Router {
   });
 
   router.patch("/:id/read", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
       const notificationId = parseInt(req.params.id);
+      
+      // Verify notification belongs to user
+      const notification = await storage.getNotification(notificationId);
+      if (!notification || notification.userId !== userId) {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+      
       await notificationService.markAsRead(notificationId);
       res.json({ success: true });
     } catch (error) {

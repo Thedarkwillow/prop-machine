@@ -125,6 +125,7 @@ export interface IStorage {
   getAllNotificationPreferences(): Promise<NotificationPreferences[]>;
   updateNotificationPreferences(userId: string, prefs: Partial<InsertNotificationPreferences>): Promise<NotificationPreferences>;
   createNotification(notification: InsertNotification): Promise<Notification>;
+  getNotification(notificationId: number): Promise<Notification | undefined>;
   getUserNotifications(userId: string, limit?: number): Promise<Notification[]>;
   markNotificationAsRead(notificationId: number): Promise<void>;
   
@@ -805,6 +806,10 @@ class MemStorage implements IStorage {
     };
     this.notifications.set(newNotification.id, newNotification);
     return newNotification;
+  }
+
+  async getNotification(notificationId: number): Promise<Notification | undefined> {
+    return this.notifications.get(notificationId);
   }
 
   async getUserNotifications(userId: string, limit?: number): Promise<Notification[]> {
@@ -1534,6 +1539,15 @@ class DbStorage implements IStorage {
 
   async createNotification(notification: InsertNotification): Promise<Notification> {
     const result = await db.insert(notifications).values(notification).returning();
+    return result[0];
+  }
+
+  async getNotification(notificationId: number): Promise<Notification | undefined> {
+    const result = await db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.id, notificationId))
+      .limit(1);
     return result[0];
   }
 

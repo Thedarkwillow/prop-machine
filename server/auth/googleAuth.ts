@@ -37,15 +37,10 @@ export async function setupGoogleAuth(app: Express) {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log("✅ Google profile received:", { 
-            email: profile.emails?.[0]?.value,
-            id: profile.id 
-          });
-
           // Validate email exists
           const email = profile.emails?.[0]?.value;
           if (!email) {
-            console.error("❌ Google did not provide email");
+            console.error("Google OAuth error: No email provided");
             return done(new Error("Google account must have an email address"));
           }
 
@@ -57,7 +52,6 @@ export async function setupGoogleAuth(app: Express) {
           let user = await storage.getUserByEmail(email);
 
           if (!user) {
-            console.log("🔄 Creating new user...");
             user = await storage.createUser({
               email,
               firstName,
@@ -69,14 +63,11 @@ export async function setupGoogleAuth(app: Express) {
               riskTolerance: "balanced",
               isAdmin: false,
             });
-            console.log("✅ New user created:", user.id);
-          } else {
-            console.log("✅ Existing user found:", user.id);
           }
 
           return done(null, user);
         } catch (error) {
-          console.error("❌ Google Strategy error:", error);
+          console.error("Google OAuth error:", error);
           return done(error as Error);
         }
       }
@@ -122,10 +113,6 @@ export async function setupGoogleAuth(app: Express) {
       failureMessage: true,
     }),
     (req, res) => {
-      if (process.env.NODE_ENV === 'development') {
-        const user = req.user as any;
-        console.log("✅ [CALLBACK] Authentication successful:", { id: user?.id, email: user?.email });
-      }
       res.redirect("/");
     }
   );

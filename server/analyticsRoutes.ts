@@ -1,18 +1,19 @@
 import { Router } from "express";
 import type { IStorage } from "./storage";
 import { AnalyticsService } from "./services/analyticsService";
+import { getUserId } from "./middleware/auth";
 
 export function createAnalyticsRoutes(storage: IStorage): Router {
   const router = Router();
   const analyticsService = new AnalyticsService(storage);
 
   router.get("/overview", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       
       // Fetch all analytics data
       const [overview, bySport, byPlatform, confidenceBrackets] = await Promise.all([
@@ -36,12 +37,12 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   });
 
   router.post("/snapshot", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       await analyticsService.generateSnapshot(userId);
       res.json({ success: true, message: "Analytics snapshot generated" });
     } catch (error) {
@@ -51,12 +52,12 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   });
 
   router.get("/latest", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       const analytics = await analyticsService.getLatestAnalytics(userId);
       res.json(analytics || {});
     } catch (error) {
@@ -66,12 +67,12 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   });
 
   router.get("/history", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       const days = parseInt(req.query.days as string) || 30;
       const history = await analyticsService.getAnalyticsHistory(userId, days);
       res.json(history);
@@ -82,12 +83,12 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   });
 
   router.get("/platforms", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       const platforms = await analyticsService.getPlatformComparison(userId);
       res.json(platforms);
     } catch (error) {
@@ -97,12 +98,12 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   });
 
   router.get("/sports", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       const sports = await analyticsService.getSportBreakdown(userId);
       res.json(sports);
     } catch (error) {
@@ -112,12 +113,12 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
   });
 
   router.get("/confidence", async (req: any, res) => {
-    if (!req.user) {
+    const userId = getUserId(req);
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       const brackets = await analyticsService.getConfidenceAccuracy(userId);
       res.json(brackets);
     } catch (error) {
