@@ -160,26 +160,33 @@ export async function setupGoogleAuth(app: Express) {
     }
   );
 
-  // Get current user
-  app.get("/api/user", async (req, res) => {
-    console.log("🔍 [/api/user] Request received");
-    console.log("🔍 [/api/user] req.user exists:", !!req.user);
-    console.log("🔍 [/api/user] req.session exists:", !!req.session);
-    console.log("🔍 [/api/user] req.session.user:", req.session?.user);
-    console.log("🔍 [/api/user] req.sessionID:", req.sessionID);
-    console.log("🔍 [/api/user] Cookie header:", req.headers.cookie);
+  // Get current user (used by useAuth hook)
+  app.get("/api/auth/user", async (req, res) => {
+    console.log("🔍 [/api/auth/user] Request received");
+    console.log("🔍 [/api/auth/user] req.user exists:", !!req.user);
+    console.log("🔍 [/api/auth/user] req.sessionID:", req.sessionID);
+    console.log("🔍 [/api/auth/user] Cookie header:", req.headers.cookie);
     
     if (!req.user) {
-      console.log("❌ [/api/user] No req.user - returning 401");
+      console.log("❌ [/api/auth/user] No req.user - returning 401");
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const user = await storage.getUser((req.user as any).id);
-      console.log("✅ [/api/user] User found:", { id: user.id, email: user.email });
-      res.json({ user });
+      const fullUser = await storage.getUser((req.user as any).id);
+      console.log("✅ [/api/auth/user] User found:", { id: fullUser.id, email: fullUser.email });
+      
+      // Return format matching AuthUser interface
+      res.json({
+        id: fullUser.id,
+        email: fullUser.email,
+        firstName: fullUser.firstName || "",
+        lastName: fullUser.lastName || "",
+        profileImageUrl: fullUser.profileImageUrl || undefined,
+        isAdmin: fullUser.isAdmin,
+      });
     } catch (error) {
-      console.error("❌ [/api/user] Error fetching user:", error);
+      console.error("❌ [/api/auth/user] Error fetching user:", error);
       res.status(500).json({ error: "Failed to get user" });
     }
   });
