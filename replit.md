@@ -6,19 +6,18 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 
 ## Recent Changes
 
-### Google OAuth Authentication Fixes (November 20, 2025)
-- **Route Mismatch Fix**: Changed all Google OAuth routes from `/auth/google/*` to `/api/auth/google/*` to match Google OAuth configuration
-- **Type Error Fixes**: Fixed TypeScript errors in `googleAuth.ts` (bankroll as string "1000.00", riskTolerance as "balanced" instead of "moderate")
-- **Storage Type Safety**: Fixed all MemStorage create methods to properly handle undefined vs null for optional fields (converted undefined to null)
-- **Email Validation**: Added guard to check if Google provides email before creating/querying users
-- **Profile Fields**: Safely handle optional Google profile fields (firstName, lastName, profileImageUrl) by converting undefined to null
-- **Redirect URI**: Implemented smart redirect URI logic that respects `GOOGLE_REDIRECT_URI` env var with fallbacks for dev/prod environments
-- **Session Validation**: Added session existence check before using `req.session` to prevent crashes
-- **Detailed Logging**: Added comprehensive emoji-based logging throughout callback handler for debugging
-  - 📥 Callback received
-  - ✅ Success checkpoints
+### Google OAuth Authentication Refactor (November 20, 2025)
+- **Switched to Passport.js**: Migrated from `openid-client` to Passport's `GoogleStrategy` for cleaner, more maintainable OAuth implementation
+- **Automatic State Management**: Passport's GoogleStrategy handles OAuth state parameter automatically with `state: true` configuration
+- **Proper Session Handling**: Fixed `deserializeUser` to properly convert session IDs from string to number with NaN validation
+- **Type Safety**: Enhanced type checking in user serialization/deserialization to prevent runtime errors
+- **Route Configuration**: All routes remain at `/api/auth/google/*` to match Google OAuth console configuration
+- **Callback URL Logic**: Smart callback URL that respects `GOOGLE_REDIRECT_URI` env var with dev/prod fallbacks
+- **Enhanced Error Handling**: Comprehensive logging with emoji markers for debugging OAuth flow
+  - ✅ Authentication success
   - ❌ Error conditions
   - 🔄 Processing steps
+- **User Creation**: Safely handles optional Google profile fields (firstName, lastName, profileImageUrl) by converting undefined to null
 
 ### Railway Production Deployment (November 19, 2025)
 - **Database Architecture**: Replit uses built-in PostgreSQL, Railway uses separate Neon database (both share same schema)
