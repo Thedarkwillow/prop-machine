@@ -102,10 +102,13 @@ export async function setupGoogleAuth(app: Express) {
       if (!user) {
         user = await storage.createUser({
           email: userinfo.email as string,
-          username: userinfo.name as string,
-          bankroll: 1000,
-          kellySizing: "full",
-          riskTolerance: "moderate",
+          firstName: userinfo.given_name as string,
+          lastName: userinfo.family_name as string,
+          profileImageUrl: userinfo.picture as string,
+          bankroll: "1000.00",
+          initialBankroll: "1000.00",
+          kellySizing: "0.125",
+          riskTolerance: "balanced",
           isAdmin: false,
         });
       }

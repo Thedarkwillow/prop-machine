@@ -190,9 +190,16 @@ class MemStorage implements IStorage {
   async upsertUser(userData: UpsertUser): Promise<User> {
     const existingUser = userData.id ? this.users.get(userData.id) : undefined;
     const newUser: User = {
-      ...existingUser,
-      ...userData,
       id: userData.id || crypto.randomUUID(),
+      email: userData.email ?? existingUser?.email ?? null,
+      firstName: userData.firstName ?? existingUser?.firstName ?? null,
+      lastName: userData.lastName ?? existingUser?.lastName ?? null,
+      profileImageUrl: userData.profileImageUrl ?? existingUser?.profileImageUrl ?? null,
+      bankroll: userData.bankroll ?? existingUser?.bankroll ?? "100.00",
+      initialBankroll: userData.initialBankroll ?? existingUser?.initialBankroll ?? "100.00",
+      kellySizing: userData.kellySizing ?? existingUser?.kellySizing ?? "0.125",
+      riskTolerance: userData.riskTolerance ?? existingUser?.riskTolerance ?? "balanced",
+      isAdmin: userData.isAdmin ?? existingUser?.isAdmin ?? false,
       createdAt: existingUser?.createdAt || new Date(),
       updatedAt: new Date(),
     };
@@ -203,7 +210,15 @@ class MemStorage implements IStorage {
   async createUser(user: InsertUser): Promise<User> {
     const newUser: User = {
       id: crypto.randomUUID(),
-      ...user,
+      email: user.email ?? null,
+      firstName: user.firstName ?? null,
+      lastName: user.lastName ?? null,
+      profileImageUrl: user.profileImageUrl ?? null,
+      bankroll: user.bankroll ?? "100.00",
+      initialBankroll: user.initialBankroll ?? "100.00",
+      kellySizing: user.kellySizing ?? "0.125",
+      riskTolerance: user.riskTolerance ?? "balanced",
+      isAdmin: user.isAdmin ?? false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -239,7 +254,21 @@ class MemStorage implements IStorage {
   async createProp(prop: InsertProp): Promise<Prop> {
     const newProp: Prop = {
       id: this.propIdCounter++,
-      ...prop,
+      sport: prop.sport,
+      player: prop.player,
+      team: prop.team,
+      opponent: prop.opponent,
+      stat: prop.stat,
+      line: prop.line,
+      currentLine: prop.currentLine ?? null,
+      direction: prop.direction,
+      period: prop.period ?? "full_game",
+      platform: prop.platform,
+      confidence: prop.confidence,
+      ev: prop.ev,
+      modelProbability: prop.modelProbability,
+      gameTime: prop.gameTime,
+      isActive: prop.isActive ?? true,
       createdAt: new Date(),
     };
     this.props.set(newProp.id, newProp);
@@ -299,7 +328,15 @@ class MemStorage implements IStorage {
   async createSlip(slip: InsertSlip): Promise<Slip> {
     const newSlip: Slip = {
       id: this.slipIdCounter++,
-      ...slip,
+      userId: slip.userId,
+      type: slip.type,
+      title: slip.title,
+      picks: slip.picks,
+      confidence: slip.confidence,
+      suggestedBet: slip.suggestedBet,
+      potentialReturn: slip.potentialReturn,
+      platform: slip.platform,
+      status: slip.status ?? "pending",
       createdAt: new Date(),
     };
     this.slips.set(newSlip.id, newSlip);
@@ -336,7 +373,18 @@ class MemStorage implements IStorage {
   async createBet(bet: InsertBet): Promise<Bet> {
     const newBet: Bet = {
       id: this.betIdCounter++,
-      ...bet,
+      userId: bet.userId,
+      slipId: bet.slipId ?? null,
+      propId: bet.propId ?? null,
+      amount: bet.amount,
+      odds: bet.odds,
+      potentialReturn: bet.potentialReturn,
+      status: bet.status ?? "pending",
+      direction: bet.direction ?? null,
+      openingLine: bet.openingLine ?? null,
+      closingLine: bet.closingLine ?? null,
+      clv: bet.clv ?? null,
+      settledAt: bet.settledAt ?? null,
       createdAt: new Date(),
     };
     this.bets.set(newBet.id, newBet);
@@ -370,7 +418,18 @@ class MemStorage implements IStorage {
       // Create bet and update bankroll atomically
       const newBet: Bet = {
         id: this.betIdCounter++,
-        ...bet,
+        userId: bet.userId,
+        slipId: bet.slipId ?? null,
+        propId: bet.propId ?? null,
+        amount: bet.amount,
+        odds: bet.odds,
+        potentialReturn: bet.potentialReturn,
+        status: bet.status ?? "pending",
+        direction: bet.direction ?? null,
+        openingLine: bet.openingLine ?? null,
+        closingLine: bet.closingLine ?? null,
+        clv: bet.clv ?? null,
+        settledAt: bet.settledAt ?? null,
         createdAt: new Date(),
       };
       this.bets.set(newBet.id, newBet);
@@ -513,7 +572,17 @@ class MemStorage implements IStorage {
   async createSnapshot(snapshot: InsertPerformanceSnapshot): Promise<PerformanceSnapshot> {
     const newSnapshot: PerformanceSnapshot = {
       id: this.snapshotIdCounter++,
-      ...snapshot,
+      userId: snapshot.userId,
+      date: snapshot.date,
+      bankroll: snapshot.bankroll,
+      totalBets: snapshot.totalBets,
+      wins: snapshot.wins,
+      losses: snapshot.losses,
+      pushes: snapshot.pushes,
+      winRate: snapshot.winRate,
+      roi: snapshot.roi,
+      avgClv: snapshot.avgClv ?? null,
+      kellyCompliance: snapshot.kellyCompliance ?? null,
       createdAt: new Date(),
     };
     this.snapshots.set(newSnapshot.id, newSnapshot);
@@ -531,7 +600,11 @@ class MemStorage implements IStorage {
   async createDataFeed(feed: InsertDataFeed): Promise<DataFeed> {
     const newFeed: DataFeed = {
       id: this.dataFeedIdCounter++,
-      ...feed,
+      provider: feed.provider,
+      endpoint: feed.endpoint,
+      response: feed.response,
+      etag: feed.etag ?? null,
+      lastModified: feed.lastModified ?? null,
       createdAt: new Date(),
     };
     this.dataFeeds.set(newFeed.id, newFeed);
@@ -547,7 +620,16 @@ class MemStorage implements IStorage {
   async createGameEvent(event: InsertGameEvent): Promise<GameEvent> {
     const newEvent: GameEvent = {
       id: this.gameEventIdCounter++,
-      ...event,
+      sport: event.sport,
+      gameId: event.gameId,
+      gameTime: event.gameTime,
+      homeTeam: event.homeTeam,
+      awayTeam: event.awayTeam,
+      status: event.status ?? "scheduled",
+      homeScore: event.homeScore ?? null,
+      awayScore: event.awayScore ?? null,
+      playerStats: event.playerStats ?? null,
+      finalizedAt: event.finalizedAt ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -587,8 +669,13 @@ class MemStorage implements IStorage {
   async createProviderLimit(limit: InsertProviderLimit): Promise<ProviderLimit> {
     const newLimit: ProviderLimit = {
       id: this.providerLimitIdCounter++,
-      ...limit,
-      lastReset: new Date(),
+      provider: limit.provider,
+      callsToday: limit.callsToday ?? 0,
+      lastCallAt: limit.lastCallAt ?? null,
+      dailyLimit: limit.dailyLimit ?? null,
+      rateLimitPerMinute: limit.rateLimitPerMinute ?? null,
+      resetAt: limit.resetAt ?? null,
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     this.providerLimits.set(newLimit.provider, newLimit);
@@ -615,7 +702,13 @@ class MemStorage implements IStorage {
   async createModel(model: InsertModel): Promise<Model> {
     const newModel: Model = {
       id: this.modelIdCounter++,
-      ...model,
+      sport: model.sport,
+      version: model.version,
+      modelType: model.modelType,
+      trainedAt: model.trainedAt,
+      isActive: model.isActive ?? true,
+      artifact: model.artifact ?? null,
+      performance: model.performance ?? null,
       createdAt: new Date(),
     };
     this.models.set(newModel.id, newModel);
@@ -636,7 +729,19 @@ class MemStorage implements IStorage {
   async createWeatherData(weather: InsertWeatherData): Promise<WeatherData> {
     const newWeatherData: WeatherData = {
       id: this.weatherDataIdCounter++,
-      ...weather,
+      gameId: weather.gameId,
+      stadium: weather.stadium,
+      latitude: weather.latitude,
+      longitude: weather.longitude,
+      forecastTime: weather.forecastTime,
+      temperature: weather.temperature ?? null,
+      windSpeed: weather.windSpeed ?? null,
+      windGusts: weather.windGusts ?? null,
+      precipitation: weather.precipitation ?? null,
+      humidity: weather.humidity ?? null,
+      visibility: weather.visibility ?? null,
+      conditions: weather.conditions ?? null,
+      isDome: weather.isDome ?? false,
       createdAt: new Date(),
     };
     this.weatherData.set(newWeatherData.id, newWeatherData);
@@ -652,7 +757,13 @@ class MemStorage implements IStorage {
   async createNotificationPreferences(prefs: InsertNotificationPreferences): Promise<NotificationPreferences> {
     const newPrefs: NotificationPreferences = {
       id: this.notificationPreferencesIdCounter++,
-      ...prefs,
+      userId: prefs.userId,
+      emailEnabled: prefs.emailEnabled ?? true,
+      newPropsEnabled: prefs.newPropsEnabled ?? true,
+      highConfidenceOnly: prefs.highConfidenceOnly ?? false,
+      minConfidence: prefs.minConfidence ?? 70,
+      sports: prefs.sports ?? [],
+      platforms: prefs.platforms ?? [],
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -684,7 +795,12 @@ class MemStorage implements IStorage {
   async createNotification(notification: InsertNotification): Promise<Notification> {
     const newNotification: Notification = {
       id: this.notificationIdCounter++,
-      ...notification,
+      userId: notification.userId,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      propIds: notification.propIds ?? [],
+      isRead: notification.isRead ?? false,
       createdAt: new Date(),
     };
     this.notifications.set(newNotification.id, newNotification);
@@ -713,7 +829,17 @@ class MemStorage implements IStorage {
   async createAnalyticsSnapshot(snapshot: InsertAnalyticsSnapshot): Promise<AnalyticsSnapshot> {
     const newSnapshot: AnalyticsSnapshot = {
       id: this.analyticsSnapshotIdCounter++,
-      ...snapshot,
+      userId: snapshot.userId,
+      date: snapshot.date,
+      platformStats: snapshot.platformStats ?? null,
+      sportStats: snapshot.sportStats ?? null,
+      confidenceBrackets: snapshot.confidenceBrackets ?? null,
+      hotStreak: snapshot.hotStreak ?? 0,
+      coldStreak: snapshot.coldStreak ?? 0,
+      bestSport: snapshot.bestSport ?? null,
+      bestPlatform: snapshot.bestPlatform ?? null,
+      bestTimeOfWeek: snapshot.bestTimeOfWeek ?? null,
+      avgBetSize: snapshot.avgBetSize ?? null,
       createdAt: new Date(),
     };
     this.analyticsSnapshots.set(newSnapshot.id, newSnapshot);
