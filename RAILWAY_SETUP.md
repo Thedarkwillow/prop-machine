@@ -1,5 +1,19 @@
 # Railway Production Deployment Setup
 
+## 🚨 CRITICAL FIXES FOR CURRENT RAILWAY BUGS
+
+If you're experiencing these issues on Railway:
+- ✅ **Logout 404 error** - FIXED in latest code (added GET `/api/logout` endpoint)
+- ⚠️ **Settings/Analytics pages infinite loading** - Verify `SESSION_SECRET` is set (see below)
+- ⚠️ **NBA player search not working** - Add `BALLDONTLIE_API_KEY` to Railway environment
+- ℹ️ **NFL player search should work** - Uses ESPN API (no key required)
+
+**Quick Fix Actions:**
+1. Set `SESSION_SECRET` in Railway: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+2. Set `BALLDONTLIE_API_KEY` in Railway (sign up at https://www.balldontlie.io)
+3. Redeploy the application
+4. Clear browser cookies for Railway domain
+
 ## Required Environment Variables
 
 ### Session & Security (REQUIRED)

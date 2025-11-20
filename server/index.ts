@@ -21,6 +21,43 @@ import { propSchedulerService } from "./services/propSchedulerService.js";
 
 dotenv.config();
 
+/* ------------------------- STARTUP VALIDATION ------------------------- */
+// Validate critical environment variables to prevent silent misconfigurations
+
+const requiredEnvVars: { name: string; critical: boolean; description: string }[] = [
+  { name: "SESSION_SECRET", critical: true, description: "Required for secure session management" },
+  { name: "DATABASE_URL", critical: true, description: "Required for database connection" },
+];
+
+const recommendedEnvVars: { name: string; description: string }[] = [
+  { name: "BALLDONTLIE_API_KEY", description: "Required for NBA player search functionality" },
+  { name: "ODDS_API_KEY", description: "Required for odds data and prop ingestion" },
+];
+
+// Check critical environment variables (production only)
+if (process.env.NODE_ENV === "production") {
+  const missingCritical = requiredEnvVars.filter(v => v.critical && !process.env[v.name]);
+  
+  if (missingCritical.length > 0) {
+    console.error("\n❌ CRITICAL: Missing required environment variables:");
+    missingCritical.forEach(v => {
+      console.error(`  - ${v.name}: ${v.description}`);
+    });
+    console.error("\nServer cannot start. Please set these variables and redeploy.\n");
+    process.exit(1);
+  }
+}
+
+// Warn about missing recommended environment variables
+const missingRecommended = recommendedEnvVars.filter(v => !process.env[v.name]);
+if (missingRecommended.length > 0) {
+  console.warn("\n⚠️  WARNING: Missing recommended environment variables:");
+  missingRecommended.forEach(v => {
+    console.warn(`  - ${v.name}: ${v.description}`);
+  });
+  console.warn("Some features may not work correctly.\n");
+}
+
 const app = express();
 
 // Trust Railway's proxy for secure cookies

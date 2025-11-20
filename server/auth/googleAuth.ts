@@ -125,7 +125,14 @@ export async function setupGoogleAuth(app: Express) {
 
     try {
       const userId = (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Invalid user session" });
+      }
+
       const fullUser = await storage.getUser(userId);
+      if (!fullUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
       
       // Return format matching AuthUser interface
       res.json({
@@ -142,7 +149,18 @@ export async function setupGoogleAuth(app: Express) {
     }
   });
 
-  // Logout
+  // Logout (GET endpoint for compatibility with Replit Auth)
+  app.get("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res.redirect("/");
+      }
+      res.redirect("/");
+    });
+  });
+
+  // Logout (POST endpoint for API clients)
   app.post("/api/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
