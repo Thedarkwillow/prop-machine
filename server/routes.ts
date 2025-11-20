@@ -2,7 +2,7 @@ import express from "express";
 import { storage } from "./storage.js";
 import { insertPropSchema, insertSlipSchema, insertBetSchema } from "../shared/schema.js";
 import { z } from "zod";
-import { requireAuth } from "./middleware/auth.js";
+import { requireAuth, getUserId } from "./middleware/auth.js";
 
 const router = express.Router();
 
@@ -18,36 +18,17 @@ router.get("/", (req, res) => {
 // ==================== DASHBOARD ROUTE ====================
 router.get("/dashboard", requireAuth, async (req, res) => {
   try {
-    console.log("========================================");
-    console.log("📊 [DASHBOARD] Request received");
-    console.log("📊 [DASHBOARD] req.user:", JSON.stringify((req as any).user, null, 2));
-    console.log("📊 [DASHBOARD] req.session:", JSON.stringify({
-      id: (req as any).session?.id,
-      cookie: (req as any).session?.cookie,
-      passport: (req as any).session?.passport,
-      user: (req as any).session?.user,
-    }, null, 2));
-    
-    // Support both Replit Auth (req.user.claims.sub) and Google OAuth (req.user.id)
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
-    
-    console.log("📊 [DASHBOARD] Extracted userId:", userId);
+    const userId = getUserId(req);
     
     if (!userId) {
-      console.log("❌ [DASHBOARD] No userId found - returning 401");
       return res.status(401).json({ error: "Not authenticated" });
     }
-    
-    console.log("📊 [DASHBOARD] Fetching user from database...");
     
     // Get user data
     const user = await storage.getUser(userId);
     if (!user) {
-      console.log("❌ [DASHBOARD] User not found in database");
       return res.status(404).json({ error: "User not found" });
     }
-    
-    console.log("✅ [DASHBOARD] User found:", { id: user.id, email: user.email });
     
     // Get user's bets for stats
     const bets = await storage.getBetsWithProps(userId);
@@ -68,7 +49,7 @@ router.get("/dashboard", requireAuth, async (req, res) => {
     // Get pending slips
     const slips = await storage.getPendingSlips(userId);
     
-    const response = {
+    res.json({
       user,
       stats: {
         totalBets,
@@ -78,19 +59,9 @@ router.get("/dashboard", requireAuth, async (req, res) => {
         bankroll: user.bankroll,
       },
       pendingSlips: slips,
-    };
-    
-    console.log("✅ [DASHBOARD] Sending response:", {
-      userId: user.id,
-      totalBets,
-      pendingSlipsCount: slips.length,
     });
-    console.log("========================================");
-    
-    res.json(response);
   } catch (error) {
-    console.error("❌ [DASHBOARD] Error:", error);
-    console.log("========================================");
+    console.error("Dashboard error:", error);
     res.status(500).json({ error: "Failed to fetch dashboard data" });
   }
 });
@@ -107,7 +78,7 @@ router.get("/props", async (req, res) => {
   }
 });
 
-router.post("/props", async (req, res) => {
+router.post("/props", requireAuth, async (req, res) => {
   try {
     const propData = insertPropSchema.parse(req.body);
     const prop = await storage.createProp(propData);
@@ -118,7 +89,7 @@ router.post("/props", async (req, res) => {
   }
 });
 
-router.delete("/props/:id", async (req, res) => {
+router.delete("/props/:id", requireAuth, async (req, res) => {
   try {
     const propId = parseInt(req.params.id);
     await storage.deactivateProp(propId);
@@ -132,7 +103,10 @@ router.delete("/props/:id", async (req, res) => {
 // ==================== SLIPS ROUTES ====================
 router.get("/slips", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const slips = await storage.getSlipsByUser(userId);
     res.json(slips);
   } catch (error) {
@@ -143,7 +117,10 @@ router.get("/slips", requireAuth, async (req, res) => {
 
 router.get("/slips/pending", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const slips = await storage.getPendingSlips(userId);
     res.json(slips);
   } catch (error) {
@@ -154,7 +131,10 @@ router.get("/slips/pending", requireAuth, async (req, res) => {
 
 router.post("/slips", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const slipData = insertSlipSchema.parse({ ...req.body, userId });
     const slip = await storage.createSlip(slipData);
     res.status(201).json(slip);
@@ -168,15 +148,27 @@ const updateSlipStatusSchema = z.object({
   status: z.enum(["pending", "placed", "won", "lost", "pushed"]),
 });
 
-router.patch("/slips/:id/status", async (req, res) => {
+router.patch("/slips/:id/status", requireAuth, async (req, res) => {
   try {
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    
     const slipId = parseInt(req.params.id);
     if (isNaN(slipId)) {
       return res.status(400).json({ error: "Invalid slip ID" });
     }
+    
+    // Verify slip belongs to user
+    const slip = await storage.getSlip(slipId);
+    if (!slip || slip.userId !== userId) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    
     const { status } = updateSlipStatusSchema.parse(req.body);
-    const slip = await storage.updateSlipStatus(slipId, status);
-    res.json(slip);
+    const updatedSlip = await storage.updateSlipStatus(slipId, status);
+    res.json(updatedSlip);
   } catch (error: any) {
     console.error("Error updating slip status:", error);
     res.status(400).json({ error: error.message || "Failed to update slip status" });
@@ -186,7 +178,10 @@ router.patch("/slips/:id/status", async (req, res) => {
 // ==================== BETS ROUTES ====================
 router.get("/bets", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const bets = await storage.getBetsWithProps(userId);
     res.json(bets);
   } catch (error) {
@@ -211,7 +206,10 @@ router.get("/bets/:id", async (req, res) => {
 
 router.post("/bets", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const betData = insertBetSchema.parse({ ...req.body, userId });
     const result = await storage.placeBetWithBankrollCheck(betData);
     
@@ -232,12 +230,24 @@ const settleBetSchema = z.object({
   clv: z.string().optional(),
 });
 
-router.patch("/bets/:id/settle", async (req, res) => {
+router.patch("/bets/:id/settle", requireAuth, async (req, res) => {
   try {
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    
     const betId = parseInt(req.params.id);
     if (isNaN(betId)) {
       return res.status(400).json({ error: "Invalid bet ID" });
     }
+    
+    // Verify bet belongs to user
+    const bet = await storage.getBet(betId);
+    if (!bet || bet.userId !== userId) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    
     const { outcome, closingLine, clv } = settleBetSchema.parse(req.body);
     
     const result = await storage.settleBetWithBankrollUpdate(betId, outcome, closingLine, clv);
@@ -259,7 +269,10 @@ router.patch("/bets/:id/settle", async (req, res) => {
 // ==================== PERFORMANCE ROUTES ====================
 router.get("/performance/latest", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const snapshot = await storage.getLatestSnapshot(userId);
     res.json(snapshot);
   } catch (error) {
@@ -270,7 +283,10 @@ router.get("/performance/latest", requireAuth, async (req, res) => {
 
 router.get("/performance/history", requireAuth, async (req, res) => {
   try {
-    const userId = (req as any).user?.claims?.sub || (req as any).user?.id;
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
     const days = parseInt(req.query.days as string) || 30;
     const history = await storage.getSnapshotHistory(userId, days);
     res.json(history);

@@ -70,20 +70,9 @@ app.use((req: any, _res, next) => {
   // Google OAuth: Passport already sets req.user via deserializeUser - don't overwrite it!
   // Replit Auth: req.session.user exists, so bridge it to req.user
   
-  const isAuthPath = req.path.includes('/api/user') || req.path.includes('/api/auth') || req.path.includes('/api/login') || req.path.includes('/api/dashboard');
-  
-  if (isAuthPath) {
-    console.log("🔍 [MIDDLEWARE] Path:", req.path);
-    console.log("🔍 [MIDDLEWARE] req.user (from Passport):", req.user);
-    console.log("🔍 [MIDDLEWARE] req.session.user (from Replit):", req.session?.user);
-  }
-  
   // Only bridge if Passport hasn't already set req.user (i.e., Replit Auth)
   if (!req.user && req.session?.user) {
     req.user = req.session.user;
-    if (isAuthPath) {
-      console.log("✅ [MIDDLEWARE] Bridged Replit session.user to req.user");
-    }
   }
   
   next();
