@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db.js";
 
 import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
@@ -20,8 +23,37 @@ dotenv.config();
 
 const app = express();
 
+// Trust Railway's proxy for secure cookies
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 app.use(cors());
 app.use(express.json());
+
+/* ------------------------- SHARED SESSION MIDDLEWARE ------------------------- */
+// PostgreSQL-backed sessions for Railway multi-instance support
+// In development, Replit Auth uses this session store too
+const PgStore = connectPgSimple(session);
+
+app.use(
+  session({
+    store: new PgStore({
+      pool,
+      tableName: "session", // Will be auto-created
+      createTableIfMissing: true,
+    }),
+    secret: process.env.SESSION_SECRET || "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Only secure in production (HTTPS)
+      sameSite: "lax", // Prevents CSRF while allowing OAuth redirects
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    },
+  })
+);
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
