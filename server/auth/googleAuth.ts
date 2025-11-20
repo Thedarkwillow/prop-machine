@@ -122,7 +122,15 @@ export async function setupGoogleAuth(app: Express) {
       failureMessage: true,
     }),
     (req, res) => {
-      console.log("✅ Authentication successful, redirecting to /");
+      // ✅ CRITICAL: Save user to session for frontend
+      const user = req.user as any;
+      req.session.user = {
+        id: user.id,
+        email: user.email,
+        name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+      };
+      
+      console.log("✅ Session saved:", { userId: user.id, email: user.email });
       res.redirect("/");
     }
   );

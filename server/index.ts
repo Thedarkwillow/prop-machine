@@ -49,7 +49,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Only secure in production (HTTPS)
-      sameSite: "lax", // Prevents CSRF while allowing OAuth redirects
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // "none" required for Railway OAuth
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   })
