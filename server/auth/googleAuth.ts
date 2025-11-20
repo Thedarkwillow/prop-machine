@@ -1,5 +1,5 @@
-import { Issuer, generators } from "openid-client";
-import jwt from "jsonwebtoken";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 import type { Express } from "express";
 import session from "express-session";
@@ -11,7 +11,7 @@ dotenv.config();
 const MemoryStore = createMemoryStore(session);
 
 // Use environment variable or construct based on environment
-const getRedirectUri = () => {
+const getCallbackURL = () => {
   if (process.env.GOOGLE_REDIRECT_URI) {
     return process.env.GOOGLE_REDIRECT_URI;
   }
@@ -23,27 +23,8 @@ const getRedirectUri = () => {
   return "http://localhost:5000/api/auth/google/callback";
 };
 
-const redirectUri = getRedirectUri();
-
-let googleClient: any = null;
-const codeVerifiers = new Map<string, string>();
-
-export async function getGoogleClient() {
-  if (googleClient) return googleClient;
-
-  const GoogleIssuer = await Issuer.discover("https://accounts.google.com");
-
-  googleClient = new GoogleIssuer.Client({
-    client_id: process.env.GOOGLE_CLIENT_ID!,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-    redirect_uris: [redirectUri],
-    response_types: ["code"],
-  });
-
-  return googleClient;
-}
-
 export async function setupGoogleAuth(app: Express) {
+  // Session middleware
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "your-secret-key",
@@ -60,141 +41,125 @@ export async function setupGoogleAuth(app: Express) {
     })
   );
 
-  // Google OAuth initiation
-  app.get("/api/login", async (req, res) => {
+  // Initialize Passport
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Configure Google OAuth Strategy
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        callbackURL: getCallbackURL(),
+        state: true, // ✅ Enable state parameter for CSRF protection
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          console.log("✅ Google profile received:", { 
+            email: profile.emails?.[0]?.value,
+            id: profile.id 
+          });
+
+          // Validate email exists
+          const email = profile.emails?.[0]?.value;
+          if (!email) {
+            console.error("❌ Google did not provide email");
+            return done(new Error("Google account must have an email address"));
+          }
+
+          const firstName = profile.name?.givenName || null;
+          const lastName = profile.name?.familyName || null;
+          const profileImageUrl = profile.photos?.[0]?.value || null;
+
+          // Find or create user
+          let user = await storage.getUserByEmail(email);
+
+          if (!user) {
+            console.log("🔄 Creating new user...");
+            user = await storage.createUser({
+              email,
+              firstName,
+              lastName,
+              profileImageUrl,
+              bankroll: "1000.00",
+              initialBankroll: "1000.00",
+              kellySizing: "0.125",
+              riskTolerance: "balanced",
+              isAdmin: false,
+            });
+            console.log("✅ New user created:", user.id);
+          } else {
+            console.log("✅ Existing user found:", user.id);
+          }
+
+          return done(null, user);
+        } catch (error) {
+          console.error("❌ Google Strategy error:", error);
+          return done(error as Error);
+        }
+      }
+    )
+  );
+
+  // Serialize user to session
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  // Deserialize user from session
+  passport.deserializeUser(async (id: number, done) => {
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
+  });
+
+  // Routes
+  app.get("/api/login", (req, res) => {
     res.redirect("/api/auth/google");
   });
 
-  app.get("/api/auth/google", async (req, res) => {
-    try {
-      const client = await getGoogleClient();
-      const codeVerifier = generators.codeVerifier();
-      const codeChallenge = generators.codeChallenge(codeVerifier);
-      
-      const state = generators.state();
-      codeVerifiers.set(state, codeVerifier);
-      
-      const url = client.authorizationUrl({
-        scope: "openid email profile",
-        code_challenge: codeChallenge,
-        code_challenge_method: "S256",
-        redirect_uri: redirectUri,
-        state,
-      });
-      
-      res.redirect(url);
-    } catch (error) {
-      console.error("Google auth error:", error);
-      res.status(500).send("Authentication failed");
-    }
-  });
+  // Initiate Google OAuth
+  app.get(
+    "/api/auth/google",
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+    })
+  );
 
-  app.get("/api/auth/google/callback", async (req, res) => {
-    try {
-      console.log("📥 Callback received:", { code: !!req.query.code, state: !!req.query.state });
-      
-      const { code, state } = req.query;
-      
-      if (!code || !state) {
-        console.error("❌ Missing code or state in query params");
-        return res.status(400).send("Missing authorization code or state");
-      }
-      
-      const client = await getGoogleClient();
-      console.log("✅ Google client initialized");
-      
-      const codeVerifier = codeVerifiers.get(state as string);
-      if (!codeVerifier) {
-        console.error("❌ Invalid state parameter - no matching code verifier found");
-        return res.status(400).send("Invalid state parameter");
-      }
-      codeVerifiers.delete(state as string);
-      console.log("✅ Code verifier retrieved");
-      
-      console.log("🔄 Exchanging code for tokens...");
-      const tokenSet = await client.callback(
-        redirectUri,
-        { code: code as string, state: state as string },
-        { code_verifier: codeVerifier, state: state as string }
-      );
-      console.log("✅ Tokens received");
-
-      console.log("🔄 Fetching user info...");
-      const userinfo = await client.userinfo(tokenSet.access_token!);
-      console.log("✅ User info received:", { email: userinfo.email });
-      
-      // Validate required fields from Google
-      if (!userinfo.email) {
-        console.error("❌ Google did not provide email");
-        return res.status(400).send("Google account must have an email address");
-      }
-      
-      const email = userinfo.email as string;
-      const firstName = (userinfo.given_name as string | undefined) || null;
-      const lastName = (userinfo.family_name as string | undefined) || null;
-      const profileImageUrl = (userinfo.picture as string | undefined) || null;
-      
-      let user = await storage.getUserByEmail(email);
-      
-      if (!user) {
-        console.log("🔄 Creating new user...");
-        user = await storage.createUser({
-          email,
-          firstName,
-          lastName,
-          profileImageUrl,
-          bankroll: "1000.00",
-          initialBankroll: "1000.00",
-          kellySizing: "0.125",
-          riskTolerance: "balanced",
-          isAdmin: false,
-        });
-        console.log("✅ New user created:", user.id);
-      } else {
-        console.log("✅ Existing user found:", user.id);
-      }
-
-      // Check if session exists
-      if (!req.session) {
-        console.error("❌ Session not initialized");
-        return res.status(500).send("Session not initialized - please check server configuration");
-      }
-      
-      req.session.userId = user.id;
-      await new Promise<void>((resolve, reject) => {
-        req.session!.save((err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
-      console.log("✅ Session saved, redirecting to /");
-      
+  // Google OAuth callback
+  app.get(
+    "/api/auth/google/callback",
+    passport.authenticate("google", {
+      failureRedirect: "/",
+      failureMessage: true,
+    }),
+    (req, res) => {
+      console.log("✅ Authentication successful, redirecting to /");
       res.redirect("/");
-    } catch (error: any) {
-      console.error("❌ Google callback error:", {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      });
-      res.status(500).send(`Authentication callback failed: ${error.message}`);
     }
-  });
+  );
 
+  // Get current user
   app.get("/api/user", async (req, res) => {
-    if (!req.session?.userId) {
+    if (!req.user) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const user = await storage.getUser(req.session.userId);
+      const user = await storage.getUser((req.user as any).id);
       res.json({ user });
     } catch (error) {
       res.status(500).json({ error: "Failed to get user" });
     }
   });
 
+  // Logout
   app.post("/api/logout", (req, res) => {
-    req.session?.destroy((err) => {
+    req.logout((err) => {
       if (err) {
         return res.status(500).json({ error: "Logout failed" });
       }
