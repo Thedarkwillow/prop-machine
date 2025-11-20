@@ -110,11 +110,10 @@ export async function setupGoogleAuth(app: Express) {
   // Deserialize user from session
   passport.deserializeUser(async (id: any, done) => {
     try {
-      const userId = Number(id);
-      if (Number.isNaN(userId)) {
+      if (!id) {
         return done(new Error("Invalid session ID"));
       }
-      const user = await storage.getUser(userId);
+      const user = await storage.getUser(String(id));
       done(null, user);
     } catch (error) {
       done(error);
