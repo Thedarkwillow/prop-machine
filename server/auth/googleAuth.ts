@@ -122,41 +122,13 @@ export async function setupGoogleAuth(app: Express) {
       failureMessage: true,
     }),
     (req, res) => {
-      console.log("🔍 [CALLBACK] Started");
-      console.log("🔍 [CALLBACK] Old sessionID:", req.sessionID);
-      
       const user = req.user as any;
-      console.log("🔍 [CALLBACK] User data:", { id: user?.id, email: user?.email });
-      
-      // ✅ CRITICAL: Regenerate session to get new cookie (fixes cookie conflict)
-      req.session.regenerate((err) => {
-        if (err) {
-          console.error("❌ [CALLBACK] Session regenerate error:", err);
-          return res.status(500).send("Session regeneration failed");
-        }
-        
-        console.log("🔍 [CALLBACK] New sessionID:", req.sessionID);
-        
-        // Set user in the NEW session
-        req.session.user = {
-          id: user.id,
-          email: user.email,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-        };
-        
-        console.log("🔍 [CALLBACK] req.session.user set:", req.session.user);
-        
-        // Save the new session
-        req.session.save((saveErr) => {
-          if (saveErr) {
-            console.error("❌ [CALLBACK] Session save error:", saveErr);
-            return res.status(500).send("Session save failed");
-          }
-          console.log("✅ [CALLBACK] Session saved successfully");
-          console.log("✅ [CALLBACK] Redirecting to / with new cookie");
-          res.redirect("/");
-        });
-      });
+      console.log("✅ [CALLBACK] Authentication successful");
+      console.log("✅ [CALLBACK] User:", { id: user?.id, email: user?.email });
+      console.log("✅ [CALLBACK] SessionID:", req.sessionID);
+      console.log("✅ [CALLBACK] Passport has set req.user automatically");
+      console.log("✅ [CALLBACK] Redirecting to /");
+      res.redirect("/");
     }
   );
 

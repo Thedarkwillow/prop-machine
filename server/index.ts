@@ -65,25 +65,25 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
   setupAuth(app);
 }
 
-/* Make req.user available (required for notifications) */
+/* Make req.user available (only for Replit Auth - Passport handles it for Google OAuth) */
 app.use((req: any, _res, next) => {
-  // Only log for auth-related paths to reduce noise
-  const isAuthPath = req.path.includes('/api/user') || req.path.includes('/api/auth') || req.path.includes('/api/login');
+  // Google OAuth: Passport already sets req.user via deserializeUser - don't overwrite it!
+  // Replit Auth: req.session.user exists, so bridge it to req.user
+  
+  const isAuthPath = req.path.includes('/api/user') || req.path.includes('/api/auth') || req.path.includes('/api/login') || req.path.includes('/api/dashboard');
   
   if (isAuthPath) {
     console.log("🔍 [MIDDLEWARE] Path:", req.path);
-    console.log("🔍 [MIDDLEWARE] req.session exists:", !!req.session);
-    console.log("🔍 [MIDDLEWARE] req.session.user:", req.session?.user);
-    console.log("🔍 [MIDDLEWARE] req.user before bridge:", req.user);
+    console.log("🔍 [MIDDLEWARE] req.user (from Passport):", req.user);
+    console.log("🔍 [MIDDLEWARE] req.session.user (from Replit):", req.session?.user);
   }
   
-  if (req.session?.user) {
+  // Only bridge if Passport hasn't already set req.user (i.e., Replit Auth)
+  if (!req.user && req.session?.user) {
     req.user = req.session.user;
     if (isAuthPath) {
-      console.log("✅ [MIDDLEWARE] Bridged session.user to req.user:", req.user);
+      console.log("✅ [MIDDLEWARE] Bridged Replit session.user to req.user");
     }
-  } else if (isAuthPath) {
-    console.log("⚠️ [MIDDLEWARE] No session.user to bridge");
   }
   
   next();
