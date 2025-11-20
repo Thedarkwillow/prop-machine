@@ -4,6 +4,7 @@
 
 If you're experiencing these issues on Railway:
 - ✅ **Logout 404 error** - FIXED in latest code (added GET `/api/logout` endpoint)
+- ✅ **Stack overflow when fetching props** - FIXED in latest code (batched queries for 2840+ props)
 - ⚠️ **Settings/Analytics pages infinite loading** - Verify `SESSION_SECRET` is set (see below)
 - ⚠️ **NBA player search not working** - Add `BALLDONTLIE_API_KEY` to Railway environment
 - ℹ️ **NFL player search should work** - Uses ESPN API (no key required)
@@ -13,6 +14,9 @@ If you're experiencing these issues on Railway:
 2. Set `BALLDONTLIE_API_KEY` in Railway (sign up at https://www.balldontlie.io)
 3. Redeploy the application
 4. Clear browser cookies for Railway domain
+
+### Stack Overflow Fix Details
+The "RangeError: Maximum call stack size exceeded" error when fetching props has been fixed by batching database queries. Previously, when The Odds API returned 2840+ props, using `inArray()` with all prop IDs caused Drizzle's query builder to overflow. The fix processes prop IDs in batches of 500, preventing the recursion issue.
 
 ## Required Environment Variables
 

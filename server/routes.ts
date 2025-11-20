@@ -69,8 +69,15 @@ router.get("/dashboard", requireAuth, async (req, res) => {
 // ==================== PROPS ROUTES ====================
 router.get("/props", async (req, res) => {
   try {
-    const { sport } = req.query;
-    const props = await storage.getActivePropsWithLineMovement(sport as string);
+    const { sport, limit, offset } = req.query;
+    const limitNum = limit ? parseInt(limit as string) : 100; // Default 100 props
+    const offsetNum = offset ? parseInt(offset as string) : 0;
+    
+    const props = await storage.getActivePropsWithLineMovement(
+      sport as string,
+      limitNum,
+      offsetNum
+    );
     res.json(props);
   } catch (error) {
     console.error("Error fetching props:", error);

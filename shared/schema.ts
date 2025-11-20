@@ -277,15 +277,22 @@ export type InsertAnalyticsSnapshot = z.infer<typeof insertAnalyticsSnapshotSche
 export type AnalyticsSnapshot = typeof analyticsSnapshots.$inferSelect;
 
 // Line movement tracking for props
-export const lineMovements = pgTable("line_movements", {
-  id: serial("id").primaryKey(),
-  propId: integer("prop_id").notNull(),
-  platform: text("platform").notNull(),
-  oldLine: decimal("old_line", { precision: 5, scale: 1 }).notNull(),
-  newLine: decimal("new_line", { precision: 5, scale: 1 }).notNull(),
-  movement: decimal("movement", { precision: 5, scale: 1 }).notNull(), // Difference (+ or -)
-  timestamp: timestamp("timestamp").defaultNow().notNull(),
-});
+export const lineMovements = pgTable(
+  "line_movements",
+  {
+    id: serial("id").primaryKey(),
+    propId: integer("prop_id").notNull(),
+    platform: text("platform").notNull(),
+    oldLine: decimal("old_line", { precision: 5, scale: 1 }).notNull(),
+    newLine: decimal("new_line", { precision: 5, scale: 1 }).notNull(),
+    movement: decimal("movement", { precision: 5, scale: 1 }).notNull(), // Difference (+ or -)
+    timestamp: timestamp("timestamp").defaultNow().notNull(),
+  },
+  (table) => [
+    // Index for efficient latest line movement lookup
+    index("idx_line_movements_prop_timestamp").on(table.propId, table.timestamp.desc()),
+  ]
+);
 
 export const insertLineMovementSchema = createInsertSchema(lineMovements).omit({ id: true, timestamp: true });
 export type InsertLineMovement = z.infer<typeof insertLineMovementSchema>;

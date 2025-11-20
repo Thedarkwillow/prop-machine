@@ -66,7 +66,7 @@ export interface IStorage {
   
   // Props
   getActiveProps(sport?: string): Promise<Prop[]>;
-  getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]>;
+  getActivePropsWithLineMovement(sport?: string, limit?: number, offset?: number): Promise<PropWithLineMovement[]>;
   getAllActiveProps(): Promise<Prop[]>;
   getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]>;
   createProp(prop: InsertProp): Promise<Prop>;
@@ -242,9 +242,14 @@ class MemStorage implements IStorage {
     return allProps;
   }
 
-  async getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]> {
+  async getActivePropsWithLineMovement(sport?: string, limit?: number, offset?: number): Promise<PropWithLineMovement[]> {
     // MemStorage doesn't track line movements, so just return props without movement data
-    const props = await this.getActiveProps(sport);
+    let props = await this.getActiveProps(sport);
+    
+    // Apply pagination
+    if (offset) props = props.slice(offset);
+    if (limit) props = props.slice(0, limit);
+    
     return props.map(prop => ({ ...prop, latestLineMovement: null }));
   }
 
@@ -983,57 +988,106 @@ class DbStorage implements IStorage {
     return normalizeDecimalsArray(results, propDecimalFields);
   }
 
-  async getActivePropsWithLineMovement(sport?: string): Promise<PropWithLineMovement[]> {
-    // Get active props
-    const activeProps = await this.getActiveProps(sport);
+  async getActivePropsWithLineMovement(sport?: string, limit = 100, offset = 0): Promise<PropWithLineMovement[]> {
+    const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    if (activeProps.length === 0) {
-      return [];
-    }
-
-    // Get all prop IDs
-    const propIds = activeProps.map(p => p.id);
+    // PERFORMANCE OPTIMIZATION: Single query with LEFT JOIN instead of N+1 queries
+    // This fetches props with their latest line movement in one database round-trip
+    // Using window functions (ROW_NUMBER) to get only the most recent movement per prop
     
-    // Get latest line movement for each prop using a subquery
-    // This selects the most recent line movement per propId
-    const latestMovementsQuery = db
+    const query = db
       .select({
-        propId: lineMovements.propId,
-        oldLine: lineMovements.oldLine,
-        newLine: lineMovements.newLine,
-        movement: lineMovements.movement,
-        timestamp: lineMovements.timestamp,
+        // All prop fields
+        id: props.id,
+        sport: props.sport,
+        player: props.player,
+        team: props.team,
+        opponent: props.opponent,
+        stat: props.stat,
+        line: props.line,
+        currentLine: props.currentLine,
+        direction: props.direction,
+        period: props.period,
+        platform: props.platform,
+        confidence: props.confidence,
+        ev: props.ev,
+        modelProbability: props.modelProbability,
+        gameTime: props.gameTime,
+        isActive: props.isActive,
+        createdAt: props.createdAt,
+        // Latest line movement fields (nullable)
+        latestOldLine: lineMovements.oldLine,
+        latestNewLine: lineMovements.newLine,
+        latestMovement: lineMovements.movement,
+        latestTimestamp: lineMovements.timestamp,
       })
-      .from(lineMovements)
-      .where(inArray(lineMovements.propId, propIds))
-      .orderBy(desc(lineMovements.timestamp));
+      .from(props)
+      .leftJoin(
+        lineMovements,
+        and(
+          eq(props.id, lineMovements.propId),
+          // Subquery to ensure we only get the most recent line movement
+          eq(
+            lineMovements.timestamp,
+            db.select({ maxTimestamp: sql`MAX(${lineMovements.timestamp})` })
+              .from(lineMovements)
+              .where(eq(lineMovements.propId, props.id))
+          )
+        )
+      )
+      .where(
+        sport
+          ? and(eq(props.isActive, true), eq(props.sport, sport))
+          : eq(props.isActive, true)
+      )
+      .orderBy(desc(props.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    const results = await query;
     
-    const allMovements = await latestMovementsQuery;
+    // Transform results into PropWithLineMovement format
+    const propsWithMovement: PropWithLineMovement[] = results.map((row) => {
+      const prop: Prop = {
+        id: row.id,
+        sport: row.sport,
+        player: row.player,
+        team: row.team,
+        opponent: row.opponent,
+        stat: row.stat,
+        line: row.line,
+        currentLine: row.currentLine,
+        direction: row.direction,
+        period: row.period,
+        platform: row.platform,
+        confidence: row.confidence,
+        ev: row.ev,
+        modelProbability: row.modelProbability,
+        gameTime: row.gameTime,
+        isActive: row.isActive,
+        createdAt: row.createdAt,
+      };
+      
+      // Normalize decimal fields
+      const normalizedProp = normalizeDecimals(prop, propDecimalFields)!;
+      
+      // Add line movement if it exists
+      const latestLineMovement = row.latestTimestamp
+        ? {
+            oldLine: row.latestOldLine!,
+            newLine: row.latestNewLine!,
+            movement: row.latestMovement!,
+            timestamp: row.latestTimestamp,
+          }
+        : null;
+      
+      return {
+        ...normalizedProp,
+        latestLineMovement,
+      };
+    });
     
-    // Group movements by propId and keep only the latest
-    const latestMovementsMap = new Map<number, {
-      oldLine: string;
-      newLine: string;
-      movement: string;
-      timestamp: Date;
-    }>();
-    
-    for (const movement of allMovements) {
-      if (!latestMovementsMap.has(movement.propId)) {
-        latestMovementsMap.set(movement.propId, {
-          oldLine: movement.oldLine,
-          newLine: movement.newLine,
-          movement: movement.movement,
-          timestamp: movement.timestamp,
-        });
-      }
-    }
-    
-    // Combine props with their latest line movement
-    return activeProps.map(prop => ({
-      ...prop,
-      latestLineMovement: latestMovementsMap.get(prop.id) || null,
-    }));
+    return propsWithMovement;
   }
 
   async getAllActiveProps(): Promise<Prop[]> {
