@@ -46,15 +46,6 @@ app.use("/api/analytics", createAnalyticsRoutes(storage));
 app.use("/api/notifications", createNotificationRoutes(storage));
 app.use("/api", router);
 
-/* ------------------------- FIX: LOGIN ROUTE ------------------------- */
-/** 
- * This makes `/api/login` work again.
- * It cleanly redirects to Google OAuth in production.
- */
-app.get("/api/login", (_req, res) => {
-  res.redirect("/api/auth/google");
-});
-
 /* ------------------------- PRODUCTION STATIC FILES ------------------------- */
 
 if (process.env.NODE_ENV === "production") {

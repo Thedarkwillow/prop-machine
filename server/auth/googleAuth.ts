@@ -3,12 +3,13 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 import type { Express } from "express";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "../db.js";
 import { storage } from "../storage.js";
 
 dotenv.config();
 
-const MemoryStore = createMemoryStore(session);
+const PgStore = connectPgSimple(session);
 
 // Use environment variable or construct based on environment
 const getCallbackURL = () => {
@@ -24,19 +25,23 @@ const getCallbackURL = () => {
 };
 
 export async function setupGoogleAuth(app: Express) {
-  // Session middleware
+  // Session middleware - PostgreSQL-backed for Railway multi-instance support
+  // Shares session state across all containers to fix OAuth state parameter
   app.use(
     session({
+      store: new PgStore({
+        pool,
+        tableName: "session", // Will be auto-created
+        createTableIfMissing: true,
+      }),
       secret: process.env.SESSION_SECRET || "your-secret-key",
       resave: false,
       saveUninitialized: false,
-      store: new MemoryStore({
-        checkPeriod: 86400000,
-      }),
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        secure: true, // Always true for production (Railway uses HTTPS)
+        sameSite: "lax", // Prevents CSRF while allowing OAuth redirects
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       },
     })
   );
