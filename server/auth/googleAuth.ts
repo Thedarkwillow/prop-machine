@@ -80,26 +80,42 @@ export async function setupGoogleAuth(app: Express) {
 
   app.get("/auth/google/callback", async (req, res) => {
     try {
+      console.log("📥 Callback received:", { code: !!req.query.code, state: !!req.query.state });
+      
       const { code, state } = req.query;
+      
+      if (!code || !state) {
+        console.error("❌ Missing code or state in query params");
+        return res.status(400).send("Missing authorization code or state");
+      }
+      
       const client = await getGoogleClient();
+      console.log("✅ Google client initialized");
       
       const codeVerifier = codeVerifiers.get(state as string);
       if (!codeVerifier) {
-        throw new Error("Invalid state parameter");
+        console.error("❌ Invalid state parameter - no matching code verifier found");
+        return res.status(400).send("Invalid state parameter");
       }
       codeVerifiers.delete(state as string);
+      console.log("✅ Code verifier retrieved");
       
+      console.log("🔄 Exchanging code for tokens...");
       const tokenSet = await client.callback(
         redirectUri,
         { code: code as string, state: state as string },
         { code_verifier: codeVerifier }
       );
+      console.log("✅ Tokens received");
 
+      console.log("🔄 Fetching user info...");
       const userinfo = await client.userinfo(tokenSet.access_token!);
+      console.log("✅ User info received:", { email: userinfo.email });
       
       let user = await storage.getUserByEmail(userinfo.email as string);
       
       if (!user) {
+        console.log("🔄 Creating new user...");
         user = await storage.createUser({
           email: userinfo.email as string,
           firstName: userinfo.given_name as string,
@@ -111,13 +127,28 @@ export async function setupGoogleAuth(app: Express) {
           riskTolerance: "balanced",
           isAdmin: false,
         });
+        console.log("✅ New user created:", user.id);
+      } else {
+        console.log("✅ Existing user found:", user.id);
       }
 
       req.session!.userId = user.id;
+      await new Promise<void>((resolve, reject) => {
+        req.session!.save((err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+      console.log("✅ Session saved, redirecting to /");
+      
       res.redirect("/");
-    } catch (error) {
-      console.error("Google callback error:", error);
-      res.status(500).send("Authentication callback failed");
+    } catch (error: any) {
+      console.error("❌ Google callback error:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
+      res.status(500).send(`Authentication callback failed: ${error.message}`);
     }
   });
 
