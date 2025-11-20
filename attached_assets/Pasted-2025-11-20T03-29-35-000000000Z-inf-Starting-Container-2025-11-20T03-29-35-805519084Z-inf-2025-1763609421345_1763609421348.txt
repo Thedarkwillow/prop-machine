@@ -1,0 +1,82 @@
+2025-11-20T03:29:35.000000000Z [inf]  Starting Container
+2025-11-20T03:29:35.805519084Z [inf]  
+2025-11-20T03:29:35.805533676Z [err]  npm warn config production Use `--omit=dev` instead.
+2025-11-20T03:29:35.805540681Z [inf]  
+2025-11-20T03:29:35.805547231Z [inf]  > prop-machine@1.0.0 start
+2025-11-20T03:29:35.805553989Z [inf]  > NODE_ENV=production tsx server/index.ts
+2025-11-20T03:29:36.452547314Z [err]  The `fetchConnectionCache` option is deprecated (now always `true`)
+2025-11-20T03:29:36.452559525Z [inf]  🔧 Using Neon HTTP fetch (production mode)
+2025-11-20T03:29:36.492713255Z [inf]  🔐 Using Google OAuth (Railway production)
+2025-11-20T03:29:36.498451560Z [inf]  📦 Serving static files from: /app/dist/public
+2025-11-20T03:29:36.562632726Z [inf]  🚀 Server running on port 8080
+2025-11-20T03:29:36.562637106Z [inf]  🌐 Listening on 0.0.0.0:8080
+2025-11-20T03:29:36.562641304Z [inf]  ⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)
+2025-11-20T03:29:36.801486188Z [inf]  Database already seeded
+2025-11-20T03:30:06.655876924Z [inf]  🔍 [MIDDLEWARE] Path: /api/dashboard
+2025-11-20T03:30:06.655878765Z [inf]  }
+2025-11-20T03:30:06.655886184Z [inf]  🔍 [MIDDLEWARE] req.user (from Passport): {
+2025-11-20T03:30:06.655889781Z [inf]  ========================================
+2025-11-20T03:30:06.655892158Z [inf]    id: '1f6d5634-6faa-44a1-a435-80d9379bcf7e',
+2025-11-20T03:30:06.655897763Z [inf]    email: 'negreteelijah1@gmail.com',
+2025-11-20T03:30:06.655899120Z [inf]  👤 [/api/auth/user] Request received
+2025-11-20T03:30:06.655903958Z [inf]    firstName: 'Elijah',
+2025-11-20T03:30:06.655906616Z [inf]  👤 [/api/auth/user] req.user: {
+2025-11-20T03:30:06.655910374Z [inf]    lastName: 'Negrete',
+2025-11-20T03:30:06.655914847Z [inf]    "id": "1f6d5634-6faa-44a1-a435-80d9379bcf7e",
+2025-11-20T03:30:06.655916566Z [inf]    profileImageUrl: 'https://lh3.googleusercontent.com/a/ACg8ocI0LRh7LOZQr9DaNR4FdI4d3yrk4eXurwiYu4LkPzpORQW4uFPA=s96-c',
+2025-11-20T03:30:06.655921875Z [inf]    "email": "negreteelijah1@gmail.com",
+2025-11-20T03:30:06.655928113Z [inf]    "firstName": "Elijah",
+2025-11-20T03:30:06.655932398Z [inf]    bankroll: 1000,
+2025-11-20T03:30:06.655937403Z [inf]    initialBankroll: 1000,
+2025-11-20T03:30:06.655941363Z [inf]    kellySizing: 0.13,
+2025-11-20T03:30:06.655945562Z [inf]    riskTolerance: 'balanced',
+2025-11-20T03:30:06.655949779Z [inf]    isAdmin: false,
+2025-11-20T03:30:06.655953969Z [inf]    createdAt: 2025-11-20T02:31:09.974Z,
+2025-11-20T03:30:06.655958328Z [inf]    updatedAt: 2025-11-20T02:31:09.974Z
+2025-11-20T03:30:06.655965209Z [inf]  }
+2025-11-20T03:30:06.655969688Z [inf]  🔍 [MIDDLEWARE] req.session.user (from Replit): {
+2025-11-20T03:30:06.655974615Z [inf]    id: '1f6d5634-6faa-44a1-a435-80d9379bcf7e',
+2025-11-20T03:30:06.655979334Z [inf]    name: 'Elijah Negrete',
+2025-11-20T03:30:06.655983888Z [inf]    email: 'negreteelijah1@gmail.com'
+2025-11-20T03:30:06.657625389Z [inf]    "lastName": "Negrete",
+2025-11-20T03:30:06.657629456Z [inf]  ========================================
+2025-11-20T03:30:06.657629542Z [inf]    "user": "1f6d5634-6faa-44a1-a435-80d9379bcf7e"
+2025-11-20T03:30:06.657632960Z [inf]    "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocI0LRh7LOZQr9DaNR4FdI4d3yrk4eXurwiYu4LkPzpORQW4uFPA=s96-c",
+2025-11-20T03:30:06.657638193Z [inf]  🔍 [MIDDLEWARE] Path: /api/dashboard
+2025-11-20T03:30:06.657640020Z [inf]    "bankroll": 1000,
+2025-11-20T03:30:06.657640028Z [inf]  }
+2025-11-20T03:30:06.657645261Z [inf]  🔍 [MIDDLEWARE] req.user (from Passport): {
+2025-11-20T03:30:06.657649540Z [inf]  👤 [/api/auth/user] Cookie header: connect.sid=s%3AgKKQtzyZSNd0kdRb2kSsWAW5MXFFk14W.O%2B9wDtd67PhPMw2xW0PKlLmYwisIG6cLpkBbGQdJZbE
+2025-11-20T03:30:06.657650865Z [inf]    "initialBankroll": 1000,
+2025-11-20T03:30:06.657658121Z [inf]  👤 [/api/auth/user] Fetching user ID: 1f6d5634-6faa-44a1-a435-80d9379bcf7e
+2025-11-20T03:30:06.657658252Z [inf]    "kellySizing": 0.13,
+2025-11-20T03:30:06.657664394Z [inf]    "riskTolerance": "balanced",
+2025-11-20T03:30:06.657666361Z [inf]  ✅ [/api/auth/user] User found: {
+2025-11-20T03:30:06.657670056Z [inf]    "isAdmin": false,
+2025-11-20T03:30:06.657674501Z [inf]    id: '1f6d5634-6faa-44a1-a435-80d9379bcf7e',
+2025-11-20T03:30:06.657677098Z [inf]    "createdAt": "2025-11-20T02:31:09.974Z",
+2025-11-20T03:30:06.657682633Z [inf]    email: 'negreteelijah1@gmail.com'
+2025-11-20T03:30:06.657685521Z [inf]    "updatedAt": "2025-11-20T02:31:09.974Z"
+2025-11-20T03:30:06.657689119Z [inf]  }
+2025-11-20T03:30:06.657693110Z [inf]  }
+2025-11-20T03:30:06.657696796Z [inf]  ✅ [/api/auth/user] Sending response
+2025-11-20T03:30:06.657699311Z [inf]  👤 [/api/auth/user] req.sessionID: gKKQtzyZSNd0kdRb2kSsWAW5MXFFk14W
+2025-11-20T03:30:06.657703751Z [inf]  👤 [/api/auth/user] req.session.passport: {
+2025-11-20T03:30:06.659647864Z [inf]    id: '1f6d5634-6faa-44a1-a435-80d9379bcf7e',
+2025-11-20T03:30:06.659654709Z [inf]    updatedAt: 2025-11-20T02:31:09.974Z
+2025-11-20T03:30:06.659655078Z [inf]    email: 'negreteelijah1@gmail.com',
+2025-11-20T03:30:06.659663366Z [inf]    firstName: 'Elijah',
+2025-11-20T03:30:06.659664611Z [inf]  }
+2025-11-20T03:30:06.659669030Z [inf]    lastName: 'Negrete',
+2025-11-20T03:30:06.659672448Z [inf]  🔍 [MIDDLEWARE] req.session.user (from Replit): {
+2025-11-20T03:30:06.659674362Z [inf]    profileImageUrl: 'https://lh3.googleusercontent.com/a/ACg8ocI0LRh7LOZQr9DaNR4FdI4d3yrk4eXurwiYu4LkPzpORQW4uFPA=s96-c',
+2025-11-20T03:30:06.659680442Z [inf]    bankroll: 1000,
+2025-11-20T03:30:06.659680881Z [inf]    id: '1f6d5634-6faa-44a1-a435-80d9379bcf7e',
+2025-11-20T03:30:06.659686495Z [inf]    initialBankroll: 1000,
+2025-11-20T03:30:06.659689051Z [inf]    name: 'Elijah Negrete',
+2025-11-20T03:30:06.659691946Z [inf]    kellySizing: 0.13,
+2025-11-20T03:30:06.659697408Z [inf]    email: 'negreteelijah1@gmail.com'
+2025-11-20T03:30:06.659697604Z [inf]    riskTolerance: 'balanced',
+2025-11-20T03:30:06.659702838Z [inf]    isAdmin: false,
+2025-11-20T03:30:06.659705525Z [inf]  }
+2025-11-20T03:30:06.659708022Z [inf]    createdAt: 2025-11-20T02:31:09.974Z,
