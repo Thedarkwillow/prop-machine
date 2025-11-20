@@ -32,7 +32,9 @@ export function createNotificationRoutes(storage: IStorage): Router {
 
   router.patch("/preferences", async (req: any, res) => {
     // Auth required - even for stub data to prevent future security issues
-    if (!req.user?.claims?.sub) {
+    // Support both Replit Auth (req.user.claims.sub) and Google OAuth (req.user.id)
+    const userId = req.user?.claims?.sub || req.user?.id;
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
@@ -53,12 +55,13 @@ export function createNotificationRoutes(storage: IStorage): Router {
   });
 
   router.get("/", async (req: any, res) => {
-    if (!req.user) {
+    // Support both Replit Auth (req.user.claims.sub) and Google OAuth (req.user.id)
+    const userId = req.user?.claims?.sub || req.user?.id;
+    if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      const userId = req.user.claims.sub;
       const limit = parseInt(req.query.limit as string) || 50;
       const notifications = await notificationService.getUserNotifications(userId, limit);
       res.json(notifications);
