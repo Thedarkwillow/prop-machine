@@ -123,31 +123,39 @@ export async function setupGoogleAuth(app: Express) {
     }),
     (req, res) => {
       console.log("🔍 [CALLBACK] Started");
-      console.log("🔍 [CALLBACK] req.user exists:", !!req.user);
-      console.log("🔍 [CALLBACK] req.session exists:", !!req.session);
-      console.log("🔍 [CALLBACK] req.sessionID:", req.sessionID);
+      console.log("🔍 [CALLBACK] Old sessionID:", req.sessionID);
       
-      // ✅ CRITICAL: Save user to session for frontend
       const user = req.user as any;
       console.log("🔍 [CALLBACK] User data:", { id: user?.id, email: user?.email });
       
-      req.session.user = {
-        id: user.id,
-        email: user.email,
-        name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-      };
-      
-      console.log("🔍 [CALLBACK] req.session.user set:", req.session.user);
-      
-      // Force session save before redirect
-      req.session.save((err) => {
+      // ✅ CRITICAL: Regenerate session to get new cookie (fixes cookie conflict)
+      req.session.regenerate((err) => {
         if (err) {
-          console.error("❌ [CALLBACK] Session save error:", err);
-          return res.status(500).send("Session save failed");
+          console.error("❌ [CALLBACK] Session regenerate error:", err);
+          return res.status(500).send("Session regeneration failed");
         }
-        console.log("✅ [CALLBACK] Session saved successfully");
-        console.log("✅ [CALLBACK] Redirecting to /");
-        res.redirect("/");
+        
+        console.log("🔍 [CALLBACK] New sessionID:", req.sessionID);
+        
+        // Set user in the NEW session
+        req.session.user = {
+          id: user.id,
+          email: user.email,
+          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+        };
+        
+        console.log("🔍 [CALLBACK] req.session.user set:", req.session.user);
+        
+        // Save the new session
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("❌ [CALLBACK] Session save error:", saveErr);
+            return res.status(500).send("Session save failed");
+          }
+          console.log("✅ [CALLBACK] Session saved successfully");
+          console.log("✅ [CALLBACK] Redirecting to / with new cookie");
+          res.redirect("/");
+        });
       });
     }
   );
