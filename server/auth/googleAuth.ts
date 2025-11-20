@@ -130,8 +130,15 @@ export async function setupGoogleAuth(app: Express) {
         name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
       };
       
-      console.log("✅ Session saved:", { userId: user.id, email: user.email });
-      res.redirect("/");
+      // Force session save before redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error("❌ Session save error:", err);
+          return res.status(500).send("Session save failed");
+        }
+        console.log("✅ Session saved:", { userId: user.id, email: user.email });
+        res.redirect("/");
+      });
     }
   );
 
