@@ -67,7 +67,25 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
 
 /* Make req.user available (required for notifications) */
 app.use((req: any, _res, next) => {
-  if (req.session?.user) req.user = req.session.user;
+  // Only log for auth-related paths to reduce noise
+  const isAuthPath = req.path.includes('/api/user') || req.path.includes('/api/auth') || req.path.includes('/api/login');
+  
+  if (isAuthPath) {
+    console.log("🔍 [MIDDLEWARE] Path:", req.path);
+    console.log("🔍 [MIDDLEWARE] req.session exists:", !!req.session);
+    console.log("🔍 [MIDDLEWARE] req.session.user:", req.session?.user);
+    console.log("🔍 [MIDDLEWARE] req.user before bridge:", req.user);
+  }
+  
+  if (req.session?.user) {
+    req.user = req.session.user;
+    if (isAuthPath) {
+      console.log("✅ [MIDDLEWARE] Bridged session.user to req.user:", req.user);
+    }
+  } else if (isAuthPath) {
+    console.log("⚠️ [MIDDLEWARE] No session.user to bridge");
+  }
+  
   next();
 });
 

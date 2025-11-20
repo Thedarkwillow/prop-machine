@@ -122,21 +122,31 @@ export async function setupGoogleAuth(app: Express) {
       failureMessage: true,
     }),
     (req, res) => {
+      console.log("🔍 [CALLBACK] Started");
+      console.log("🔍 [CALLBACK] req.user exists:", !!req.user);
+      console.log("🔍 [CALLBACK] req.session exists:", !!req.session);
+      console.log("🔍 [CALLBACK] req.sessionID:", req.sessionID);
+      
       // ✅ CRITICAL: Save user to session for frontend
       const user = req.user as any;
+      console.log("🔍 [CALLBACK] User data:", { id: user?.id, email: user?.email });
+      
       req.session.user = {
         id: user.id,
         email: user.email,
         name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
       };
       
+      console.log("🔍 [CALLBACK] req.session.user set:", req.session.user);
+      
       // Force session save before redirect
       req.session.save((err) => {
         if (err) {
-          console.error("❌ Session save error:", err);
+          console.error("❌ [CALLBACK] Session save error:", err);
           return res.status(500).send("Session save failed");
         }
-        console.log("✅ Session saved:", { userId: user.id, email: user.email });
+        console.log("✅ [CALLBACK] Session saved successfully");
+        console.log("✅ [CALLBACK] Redirecting to /");
         res.redirect("/");
       });
     }
@@ -144,14 +154,24 @@ export async function setupGoogleAuth(app: Express) {
 
   // Get current user
   app.get("/api/user", async (req, res) => {
+    console.log("🔍 [/api/user] Request received");
+    console.log("🔍 [/api/user] req.user exists:", !!req.user);
+    console.log("🔍 [/api/user] req.session exists:", !!req.session);
+    console.log("🔍 [/api/user] req.session.user:", req.session?.user);
+    console.log("🔍 [/api/user] req.sessionID:", req.sessionID);
+    console.log("🔍 [/api/user] Cookie header:", req.headers.cookie);
+    
     if (!req.user) {
+      console.log("❌ [/api/user] No req.user - returning 401");
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
       const user = await storage.getUser((req.user as any).id);
+      console.log("✅ [/api/user] User found:", { id: user.id, email: user.email });
       res.json({ user });
     } catch (error) {
+      console.error("❌ [/api/user] Error fetching user:", error);
       res.status(500).json({ error: "Failed to get user" });
     }
   });
