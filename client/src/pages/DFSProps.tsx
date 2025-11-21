@@ -64,9 +64,15 @@ export default function DFSProps() {
       props.some(p => p.confidence >= 75)
     ).slice(0, 6);
 
+    // Build filter options based on currently selected sport
+    // This prevents cross-sport stat collisions (e.g., "Points" in NHL vs NBA)
+    const sportFilteredProps = sportFilter === "all" 
+      ? dfsPropsFiltered 
+      : dfsPropsFiltered.filter(p => p.sport === sportFilter);
+
     const sportsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.sport)))];
-    const statsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.stat)))];
-    const platformsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.platform)))];
+    const statsList = ["all", ...Array.from(new Set(sportFilteredProps.map(p => p.stat)))];
+    const platformsList = ["all", ...Array.from(new Set(sportFilteredProps.map(p => p.platform)))];
 
     return {
       dfsProps: dfsPropsFiltered,
