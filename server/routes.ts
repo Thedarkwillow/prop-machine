@@ -3,6 +3,8 @@ import { storage } from "./storage.js";
 import { insertPropSchema, insertSlipSchema, insertBetSchema } from "../shared/schema.js";
 import { z } from "zod";
 import { requireAuth, getUserId } from "./middleware/auth.js";
+import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
+import { opticOddsResultsStreamService } from "./services/opticOddsResultsStream.js";
 
 const router = express.Router();
 
@@ -498,6 +500,120 @@ router.get("/players/search", async (req, res) => {
   } catch (error) {
     console.error("Error searching players:", error);
     res.status(500).json({ error: "Failed to search players" });
+  }
+});
+
+// ==================== STREAMING CONTROL ROUTES ====================
+// Start streaming live odds from PrizePicks/Underdog
+router.post("/streaming/odds/start", requireAuth, async (req, res) => {
+  try {
+    const { sport, sportsbooks, leagues, markets, isMain } = req.body;
+    
+    if (!sport) {
+      return res.status(400).json({ error: "sport is required" });
+    }
+    
+    if (!sportsbooks || !Array.isArray(sportsbooks) || sportsbooks.length === 0) {
+      return res.status(400).json({ error: "sportsbooks array is required" });
+    }
+    
+    const streamId = opticOddsStreamService.startOddsStream({
+      sport,
+      sportsbooks,
+      leagues,
+      markets,
+      isMain,
+    });
+    
+    res.json({
+      success: true,
+      streamId,
+      message: `Started streaming ${sport} odds from ${sportsbooks.join(', ')}`,
+    });
+  } catch (error) {
+    console.error("Error starting odds stream:", error);
+    res.status(500).json({ error: "Failed to start odds stream" });
+  }
+});
+
+// Stop specific odds stream
+router.post("/streaming/odds/stop/:streamId", requireAuth, async (req, res) => {
+  try {
+    const { streamId } = req.params;
+    const stopped = opticOddsStreamService.stopStream(streamId);
+    
+    if (stopped) {
+      res.json({ success: true, message: `Stopped stream ${streamId}` });
+    } else {
+      res.status(404).json({ error: "Stream not found" });
+    }
+  } catch (error) {
+    console.error("Error stopping odds stream:", error);
+    res.status(500).json({ error: "Failed to stop odds stream" });
+  }
+});
+
+// Get active odds streams
+router.get("/streaming/odds/active", requireAuth, async (req, res) => {
+  try {
+    const activeStreams = opticOddsStreamService.getActiveStreams();
+    res.json({ streams: activeStreams });
+  } catch (error) {
+    console.error("Error getting active streams:", error);
+    res.status(500).json({ error: "Failed to get active streams" });
+  }
+});
+
+// Start streaming live game results
+router.post("/streaming/results/start", requireAuth, async (req, res) => {
+  try {
+    const { sport, leagues } = req.body;
+    
+    if (!sport) {
+      return res.status(400).json({ error: "sport is required" });
+    }
+    
+    const streamId = opticOddsResultsStreamService.startResultsStream({
+      sport,
+      leagues,
+    });
+    
+    res.json({
+      success: true,
+      streamId,
+      message: `Started streaming ${sport} results`,
+    });
+  } catch (error) {
+    console.error("Error starting results stream:", error);
+    res.status(500).json({ error: "Failed to start results stream" });
+  }
+});
+
+// Stop specific results stream
+router.post("/streaming/results/stop/:streamId", requireAuth, async (req, res) => {
+  try {
+    const { streamId } = req.params;
+    const stopped = opticOddsResultsStreamService.stopStream(streamId);
+    
+    if (stopped) {
+      res.json({ success: true, message: `Stopped results stream ${streamId}` });
+    } else {
+      res.status(404).json({ error: "Results stream not found" });
+    }
+  } catch (error) {
+    console.error("Error stopping results stream:", error);
+    res.status(500).json({ error: "Failed to stop results stream" });
+  }
+});
+
+// Get active results streams
+router.get("/streaming/results/active", requireAuth, async (req, res) => {
+  try {
+    const activeStreams = opticOddsResultsStreamService.getActiveStreams();
+    res.json({ streams: activeStreams });
+  } catch (error) {
+    console.error("Error getting active results streams:", error);
+    res.status(500).json({ error: "Failed to get active results streams" });
   }
 });
 
