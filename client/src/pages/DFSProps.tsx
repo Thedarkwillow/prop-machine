@@ -11,13 +11,14 @@ export default function DFSProps() {
   const [sportFilter, setSportFilter] = useState<string>("all");
   const [statFilter, setStatFilter] = useState<string>("all");
   const [confidenceFilter, setConfidenceFilter] = useState<string>("all");
+  const [platformFilter, setPlatformFilter] = useState<string>("all");
 
   const { data: props, isLoading } = useQuery<Prop[]>({
     queryKey: ["/api/props"],
   });
 
   // Memoize filtered and grouped props for performance
-  const { dfsProps, filteredProps, sortedGroups, topPicks, sports, stats } = useMemo(() => {
+  const { dfsProps, filteredProps, sortedGroups, topPicks, sports, stats, platforms } = useMemo(() => {
     // Filter for DFS platforms: DraftKings, FanDuel, PrizePicks, Underdog Fantasy
     const dfsPropsFiltered = props?.filter(
       (p) =>
@@ -35,6 +36,7 @@ export default function DFSProps() {
       if (confidenceFilter === "high" && prop.confidence < 75) return false;
       if (confidenceFilter === "medium" && (prop.confidence < 60 || prop.confidence >= 75)) return false;
       if (confidenceFilter === "low" && prop.confidence >= 60) return false;
+      if (platformFilter !== "all" && prop.platform !== platformFilter) return false;
       return true;
     });
 
@@ -62,6 +64,7 @@ export default function DFSProps() {
 
     const sportsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.sport)))];
     const statsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.stat)))];
+    const platformsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.platform)))];
 
     return {
       dfsProps: dfsPropsFiltered,
@@ -69,9 +72,10 @@ export default function DFSProps() {
       sortedGroups: sorted,
       topPicks: top,
       sports: sportsList,
-      stats: statsList
+      stats: statsList,
+      platforms: platformsList
     };
-  }, [props, sportFilter, statFilter, confidenceFilter]);
+  }, [props, sportFilter, statFilter, confidenceFilter, platformFilter]);
 
   if (isLoading) {
     return (
@@ -90,7 +94,7 @@ export default function DFSProps() {
         <div>
           <h1 className="text-3xl font-bold" data-testid="text-dfs-title">DFS Props</h1>
           <p className="text-muted-foreground mt-1">
-            DraftKings & FanDuel player props (PrizePicks-style view)
+            DraftKings, FanDuel, PrizePicks & Underdog Fantasy player props
           </p>
         </div>
         <Badge variant="outline" className="text-lg px-4 py-2">
@@ -168,11 +172,16 @@ export default function DFSProps() {
                         </div>
 
                         <div className="flex gap-2 flex-wrap">
-                          {props.map((p) => (
-                            <Badge key={p.id} variant="secondary" className="text-xs">
-                              {p.platform.toLowerCase().includes('draftkings') ? 'DK' : 'FD'}: {parseFloat(p.line.toString()).toFixed(1)}
-                            </Badge>
-                          ))}
+                          {props.map((p) => {
+                            const platformName = p.platform.toLowerCase().includes('draftkings') ? 'DK' : 
+                                               p.platform.toLowerCase().includes('fanduel') ? 'FD' :
+                                               p.platform.toLowerCase().includes('prizepicks') ? 'PP' : 'UF';
+                            return (
+                              <Badge key={p.id} variant="secondary" className="text-xs">
+                                {platformName}: {parseFloat(p.line.toString()).toFixed(1)}
+                              </Badge>
+                            );
+                          })}
                         </div>
                       </div>
                     </CardContent>
@@ -197,6 +206,21 @@ export default function DFSProps() {
                   {sports.map((sport) => (
                     <SelectItem key={sport} value={sport}>
                       {sport === "all" ? "All Sports" : sport}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1 min-w-[200px]">
+              <Select value={platformFilter} onValueChange={setPlatformFilter}>
+                <SelectTrigger data-testid="select-platform-filter">
+                  <SelectValue placeholder="Platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  {platforms.map((platform) => (
+                    <SelectItem key={platform} value={platform}>
+                      {platform === "all" ? "All Platforms" : platform}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -236,6 +260,7 @@ export default function DFSProps() {
               variant="outline"
               onClick={() => {
                 setSportFilter("all");
+                setPlatformFilter("all");
                 setStatFilter("all");
                 setConfidenceFilter("all");
               }}
@@ -314,19 +339,24 @@ export default function DFSProps() {
                       </div>
 
                       <div className="flex gap-3 flex-wrap pt-2">
-                        {props.map((p) => (
-                          <div key={p.id} className="flex items-center gap-2 text-sm">
-                            <Badge variant="secondary">
-                              {p.platform.toLowerCase().includes('draftkings') ? 'DraftKings' : 'FanDuel'}
-                            </Badge>
-                            <span className="font-mono font-semibold">
-                              {parseFloat(p.line.toString()).toFixed(1)}
-                            </span>
-                            <span className="text-muted-foreground">
-                              ({p.confidence}% • +{parseFloat(p.ev.toString()).toFixed(1)}%)
-                            </span>
-                          </div>
-                        ))}
+                        {props.map((p) => {
+                          const platformName = p.platform.toLowerCase().includes('draftkings') ? 'DraftKings' : 
+                                             p.platform.toLowerCase().includes('fanduel') ? 'FanDuel' :
+                                             p.platform.toLowerCase().includes('prizepicks') ? 'PrizePicks' : 'Underdog Fantasy';
+                          return (
+                            <div key={p.id} className="flex items-center gap-2 text-sm">
+                              <Badge variant="secondary">
+                                {platformName}
+                              </Badge>
+                              <span className="font-mono font-semibold">
+                                {parseFloat(p.line.toString()).toFixed(1)}
+                              </span>
+                              <span className="text-muted-foreground">
+                                ({p.confidence}% • +{parseFloat(p.ev.toString()).toFixed(1)}%)
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
