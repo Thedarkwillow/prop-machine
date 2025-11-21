@@ -266,9 +266,43 @@ export class OpticOddsResultsStreamService {
           }
         }
 
-        // Find bets on this prop and settle them
-        // Note: Would need to query bets by propId
-        console.log(`    ${prop.direction === 'over' ? '📈' : '📉'} ${playerName} ${prop.stat} ${prop.direction} ${prop.line}: ${outcome.toUpperCase()} (${actualValue})`);
+        console.log(`    ${prop.direction === 'over' ? '📈' : '📉'} ${playerName} ${prop.stat} ${prop.direction} ${prop.line}: ${outcome.toUpperCase()} (actual: ${actualValue})`);
+
+        // Find all pending bets on this prop
+        const propBets = await this.storage.getBetsByPropId(prop.id);
+        const pendingBets = propBets.filter(bet => bet.status === 'pending');
+
+        if (pendingBets.length > 0) {
+          console.log(`      🎯 Settling ${pendingBets.length} pending bet(s)...`);
+        }
+
+        // Settle each pending bet
+        for (const bet of pendingBets) {
+          try {
+            const result = await this.storage.settleBetWithBankrollUpdate(
+              bet.id,
+              outcome,
+              actualValue.toString() // closing line
+            );
+
+            if (result.success) {
+              const emoji = outcome === 'won' ? '✅' : outcome === 'lost' ? '❌' : '🔄';
+              const changeText = result.bankrollChange > 0 
+                ? `+$${result.bankrollChange.toFixed(2)}`
+                : result.bankrollChange < 0
+                ? `-$${Math.abs(result.bankrollChange).toFixed(2)}`
+                : '$0.00';
+              
+              console.log(`        ${emoji} Bet #${bet.id} ${outcome}: ${changeText}`);
+              
+              // TODO: Update slip status if all bets in slip are settled
+            } else {
+              console.error(`        ❌ Failed to settle bet #${bet.id}: ${result.error}`);
+            }
+          } catch (error) {
+            console.error(`        ❌ Error settling bet #${bet.id}:`, error);
+          }
+        }
         
         // Deactivate the prop since game is complete
         await this.storage.deactivateProp(prop.id);

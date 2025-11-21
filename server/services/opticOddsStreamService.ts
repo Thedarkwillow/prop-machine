@@ -1,6 +1,7 @@
 import { EventSource } from 'eventsource';
 import type { IStorage } from '../storage';
 import { storage } from '../storage';
+import { opticOddsClient } from '../integrations/opticOddsClient';
 
 interface StreamOddsEvent {
   id: string;
@@ -32,6 +33,12 @@ interface StreamConfig {
   isMain?: boolean;
 }
 
+interface FixtureCache {
+  homeTeam: string;
+  awayTeam: string;
+  sport: string;
+}
+
 export class OpticOddsStreamService {
   private storage: IStorage;
   private apiKey: string;
@@ -39,6 +46,7 @@ export class OpticOddsStreamService {
   private activeStreams: Map<string, EventSource> = new Map();
   private lastEntryIds: Map<string, string> = new Map();
   private reconnectAttempts: Map<string, number> = new Map();
+  private fixtureCache: Map<string, FixtureCache> = new Map();
   private maxReconnectAttempts = 5;
   private reconnectDelay = 5000;
 
@@ -48,6 +56,28 @@ export class OpticOddsStreamService {
 
     if (!this.apiKey) {
       console.warn('⚠️  No OPTICODDS_API_KEY configured for streaming');
+    }
+  }
+
+  /**
+   * Fetch and cache fixture data for team name lookups
+   */
+  private async cacheFixtures(sport: string): Promise<void> {
+    try {
+      console.log(`📦 Fetching fixtures for ${sport} to cache team names...`);
+      const fixtures = await opticOddsClient.getActiveFixtures(sport);
+      
+      for (const fixture of fixtures) {
+        this.fixtureCache.set(fixture.id, {
+          homeTeam: fixture.home_team_display,
+          awayTeam: fixture.away_team_display,
+          sport: fixture.sport.name,
+        });
+      }
+      
+      console.log(`✅ Cached ${fixtures.length} fixtures for team lookups`);
+    } catch (error) {
+      console.error('❌ Failed to cache fixtures:', error);
     }
   }
 
@@ -63,6 +93,12 @@ export class OpticOddsStreamService {
     }
 
     console.log(`📡 Starting OpticOdds stream: ${streamId}`);
+    
+    // Fetch fixtures to populate team names
+    this.cacheFixtures(config.sport).catch(err =>
+      console.error('Failed to pre-cache fixtures:', err)
+    );
+    
     this.connectStream(streamId, config);
 
     return streamId;
@@ -231,12 +267,23 @@ export class OpticOddsStreamService {
         // Format stat name
         const statName = this.formatStatName(odd.market);
 
+        // Look up team names from fixture cache
+        const fixture = this.fixtureCache.get(odd.fixture_id);
+        let team = "TBD";
+        let opponent = "TBD";
+        
+        if (fixture) {
+          // Default to home team, but check team_id if available
+          team = fixture.homeTeam;
+          opponent = fixture.awayTeam;
+        }
+
         // Upsert prop (create new or update existing)
         await this.storage.upsertProp({
           sport: this.inferSportFromMarket(odd.market_id),
           player: playerName,
-          team: "TBD", // Would need fixture data to determine team
-          opponent: "TBD",
+          team,
+          opponent,
           stat: statName,
           line: odd.points.toString(),
           direction,

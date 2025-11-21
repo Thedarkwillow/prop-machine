@@ -85,6 +85,7 @@ export interface IStorage {
   // Bets
   getBet(betId: number): Promise<Bet | undefined>;
   getBetsByUser(userId: string): Promise<Bet[]>;
+  getBetsByPropId(propId: number): Promise<Bet[]>;
   getBetsWithProps(userId: string): Promise<(Bet & { prop?: Prop; slip?: Slip })[]>;
   createBet(bet: InsertBet): Promise<Bet>;
   placeBetWithBankrollCheck(bet: InsertBet): Promise<{ success: true; bet: Bet } | { success: false; error: string }>;
@@ -392,6 +393,10 @@ class MemStorage implements IStorage {
 
   async getBetsByUser(userId: string): Promise<Bet[]> {
     return Array.from(this.bets.values()).filter(b => b.userId === userId);
+  }
+
+  async getBetsByPropId(propId: number): Promise<Bet[]> {
+    return Array.from(this.bets.values()).filter(b => b.propId === propId);
   }
 
   async getBetsWithProps(userId: string): Promise<(Bet & { prop?: Prop })[]> {
@@ -1254,6 +1259,10 @@ class DbStorage implements IStorage {
 
   async getBetsByUser(userId: string): Promise<Bet[]> {
     return await db.select().from(bets).where(eq(bets.userId, userId));
+  }
+
+  async getBetsByPropId(propId: number): Promise<Bet[]> {
+    return await db.select().from(bets).where(eq(bets.propId, propId));
   }
 
   async getBetsWithProps(userId: string): Promise<(Bet & { prop?: Prop; slip?: Slip })[]> {
