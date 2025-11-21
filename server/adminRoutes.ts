@@ -9,6 +9,7 @@ import { propSchedulerService } from "./services/propSchedulerService";
 import { refreshProps } from "./seed";
 import { getUserId } from "./middleware/auth";
 import { opticOddsStreamService } from "./services/opticOddsStreamService";
+import { prizePicksClient } from "./integrations/prizePicksClient";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
@@ -463,6 +464,47 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error("Stream status error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Test PrizePicks API - discover NHL league ID
+  router.get("/prizepicks/test", requireAdmin, async (req, res) => {
+    try {
+      const { leagueId } = req.query;
+      
+      if (leagueId) {
+        // Test a specific league ID
+        const props = await prizePicksClient.getProjections(leagueId as string);
+        res.json({
+          success: true,
+          leagueId,
+          propsCount: props.length,
+          sampleProps: props.slice(0, 5),
+          sports: [...new Set(props.map(p => p.sport))],
+          leagues: [...new Set(props.map(p => p.league))],
+        });
+      } else {
+        // Try NHL discovery
+        const nhlProps = await prizePicksClient.getNHLProjections();
+        const faceoffProps = nhlProps.filter(p => 
+          p.stat.toLowerCase().includes('faceoff')
+        );
+        
+        res.json({
+          success: true,
+          totalNHL: nhlProps.length,
+          faceoffCount: faceoffProps.length,
+          faceoffs: faceoffProps,
+          sampleProps: nhlProps.slice(0, 10),
+        });
+      }
+    } catch (error) {
+      const err = error as Error;
+      console.error("PrizePicks test error:", error);
       res.status(500).json({
         success: false,
         error: err.message,
