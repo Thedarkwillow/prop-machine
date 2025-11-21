@@ -170,7 +170,8 @@ const server = app.listen(PORT, "0.0.0.0", () => {
     console.log("📡 Auto-starting OpticOdds streaming for DFS platforms...");
     
     // Start streams for NBA, NFL, NHL
-    const sports = ['basketball_nba', 'americanfootball_nfl', 'icehockey_nhl'];
+    // OpticOdds uses simple sport identifiers: basketball, football, hockey (NOT basketball_nba, americanfootball_nfl, etc.)
+    const sports = ['basketball', 'football', 'hockey'];
     const sportsbooks = ['PrizePicks', 'Underdog'];
     
     sports.forEach(sport => {

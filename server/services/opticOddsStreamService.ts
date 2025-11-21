@@ -204,6 +204,14 @@ export class OpticOddsStreamService {
     }
 
     const url = `${this.baseUrl}/stream/odds/${config.sport}?${params.toString()}`;
+    
+    // Log the exact URL being attempted (with API key masked for security)
+    const maskedUrl = url.replace(/key=[^&]+/, 'key=***MASKED***');
+    console.log(`🔗 Attempting to connect to: ${maskedUrl}`);
+    console.log(`   Sport: ${config.sport}`);
+    console.log(`   Sportsbooks: ${config.sportsbooks.join(', ')}`);
+    console.log(`   Leagues: ${config.leagues?.join(', ') || 'all'}`);
+    console.log(`   Markets: ${config.markets?.join(', ') || 'all'}`);
 
     const eventSource = new EventSource(url);
 
