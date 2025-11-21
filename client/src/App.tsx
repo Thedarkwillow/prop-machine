@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3, GitCompare, Users, Activity, MessageSquare } from "lucide-react";
+import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3, GitCompare, Users, Activity, MessageSquare, Target } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
@@ -18,6 +18,7 @@ import PropComparison from "@/pages/PropComparison";
 import PlayerComparison from "@/pages/PlayerComparison";
 import LiveScoreboard from "@/pages/LiveScoreboard";
 import DiscordSettings from "@/pages/DiscordSettings";
+import DFSProps from "@/pages/DFSProps";
 import { useHighConfidenceNotifications } from "@/hooks/use-high-confidence-notifications";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -64,6 +65,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Dashboard} />
+          <Route path="/dfs-props" component={DFSProps} />
           <Route path="/build-slip" component={BuildSlip} />
           <Route path="/history" component={BetHistory} />
           <Route path="/performance" component={Performance} />
@@ -87,6 +89,7 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
   
   const baseNavItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard, testId: "nav-dashboard", badge: highConfidenceCount > 0 ? highConfidenceCount : undefined },
+    { path: "/dfs-props", label: "DFS Props", icon: Target, testId: "nav-dfs-props" },
     { path: "/build-slip", label: "Build Slip", icon: Plus, testId: "nav-build-slip" },
     { path: "/scoreboard", label: "Live Scores", icon: Activity, testId: "nav-scoreboard" },
     { path: "/prop-comparison", label: "Prop Compare", icon: GitCompare, testId: "nav-prop-comparison" },
