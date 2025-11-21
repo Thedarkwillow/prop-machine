@@ -187,6 +187,14 @@ process.on("uncaughtException", (err) => {
 /* ------------------------- DEV: VITE ------------------------- */
 
 if (process.env.NODE_ENV !== "production") {
-  const { setupVite } = await import("./vite.js");
-  setupVite(app, server);
+  (async () => {
+    try {
+      const { setupVite } = await import("./vite.js");
+      await setupVite(app, server);
+      console.log("✨ Vite dev server ready");
+    } catch (error) {
+      console.error("❌ Failed to setup Vite:", error);
+      process.exit(1);
+    }
+  })();
 }
