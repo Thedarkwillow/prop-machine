@@ -8,6 +8,7 @@ import { propRefreshService } from "./services/propRefreshService";
 import { propSchedulerService } from "./services/propSchedulerService";
 import { refreshProps } from "./seed";
 import { getUserId } from "./middleware/auth";
+import { OpticOddsStreamService } from "./services/opticOddsStreamService";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
@@ -51,6 +52,7 @@ async function requireAuth(req: any, res: any, next: any) {
 
 export function adminRoutes(): Router {
   const router = Router();
+  const streamService = new OpticOddsStreamService();
   
   // Get prop scheduler status (public - read-only status info)
   router.get("/props/scheduler/status", async (req, res) => {
@@ -82,7 +84,7 @@ export function adminRoutes(): Router {
           totalPropsCreated: result.totalPropsCreated,
           totalErrors: result.totalErrors,
         },
-        results: result.results.map(r => ({
+        results: result.results.map((r: any) => ({
           platform: r.platform,
           sport: r.sport,
           propsFetched: r.propsFetched,
@@ -350,6 +352,118 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error("Rescore error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // OpticOdds Streaming Endpoints
+  
+  // Start a new OpticOdds stream for PrizePicks/Underdog
+  router.post("/streaming/start", async (req, res) => {
+    try {
+      const { sport, sportsbooks } = req.body;
+      
+      if (!sport) {
+        return res.status(400).json({
+          success: false,
+          error: "sport is required (e.g., basketball_nba, icehockey_nhl)",
+        });
+      }
+      
+      const targetSportsbooks = sportsbooks || ['PrizePicks', 'Underdog'];
+      
+      const streamId = streamService.startOddsStream({
+        sport,
+        sportsbooks: targetSportsbooks,
+      });
+      
+      res.json({
+        success: true,
+        streamId,
+        sport,
+        sportsbooks: targetSportsbooks,
+        message: `Started streaming ${targetSportsbooks.join(' and ')} odds for ${sport}`,
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Stream start error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+  
+  // Stop a specific stream
+  router.post("/streaming/stop", async (req, res) => {
+    try {
+      const { streamId } = req.body;
+      
+      if (!streamId) {
+        return res.status(400).json({
+          success: false,
+          error: "streamId is required",
+        });
+      }
+      
+      const stopped = streamService.stopStream(streamId);
+      
+      if (stopped) {
+        res.json({
+          success: true,
+          message: `Stopped stream: ${streamId}`,
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          error: `Stream not found: ${streamId}`,
+        });
+      }
+    } catch (error) {
+      const err = error as Error;
+      console.error("Stream stop error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+  
+  // Stop all active streams
+  router.post("/streaming/stop-all", async (req, res) => {
+    try {
+      streamService.stopAllStreams();
+      
+      res.json({
+        success: true,
+        message: "Stopped all active streams",
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Stream stop-all error:", error);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+  
+  // Get status of all active streams
+  router.get("/streaming/status", async (req, res) => {
+    try {
+      const activeStreams = streamService.getActiveStreams();
+      
+      res.json({
+        success: true,
+        activeStreams,
+        count: activeStreams.length,
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Stream status error:", error);
       res.status(500).json({
         success: false,
         error: err.message,
