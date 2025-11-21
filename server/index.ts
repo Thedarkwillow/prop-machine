@@ -172,7 +172,9 @@ const server = app.listen(PORT, "0.0.0.0", () => {
     // Start streams for NBA, NFL, NHL
     // OpticOdds uses simple sport identifiers: basketball, football, hockey (NOT basketball_nba, americanfootball_nfl, etc.)
     const sports = ['basketball', 'football', 'hockey'];
-    const sportsbooks = ['PrizePicks', 'Underdog'];
+    // IMPORTANT: Use exact sportsbook IDs from OpticOdds API (verified via /sportsbooks/active endpoint)
+    // Trying IDs instead of names: prizepicks (not PrizePicks), underdog_fantasy (not "Underdog Fantasy")
+    const sportsbooks = ['prizepicks', 'underdog_fantasy'];
     
     sports.forEach(sport => {
       try {
