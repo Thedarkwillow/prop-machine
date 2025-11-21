@@ -278,10 +278,9 @@ export class OpticOddsStreamService {
           opponent = fixture.awayTeam;
         }
 
-        // Validate fixture_id exists (critical for accurate grading)
+        // Log warning if fixture_id is missing (for monitoring data quality)
         if (!odd.fixture_id) {
-          console.warn(`⚠️  Missing fixture_id for ${odd.sportsbook}: ${playerName} ${statName} - skipping`);
-          continue;
+          console.warn(`⚠️  Missing fixture_id for ${odd.sportsbook}: ${playerName} ${statName} - will use global matching`);
         }
 
         // Upsert prop (create new or update existing)
@@ -295,7 +294,7 @@ export class OpticOddsStreamService {
           direction,
           odds: odd.price,
           platform: odd.sportsbook,
-          fixtureId: odd.fixture_id, // Store OpticOdds fixture ID
+          fixtureId: odd.fixture_id || null, // Store OpticOdds fixture ID (null if missing)
           marketId: odd.market_id,   // Store OpticOdds market ID
           confidence: 0.5, // Placeholder - would be calculated by ML model
           ev: "0",
@@ -305,7 +304,8 @@ export class OpticOddsStreamService {
           isActive: true,
         });
 
-        console.log(`  ✅ ${odd.sportsbook}: ${playerName} ${statName} ${direction} ${odd.points} @ ${odd.price} [fixture: ${odd.fixture_id.substring(0, 8)}]`);
+        const fixtureTag = odd.fixture_id ? `[fixture: ${odd.fixture_id.substring(0, 8)}]` : '[no fixture_id]';
+        console.log(`  ✅ ${odd.sportsbook}: ${playerName} ${statName} ${direction} ${odd.points} @ ${odd.price} ${fixtureTag}`);
       } catch (error) {
         console.error(`  ❌ Error processing prop:`, error);
       }

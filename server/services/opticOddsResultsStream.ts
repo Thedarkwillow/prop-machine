@@ -238,24 +238,32 @@ export class OpticOddsResultsStreamService {
   ): Promise<number[]> {
     const settledBetIds: number[] = [];
     try {
-      // Find props matching this player, stat, AND fixture_id (critical for accuracy)
+      // Strategy: Prefer fixture-scoped props for accuracy, but fall back to global if needed
       const fixtureProps = await this.storage.getActivePropsByFixtureId(fixtureId);
-      const matchingProps = fixtureProps.filter(
+      const fixtureScopedProps = fixtureProps.filter(
         prop => 
           prop.player.toLowerCase() === playerName.toLowerCase() &&
           prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
-          prop.fixtureId !== null // CRITICAL: Skip props without fixture_id to prevent misgrading
+          prop.fixtureId !== null
       );
 
-      // Log warning if we found props without fixture_id
-      const propsWithoutFixture = fixtureProps.filter(
-        prop => 
-          prop.player.toLowerCase() === playerName.toLowerCase() &&
-          prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
-          prop.fixtureId === null
-      );
-      if (propsWithoutFixture.length > 0) {
-        console.warn(`⚠️  Skipping ${propsWithoutFixture.length} props for ${playerName} ${statName} - missing fixture_id`);
+      // If we have fixture-scoped props, use those (most accurate)
+      let matchingProps = fixtureScopedProps;
+
+      // Otherwise, fall back to global props for this player (backward compatibility)
+      if (matchingProps.length === 0) {
+        console.warn(`⚠️  No fixture-scoped props for ${playerName} ${statName} - checking global props`);
+        const allActiveProps = await this.storage.getAllActiveProps();
+        matchingProps = allActiveProps.filter(
+          prop =>
+            prop.player.toLowerCase() === playerName.toLowerCase() &&
+            prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
+            prop.fixtureId === null // Only match legacy props without fixture_id
+        );
+        
+        if (matchingProps.length > 0) {
+          console.log(`  📋 Found ${matchingProps.length} legacy props (no fixture_id) for ${playerName} ${statName}`);
+        }
       }
 
       if (matchingProps.length === 0) return settledBetIds;
