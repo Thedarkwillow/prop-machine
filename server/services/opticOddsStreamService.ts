@@ -444,6 +444,7 @@ export class OpticOddsStreamService {
 
   private isPlayerPropMarket(marketId: string): boolean {
     const playerPropMarkets = [
+      // NBA
       'player_points',
       'player_rebounds',
       'player_assists',
@@ -460,6 +461,40 @@ export class OpticOddsStreamService {
       'player_triple_double',
       'player_shots_made',
       'player_first_basket',
+      // NHL
+      'player_goals',
+      'player_shots_on_goal',
+      'player_blocked_shots',
+      'player_power_play_points',
+      'player_faceoffs_won',
+      'player_faceoffs',
+      'player_saves',
+      'player_goals_allowed',
+      'player_hits',
+      'player_time_on_ice',
+      'goalie_saves',
+      'goalie_goals_allowed',
+      // NFL
+      'player_passing_yards',
+      'player_passing_tds',
+      'player_rushing_yards',
+      'player_rushing_tds',
+      'player_receiving_yards',
+      'player_receptions',
+      'player_receiving_tds',
+      'player_pass_completions',
+      'player_pass_attempts',
+      'player_rush_attempts',
+      'player_longest_rush',
+      'player_longest_reception',
+      // MLB
+      'pitcher_strikeouts',
+      'batter_hits',
+      'batter_total_bases',
+      'batter_rbis',
+      'batter_runs_scored',
+      'batter_home_runs',
+      'batter_stolen_bases',
     ];
 
     return playerPropMarkets.includes(marketId);
