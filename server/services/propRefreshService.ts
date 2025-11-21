@@ -285,8 +285,20 @@ export class PropRefreshService {
 
       console.log(`Found ${normalizedProps.length} props from The Odds API`);
       
-      const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'The Odds API');
-      console.log(`Found ${oldPropIds.length} existing active The Odds API ${sport} props to replace`);
+      // Get unique bookmakers from this batch of props
+      const bookmakersSet = new Set(normalizedProps.map(p => p.platform));
+      const uniqueBookmakers = Array.from(bookmakersSet);
+      console.log(`📚 Bookmakers in this batch: ${uniqueBookmakers.join(', ')}`);
+      
+      // Collect old prop IDs for the specific bookmakers in this batch
+      // Skip legacy "The Odds API" to avoid stack overflow with 250k+ items
+      const oldPropIds: number[] = [];
+      for (const bookmaker of uniqueBookmakers) {
+        const ids = await storage.getActivePropIdsBySportAndPlatform(sport, bookmaker);
+        // Use push.apply to avoid stack overflow from spread operator
+        oldPropIds.push.apply(oldPropIds, ids);
+      }
+      console.log(`Found ${oldPropIds.length} existing active ${sport} props to replace for ${uniqueBookmakers.length} bookmakers`);
 
       for (const rawProp of normalizedProps) {
         try {
@@ -310,7 +322,7 @@ export class PropRefreshService {
             currentLine: rawProp.line,
             direction: rawProp.direction,
             period: 'full_game',
-            platform: 'The Odds API',
+            platform: rawProp.platform, // Use the actual bookmaker name (e.g., DraftKings, FanDuel, PrizePicks)
             confidence: basicConfidence,
             ev: basicEV.toFixed(2),
             modelProbability: basicProb.toFixed(3),
@@ -332,10 +344,17 @@ export class PropRefreshService {
       }
 
       if (result.propsCreated > 0 && oldPropIds.length > 0) {
-        const deactivatedCount = await storage.deactivateSpecificProps(oldPropIds);
-        console.log(`Deactivated ${deactivatedCount} old The Odds API ${sport} props after successfully creating ${result.propsCreated} new props`);
+        // Deactivate in batches to avoid stack overflow
+        const batchSize = 1000;
+        let deactivatedCount = 0;
+        for (let i = 0; i < oldPropIds.length; i += batchSize) {
+          const batch = oldPropIds.slice(i, i + batchSize);
+          const count = await storage.deactivateSpecificProps(batch);
+          deactivatedCount += count;
+        }
+        console.log(`Deactivated ${deactivatedCount} old ${sport} props after successfully creating ${result.propsCreated} new props`);
       } else if (result.propsCreated === 0) {
-        console.log(`No props created for The Odds API ${sport}, keeping ${oldPropIds.length} existing props active`);
+        console.log(`No props created for ${sport}, keeping ${oldPropIds.length} existing props active`);
       }
 
       result.success = true;

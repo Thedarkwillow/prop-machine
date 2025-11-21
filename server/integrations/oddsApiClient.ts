@@ -224,7 +224,7 @@ class OddsApiClient extends IntegrationClient {
             if (!outcome.point) continue; // Skip if no line
 
             // Create both over and under props
-            // Note: Using "The Odds API" as platform since we aggregate from multiple bookmakers
+            // Use the actual bookmaker name (e.g., PrizePicks, Underdog, DraftKings)
             props.push({
               player: outcome.name,
               team: outcome.description || game.home_team,
@@ -232,7 +232,7 @@ class OddsApiClient extends IntegrationClient {
               stat: statName,
               line: outcome.point.toString(),
               direction: "over" as const,
-              platform: "The Odds API",
+              platform: bookmaker.title, // Use actual bookmaker name
               gameTime,
               odds: outcome.price,
             });
@@ -244,7 +244,7 @@ class OddsApiClient extends IntegrationClient {
               stat: statName,
               line: outcome.point.toString(),
               direction: "under" as const,
-              platform: "The Odds API",
+              platform: bookmaker.title, // Use actual bookmaker name
               gameTime,
               odds: outcome.price,
             });
