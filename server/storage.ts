@@ -1186,6 +1186,7 @@ class DbStorage implements IStorage {
           currentLine: prop.currentLine ?? null,
           gameTime: prop.gameTime,
           marketId: prop.marketId ?? null,
+          fixtureId: prop.fixtureId ?? null, // Update fixture ID when available from streaming
         })
         .where(eq(props.id, existing[0].id))
         .returning();
