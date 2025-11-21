@@ -278,6 +278,12 @@ export class OpticOddsStreamService {
           opponent = fixture.awayTeam;
         }
 
+        // Validate fixture_id exists (critical for accurate grading)
+        if (!odd.fixture_id) {
+          console.warn(`⚠️  Missing fixture_id for ${odd.sportsbook}: ${playerName} ${statName} - skipping`);
+          continue;
+        }
+
         // Upsert prop (create new or update existing)
         await this.storage.upsertProp({
           sport: this.inferSportFromMarket(odd.market_id),
@@ -299,7 +305,7 @@ export class OpticOddsStreamService {
           isActive: true,
         });
 
-        console.log(`  ✅ ${odd.sportsbook}: ${playerName} ${statName} ${direction} ${odd.points} @ ${odd.price}`);
+        console.log(`  ✅ ${odd.sportsbook}: ${playerName} ${statName} ${direction} ${odd.points} @ ${odd.price} [fixture: ${odd.fixture_id.substring(0, 8)}]`);
       } catch (error) {
         console.error(`  ❌ Error processing prop:`, error);
       }

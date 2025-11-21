@@ -243,8 +243,20 @@ export class OpticOddsResultsStreamService {
       const matchingProps = fixtureProps.filter(
         prop => 
           prop.player.toLowerCase() === playerName.toLowerCase() &&
-          prop.stat.toLowerCase().includes(statName.toLowerCase())
+          prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
+          prop.fixtureId !== null // CRITICAL: Skip props without fixture_id to prevent misgrading
       );
+
+      // Log warning if we found props without fixture_id
+      const propsWithoutFixture = fixtureProps.filter(
+        prop => 
+          prop.player.toLowerCase() === playerName.toLowerCase() &&
+          prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
+          prop.fixtureId === null
+      );
+      if (propsWithoutFixture.length > 0) {
+        console.warn(`⚠️  Skipping ${propsWithoutFixture.length} props for ${playerName} ${statName} - missing fixture_id`);
+      }
 
       if (matchingProps.length === 0) return settledBetIds;
 
