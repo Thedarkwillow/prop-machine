@@ -238,13 +238,12 @@ export class OpticOddsResultsStreamService {
   ): Promise<number[]> {
     const settledBetIds: number[] = [];
     try {
-      // Find props matching this player and stat
-      const allProps = await this.storage.getAllActiveProps();
-      const matchingProps = allProps.filter(
+      // Find props matching this player, stat, AND fixture_id (critical for accuracy)
+      const fixtureProps = await this.storage.getActivePropsByFixtureId(fixtureId);
+      const matchingProps = fixtureProps.filter(
         prop => 
           prop.player.toLowerCase() === playerName.toLowerCase() &&
-          prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
-          prop.isActive
+          prop.stat.toLowerCase().includes(statName.toLowerCase())
       );
 
       if (matchingProps.length === 0) return settledBetIds;
@@ -310,9 +309,14 @@ export class OpticOddsResultsStreamService {
             console.error(`        ❌ Error settling bet #${bet.id}:`, error);
           }
         }
-        
-        // Deactivate the prop since game is complete
-        await this.storage.deactivateProp(prop.id);
+      }
+      
+      // Deactivate all props for this fixture (more efficient than per-prop deactivation)
+      if (matchingProps.length > 0) {
+        const count = await this.storage.deactivatePropsByFixtureId(fixtureId);
+        if (count > 0) {
+          console.log(`    🔒 Deactivated ${count} props for completed fixture ${fixtureId.substring(0, 8)}...`);
+        }
       }
     } catch (error) {
       console.error(`❌ Error grading ${playerName} ${statName}:`, error);

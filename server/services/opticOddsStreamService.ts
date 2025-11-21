@@ -348,8 +348,14 @@ export class OpticOddsStreamService {
     
     if (lockedFixtures.length > 0) {
       console.log(`  Deactivating props for ${lockedFixtures.length} fixtures`);
-      // Note: Would need a storage method to deactivate by fixture_id
-      // For now, just log it
+      
+      // Deactivate props for each locked fixture
+      for (const fixtureId of lockedFixtures) {
+        const count = await this.storage.deactivatePropsByFixtureId(fixtureId);
+        if (count > 0) {
+          console.log(`    🔒 Deactivated ${count} props for locked fixture ${fixtureId.substring(0, 8)}...`);
+        }
+      }
     }
   }
 
