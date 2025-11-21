@@ -13,8 +13,10 @@ export default function DFSProps() {
   const [confidenceFilter, setConfidenceFilter] = useState<string>("all");
   const [platformFilter, setPlatformFilter] = useState<string>("all");
 
+  // Fetch with higher limit to ensure we get props from all sports (NBA, NFL, NHL)
+  // Default API limit is 100 which might only return NBA props due to large volume
   const { data: props, isLoading } = useQuery<Prop[]>({
-    queryKey: ["/api/props"],
+    queryKey: ["/api/props?limit=5000"],
   });
 
   // Memoize filtered and grouped props for performance
