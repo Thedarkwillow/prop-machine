@@ -29,13 +29,7 @@ const formatNumber = (value: number, decimals: number = 1): string => {
   return parseFloat(fixed).toString();
 };
 
-// Sport-specific stat types
-const SPORT_STATS: Record<string, string[]> = {
-  NHL: ['SOG', 'Points', 'Goals', 'Assists', 'Saves'],
-  NBA: ['Points', 'Rebounds', 'Assists', 'Threes'],
-  NFL: ['Pass Yards', 'Rush Yards', 'Receptions', 'Pass TDs'],
-  MLB: ['Hits', 'Strikeouts', 'Total Bases', 'Runs + RBIs'],
-};
+// No hardcoded stat types - we'll dynamically extract them from available props
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -211,6 +205,10 @@ export default function Dashboard() {
   
   // Get unique platforms from props for filter dropdown
   const availablePlatforms = Array.from(new Set(transformedProps.map((prop: any) => prop.platform)))
+    .sort();
+
+  // Get unique stat types from props for filter dropdown (dynamic)
+  const availableStats = Array.from(new Set(transformedProps.map((prop: any) => prop.stat)))
     .sort();
 
   // Week 1 goals calculation
@@ -394,7 +392,7 @@ export default function Dashboard() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Stats</SelectItem>
-                      {SPORT_STATS[selectedSport]?.map((stat) => (
+                      {availableStats.map((stat) => (
                         <SelectItem key={stat} value={stat}>
                           {stat}
                         </SelectItem>
