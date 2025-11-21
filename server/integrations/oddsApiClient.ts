@@ -35,16 +35,35 @@ const ODDS_API_RATE_LIMIT: RateLimitConfig = {
   requestsPerDay: 500,
 };
 
+// Sport-specific market mappings for The Odds API
+const SPORT_MARKETS: Record<string, string> = {
+  'basketball_nba': 'player_points,player_rebounds,player_assists,player_threes,player_blocks,player_steals',
+  'icehockey_nhl': 'player_points,player_assists,player_shots_on_goal,player_blocked_shots,player_power_play_points',
+  'americanfootball_nfl': 'player_pass_yds,player_pass_tds,player_pass_completions,player_pass_attempts,player_pass_interceptions,player_rush_yds,player_rush_attempts,player_receptions,player_reception_yds,player_kicking_points,player_field_goals,player_anytime_td,player_first_td',
+  'baseball_mlb': 'player_hits,player_total_bases,player_rbis,player_runs_scored,player_home_runs,player_stolen_bases,pitcher_strikeouts,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs',
+};
+
 class OddsApiClient extends IntegrationClient {
   private apiKey: string;
+  private maxEventsPerSport: number;
 
   constructor() {
     super("https://api.the-odds-api.com/v4", ODDS_API_RATE_LIMIT);
     this.apiKey = process.env.ODDS_API_KEY || "";
+    this.maxEventsPerSport = parseInt(process.env.ODDS_API_MAX_EVENTS_PER_SPORT || "50", 10);
     
     if (!this.apiKey) {
       console.warn("ODDS_API_KEY not set - odds data will be unavailable");
     }
+    
+    console.log(`🎯 Odds API configured with max ${this.maxEventsPerSport} events per sport`);
+  }
+  
+  /**
+   * Get sport-specific markets for The Odds API
+   */
+  private getSportMarkets(sport: string): string {
+    return SPORT_MARKETS[sport] || SPORT_MARKETS['basketball_nba'];
   }
 
   async getUpcomingGames(sport: string = "basketball_nba"): Promise<OddsApiResponse> {
@@ -90,6 +109,8 @@ class OddsApiClient extends IntegrationClient {
       return { data: [] };
     }
 
+    const markets = this.getSportMarkets(sport);
+
     // If no eventId provided, get all upcoming events and fetch props for each
     if (!eventId) {
       const events = await this.getUpcomingEvents(sport);
@@ -99,19 +120,25 @@ class OddsApiClient extends IntegrationClient {
         return { data: [] };
       }
 
-      console.log(`Found ${events.length} upcoming ${sport} events, fetching player props...`);
+      const totalEvents = events.length;
+      const eventsToFetch = events.slice(0, this.maxEventsPerSport);
+      
+      console.log(`📊 Found ${totalEvents} upcoming ${sport} events`);
+      console.log(`🎯 Fetching player props from ${eventsToFetch.length} events (limit: ${this.maxEventsPerSport})`);
+      if (totalEvents > this.maxEventsPerSport) {
+        console.log(`⚠️  Skipping ${totalEvents - this.maxEventsPerSport} events to protect API quota`);
+      }
       
       const allGames: OddsApiGame[] = [];
-      
-      // Fetch props for each event (limit to first 10 to avoid excessive API calls)
-      const eventsToFetch = events.slice(0, 10);
+      let successCount = 0;
+      let errorCount = 0;
       
       for (const event of eventsToFetch) {
         try {
           const params = new URLSearchParams({
             apiKey: this.apiKey,
             regions: "us",
-            markets: "player_points,player_rebounds,player_assists,player_threes,player_blocks,player_steals",
+            markets,
             oddsFormat: "american",
           });
 
@@ -121,11 +148,18 @@ class OddsApiClient extends IntegrationClient {
 
           if (response?.data) {
             allGames.push(response.data);
+            successCount++;
           }
         } catch (error) {
-          console.error(`Error fetching props for event ${event.id}:`, error);
+          errorCount++;
+          console.error(`❌ Error fetching props for event ${event.id}:`, error);
           // Continue with other events even if one fails
         }
+      }
+
+      console.log(`✅ Successfully fetched props from ${successCount}/${eventsToFetch.length} events`);
+      if (errorCount > 0) {
+        console.log(`⚠️  ${errorCount} events failed to fetch`);
       }
 
       return { data: allGames };
@@ -135,7 +169,7 @@ class OddsApiClient extends IntegrationClient {
     const params = new URLSearchParams({
       apiKey: this.apiKey,
       regions: "us",
-      markets: "player_points,player_rebounds,player_assists,player_threes,player_blocks,player_steals",
+      markets,
       oddsFormat: "american",
     });
 

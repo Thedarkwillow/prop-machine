@@ -52,6 +52,10 @@ localPort = 38609
 externalPort = 3002
 
 [[ports]]
+localPort = 42449
+externalPort = 9000
+
+[[ports]]
 localPort = 42539
 externalPort = 8008
 
@@ -97,3 +101,8 @@ waitForPort = 5000
 
 [agent]
 integrations = ["discord:1.0.0", "google-sheet:1.0.0", "javascript_log_in_with_replit:1.0.0", "javascript_database:1.0.0", "javascript_websocket:1.0.0", "github:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+ODDS_API_MAX_EVENTS_PER_SPORT = "50"
