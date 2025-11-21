@@ -191,12 +191,18 @@ export function normalizeStat(stat: string): string {
   
   // If no direct mapping, apply general normalization rules:
   // 1. Replace underscores with spaces
-  // 2. Lowercase the entire string
-  // 3. Convert to title case (capitalize first letter of each word)
-  let normalized = stat.replace(/_/g, ' ').toLowerCase();
+  // 2. Lowercase the entire string and trim
+  // 3. Collapse multiple spaces into single space
+  // 4. Convert to title case (capitalize first letter of each word)
+  let normalized = stat
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' '); // Collapse multiple spaces
   
-  // Title case: capitalize first letter of each word
+  // Title case: capitalize first letter of each word (filter out empty tokens)
   normalized = normalized.split(' ')
+    .filter(word => word.length > 0)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
   
