@@ -206,18 +206,24 @@ export class OpticOddsResultsStreamService {
     console.log(`🎯 Grading bets for fixture ${fixtureId} with ${playerStats.length} player stats`);
     
     try {
-      // Get all pending bets (we'll need to add fixture tracking to bets in the future)
-      // For now, we'll match by player name and stat type
+      const settledBetIds: number[] = [];
       
       for (const playerStat of playerStats) {
         // For each stat category, grade relevant bets
         for (const [statName, statValue] of Object.entries(playerStat.stats)) {
-          await this.gradeBetsForPlayerStat(
+          const betIds = await this.gradeBetsForPlayerStat(
             playerStat.player_name,
             statName,
-            statValue
+            statValue,
+            fixtureId
           );
+          settledBetIds.push(...betIds);
         }
+      }
+
+      // After all bets settled, update slip statuses
+      if (settledBetIds.length > 0) {
+        await this.updateSlipStatuses(settledBetIds);
       }
     } catch (error) {
       console.error(`❌ Error grading bets for fixture ${fixtureId}:`, error);
@@ -227,8 +233,10 @@ export class OpticOddsResultsStreamService {
   private async gradeBetsForPlayerStat(
     playerName: string,
     statName: string,
-    actualValue: number
-  ): Promise<void> {
+    actualValue: number,
+    fixtureId: string
+  ): Promise<number[]> {
+    const settledBetIds: number[] = [];
     try {
       // Find props matching this player and stat
       const allProps = await this.storage.getAllActiveProps();
@@ -239,7 +247,7 @@ export class OpticOddsResultsStreamService {
           prop.isActive
       );
 
-      if (matchingProps.length === 0) return;
+      if (matchingProps.length === 0) return settledBetIds;
 
       console.log(`  📊 Found ${matchingProps.length} props for ${playerName} ${statName} (actual: ${actualValue})`);
 
@@ -294,8 +302,7 @@ export class OpticOddsResultsStreamService {
                 : '$0.00';
               
               console.log(`        ${emoji} Bet #${bet.id} ${outcome}: ${changeText}`);
-              
-              // TODO: Update slip status if all bets in slip are settled
+              settledBetIds.push(bet.id);
             } else {
               console.error(`        ❌ Failed to settle bet #${bet.id}: ${result.error}`);
             }
@@ -309,6 +316,69 @@ export class OpticOddsResultsStreamService {
       }
     } catch (error) {
       console.error(`❌ Error grading ${playerName} ${statName}:`, error);
+    }
+    
+    return settledBetIds;
+  }
+
+  /**
+   * Update slip statuses after bets are settled
+   */
+  private async updateSlipStatuses(settledBetIds: number[]): Promise<void> {
+    try {
+      // Get unique slip IDs from settled bets
+      const slipIds = new Set<number>();
+      
+      for (const betId of settledBetIds) {
+        const bet = await this.storage.getBet(betId);
+        if (bet?.slipId) {
+          slipIds.add(bet.slipId);
+        }
+      }
+
+      if (slipIds.size === 0) return;
+
+      console.log(`📋 Checking ${slipIds.size} slip(s) for status updates...`);
+
+      // For each slip, check if all bets are settled
+      for (const slipId of Array.from(slipIds)) {
+        const slip = await this.storage.getSlip(slipId);
+        if (!slip) continue;
+
+        // Get all bets in this slip
+        const slipBetIds = (slip.picks as any[]).map((pick: any) => pick.betId).filter(Boolean);
+        if (slipBetIds.length === 0) continue;
+
+        // Fetch all bets
+        const slipBets = await Promise.all(
+          slipBetIds.map((id: number) => this.storage.getBet(id))
+        );
+
+        const validBets = slipBets.filter(b => b !== undefined);
+        if (validBets.length === 0) continue;
+
+        // Check if all bets are settled
+        const allSettled = validBets.every(bet => bet.status !== 'pending');
+        if (!allSettled) continue;
+
+        // Determine slip outcome
+        const wonCount = validBets.filter(b => b.status === 'won').length;
+        const lostCount = validBets.filter(b => b.status === 'lost').length;
+        
+        let slipStatus: 'won' | 'lost' | 'pushed';
+        if (lostCount > 0) {
+          slipStatus = 'lost'; // Any loss means slip lost
+        } else if (wonCount === validBets.length) {
+          slipStatus = 'won'; // All won means slip won
+        } else {
+          slipStatus = 'pushed'; // Mix of won/pushed means slip pushed
+        }
+
+        await this.storage.updateSlipStatus(slipId, slipStatus);
+        console.log(`  📋 Slip #${slipId}: ${slipStatus.toUpperCase()} (${wonCount}W ${lostCount}L ${validBets.length - wonCount - lostCount}P)`);
+      }
+    } catch (error) {
+      console.error('❌ Error updating slip statuses:', error);
     }
   }
 }
