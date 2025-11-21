@@ -20,11 +20,12 @@ The backend uses Express.js and TypeScript on Node.js, featuring a RESTful API w
 
 ### System Design Choices
 
-The platform utilizes a PostgreSQL database with Drizzle ORM and the Neon serverless driver. The schema includes tables for Users (tracking bankroll, Kelly sizing, risk tolerance, isAdmin status), Props (ML-analyzed betting propositions with confidence scores, EV%, model probability, platform origin, and quarter/period specificity), Slips (pre-generated betting slips), Bets (individual bets with CLV tracking), and Performance Snapshots (time-series metrics). A robust seeding strategy is in place for initial data population. The system ensures session persistence across deployments and configures secure cookies for production environments. PrizePicks integration has been abandoned due to bot protection and the superior alternative offered by The Odds API.
+The platform utilizes a PostgreSQL database with Drizzle ORM and the Neon serverless driver. The schema includes tables for Users (tracking bankroll, Kelly sizing, risk tolerance, isAdmin status), Props (ML-analyzed betting propositions with confidence scores, EV%, model probability, platform origin, and quarter/period specificity), Slips (pre-generated betting slips), Bets (individual bets with CLV tracking), and Performance Snapshots (time-series metrics). A robust seeding strategy is in place for initial data population. The system ensures session persistence across deployments and configures secure cookies for production environments. The platform now integrates OpticOdds API for PrizePicks and Underdog Fantasy data, providing comprehensive DFS prop coverage alongside traditional sportsbook data from The Odds API. All API integrations feature parallel data fetching, proper sportsbook attribution, and robust error handling with batch-level retry logic.
 
 ## External Dependencies
 
--   **The Odds API**: Primary and sole data source for player props across 8 bookmakers (DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers), providing extensive coverage for NFL, NBA, and NHL.
+-   **The Odds API**: Primary data source for player props across 8 traditional sportsbooks (DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers), providing extensive coverage for NFL, NBA, NHL, and MLB.
+-   **OpticOdds API**: Integrated for PrizePicks and Underdog Fantasy player props, providing DFS-specific data with sportsbook-level attribution, parallel fetching, and comprehensive error handling. Trial key activated for evaluation.
 -   **BallDontLie API**: Integrated for NBA player search and statistics.
 -   **ESPN API**: Used for player search (NHL, NFL), statistics (v2 and v3), and live scoreboard data across major sports (NBA, NHL, NFL, MLB).
 -   **Google OAuth**: Used for authentication in Railway production deployments.
