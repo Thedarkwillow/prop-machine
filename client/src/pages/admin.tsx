@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Database, TrendingUp, Play, RefreshCw } from "lucide-react";
+import { Settings, Database, TrendingUp, Play, RefreshCw, Radio, Activity } from "lucide-react";
 
 export default function Admin() {
   const { toast } = useToast();
@@ -14,6 +14,7 @@ export default function Admin() {
   const [isRescoring, setIsRescoring] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [testResults, setTestResults] = useState<any>(null);
+  const [isStreamingAction, setIsStreamingAction] = useState(false);
 
   const { data: stats, refetch: refetchStats } = useQuery<{
     stats: {
@@ -31,6 +32,15 @@ export default function Admin() {
     };
   }>({
     queryKey: ["/api/admin/stats"],
+  });
+
+  const { data: streamStatus, refetch: refetchStreams } = useQuery<{
+    success: boolean;
+    activeStreams: string[];
+    count: number;
+  }>({
+    queryKey: ["/api/admin/streaming/status"],
+    refetchInterval: 5000, // Auto-refresh every 5 seconds
   });
 
   const handleSettlement = async (sport?: string) => {
@@ -122,6 +132,75 @@ export default function Admin() {
         description: error.message || "Failed to test BALLDONTLIE API",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleStartStream = async (sport: string) => {
+    setIsStreamingAction(true);
+    try {
+      const res = await apiRequest("POST", "/api/admin/streaming/start", { sport, sportsbooks: ['PrizePicks', 'Underdog'] });
+      const response: any = await res.json();
+
+      toast({
+        title: "Stream Started",
+        description: response?.message || `Started streaming for ${sport}`,
+      });
+
+      refetchStreams();
+    } catch (error: any) {
+      toast({
+        title: "Start Failed",
+        description: error.message || "Failed to start stream",
+        variant: "destructive",
+      });
+    } finally {
+      setIsStreamingAction(false);
+    }
+  };
+
+  const handleStopStream = async (streamId: string) => {
+    setIsStreamingAction(true);
+    try {
+      const res = await apiRequest("POST", "/api/admin/streaming/stop", { streamId });
+      const response: any = await res.json();
+
+      toast({
+        title: "Stream Stopped",
+        description: response?.message || `Stopped stream: ${streamId}`,
+      });
+
+      refetchStreams();
+    } catch (error: any) {
+      toast({
+        title: "Stop Failed",
+        description: error.message || "Failed to stop stream",
+        variant: "destructive",
+      });
+    } finally {
+      setIsStreamingAction(false);
+    }
+  };
+
+  const handleStopAllStreams = async () => {
+    setIsStreamingAction(true);
+    try {
+      const res = await apiRequest("POST", "/api/admin/streaming/stop-all");
+      const response: any = await res.json();
+
+      toast({
+        title: "All Streams Stopped",
+        description: response?.message || "All streams stopped",
+      });
+
+      refetchStreams();
+    } catch (error: any) {
+      toast({
+        title: "Stop Failed",
+        description: error.message || "Failed to stop streams",
+        variant: "destructive",
+      });
+    } finally {
+      setIsStreamingAction(false);
     }
   };
 
@@ -247,8 +326,9 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="settlement" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="settlement" data-testid="tab-settlement">Settlement</TabsTrigger>
+          <TabsTrigger value="streaming" data-testid="tab-streaming">Streaming</TabsTrigger>
           <TabsTrigger value="testing" data-testid="tab-testing">API Testing</TabsTrigger>
         </TabsList>
 
@@ -335,6 +415,115 @@ export default function Admin() {
                 <RefreshCw className="w-4 h-4 mr-2" />
                 {isRefreshing ? "Refreshing..." : "Refresh Sample Props"}
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="streaming" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Real-Time Streaming Status</CardTitle>
+              <CardDescription>
+                OpticOdds live streams for PrizePicks and Underdog props
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-green-500" />
+                  <div>
+                    <p className="font-medium" data-testid="text-stream-count">
+                      {streamStatus?.count || 0} Active Streams
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Auto-refreshes every 5 seconds
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleStopAllStreams}
+                  disabled={isStreamingAction || !streamStatus?.count}
+                  variant="destructive"
+                  size="sm"
+                  data-testid="button-stop-all-streams"
+                >
+                  Stop All Streams
+                </Button>
+              </div>
+
+              {streamStatus?.activeStreams && streamStatus.activeStreams.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Active Streams:</p>
+                  {streamStatus.activeStreams.map((streamId) => (
+                    <div
+                      key={streamId}
+                      className="flex items-center justify-between p-3 border rounded-md"
+                      data-testid={`stream-${streamId}`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Radio className="w-4 h-4 text-green-500 animate-pulse" />
+                        <span className="font-mono text-sm">{streamId}</span>
+                      </div>
+                      <Button
+                        onClick={() => handleStopStream(streamId)}
+                        disabled={isStreamingAction}
+                        variant="outline"
+                        size="sm"
+                        data-testid={`button-stop-${streamId}`}
+                      >
+                        Stop
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {(!streamStatus?.activeStreams || streamStatus.activeStreams.length === 0) && (
+                <p className="text-sm text-muted-foreground">No active streams</p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Start New Streams</CardTitle>
+              <CardDescription>
+                Launch real-time streaming for PrizePicks and Underdog props
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <Button
+                  onClick={() => handleStartStream('basketball_nba')}
+                  disabled={isStreamingAction}
+                  variant="default"
+                  data-testid="button-stream-nba"
+                >
+                  <Radio className="w-4 h-4 mr-2" />
+                  NBA Stream
+                </Button>
+                <Button
+                  onClick={() => handleStartStream('americanfootball_nfl')}
+                  disabled={isStreamingAction}
+                  variant="default"
+                  data-testid="button-stream-nfl"
+                >
+                  <Radio className="w-4 h-4 mr-2" />
+                  NFL Stream
+                </Button>
+                <Button
+                  onClick={() => handleStartStream('icehockey_nhl')}
+                  disabled={isStreamingAction}
+                  variant="default"
+                  data-testid="button-stream-nhl"
+                >
+                  <Radio className="w-4 h-4 mr-2" />
+                  NHL Stream
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Streams auto-start on server boot. Use these controls to manually manage streams.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
