@@ -28,6 +28,7 @@ interface StreamEvent {
 interface StreamConfig {
   sport: string;
   sportsbooks: string[];
+  fixtureId?: string; // REQUIRED by OpticOdds streaming API
   leagues?: string[];
   markets?: string[];
   isMain?: boolean;
@@ -177,6 +178,11 @@ export class OpticOddsStreamService {
     const params = new URLSearchParams({
       key: this.apiKey,
     });
+
+    // Add fixture_id if specified (REQUIRED according to OpticOdds docs)
+    if (config.fixtureId) {
+      params.append('fixture_id', config.fixtureId);
+    }
 
     // Add sportsbook filters
     config.sportsbooks.forEach(sb => params.append('sportsbook', sb));
@@ -359,7 +365,7 @@ export class OpticOddsStreamService {
           platform: odd.sportsbook,
           fixtureId: odd.fixture_id || null, // Store OpticOdds fixture ID (null if missing)
           marketId: odd.market_id,   // Store OpticOdds market ID
-          confidence: 0.5, // Placeholder - would be calculated by ML model
+          confidence: 50, // Placeholder (0-100 scale) - would be calculated by ML model
           ev: "0",
           modelProbability: "0.5",
           period: "full_game",

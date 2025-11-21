@@ -169,22 +169,26 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   if (process.env.OPTICODDS_API_KEY && process.env.ENABLE_STREAMING !== "false") {
     console.log("📡 Auto-starting OpticOdds streaming for DFS platforms...");
     
-    // Start streams for NBA, NFL, NHL
-    // OpticOdds uses simple sport identifiers: basketball, football, hockey (NOT basketball_nba, americanfootball_nfl, etc.)
-    const sports = ['basketball', 'football', 'hockey'];
-    // IMPORTANT: Use exact sportsbook IDs from OpticOdds API (verified via /sportsbooks/active endpoint)
-    // Trying IDs instead of names: prizepicks (not PrizePicks), underdog_fantasy (not "Underdog Fantasy")
-    const sportsbooks = ['prizepicks', 'underdog_fantasy'];
+    // Start league-based streams for NBA, NFL, NHL
+    const leagues = [
+      { sport: 'basketball', league: 'NBA' },
+      { sport: 'football', league: 'NFL' },
+      { sport: 'hockey', league: 'NHL' },
+    ];
     
-    sports.forEach(sport => {
+    // Use exact sportsbook names (capitalized as shown in OpticOdds examples)
+    const sportsbooks = ['PrizePicks', 'Underdog Fantasy'];
+    
+    leagues.forEach(({ sport, league }) => {
       try {
         const streamId = opticOddsStreamService.startOddsStream({
           sport,
           sportsbooks,
+          leagues: [league],
         });
-        console.log(`✅ Started ${sport} stream: ${streamId}`);
+        console.log(`✅ Started ${league} stream: ${streamId}`);
       } catch (error) {
-        console.error(`❌ Failed to start ${sport} stream:`, error);
+        console.error(`❌ Failed to start ${league} stream:`, error);
       }
     });
   } else if (!process.env.OPTICODDS_API_KEY) {
