@@ -141,7 +141,7 @@ class PrizePicksScraperClient {
       
       await page.close();
       
-      if (apiResponse) {
+      if (apiResponse && apiResponse.data.length > 0) {
         console.log(`✅ Successfully scraped ${apiResponse.data.length} projections from PrizePicks`);
         return apiResponse;
       } else {
