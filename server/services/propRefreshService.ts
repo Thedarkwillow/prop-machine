@@ -4,6 +4,7 @@ import { opticOddsClient } from "../integrations/opticOddsClient";
 import { prizePicksClient, ParsedPrizePick } from "../integrations/prizePicksClient";
 import { propAnalysisService } from "./propAnalysisService";
 import { storage } from "../storage";
+import { normalizeStat } from "../utils/statNormalizer";
 
 interface RefreshResult {
   success: boolean;
@@ -62,12 +63,15 @@ export class PropRefreshService {
         try {
           const opponent = rawProp.opponent || 'TBD';
 
+          // Normalize stat name for consistency across platforms
+          const normalizedStat = normalizeStat(rawProp.stat);
+          
           const analysisInput = {
             sport,
             player: rawProp.player,
             team: rawProp.team,
             opponent,
-            stat: rawProp.stat,
+            stat: normalizedStat,
             line: rawProp.line,
             direction: rawProp.direction,
             platform: 'Underdog',
@@ -85,7 +89,7 @@ export class PropRefreshService {
             player: rawProp.player,
             team: rawProp.team,
             opponent,
-            stat: rawProp.stat,
+            stat: normalizedStat,
             line: rawProp.line,
             currentLine: rawProp.line,
             direction: rawProp.direction,
@@ -198,6 +202,9 @@ export class PropRefreshService {
             ? rawProp.gameTime 
             : new Date(rawProp.gameTime);
 
+          // Normalize stat name for consistency across platforms
+          const normalizedStat = normalizeStat(rawProp.stat);
+          
           // Use basic confidence scoring (60-75%) instead of full ML analysis
           // This avoids BallDontLie rate limits and gets props into the system immediately
           const basicConfidence = 60 + Math.floor(Math.random() * 16); // 60-75%
@@ -209,7 +216,7 @@ export class PropRefreshService {
             player: rawProp.player,
             team: rawProp.team,
             opponent: rawProp.opponent,
-            stat: rawProp.stat,
+            stat: normalizedStat,
             line: rawProp.line,
             currentLine: rawProp.line,
             direction: rawProp.direction,
@@ -474,12 +481,15 @@ export class PropRefreshService {
 
       for (const ppProp of prizePicksProps) {
         try {
+          // Normalize stat name for consistency across platforms
+          const normalizedStat = normalizeStat(ppProp.stat);
+          
           const analysisInput = {
             sport,
             player: ppProp.player,
             team: ppProp.team || 'TBD',
             opponent: 'TBD', // PrizePicks doesn't provide opponent info
-            stat: ppProp.stat,
+            stat: normalizedStat,
             line: ppProp.line.toString(),
             direction: 'over' as const,
             platform: 'PrizePicks',
@@ -492,7 +502,7 @@ export class PropRefreshService {
             player: ppProp.player,
             team: ppProp.team || 'TBD',
             opponent: 'TBD',
-            stat: ppProp.stat,
+            stat: normalizedStat,
             line: ppProp.line.toString(),
             currentLine: ppProp.line.toString(),
             direction: 'over',
