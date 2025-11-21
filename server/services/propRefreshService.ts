@@ -1,5 +1,5 @@
-import { prizepicksScraperClient as prizepicksClient } from "../integrations/prizepicksScraperClient";
-import { underdogScraperClient as underdogClient } from "../integrations/underdogScraperClient";
+import { prizepicksClient } from "../integrations/prizepicksClient";
+import { underdogClient } from "../integrations/underdogClient";
 import { oddsApiClient } from "../integrations/oddsApiClient";
 import { propAnalysisService } from "./propAnalysisService";
 import { storage } from "../storage";
@@ -39,16 +39,7 @@ export class PropRefreshService {
     try {
       console.log(`Fetching props from PrizePicks for ${sport}...`);
 
-      // Map sport to PrizePicks league ID
-      const leagueIdMap: { [key: string]: number } = {
-        'NBA': 7,
-        'NFL': 9,
-        'NHL': 3,
-        'MLB': 2,
-      };
-      
-      const leagueId = leagueIdMap[sport] || 7;
-      const response = await prizepicksClient.getProjections(leagueId);
+      const response = await prizepicksClient.getProjections(sport);
       
       if (!response.data || response.data.length === 0) {
         console.log(`No props found on PrizePicks for ${sport}`);
@@ -157,7 +148,6 @@ export class PropRefreshService {
     try {
       console.log(`Fetching props from Underdog for ${sport}...`);
 
-      // Underdog scraper uses sport name directly
       const response = await underdogClient.getAppearances(sport);
       
       if (!response.appearances || response.appearances.length === 0) {
