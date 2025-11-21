@@ -1,0 +1,714 @@
+OpticOdds API - Getting Started Guide
+Welcome to the OpticOdds API! This comprehensive guide will walk you through the essential workflow for integrating with OpticOdds to get real-time sports betting odds and results data.
+
+🔑 Prerequisites
+Before you begin, ensure you have:
+
+An OpticOdds API license key (contact OpticOdds to get access)
+Basic understanding of REST APIs and streaming data
+Development environment set up for making HTTP requests
+🚀 Quick Start Workflow
+The core workflow follows this pattern:
+
+Get Active Fixtures → Pull fixture IDs from /fixtures/active
+Stream Live Odds → Feed fixture IDs into streaming endpoints
+Monitor Results → Track game outcomes via /stream/results
+Grade Bets → Use /grader/odds for settlement
+Step 1: Authentication
+OpticOdds supports two authentication methods:
+
+Option A: Header Authentication
+Bash
+
+curl --location 'https://api.opticodds.com/api/v3/leagues?sport=basketball' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+Option B: Query Parameter
+Bash
+
+curl 'https://api.opticodds.com/api/v3/leagues?sport=basketball&key=YOUR_API_KEY'
+Step 2: Understand Core Resources
+Before diving into odds data, familiarize yourself with these foundational endpoints:
+
+Sports & Leagues
+Bash
+
+# Get all available sports
+GET https://api.opticodds.com/api/v3/sports
+
+# Get leagues for a specific sport
+GET https://api.opticodds.com/api/v3/leagues?sport=basketball
+
+# Get currently active sports
+GET https://api.opticodds.com/api/v3/sports/active
+Sportsbooks
+Bash
+
+# Get all supported sportsbooks
+GET https://api.opticodds.com/api/v3/sportsbooks/active
+Markets
+Bash
+
+# Get all available markets
+GET https://api.opticodds.com/api/v3/markets
+
+# Get currently active markets
+GET https://api.opticodds.com/api/v3/markets/active
+Step 3: Pull Active Fixtures
+This is your starting point for live odds data. The /fixtures/active endpoint returns only fixtures that have odds associated with them.
+
+Bash
+
+# Get active fixtures for a specific sport and date range
+GET https://api.opticodds.com/api/v3/fixtures/active?sport=basketball&start_date_after=2025-08-26T00:00:00Z
+Key Parameters:
+sport - The sport you want (required)
+league - Specific league (optional)
+start_date_after - ISO 8601 datetime for filtering
+start_date_before - ISO 8601 datetime for filtering
+Response Structure:
+ONLY USED TO SHOW AN EXAMPLE JSON FORMAT, DATA CAN BE DIFFERENT FROM ACTUAL RESPONSE.
+
+JSON
+
+{
+  "data": [
+    {
+      "id": "2025020987911BC9",
+      "numerical_id": 142832,
+      "game_id": "13602-33320-25-05",
+      "start_date": "2025-02-09T23:30:00Z",
+      "home_competitors": [
+        {
+          "id": "C921828AB706",
+          "name": "Washington Commanders",
+          "numerical_id": null,
+          "abbreviation": "WSH",
+          "logo": "https://cdn.opticodds.com/team-logos/football/112.png"
+        }
+      ],
+      "away_competitors": [
+        {
+          "id": "2D71E5BA64A5",
+          "name": "Kansas City Chiefs",
+          "numerical_id": null,
+          "abbreviation": "KC",
+          "logo": "https://cdn.opticodds.com/team-logos/football/96.png"
+        }
+      ],
+      "home_team_display": "Washington Commanders",
+      "away_team_display": "Kansas City Chiefs",
+      "status": "cancelled",
+      "is_live": false,
+      "sport": {
+        "id": "football",
+        "name": "Football",
+        "numerical_id": 9
+      },
+      "league": {
+        "id": "nfl",
+        "name": "NFL",
+        "numerical_id": 9
+      },
+      "home_starter": null,
+      "home_record": null,
+      "home_seed": null,
+      "home_rotation_number": 77714,
+      "away_starter": null,
+      "away_record": null,
+      "away_seed": null,
+      "away_rotation_number": 77713,
+      "tournament": null,
+      "tournament_stage": null,
+      "has_odds": true,
+      "venue_name": null,
+      "venue_location": null,
+      "venue_neutral": false,
+      "broadcast": "",
+      "result": null,
+      "lineups": {
+        "home": [],
+        "away": []
+      },
+      "season_type": "Playoffs",
+      "season_year": "2024",
+      "season_week": null,
+      "weather": null,
+      "weather_temp": null,
+      "source_ids": {
+
+      }
+    },
+    {
+      "id": "2025020987922BC9",
+      "numerical_id": 142831,
+      "game_id": "16341-33320-25-05",
+      "start_date": "2025-02-09T23:30:00Z",
+      "home_competitors": [
+        {
+          "id": "C921828AB706",
+          "name": "Washington Commanders",
+          "numerical_id": null,
+          "abbreviation": "WSH",
+          "logo": "https://cdn.opticodds.com/team-logos/football/112.png"
+        }
+      ],
+      "away_competitors": [
+        {
+          "id": "0787D09E47B9",
+          "name": "Buffalo Bills",
+          "numerical_id": null,
+          "abbreviation": "BUF",
+          "logo": "https://cdn.opticodds.com/team-logos/football/84.png"
+        }
+      ],
+      "home_team_display": "Washington Commanders",
+      "away_team_display": "Buffalo Bills",
+      "status": "cancelled",
+      "is_live": false,
+      "sport": {
+        "id": "football",
+        "name": "Football",
+        "numerical_id": 9
+      },
+      "league": {
+        "id": "nfl",
+        "name": "NFL",
+        "numerical_id": 9
+      },
+      "home_starter": null,
+      "home_record": null,
+      "home_seed": null,
+      "home_rotation_number": 77712,
+      "away_starter": null,
+      "away_record": null,
+      "away_seed": null,
+      "away_rotation_number": 77711,
+      "tournament": null,
+      "tournament_stage": null,
+      "has_odds": true,
+      "venue_name": null,
+      "venue_location": null,
+      "venue_neutral": false,
+      "broadcast": "",
+      "result": null,
+      "lineups": {
+        "home": [],
+        "away": []
+      },
+      "season_type": "Playoffs",
+      "season_year": "2024",
+      "season_week": null,
+      "weather": null,
+      "weather_temp": null,
+      "source_ids": {
+
+      }
+    },
+    {
+      "id": "2025020987933BC9",
+      "numerical_id": 142833,
+      "game_id": "16341-17233-25-05",
+      "start_date": "2025-02-09T23:30:00Z",
+      "home_competitors": [
+        {
+          "id": "EDCC2866B795",
+          "name": "Philadelphia Eagles",
+          "numerical_id": null,
+          "abbreviation": "PHI",
+          "logo": "https://cdn.opticodds.com/team-logos/football/106.png"
+        }
+      ],
+      "away_competitors": [
+        {
+          "id": "0787D09E47B9",
+          "name": "Buffalo Bills",
+          "numerical_id": null,
+          "abbreviation": "BUF",
+          "logo": "https://cdn.opticodds.com/team-logos/football/84.png"
+        }
+      ],
+      "home_team_display": "Philadelphia Eagles",
+      "away_team_display": "Buffalo Bills",
+      "status": "cancelled",
+      "is_live": false,
+      "sport": {
+        "id": "football",
+        "name": "Football",
+        "numerical_id": 9
+      },
+      "league": {
+        "id": "nfl",
+        "name": "NFL",
+        "numerical_id": 9
+      },
+      "home_starter": null,
+      "home_record": null,
+      "home_seed": null,
+      "home_rotation_number": 77716,
+      "away_starter": null,
+      "away_record": null,
+      "away_seed": null,
+      "away_rotation_number": 77715,
+      "tournament": null,
+      "tournament_stage": null,
+      "has_odds": true,
+      "venue_name": null,
+      "venue_location": null,
+      "venue_neutral": false,
+      "broadcast": "",
+      "result": null,
+      "lineups": {
+        "home": [],
+        "away": []
+      },
+      "season_type": "Playoffs",
+      "season_year": "2024",
+      "season_week": null,
+      "weather": null,
+      "weather_temp": null,
+      "source_ids": {
+
+      }
+    },
+    {
+      "id": "2025020987944BC9",
+      "numerical_id": 142834,
+      "game_id": "13602-17233-25-05",
+      "start_date": "2025-02-09T23:30:00Z",
+      "home_competitors": [
+        {
+          "id": "EDCC2866B795",
+          "name": "Philadelphia Eagles",
+          "numerical_id": null,
+          "abbreviation": "PHI",
+          "logo": "https://cdn.opticodds.com/team-logos/football/106.png"
+        }
+      ],
+      "away_competitors": [
+        {
+          "id": "2D71E5BA64A5",
+          "name": "Kansas City Chiefs",
+          "numerical_id": null,
+          "abbreviation": "KC",
+          "logo": "https://cdn.opticodds.com/team-logos/football/96.png"
+        }
+      ],
+      "home_team_display": "Philadelphia Eagles",
+      "away_team_display": "Kansas City Chiefs",
+      "status": "unplayed",
+      "is_live": false,
+      "sport": {
+        "id": "football",
+        "name": "Football",
+        "numerical_id": 9
+      },
+      "league": {
+        "id": "nfl",
+        "name": "NFL",
+        "numerical_id": 9
+      },
+      "home_starter": null,
+      "home_record": null,
+      "home_seed": null,
+      "home_rotation_number": 110,
+      "away_starter": null,
+      "away_record": null,
+      "away_seed": null,
+      "away_rotation_number": 109,
+      "tournament": null,
+      "tournament_stage": null,
+      "has_odds": true,
+      "venue_name": "Caesars Superdome",
+      "venue_location": "New Orleans, LA, USA",
+      "venue_neutral": true,
+      "broadcast": "FOX | FOXD | TELE | TUBI",
+      "result": null,
+      "lineups": {
+        "home": [],
+        "away": []
+      },
+      "season_type": "Playoffs",
+      "season_year": "2024",
+      "season_week": "22",
+      "weather": null,
+      "weather_temp": null,
+      "source_ids": {
+
+      }
+    }
+  ],
+  "page": 1,
+  "total_pages": 1
+}
+Important: Save the fixture_id from each fixture - you'll need these for the streaming endpoints.
+
+Read more: https://developer.opticodds.com/reference/get_fixtures-active#/
+
+Step 4: Get Current Odds Snapshot
+Before setting up streaming, get a current snapshot of odds for your fixtures:
+
+Bash
+
+# Get current odds for a specific fixture
+GET https://api.opticodds.com/api/v3/fixtures/odds?&fixture_id=BCE4E01B8D3D
+
+# Filter by specific sportsbooks and markets
+GET https://api.opticodds.com/api/v3/fixtures/odds?&sportsbook=Bwin&fixture_id=BCE4E01B8D3D&market=moneyline
+Response Structure:
+JSON
+
+{
+  "data": [
+    {
+      "id": "BCE4E01B8D3D",
+      "game_id": "60486-35183-2024-08-29-17",
+      "start_date": "2024-08-30T00:10:00Z",
+      "home_competitors": [
+        {
+          "id": "4F11A5896C24",
+          "name": "Houston Astros",
+          "abbreviation": "HOU",
+          "logo": "https://a.espncdn.com/i/teamlogos/mlb/500/hou.png"
+        }
+      ],
+      "away_competitors": [
+        {
+          "id": "E970E2EDDCAE",
+          "name": "Kansas City Royals",
+          "abbreviation": "KAN",
+          "logo": "https://a.espncdn.com/i/teamlogos/mlb/500/kc.png"
+        }
+      ],
+      "home_team_display": "Houston Astros",
+      "away_team_display": "Kansas City Royals",
+      "status": "unplayed",
+      "is_live": false,
+      "sport": {
+        "id": "baseball",
+        "name": "Baseball"
+      },
+      "league": {
+        "id": "mlb",
+        "name": "MLB"
+      },
+      "tournament": null,
+      "odds": [
+        {
+          "id": "60486-35183-2024-08-29-17:bwin:moneyline:houston_astros",
+          "sportsbook": "Bwin",
+          "market": "Moneyline",
+          "name": "Houston Astros",
+          "is_main": true,
+          "selection": "Houston Astros",
+          "normalized_selection": "houston_astros",
+          "market_id": "moneyline",
+          "selection_line": null,
+          "player_id": null,
+          "team_id": "4F11A5896C24",
+          "price": -156,
+          "timestamp": 1724865905.59815,
+          "grouping_key": "default",
+          "points": null,
+          "deep_link": null,
+          "limits": {
+            "max": 500
+          }
+        },
+        {
+          "id": "60486-35183-2024-08-29-17:bwin:moneyline:kansas_city_royals",
+          "sportsbook": "Bwin",
+          "market": "Moneyline",
+          "name": "Kansas City Royals",
+          "is_main": true,
+          "selection": "Kansas City Royals",
+          "normalized_selection": "kansas_city_royals",
+          "market_id": "moneyline",
+          "selection_line": null,
+          "player_id": null,
+          "team_id": "E970E2EDDCAE",
+          "price": 132,
+          "timestamp": 1724865905.59815,
+          "grouping_key": "default",
+          "points": null,
+          "deep_link": null,
+          "limits": {
+            "max": 500
+          }
+        },
+        {
+          "id": "60486-35183-2024-08-29-17:bwin:run_line:houston_astros_-1_5",
+          "sportsbook": "Bwin",
+          "market": "Run Line",
+          "name": "Houston Astros -1.5",
+          "is_main": true,
+          "selection": "Houston Astros",
+          "normalized_selection": "houston_astros",
+          "market_id": "run_line",
+          "selection_line": null,
+          "player_id": null,
+          "team_id": "4F11A5896C24",
+          "price": 140,
+          "timestamp": 1724865905.59815,
+          "grouping_key": "default:-1.5",
+          "points": -1.5,
+          "deep_link": null,
+          "limits": null
+        },
+        {
+          "id": "60486-35183-2024-08-29-17:bwin:run_line:kansas_city_royals_+1_5",
+          "sportsbook": "Bwin",
+          "market": "Run Line",
+          "name": "Kansas City Royals +1.5",
+          "is_main": true,
+          "selection": "Kansas City Royals",
+          "normalized_selection": "kansas_city_royals",
+          "market_id": "run_line",
+          "selection_line": null,
+          "player_id": null,
+          "team_id": "E970E2EDDCAE",
+          "price": -170,
+          "timestamp": 1724865905.59815,
+          "grouping_key": "default:-1.5",
+          "points": 1.5,
+          "deep_link": null,
+          "limits": {
+            "max": 500
+          }
+        },
+        {
+          "id": "60486-35183-2024-08-29-17:bwin:total_runs:over_8",
+          "sportsbook": "Bwin",
+          "market": "Total Runs",
+          "name": "Over 8",
+          "is_main": true,
+          "selection": "",
+          "normalized_selection": "",
+          "market_id": "total_runs",
+          "selection_line": "over",
+          "player_id": null,
+          "team_id": null,
+          "price": -110,
+          "timestamp": 1724865905.59815,
+          "grouping_key": "default:8.0",
+          "points": 8,
+          "deep_link": null,
+          "limits": null,
+        },
+        {
+          "id": "60486-35183-2024-08-29-17:bwin:total_runs:under_8",
+          "sportsbook": "Bwin",
+          "market": "Total Runs",
+          "name": "Under 8",
+          "is_main": true,
+          "selection": "",
+          "normalized_selection": "",
+          "market_id": "total_runs",
+          "selection_line": "under",
+          "player_id": null,
+          "team_id": null,
+          "price": -110,
+          "timestamp": 1724865905.59815,
+          "grouping_key": "default:8.0",
+          "points": 8,
+          "deep_link": null,
+          "limits": {
+            "max": 500
+          }
+        }
+      ]
+    }
+  ]
+}
+Read more: https://developer.opticodds.com/reference/get_fixtures-odds#/
+
+Step 5: Set Up Real-Time Odds Streaming
+This is where the magic happens. Use Server-Sent Events (SSE) to get live odds updates.
+
+Basic Streaming Connection
+Python
+
+import requests
+from requests.exceptions import ChunkedEncodingError
+import json
+import sseclient # pip install sseclient-py
+
+last_entry_id: str | None = None
+while True:
+    try:
+        params = {
+            "key": "1234-5678-124",
+            "sportsbook": ["DraftKings", "FanDuel", "Hard Rock"],
+            "market": ["Moneyline"],
+            "league": ["NCAAB"],
+            # "is_main": True,
+        }
+        if last_entry_id:
+          params["last_entry_id"] = last_entry_id
+      
+        r = requests.get(
+            "https://api.opticodds.com/api/v3/stream/odds/basketball",
+            params=params,
+            stream=True,
+        )
+        client = sseclient.SSEClient(r)
+        for event in client.events():
+            if event.event == "odds":
+                data = json.loads(event.data)
+                last_entry_id = data.get("entry_id")
+                print("odds data", ":", data)
+            elif event.event == "locked-odds":
+                data = json.loads(event.data)
+                last_entry_id = data.get("entry_id")
+                print("locked-odds data", ":", data)
+            else:
+                print(event.event, ":", event.data)
+    except ChunkedEncodingError as ex:
+        print("Disconnected, attempting to reconnect...")
+    except Exception as e:
+        print("Error:", r.status_code, r.text)
+        break
+Advanced Filtering
+You can filter the stream by multiple parameters:
+
+Bash
+
+# Stream odds for specific sportsbooks and markets
+GET https://api.opticodds.com/api/v3/stream/odds/{sport}?&sportsbook=Bwin&fixture_id=BCE4E01B8D3D&market=moneyline
+Stream Parameters:
+fixture_id - The fixture to monitor (required)
+sportsbook - Array of strings of sportsbooks to include
+market - Array of strings of markets to include
+Handling Locked Odds Events
+OpticOdds automatically handles locked odds events in the stream. When odds are locked (game starts, market closes, etc.), you'll receive a special event:
+
+Text
+
+event: locked-odds
+id: 1730079527180-0
+retry: 5000
+data: {"data":[{"deep_link":{"android":"dksb://sb/addbet/0QA219503604%2374975813_13L88808Q11169437916Q20","desktop":"https://sportsbook.draftkings.com/event/30568741?outcomes=0QA219503604%2374975813_13L88808Q11169437916Q20","ios":"dksb://sb/addbet/0QA219503604%2374975813_13L88808Q11169437916Q20"},"fixture_id":"8BDC2E0FF301","game_id":"11434-13184-24-43","grouping_key":"dak_prescott:247.5","id":"11434-13184-24-43:draftkings:player_passing_yards:dak_prescott_over_247_5","is_live":true,"is_main":true,"league":"NFL","limits":null,"market":"Player Passing Yards","name":"Dak Prescott Over 247.5","player_id":"4E18B0FEC4C5","points":247.5,"price":-115,"selection":"Dak Prescott","selection_line":"over","selection_points":247.5,"sport":"football","sportsbook":"DraftKings","team_id":"","timestamp":1730079527.1784158},{"deep_link":{"android":"dksb://sb/addbet/0QA219503604%2374975814_15L88808Q1-422942275Q20","desktop":"https://sportsbook.draftkings.com/event/30568741?outcomes=0QA219503604%2374975814_15L88808Q1-422942275Q20","ios":"dksb://sb/addbet/0QA219503604%2374975814_15L88808Q1-422942275Q20"},"fixture_id":"8BDC2E0FF301","game_id":"11434-13184-24-43","grouping_key":"dak_prescott:247.5","id":"11434-13184-24-43:draftkings:player_passing_yards:dak_prescott_under_247_5","is_live":true,"is_main":true,"league":"NFL","limits":null,"market":"Player Passing Yards","name":"Dak Prescott Under 247.5","player_id":"4E18B0FEC4C5","points":247.5,"price":-115,"selection":"Dak Prescott","selection_line":"under","selection_points":247.5,"sport":"football","sportsbook":"DraftKings","team_id":"","timestamp":1730079527.1784158}],"entry_id":"1730079527180-0","type":"locked-odds"}
+Read more: https://developer.opticodds.com/reference/get_stream-odds-sport#/
+
+Step 6: Monitor Game Results
+Set up a separate stream to monitor live game results and scores:
+
+Python
+
+import requests
+from requests.exceptions import ChunkedEncodingError
+import json
+import sseclient # pip install sseclient-py
+
+while True:
+    try:
+        r = requests.get(
+            "https://api.opticodds.com/api/v3/stream/results/basketball",
+            params={
+                "key": "1234-5678-124",
+                "league": ["NCAAB"],
+            },
+            stream=True,
+        )
+        client = sseclient.SSEClient(r)
+        for event in client.events():
+            if event.event == "fixture-results":
+                data = json.loads(event.data)
+                print("results data", ":", data)
+            else:
+                print(event.event, ":", event.data)
+    except ChunkedEncodingError as ex:
+        print("Disconnected, attempting to reconnect...")
+    except Exception as e:
+        print("Error:", r.status_code, r.text)
+        break
+Result Events Include:
+Live score updates
+Quarter/period results
+Final game results
+Player statistics (for player props)
+Game status changes
+Read more: https://developer.opticodds.com/reference/get_stream-results-sport#/
+
+Step 7: Grade and Settle Bets
+Once games are complete, use the grader endpoint to programmatically settle bets:
+
+Bash
+
+# Grade a specific bet
+GET https://api.opticodds.com/api/v3/grader/odds?sport=mma&league=ufc&fixture_id=B848DE682885&market=Total%20Rounds&name=Under%202.5
+Grader Parameters:
+fixture_id - The completed fixture ID
+market - The market to grade (e.g., "moneyline", "spread", "total")
+name - The selection that was bet on
+player_id - For player props (optional)
+Response:
+JSON
+
+{
+  "data": {
+    "fixture_id": "B848DE682885",
+    "away_team_display": "Tracy Cortez",
+    "home_team_display": "Rose Namajunas",
+    "status": "Completed",
+    "away_score": 0,
+    "home_score": 1,
+    "player_score": null,
+    "market": "Total Rounds",
+    "name": "Under 2.5",
+    "result": "Lost"
+  }
+}
+Read more: https://developer.opticodds.com/reference/get_grader-odds#/
+
+🔧 Best Practices
+Rate Limits
+Historical odds endpoints: 100 requests per hour
+Streaming endpoints: 250 new requests per minute
+All other endpoints: 6000 requests per minute
+Limits reset every minute
+Error Handling
+Always implement robust error handling for:
+
+Network timeouts
+Rate limit exceeded (429 status)
+Invalid fixture IDs
+Market not available
+Streaming Connections
+Monitor connection health with heartbeat events
+Implement automatic reconnection logic
+Handle stream interruptions gracefully
+Close unused connections to avoid hitting limits
+Data Storage
+Store fixture IDs for future reference
+Cache sportsbook and market metadata
+Implement data validation before processing
+Consider data retention policies for historical odds
+📋 Complete Integration Checklist
+ Obtain API license key from OpticOdds
+ Test authentication with basic endpoints
+ Explore sports, leagues, and markets you need
+ Implement fixture discovery with /fixtures/active
+ Set up odds snapshot retrieval
+ Implement streaming for real-time odds updates
+ Add streaming for game results
+ Integrate bet grading functionality
+ Add error handling and rate limit management
+ Test with live games in your target sports
+ Implement monitoring and alerting
+🆘 Getting Help
+Documentation: developer.opticodds.com
+API Support: Contact your OpticOdds sales representative
+Integration Questions: Reach out to the OpticOdds support team
+🎯 Next Steps
+Once you've mastered the basics:
+
+Explore Advanced Features:
+
+Parlay and Same Game Parlay odds
+Player injury data integration
+Futures/Outrights markets
+Optimize Performance:
+
+Implement caching strategies
+Use parallel requests for multiple fixtures
+Consider geographic data centers for latency

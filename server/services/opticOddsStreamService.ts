@@ -47,8 +47,13 @@ export class OpticOddsStreamService {
   private lastEntryIds: Map<string, string> = new Map();
   private reconnectAttempts: Map<string, number> = new Map();
   private fixtureCache: Map<string, FixtureCache> = new Map();
+  private failureCount: Map<string, number> = new Map();
+  private backoffDelay: Map<string, number> = new Map();
   private maxReconnectAttempts = 5;
   private reconnectDelay = 5000;
+  private maxBackoffDelay = 300000; // 5 minutes max backoff
+  private initialBackoffDelay = 5000; // 5 seconds initial
+  private maxFailuresBeforeDisable = 10; // Disable stream after 10 consecutive failures
 
   constructor(storageInstance: IStorage = storage) {
     this.storage = storageInstance;
@@ -94,6 +99,12 @@ export class OpticOddsStreamService {
 
     console.log(`📡 Starting OpticOdds stream: ${streamId}`);
     
+    // Clear any stale failure/backoff state from previous runs
+    this.failureCount.delete(streamId);
+    this.backoffDelay.delete(streamId);
+    this.reconnectAttempts.delete(streamId);
+    this.lastEntryIds.delete(streamId);
+    
     // Fetch fixtures to populate team names
     this.cacheFixtures(config.sport).catch(err =>
       console.error('Failed to pre-cache fixtures:', err)
@@ -114,6 +125,8 @@ export class OpticOddsStreamService {
       this.activeStreams.delete(streamId);
       this.lastEntryIds.delete(streamId);
       this.reconnectAttempts.delete(streamId);
+      this.failureCount.delete(streamId);
+      this.backoffDelay.delete(streamId);
       console.log(`🛑 Stopped stream: ${streamId}`);
       return true;
     }
@@ -129,6 +142,8 @@ export class OpticOddsStreamService {
     this.activeStreams.clear();
     this.lastEntryIds.clear();
     this.reconnectAttempts.clear();
+    this.failureCount.clear();
+    this.backoffDelay.clear();
   }
 
   /**
@@ -148,6 +163,12 @@ export class OpticOddsStreamService {
   }
 
   private connectStream(streamId: string, config: StreamConfig): void {
+    // Reset all state at the START of connection attempt
+    // This ensures clean state even if connection fails early
+    this.reconnectAttempts.set(streamId, 0);
+    this.failureCount.set(streamId, 0);
+    this.backoffDelay.set(streamId, this.initialBackoffDelay);
+    
     if (!this.apiKey) {
       console.error('❌ Cannot start stream: No API key configured');
       return;
@@ -188,7 +209,10 @@ export class OpticOddsStreamService {
 
     eventSource.onopen = () => {
       console.log(`✅ Stream ${streamId} connected`);
+      // Reset all failure/reconnect/backoff state on successful connection
       this.reconnectAttempts.set(streamId, 0);
+      this.failureCount.set(streamId, 0);
+      this.backoffDelay.set(streamId, this.initialBackoffDelay);
     };
 
     eventSource.addEventListener('odds', (event: any) => {
@@ -196,6 +220,11 @@ export class OpticOddsStreamService {
         const data: StreamEvent = JSON.parse(event.data);
         this.lastEntryIds.set(streamId, data.entry_id);
         this.handleOddsUpdate(data.data);
+        
+        // Reset failure count and backoff delay on successful event
+        this.failureCount.set(streamId, 0);
+        this.reconnectAttempts.set(streamId, 0);
+        this.backoffDelay.set(streamId, this.initialBackoffDelay);
       } catch (error) {
         console.error('❌ Error processing odds event:', error);
       }
@@ -206,6 +235,11 @@ export class OpticOddsStreamService {
         const data: StreamEvent = JSON.parse(event.data);
         this.lastEntryIds.set(streamId, data.entry_id);
         this.handleLockedOdds(data.data);
+        
+        // Reset failure count and backoff delay on successful event
+        this.failureCount.set(streamId, 0);
+        this.reconnectAttempts.set(streamId, 0);
+        this.backoffDelay.set(streamId, this.initialBackoffDelay);
       } catch (error) {
         console.error('❌ Error processing locked-odds event:', error);
       }
@@ -213,16 +247,38 @@ export class OpticOddsStreamService {
 
     eventSource.addEventListener('heartbeat', () => {
       // Heartbeat received - connection is alive
+      // Reset all failure/reconnect state on heartbeat
+      this.failureCount.set(streamId, 0);
+      this.reconnectAttempts.set(streamId, 0);
+      this.backoffDelay.set(streamId, this.initialBackoffDelay);
     });
 
     eventSource.onerror = (error: any) => {
-      console.error(`❌ Stream ${streamId} error:`, error.message || 'Connection lost');
+      const errorMsg = error.message || 'Connection lost';
+      console.error(`❌ Stream ${streamId} error:`, errorMsg);
+      
+      // Increment failure count
+      const failures = (this.failureCount.get(streamId) || 0) + 1;
+      this.failureCount.set(streamId, failures);
+      
+      // Check if we should disable the stream after too many failures
+      if (failures >= this.maxFailuresBeforeDisable) {
+        console.error(`🛑 Stream ${streamId} disabled after ${failures} consecutive failures. API key may lack permissions.`);
+        this.stopStream(streamId);
+        return;
+      }
       
       const attempts = this.reconnectAttempts.get(streamId) || 0;
       
       if (attempts < this.maxReconnectAttempts) {
         this.reconnectAttempts.set(streamId, attempts + 1);
-        console.log(`🔄 Attempting reconnect ${attempts + 1}/${this.maxReconnectAttempts} in ${this.reconnectDelay}ms...`);
+        
+        // Calculate exponential backoff delay
+        const currentBackoff = this.backoffDelay.get(streamId) || this.initialBackoffDelay;
+        const nextBackoff = Math.min(currentBackoff * 2, this.maxBackoffDelay);
+        this.backoffDelay.set(streamId, nextBackoff);
+        
+        console.log(`🔄 Attempting reconnect ${attempts + 1}/${this.maxReconnectAttempts} in ${currentBackoff}ms... (Failure ${failures}/${this.maxFailuresBeforeDisable})`);
         
         setTimeout(() => {
           if (this.activeStreams.has(streamId)) {
@@ -230,7 +286,7 @@ export class OpticOddsStreamService {
             this.activeStreams.delete(streamId);
             this.connectStream(streamId, config);
           }
-        }, this.reconnectDelay);
+        }, currentBackoff);
       } else {
         console.error(`❌ Stream ${streamId} failed after ${this.maxReconnectAttempts} attempts`);
         this.stopStream(streamId);

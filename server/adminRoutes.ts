@@ -8,7 +8,7 @@ import { propRefreshService } from "./services/propRefreshService";
 import { propSchedulerService } from "./services/propSchedulerService";
 import { refreshProps } from "./seed";
 import { getUserId } from "./middleware/auth";
-import { OpticOddsStreamService } from "./services/opticOddsStreamService";
+import { opticOddsStreamService } from "./services/opticOddsStreamService";
 
 // Admin middleware - require authentication AND admin role
 async function requireAdmin(req: any, res: any, next: any) {
@@ -52,7 +52,6 @@ async function requireAuth(req: any, res: any, next: any) {
 
 export function adminRoutes(): Router {
   const router = Router();
-  const streamService = new OpticOddsStreamService();
   
   // Get prop scheduler status (public - read-only status info)
   router.get("/props/scheduler/status", async (req, res) => {
@@ -375,7 +374,7 @@ export function adminRoutes(): Router {
       
       const targetSportsbooks = sportsbooks || ['PrizePicks', 'Underdog'];
       
-      const streamId = streamService.startOddsStream({
+      const streamId = opticOddsStreamService.startOddsStream({
         sport,
         sportsbooks: targetSportsbooks,
       });
@@ -409,7 +408,7 @@ export function adminRoutes(): Router {
         });
       }
       
-      const stopped = streamService.stopStream(streamId);
+      const stopped = opticOddsStreamService.stopStream(streamId);
       
       if (stopped) {
         res.json({
@@ -435,7 +434,7 @@ export function adminRoutes(): Router {
   // Stop all active streams
   router.post("/streaming/stop-all", async (req, res) => {
     try {
-      streamService.stopAllStreams();
+      opticOddsStreamService.stopAllStreams();
       
       res.json({
         success: true,
@@ -454,7 +453,7 @@ export function adminRoutes(): Router {
   // Get status of all active streams
   router.get("/streaming/status", async (req, res) => {
     try {
-      const activeStreams = streamService.getActiveStreams();
+      const activeStreams = opticOddsStreamService.getActiveStreams();
       
       res.json({
         success: true,

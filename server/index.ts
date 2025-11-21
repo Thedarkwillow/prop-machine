@@ -18,7 +18,7 @@ import { createNotificationRoutes } from "./notificationRoutes.js";
 import { storage } from "./storage.js";
 import { seedDatabase } from "./seed.js";
 import { propSchedulerService } from "./services/propSchedulerService.js";
-import { OpticOddsStreamService } from "./services/opticOddsStreamService.js";
+import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
 
 dotenv.config();
 
@@ -167,8 +167,6 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   
   // Auto-start OpticOdds streaming for PrizePicks/Underdog
   if (process.env.OPTICODDS_API_KEY && process.env.ENABLE_STREAMING !== "false") {
-    const streamService = new OpticOddsStreamService();
-    
     console.log("📡 Auto-starting OpticOdds streaming for DFS platforms...");
     
     // Start streams for NBA, NFL, NHL
@@ -177,7 +175,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
     
     sports.forEach(sport => {
       try {
-        const streamId = streamService.startOddsStream({
+        const streamId = opticOddsStreamService.startOddsStream({
           sport,
           sportsbooks,
         });
