@@ -1,4 +1,5 @@
 import { IntegrationClient, RateLimitConfig } from "./integrationClient";
+import { getStealthScraper } from "./prizepicksStealth";
 
 interface PrizePick {
   id: string;
@@ -80,23 +81,57 @@ const PERIOD_TYPE_MAP: { [key: string]: string } = {
 
 class PrizePicksClient extends IntegrationClient {
   constructor() {
-    super("https://api.prizepicks.com", PRIZEPICKS_RATE_LIMIT);
+    // Enhanced headers based on mada949's successful approach
+    const enhancedHeaders = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Connection': 'keep-alive',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'same-origin',
+    };
+    
+    super("https://api.prizepicks.com", PRIZEPICKS_RATE_LIMIT, { ttl: 300, useETag: true, useLastModified: true }, enhancedHeaders);
   }
 
   async getProjections(sport: string = "NBA"): Promise<PrizePicksResponse> {
     const leagueId = LEAGUE_IDS[sport] || LEAGUE_IDS['NBA'];
     
+    // APPROACH 1: Try direct API with enhanced headers (mada949's method)
     const params = new URLSearchParams({
       league_id: leagueId.toString(),
       per_page: '250',
       single_stat: 'true',
+      game_mode: 'pickem',  // Added from community examples
     });
 
-    const response = await this.get<PrizePicksResponse>(
-      `/projections?${params.toString()}`
-    );
+    console.log(`🎯 PrizePicks: Attempting direct API call for ${sport} (league_id: ${leagueId})`);
+    
+    try {
+      const response = await this.get<PrizePicksResponse>(
+        `/projections?${params.toString()}`
+      );
 
-    return response?.data || { data: [], included: [] };
+      console.log(`✅ PrizePicks: Successfully fetched ${response.data?.data?.length || 0} projections via direct API`);
+      return response?.data || { data: [], included: [] };
+    } catch (directApiError) {
+      console.warn(`⚠️ PrizePicks direct API failed, trying stealth browser...`);
+      
+      // APPROACH 2: Fall back to stealth browser scraping
+      try {
+        const scraper = getStealthScraper();
+        const stealthResponse = await scraper.scrapeProjections(sport);
+        
+        console.log(`✅ PrizePicks: Successfully fetched ${stealthResponse.data?.length || 0} projections via stealth browser`);
+        return stealthResponse;
+      } catch (stealthError) {
+        console.error(`❌ PrizePicks stealth browser also failed:`, stealthError);
+        console.error(`❌ Both methods exhausted. Direct API error:`, directApiError);
+        throw new Error(`All PrizePicks methods failed. Last error: ${stealthError}`);
+      }
+    }
   }
 
   normalizeToProp(
