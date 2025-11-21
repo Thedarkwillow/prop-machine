@@ -136,16 +136,48 @@ export class PrizePicksClient extends IntegrationClient {
 
   /**
    * Get NBA projections
+   * League ID 7 = NBA
    */
   async getNBAProjections(): Promise<ParsedPrizePick[]> {
-    return this.getProjections('7'); // NBA is typically league ID 7
+    try {
+      console.log(`🏀 Fetching NBA projections (league ID 7)...`);
+      const projections = await this.getProjections('7');
+      console.log(`✅ Found ${projections.length} NBA projections from PrizePicks`);
+      return projections;
+    } catch (error: any) {
+      console.error(`❌ Failed to fetch NBA projections:`, error.message);
+      
+      if (error.message.includes('429')) {
+        console.log('⚠️  PrizePicks rate limit (HTTP 429) - returning empty to preserve existing props');
+      } else if (error.message.includes('403') || error.message.includes('Cloudflare')) {
+        console.log('⚠️  PrizePicks blocked request (Cloudflare protection) - returning empty to preserve existing props');
+      }
+      
+      return [];
+    }
   }
 
   /**
    * Get NFL projections
+   * League ID 2 = NFL
    */
   async getNFLProjections(): Promise<ParsedPrizePick[]> {
-    return this.getProjections('2'); // NFL is typically league ID 2
+    try {
+      console.log(`🏈 Fetching NFL projections (league ID 2)...`);
+      const projections = await this.getProjections('2');
+      console.log(`✅ Found ${projections.length} NFL projections from PrizePicks`);
+      return projections;
+    } catch (error: any) {
+      console.error(`❌ Failed to fetch NFL projections:`, error.message);
+      
+      if (error.message.includes('429')) {
+        console.log('⚠️  PrizePicks rate limit (HTTP 429) - returning empty to preserve existing props');
+      } else if (error.message.includes('403') || error.message.includes('Cloudflare')) {
+        console.log('⚠️  PrizePicks blocked request (Cloudflare protection) - returning empty to preserve existing props');
+      }
+      
+      return [];
+    }
   }
 
   /**

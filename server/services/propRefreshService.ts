@@ -408,20 +408,25 @@ export class PropRefreshService {
     };
 
     try {
-      // Gate: Double-check sport support (primary gate is in refreshAllPlatforms)
-      if (sport !== 'NHL') {
-        console.log(`⚠️  PrizePicks integration only supports NHL (skipping ${sport})`);
-        result.success = true;
-        return result;
-      }
-
       console.log(`Fetching props from PrizePicks for ${sport}...`);
 
       // Load existing props FIRST - critical for rate-limit preservation
       const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'PrizePicks');
       console.log(`Found ${oldPropIds.length} existing active PrizePicks ${sport} props`);
 
-      const prizePicksProps = await prizePicksClient.getNHLProjections();
+      // Fetch projections based on sport
+      let prizePicksProps;
+      if (sport === 'NHL') {
+        prizePicksProps = await prizePicksClient.getNHLProjections();
+      } else if (sport === 'NBA') {
+        prizePicksProps = await prizePicksClient.getNBAProjections();
+      } else if (sport === 'NFL') {
+        prizePicksProps = await prizePicksClient.getNFLProjections();
+      } else {
+        console.log(`⚠️  PrizePicks integration does not support ${sport} yet`);
+        result.success = true;
+        return result;
+      }
       
       // Critical: If rate limited (empty response), keep existing props active
       if (prizePicksProps.length === 0) {
@@ -509,23 +514,18 @@ export class PropRefreshService {
     const results: RefreshResult[] = [];
     
     console.log(`Starting multi-platform prop refresh for: ${sports.join(', ')}`);
-    console.log(`Platforms: Underdog, The Odds API, PrizePicks (NHL only)`);
+    console.log(`Platforms: Underdog, The Odds API, PrizePicks (NBA, NFL, NHL)`);
 
     // Fetch from all platforms in parallel for each sport
     for (const sport of sports) {
       // Launch all platform fetches in parallel to avoid blocking on failures
       // NOTE: OpticOdds REST API disabled - using SSE streaming instead (user has SSE-only access)
-      const fetchPromises: Promise<RefreshResult>[] = [
+      const platformResults = await Promise.all([
         this.refreshFromUnderdog(sport),
         this.refreshFromOddsApi(sport),
-      ];
+        this.refreshFromPrizePicks(sport),
+      ]);
       
-      // Only fetch from PrizePicks for NHL (gate at scheduler level to avoid wasted API calls)
-      if (sport === 'NHL') {
-        fetchPromises.push(this.refreshFromPrizePicks(sport));
-      }
-      
-      const platformResults = await Promise.all(fetchPromises);
       results.push(...platformResults);
     }
 
