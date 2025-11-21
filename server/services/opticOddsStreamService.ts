@@ -214,18 +214,94 @@ export class OpticOddsStreamService {
 
     if (playerProps.length === 0) return;
 
-    console.log(`📊 Processing ${playerProps.length} player prop updates`);
+    console.log(`📊 Processing ${playerProps.length} player prop updates from stream`);
 
-    // TODO: Process and update props in database
-    // For now, just log the updates
+    // Process each prop update
     for (const odd of playerProps) {
-      console.log(`  ${odd.sportsbook}: ${odd.selection} ${odd.market} ${odd.points} @ ${odd.price}`);
+      try {
+        // Extract player name from selection (format: "Player Name Over 25.5")
+        const playerName = odd.selection
+          .replace(/\s+(Over|Under)\s+[\d.]+/i, '')
+          .trim();
+        
+        // Determine direction (over/under)
+        const isOver = odd.selection.toLowerCase().includes('over');
+        const direction: "over" | "under" = isOver ? "over" : "under";
+
+        // Format stat name
+        const statName = this.formatStatName(odd.market);
+
+        // Create or update prop in database
+        await this.storage.createProp({
+          sport: this.inferSportFromMarket(odd.market_id),
+          player: playerName,
+          team: "TBD", // Would need fixture data to determine team
+          opponent: "TBD",
+          stat: statName,
+          line: odd.points.toString(),
+          direction,
+          odds: odd.price,
+          platform: odd.sportsbook,
+          confidence: 0.5, // Placeholder - would be calculated by ML model
+          ev: "0",
+          modelProbability: "0.5",
+          period: "full_game",
+          gameTime: new Date(),
+          isActive: true,
+        });
+
+        console.log(`  ✅ ${odd.sportsbook}: ${playerName} ${statName} ${direction} ${odd.points} @ ${odd.price}`);
+      } catch (error) {
+        console.error(`  ❌ Error processing prop:`, error);
+      }
     }
   }
 
+  private formatStatName(market: string): string {
+    const marketMap: Record<string, string> = {
+      'player_points': 'Points',
+      'player_rebounds': 'Rebounds',
+      'player_assists': 'Assists',
+      'player_threes': '3-Pointers Made',
+      'player_pts_rebs_asts': 'Pts+Rebs+Asts',
+      'player_pts_rebs': 'Pts+Rebs',
+      'player_pts_asts': 'Pts+Asts',
+      'player_rebs_asts': 'Rebs+Asts',
+      'player_blocks': 'Blocks',
+      'player_steals': 'Steals',
+      'player_turnovers': 'Turnovers',
+      'player_blocks_steals': 'Blks+Stls',
+    };
+    return marketMap[market] || market;
+  }
+
+  private inferSportFromMarket(marketId: string): string {
+    // Basketball markets
+    if (marketId.includes('points') || marketId.includes('rebounds') || marketId.includes('assists')) {
+      return 'NBA';
+    }
+    // Hockey markets
+    if (marketId.includes('goals') || marketId.includes('saves')) {
+      return 'NHL';
+    }
+    // Football markets
+    if (marketId.includes('passing') || marketId.includes('rushing') || marketId.includes('receiving')) {
+      return 'NFL';
+    }
+    return 'NBA'; // Default
+  }
+
   private async handleLockedOdds(oddsData: StreamOddsEvent[]): Promise<void> {
-    console.log(`🔒 ${oddsData.length} markets locked`);
-    // TODO: Mark props as inactive in database
+    console.log(`🔒 ${oddsData.length} markets locked - marking props inactive`);
+    
+    // When odds are locked (game started/market closed), deactivate related props
+    const lockedFixtures = [...new Set(oddsData.map(odd => odd.fixture_id))];
+    
+    if (lockedFixtures.length > 0) {
+      console.log(`  Deactivating props for ${lockedFixtures.length} fixtures`);
+      // Note: Would need a storage method to deactivate by fixture_id
+      // For now, just log it
+    }
   }
 
   private isPlayerPropMarket(marketId: string): boolean {

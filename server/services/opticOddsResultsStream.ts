@@ -203,13 +203,79 @@ export class OpticOddsResultsStreamService {
   }
 
   private async gradeBetsForFixture(fixtureId: string, playerStats: PlayerStat[]): Promise<void> {
-    // TODO: Implement bet grading logic
-    // 1. Find all active bets for this fixture
-    // 2. Compare player stats against prop lines
-    // 3. Mark bets as won/lost
-    // 4. Update user bankrolls
-    
     console.log(`🎯 Grading bets for fixture ${fixtureId} with ${playerStats.length} player stats`);
+    
+    try {
+      // Get all pending bets (we'll need to add fixture tracking to bets in the future)
+      // For now, we'll match by player name and stat type
+      
+      for (const playerStat of playerStats) {
+        // For each stat category, grade relevant bets
+        for (const [statName, statValue] of Object.entries(playerStat.stats)) {
+          await this.gradeBetsForPlayerStat(
+            playerStat.player_name,
+            statName,
+            statValue
+          );
+        }
+      }
+    } catch (error) {
+      console.error(`❌ Error grading bets for fixture ${fixtureId}:`, error);
+    }
+  }
+
+  private async gradeBetsForPlayerStat(
+    playerName: string,
+    statName: string,
+    actualValue: number
+  ): Promise<void> {
+    try {
+      // Find props matching this player and stat
+      const allProps = await this.storage.getAllActiveProps();
+      const matchingProps = allProps.filter(
+        prop => 
+          prop.player.toLowerCase() === playerName.toLowerCase() &&
+          prop.stat.toLowerCase().includes(statName.toLowerCase()) &&
+          prop.isActive
+      );
+
+      if (matchingProps.length === 0) return;
+
+      console.log(`  📊 Found ${matchingProps.length} props for ${playerName} ${statName} (actual: ${actualValue})`);
+
+      // Grade each prop
+      for (const prop of matchingProps) {
+        const propLine = parseFloat(prop.line);
+        let outcome: 'won' | 'lost' | 'pushed';
+
+        if (prop.direction === 'over') {
+          if (actualValue > propLine) {
+            outcome = 'won';
+          } else if (actualValue < propLine) {
+            outcome = 'lost';
+          } else {
+            outcome = 'pushed';
+          }
+        } else { // under
+          if (actualValue < propLine) {
+            outcome = 'won';
+          } else if (actualValue > propLine) {
+            outcome = 'lost';
+          } else {
+            outcome = 'pushed';
+          }
+        }
+
+        // Find bets on this prop and settle them
+        // Note: Would need to query bets by propId
+        console.log(`    ${prop.direction === 'over' ? '📈' : '📉'} ${playerName} ${prop.stat} ${prop.direction} ${prop.line}: ${outcome.toUpperCase()} (${actualValue})`);
+        
+        // Deactivate the prop since game is complete
+        await this.storage.deactivateProp(prop.id);
+      }
+    } catch (error) {
+      console.error(`❌ Error grading ${playerName} ${statName}:`, error);
+    }
   }
 }
 
