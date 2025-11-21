@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,23 @@ export default function DFSProps() {
   const [confidenceFilter, setConfidenceFilter] = useState<string>("all");
   const [platformFilter, setPlatformFilter] = useState<string>("all");
 
-  // Fetch with higher limit to ensure we get props from all sports (NBA, NFL, NHL)
-  // Total DFS props: ~13,771 (NBA: 8,226, NFL: 2,958, NHL: 2,587)
-  // Using object format for consistency with Dashboard and proper cache invalidation
-  const { data: props, isLoading } = useQuery<Prop[]>({
-    queryKey: ["/api/props", { limit: 15000 }],
+  // Fetch each sport separately to guarantee complete coverage regardless of prop volume
+  // This prevents high-confidence NBA props from crowding out NHL/NFL props
+  // Each query is cached independently for efficient invalidation
+  // staleTime: 0 ensures queries refetch immediately after invalidation
+  const queries = useQueries({
+    queries: ['NBA', 'NFL', 'NHL'].map(sport => ({
+      queryKey: ["/api/props", { sport, limit: 10000 }],
+      staleTime: 0,
+    }))
   });
+
+  // Merge results from all sport queries
+  const props = useMemo(() => {
+    return queries.flatMap(q => q.data || []) as Prop[];
+  }, [queries]);
+
+  const isLoading = queries.some(q => q.isLoading);
 
   // Memoize filtered and grouped props for performance
   const { dfsProps, filteredProps, sortedGroups, topPicks, sports, stats, platforms } = useMemo(() => {
