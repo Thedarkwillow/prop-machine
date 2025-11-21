@@ -289,6 +289,8 @@ export class OpticOddsStreamService {
           direction,
           odds: odd.price,
           platform: odd.sportsbook,
+          fixtureId: odd.fixture_id, // Store OpticOdds fixture ID
+          marketId: odd.market_id,   // Store OpticOdds market ID
           confidence: 0.5, // Placeholder - would be calculated by ML model
           ev: "0",
           modelProbability: "0.5",

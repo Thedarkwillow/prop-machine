@@ -261,7 +261,7 @@ class MemStorage implements IStorage {
   }
 
   async upsertProp(prop: InsertProp): Promise<Prop> {
-    // Find existing prop by unique combination
+    // Find existing prop by unique combination (including fixture_id for fixture-specific matching)
     const existing = Array.from(this.props.values()).find(p =>
       p.sport === prop.sport &&
       p.player === prop.player &&
@@ -269,14 +269,16 @@ class MemStorage implements IStorage {
       p.line === prop.line &&
       p.direction === prop.direction &&
       p.platform === prop.platform &&
+      p.fixtureId === prop.fixtureId && // Match by fixture_id to prevent cross-fixture conflicts
       p.isActive
     );
 
     if (existing) {
-      // Update existing prop with new odds
+      // Update existing prop with new odds/data
       existing.odds = prop.odds;
       existing.currentLine = prop.currentLine ?? null;
       existing.gameTime = prop.gameTime;
+      existing.marketId = prop.marketId ?? null;
       return existing;
     }
 
@@ -297,6 +299,8 @@ class MemStorage implements IStorage {
       direction: prop.direction,
       period: prop.period ?? "full_game",
       platform: prop.platform,
+      fixtureId: prop.fixtureId ?? null,
+      marketId: prop.marketId ?? null,
       confidence: prop.confidence,
       ev: prop.ev,
       modelProbability: prop.modelProbability,
@@ -1132,29 +1136,37 @@ class DbStorage implements IStorage {
   }
 
   async upsertProp(prop: InsertProp): Promise<Prop> {
-    // Try to find existing active prop with same attributes
+    // Try to find existing active prop with same attributes (including fixture_id for fixture-specific matching)
+    const conditions = [
+      eq(props.sport, prop.sport),
+      eq(props.player, prop.player),
+      eq(props.stat, prop.stat),
+      eq(props.line, prop.line),
+      eq(props.direction, prop.direction),
+      eq(props.platform, prop.platform),
+      eq(props.isActive, true)
+    ];
+
+    // Include fixture_id in matching if provided (critical for preventing cross-fixture conflicts)
+    if (prop.fixtureId) {
+      conditions.push(eq(props.fixtureId, prop.fixtureId));
+    }
+
     const existing = await db
       .select()
       .from(props)
-      .where(and(
-        eq(props.sport, prop.sport),
-        eq(props.player, prop.player),
-        eq(props.stat, prop.stat),
-        eq(props.line, prop.line),
-        eq(props.direction, prop.direction),
-        eq(props.platform, prop.platform),
-        eq(props.isActive, true)
-      ))
+      .where(and(...conditions))
       .limit(1);
 
     if (existing.length > 0) {
-      // Update existing prop with new odds/price
+      // Update existing prop with new odds/data
       const updated = await db
         .update(props)
         .set({
           odds: prop.odds,
           currentLine: prop.currentLine ?? null,
           gameTime: prop.gameTime,
+          marketId: prop.marketId ?? null,
         })
         .where(eq(props.id, existing[0].id))
         .returning();
