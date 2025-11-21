@@ -55,9 +55,11 @@ export default function Dashboard() {
     queryKey: ['/api/dashboard'],
   });
 
-  // Fetch props
+  // Fetch props with higher limit to ensure we get all props for the selected sport
+  // This prevents missing platforms (Underdog Fantasy) and stats due to pagination
+  // Object format: queryClient converts ['/api/props', { sport: 'NHL', limit: 5000 }] to /api/props?sport=NHL&limit=5000
   const { data: props = [], isLoading: propsLoading, isError: propsError } = useQuery({
-    queryKey: ['/api/props', selectedSport],
+    queryKey: ['/api/props', { sport: selectedSport, limit: 5000 }],
   });
 
   // Refresh props mutation
@@ -69,9 +71,8 @@ export default function Dashboard() {
       return await response.json();
     },
     onSuccess: (data: any) => {
-      // Invalidate both general and sport-specific prop queries
+      // Invalidate all prop queries - use prefix matching to catch all query key variations
       queryClient.invalidateQueries({ queryKey: ['/api/props'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/props', selectedSport] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/props/scheduler/status'] });
       toast({
         title: "Props refreshed successfully",

@@ -1106,7 +1106,7 @@ class DbStorage implements IStorage {
           ? and(eq(props.isActive, true), eq(props.sport, sport))
           : eq(props.isActive, true)
       )
-      .orderBy(desc(props.createdAt))
+      .orderBy(desc(props.confidence), desc(props.createdAt))
       .limit(limit)
       .offset(offset);
 

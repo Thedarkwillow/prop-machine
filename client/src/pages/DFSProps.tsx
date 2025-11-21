@@ -14,9 +14,10 @@ export default function DFSProps() {
   const [platformFilter, setPlatformFilter] = useState<string>("all");
 
   // Fetch with higher limit to ensure we get props from all sports (NBA, NFL, NHL)
-  // Default API limit is 100 which might only return NBA props due to large volume
+  // Total DFS props: ~13,771 (NBA: 8,226, NFL: 2,958, NHL: 2,587)
+  // Using object format for consistency with Dashboard and proper cache invalidation
   const { data: props, isLoading } = useQuery<Prop[]>({
-    queryKey: ["/api/props?limit=5000"],
+    queryKey: ["/api/props", { limit: 15000 }],
   });
 
   // Memoize filtered and grouped props for performance
