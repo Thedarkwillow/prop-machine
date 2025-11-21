@@ -93,7 +93,7 @@ class PrizePicksScraperClient {
       
       console.log(`🔍 Scraping PrizePicks for league ID ${leagueId}...`);
       
-      let apiResponse: PrizePicksResponse | null = null;
+      let apiResponse: PrizePicksResponse | null = null as PrizePicksResponse | null;
       
       // Intercept API responses
       await page.setRequestInterception(true);
