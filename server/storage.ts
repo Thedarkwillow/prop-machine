@@ -69,10 +69,12 @@ export interface IStorage {
   getActivePropsWithLineMovement(sport?: string, limit?: number, offset?: number): Promise<PropWithLineMovement[]>;
   getAllActiveProps(): Promise<Prop[]>;
   getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]>;
+  getActivePropsByFixtureId(fixtureId: string): Promise<Prop[]>; // Get active props for specific fixture
   createProp(prop: InsertProp): Promise<Prop>;
   upsertProp(prop: InsertProp): Promise<Prop>; // Upsert: create or update existing prop
   deactivateProp(propId: number): Promise<void>;
   deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
+  deactivatePropsByFixtureId(fixtureId: string): Promise<number>; // Deactivate props for specific fixture
   deactivateSpecificProps(propIds: number[]): Promise<number>;
   
   // Slips
@@ -345,6 +347,23 @@ class MemStorage implements IStorage {
     for (const id of propIds) {
       const prop = this.props.get(id);
       if (prop && prop.isActive) {
+        prop.isActive = false;
+        count++;
+      }
+    }
+    return count;
+  }
+
+  async getActivePropsByFixtureId(fixtureId: string): Promise<Prop[]> {
+    return Array.from(this.props.values()).filter(
+      p => p.fixtureId === fixtureId && p.isActive
+    );
+  }
+
+  async deactivatePropsByFixtureId(fixtureId: string): Promise<number> {
+    let count = 0;
+    for (const prop of this.props.values()) {
+      if (prop.fixtureId === fixtureId && prop.isActive) {
         prop.isActive = false;
         count++;
       }
@@ -1223,6 +1242,31 @@ class DbStorage implements IStorage {
       .set({ isActive: false })
       .where(and(
         inArray(props.id, propIds),
+        eq(props.isActive, true)
+      ))
+      .returning({ id: props.id });
+    
+    return result.length;
+  }
+
+  async getActivePropsByFixtureId(fixtureId: string): Promise<Prop[]> {
+    const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
+    const results = await db
+      .select()
+      .from(props)
+      .where(and(
+        eq(props.fixtureId, fixtureId),
+        eq(props.isActive, true)
+      ));
+    return normalizeDecimalsArray(results, propDecimalFields);
+  }
+
+  async deactivatePropsByFixtureId(fixtureId: string): Promise<number> {
+    const result = await db
+      .update(props)
+      .set({ isActive: false })
+      .where(and(
+        eq(props.fixtureId, fixtureId),
         eq(props.isActive, true)
       ))
       .returning({ id: props.id });
