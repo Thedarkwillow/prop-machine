@@ -49,6 +49,8 @@ export const props = pgTable("props", {
   direction: text("direction", { enum: ["over", "under"] }).notNull(),
   period: text("period", { enum: ["full_game", "1Q", "1H", "2H", "4Q"] }).notNull().default("full_game"), // Game period for NBA/NFL
   platform: text("platform").notNull(), // PrizePicks, Underdog, etc.
+  fixtureId: text("fixture_id"), // OpticOdds fixture ID for accurate grading
+  marketId: text("market_id"), // OpticOdds market ID (e.g., player_points, player_pts_asts)
   confidence: integer("confidence").notNull(), // 0-100
   ev: decimal("ev", { precision: 5, scale: 2 }).notNull(), // Expected value %
   modelProbability: decimal("model_probability", { precision: 5, scale: 4 }).notNull(),
