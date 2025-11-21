@@ -346,9 +346,8 @@ export class OpticOddsStreamService {
           team,
           opponent,
           stat: statName,
-          line: odd.points.toString(),
+          line: odd.points?.toString() || "0", // Handle null points gracefully
           direction,
-          odds: odd.price,
           platform: odd.sportsbook,
           fixtureId: odd.fixture_id || null, // Store OpticOdds fixture ID (null if missing)
           marketId: odd.market_id,   // Store OpticOdds market ID
@@ -406,7 +405,8 @@ export class OpticOddsStreamService {
     console.log(`🔒 ${oddsData.length} markets locked - marking props inactive`);
     
     // When odds are locked (game started/market closed), deactivate related props
-    const lockedFixtures = [...new Set(oddsData.map(odd => odd.fixture_id))];
+    const fixtureSet = new Set(oddsData.map(odd => odd.fixture_id));
+    const lockedFixtures = Array.from(fixtureSet);
     
     if (lockedFixtures.length > 0) {
       console.log(`  Deactivating props for ${lockedFixtures.length} fixtures`);
