@@ -15,18 +15,29 @@ export default function Admin() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [testResults, setTestResults] = useState<any>(null);
 
-  const { data: stats, refetch: refetchStats } = useQuery({
+  const { data: stats, refetch: refetchStats } = useQuery<{
+    stats: {
+      activeProps: number;
+      models: number;
+      sportBreakdown: Record<string, number>;
+      fixtureIdCoverage?: {
+        total: number;
+        withFixtureId: number;
+        percentage: number;
+        dfsTotal: number;
+        dfsWithFixtureId: number;
+        dfsPercentage: number;
+      };
+    };
+  }>({
     queryKey: ["/api/admin/stats"],
   });
 
   const handleSettlement = async (sport?: string) => {
     setIsSettling(true);
     try {
-      const response: any = await apiRequest({
-        url: "/api/admin/settlement/run",
-        method: "POST",
-        data: { sport },
-      });
+      const res = await apiRequest("POST", "/api/admin/settlement/run", { sport });
+      const response: any = await res.json();
 
       toast({
         title: "Settlement Complete",
@@ -48,10 +59,8 @@ export default function Admin() {
   const handleRescore = async () => {
     setIsRescoring(true);
     try {
-      const response: any = await apiRequest({
-        url: "/api/admin/props/rescore",
-        method: "POST",
-      });
+      const res = await apiRequest("POST", "/api/admin/props/rescore");
+      const response: any = await res.json();
 
       toast({
         title: "Rescore Complete",
@@ -73,10 +82,8 @@ export default function Admin() {
   const handleRefreshSampleProps = async () => {
     setIsRefreshing(true);
     try {
-      const response: any = await apiRequest({
-        url: "/api/admin/props/refresh-samples",
-        method: "POST",
-      });
+      const res = await apiRequest("POST", "/api/admin/props/refresh-samples");
+      const response: any = await res.json();
 
       toast({
         title: "Props Refreshed",
@@ -97,10 +104,8 @@ export default function Admin() {
 
   const handleTestBalldontlie = async () => {
     try {
-      const response: any = await apiRequest({
-        url: "/api/admin/test/balldontlie",
-        method: "GET",
-      });
+      const res = await apiRequest("GET", "/api/admin/test/balldontlie");
+      const response: any = await res.json();
 
       setTestResults({
         type: "BALLDONTLIE",
@@ -122,22 +127,19 @@ export default function Admin() {
 
   const handleTestModel = async () => {
     try {
-      const response: any = await apiRequest({
-        url: "/api/admin/test/model",
-        method: "POST",
-        data: {
-          playerName: "Luka Doncic",
-          stat: "Points",
-          line: 28.5,
-          direction: "over",
-          sport: "NBA",
-          recentAverage: 31.2,
-          seasonAverage: 29.8,
-          opponentRanking: 25,
-          homeAway: "home",
-          lineMovement: 0.5,
-        },
+      const res = await apiRequest("POST", "/api/admin/test/model", {
+        playerName: "Luka Doncic",
+        stat: "Points",
+        line: 28.5,
+        direction: "over",
+        sport: "NBA",
+        recentAverage: 31.2,
+        seasonAverage: 29.8,
+        opponentRanking: 25,
+        homeAway: "home",
+        lineMovement: 0.5,
       });
+      const response: any = await res.json();
 
       setTestResults({
         type: "MODEL",
@@ -176,7 +178,7 @@ export default function Admin() {
       </div>
 
       {/* System Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Props</CardTitle>
@@ -189,6 +191,26 @@ export default function Admin() {
             <p className="text-xs text-muted-foreground">
               Across all sports
             </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Fixture ID Coverage</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold" data-testid="text-fixture-coverage">
+              {stats?.stats?.fixtureIdCoverage?.percentage || 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats?.stats?.fixtureIdCoverage?.withFixtureId || 0} of {stats?.stats?.fixtureIdCoverage?.total || 0} props
+            </p>
+            {(stats?.stats?.fixtureIdCoverage?.dfsTotal ?? 0) > 0 && (
+              <p className="text-xs text-muted-foreground mt-1">
+                DFS: {stats?.stats?.fixtureIdCoverage?.dfsPercentage || 0}% ({stats?.stats?.fixtureIdCoverage?.dfsWithFixtureId || 0}/{stats?.stats?.fixtureIdCoverage?.dfsTotal || 0})
+              </p>
+            )}
           </CardContent>
         </Card>
 

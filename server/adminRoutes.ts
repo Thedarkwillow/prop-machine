@@ -282,12 +282,25 @@ export function adminRoutes(): Router {
         return acc;
       }, {} as Record<string, number>);
       
+      // Calculate fixture_id coverage
+      const propsWithFixtureId = allProps.filter(p => p.fixtureId !== null && p.fixtureId !== undefined);
+      const dfsProps = allProps.filter(p => p.platform === 'PrizePicks' || p.platform === 'Underdog');
+      const dfsPropsWithFixtureId = dfsProps.filter(p => p.fixtureId !== null && p.fixtureId !== undefined);
+      
       res.json({
         success: true,
         stats: {
           activeProps: allProps.length,
           sportBreakdown,
           models: allModels.length,
+          fixtureIdCoverage: {
+            total: allProps.length,
+            withFixtureId: propsWithFixtureId.length,
+            percentage: allProps.length > 0 ? Math.round((propsWithFixtureId.length / allProps.length) * 100) : 0,
+            dfsTotal: dfsProps.length,
+            dfsWithFixtureId: dfsPropsWithFixtureId.length,
+            dfsPercentage: dfsProps.length > 0 ? Math.round((dfsPropsWithFixtureId.length / dfsProps.length) * 100) : 0,
+          },
         },
       });
     } catch (error) {
