@@ -2,6 +2,7 @@ import { EventSource } from 'eventsource';
 import type { IStorage } from '../storage';
 import { storage } from '../storage';
 import { opticOddsClient } from '../integrations/opticOddsClient';
+import { normalizeStat } from '../utils/statNormalizer';
 
 interface StreamOddsEvent {
   id: string;
@@ -336,6 +337,9 @@ export class OpticOddsStreamService {
 
         // Format stat name
         const statName = this.formatStatName(odd.market);
+        
+        // Normalize stat name for consistency across platforms
+        const normalizedStat = normalizeStat(statName);
 
         // Look up team names from fixture cache
         const fixture = this.fixtureCache.get(odd.fixture_id);
@@ -350,12 +354,12 @@ export class OpticOddsStreamService {
 
         // Log warning if fixture_id is missing (for monitoring data quality)
         if (!odd.fixture_id) {
-          console.warn(`⚠️  Missing fixture_id for ${odd.sportsbook}: ${playerName} ${statName} - will use global matching`);
+          console.warn(`⚠️  Missing fixture_id for ${odd.sportsbook}: ${playerName} ${normalizedStat} - will use global matching`);
         }
 
         // Debug: Log what we're about to upsert
         const fixtureDebug = odd.fixture_id || 'NULL';
-        console.log(`  🔍 [DEBUG] Upserting ${playerName} ${statName} with fixtureId: ${fixtureDebug}`);
+        console.log(`  🔍 [DEBUG] Upserting ${playerName} ${normalizedStat} with fixtureId: ${fixtureDebug}`);
 
         // Upsert prop (create new or update existing)
         const result = await this.storage.upsertProp({
@@ -363,7 +367,7 @@ export class OpticOddsStreamService {
           player: playerName,
           team,
           opponent,
-          stat: statName,
+          stat: normalizedStat,
           line: odd.points?.toString() || "0", // Handle null points gracefully
           direction,
           platform: odd.sportsbook,
