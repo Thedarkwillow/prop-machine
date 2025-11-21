@@ -18,12 +18,14 @@ export default function DFSProps() {
 
   // Memoize filtered and grouped props for performance
   const { dfsProps, filteredProps, sortedGroups, topPicks, sports, stats } = useMemo(() => {
-    // Filter for DraftKings and FanDuel only
+    // Filter for DFS platforms: DraftKings, FanDuel, PrizePicks, Underdog Fantasy
     const dfsPropsFiltered = props?.filter(
       (p) =>
         p.isActive &&
         (p.platform.toLowerCase().includes("draftkings") ||
-          p.platform.toLowerCase().includes("fanduel"))
+          p.platform.toLowerCase().includes("fanduel") ||
+          p.platform.toLowerCase().includes("prizepicks") ||
+          p.platform.toLowerCase().includes("underdog"))
     ) || [];
 
     // Apply filters
