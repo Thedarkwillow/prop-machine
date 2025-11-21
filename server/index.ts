@@ -18,6 +18,7 @@ import { createNotificationRoutes } from "./notificationRoutes.js";
 import { storage } from "./storage.js";
 import { seedDatabase } from "./seed.js";
 import { propSchedulerService } from "./services/propSchedulerService.js";
+import { OpticOddsStreamService } from "./services/opticOddsStreamService.js";
 
 dotenv.config();
 
@@ -162,6 +163,33 @@ const server = app.listen(PORT, "0.0.0.0", () => {
     console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
   } else {
     propSchedulerService.start(15);
+  }
+  
+  // Auto-start OpticOdds streaming for PrizePicks/Underdog
+  if (process.env.OPTICODDS_API_KEY && process.env.ENABLE_STREAMING !== "false") {
+    const streamService = new OpticOddsStreamService();
+    
+    console.log("📡 Auto-starting OpticOdds streaming for DFS platforms...");
+    
+    // Start streams for NBA, NFL, NHL
+    const sports = ['basketball_nba', 'americanfootball_nfl', 'icehockey_nhl'];
+    const sportsbooks = ['PrizePicks', 'Underdog'];
+    
+    sports.forEach(sport => {
+      try {
+        const streamId = streamService.startOddsStream({
+          sport,
+          sportsbooks,
+        });
+        console.log(`✅ Started ${sport} stream: ${streamId}`);
+      } catch (error) {
+        console.error(`❌ Failed to start ${sport} stream:`, error);
+      }
+    });
+  } else if (!process.env.OPTICODDS_API_KEY) {
+    console.log("⚠️  OpticOdds streaming disabled: No API key configured");
+  } else {
+    console.log("⏸️  OpticOdds streaming disabled: ENABLE_STREAMING=false");
   }
 });
 
