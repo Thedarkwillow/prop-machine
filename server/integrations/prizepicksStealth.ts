@@ -95,8 +95,8 @@ export class PrizePicksStealthScraper {
 
       console.log('⏳ Waiting for projections to load...');
       
-      // Wait a bit for all API calls to complete
-      await page.waitForTimeout(5000);
+      // Wait a bit for all API calls to complete (waitForTimeout is deprecated)
+      await new Promise(resolve => setTimeout(resolve, 5000));
 
       if (apiResponse) {
         console.log(`✅ Successfully scraped ${apiResponse.data?.length || 0} projections via stealth browser`);
