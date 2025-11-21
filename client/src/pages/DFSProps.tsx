@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp, TrendingDown, Target, Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Prop } from "@shared/schema";
 
 export default function DFSProps() {
@@ -16,48 +16,60 @@ export default function DFSProps() {
     queryKey: ["/api/props"],
   });
 
-  // Filter for DraftKings and FanDuel only
-  const dfsProps = props?.filter(
-    (p) =>
-      p.isActive &&
-      (p.platform.toLowerCase().includes("draftkings") ||
-        p.platform.toLowerCase().includes("fanduel"))
-  ) || [];
+  // Memoize filtered and grouped props for performance
+  const { dfsProps, filteredProps, sortedGroups, topPicks, sports, stats } = useMemo(() => {
+    // Filter for DraftKings and FanDuel only
+    const dfsPropsFiltered = props?.filter(
+      (p) =>
+        p.isActive &&
+        (p.platform.toLowerCase().includes("draftkings") ||
+          p.platform.toLowerCase().includes("fanduel"))
+    ) || [];
 
-  // Apply filters
-  const filteredProps = dfsProps.filter((prop) => {
-    if (sportFilter !== "all" && prop.sport !== sportFilter) return false;
-    if (statFilter !== "all" && prop.stat !== statFilter) return false;
-    if (confidenceFilter === "high" && prop.confidence < 75) return false;
-    if (confidenceFilter === "medium" && (prop.confidence < 60 || prop.confidence >= 75)) return false;
-    if (confidenceFilter === "low" && prop.confidence >= 60) return false;
-    return true;
-  });
+    // Apply filters
+    const filtered = dfsPropsFiltered.filter((prop) => {
+      if (sportFilter !== "all" && prop.sport !== sportFilter) return false;
+      if (statFilter !== "all" && prop.stat !== statFilter) return false;
+      if (confidenceFilter === "high" && prop.confidence < 75) return false;
+      if (confidenceFilter === "medium" && (prop.confidence < 60 || prop.confidence >= 75)) return false;
+      if (confidenceFilter === "low" && prop.confidence >= 60) return false;
+      return true;
+    });
 
-  // Group props by player/stat to show both books
-  const groupedProps = filteredProps.reduce((acc, prop) => {
-    const key = `${prop.player}-${prop.stat}-${prop.direction}`;
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(prop);
-    return acc;
-  }, {} as Record<string, Prop[]>);
+    // Group props by sport/player/stat/direction/period to avoid collisions
+    const groupedProps = filtered.reduce((acc, prop) => {
+      const key = `${prop.sport}-${prop.player}-${prop.stat}-${prop.direction}-${prop.period}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(prop);
+      return acc;
+    }, {} as Record<string, Prop[]>);
 
-  // Sort by highest confidence first
-  const sortedGroups = Object.entries(groupedProps).sort((a, b) => {
-    const maxConfA = Math.max(...a[1].map(p => p.confidence));
-    const maxConfB = Math.max(...b[1].map(p => p.confidence));
-    return maxConfB - maxConfA;
-  });
+    // Sort by highest confidence first
+    const sorted = Object.entries(groupedProps).sort((a, b) => {
+      const maxConfA = Math.max(...a[1].map(p => p.confidence));
+      const maxConfB = Math.max(...b[1].map(p => p.confidence));
+      return maxConfB - maxConfA;
+    });
 
-  // Top picks (confidence >= 75)
-  const topPicks = sortedGroups.filter(([_, props]) => 
-    props.some(p => p.confidence >= 75)
-  ).slice(0, 6);
+    // Top picks (confidence >= 75)
+    const top = sorted.filter(([_, props]) => 
+      props.some(p => p.confidence >= 75)
+    ).slice(0, 6);
 
-  const sports = ["all", ...Array.from(new Set(dfsProps.map(p => p.sport)))];
-  const stats = ["all", ...Array.from(new Set(dfsProps.map(p => p.stat)))];
+    const sportsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.sport)))];
+    const statsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.stat)))];
+
+    return {
+      dfsProps: dfsPropsFiltered,
+      filteredProps: filtered,
+      sortedGroups: sorted,
+      topPicks: top,
+      sports: sportsList,
+      stats: statsList
+    };
+  }, [props, sportFilter, statFilter, confidenceFilter]);
 
   if (isLoading) {
     return (
@@ -156,7 +168,7 @@ export default function DFSProps() {
                         <div className="flex gap-2 flex-wrap">
                           {props.map((p) => (
                             <Badge key={p.id} variant="secondary" className="text-xs">
-                              {p.platform.includes('DraftKings') ? 'DK' : 'FD'}: {parseFloat(p.line.toString()).toFixed(1)}
+                              {p.platform.toLowerCase().includes('draftkings') ? 'DK' : 'FD'}: {parseFloat(p.line.toString()).toFixed(1)}
                             </Badge>
                           ))}
                         </div>
@@ -303,7 +315,7 @@ export default function DFSProps() {
                         {props.map((p) => (
                           <div key={p.id} className="flex items-center gap-2 text-sm">
                             <Badge variant="secondary">
-                              {p.platform.includes('DraftKings') ? 'DraftKings' : 'FanDuel'}
+                              {p.platform.toLowerCase().includes('draftkings') ? 'DraftKings' : 'FanDuel'}
                             </Badge>
                             <span className="font-mono font-semibold">
                               {parseFloat(p.line.toString()).toFixed(1)}
