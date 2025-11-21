@@ -97,6 +97,12 @@ class PrizePicksClient extends IntegrationClient {
   }
 
   async getProjections(sport: string = "NBA"): Promise<PrizePicksResponse> {
+    // Feature flag: Skip PrizePicks if disabled
+    if (process.env.DISABLE_PRIZEPICKS === 'true') {
+      console.log(`⏭️ PrizePicks disabled via DISABLE_PRIZEPICKS flag`);
+      return { data: [], included: [] };
+    }
+
     const leagueId = LEAGUE_IDS[sport] || LEAGUE_IDS['NBA'];
     
     // APPROACH 1: Try direct API with enhanced headers (mada949's method)
@@ -104,32 +110,49 @@ class PrizePicksClient extends IntegrationClient {
       league_id: leagueId.toString(),
       per_page: '250',
       single_stat: 'true',
-      game_mode: 'pickem',  // Added from community examples
+      game_mode: 'pickem',
     });
 
-    console.log(`🎯 PrizePicks: Attempting direct API call for ${sport} (league_id: ${leagueId})`);
+    console.log(`🎯 PrizePicks: Attempting direct API for ${sport} (league_id: ${leagueId})`);
     
     try {
       const response = await this.get<PrizePicksResponse>(
         `/projections?${params.toString()}`
       );
 
-      console.log(`✅ PrizePicks: Successfully fetched ${response.data?.data?.length || 0} projections via direct API`);
+      console.log(`✅ PrizePicks: Fetched ${response.data?.data?.length || 0} projections via direct API`);
       return response?.data || { data: [], included: [] };
-    } catch (directApiError) {
+    } catch (directApiError: any) {
+      // Capture PerimeterX telemetry if present
+      const errorMsg = directApiError?.message || '';
+      const isPerimeterX = errorMsg.includes('PXZNeitfzP');
+      
+      if (isPerimeterX) {
+        console.warn(`🚫 PrizePicks: PerimeterX CAPTCHA detected - bot protection active`);
+        // Don't try stealth browser after PerimeterX detection
+        return { data: [], included: [] };
+      }
+      
+      // APPROACH 2: Fall back to stealth browser for other errors
       console.warn(`⚠️ PrizePicks direct API failed, trying stealth browser...`);
       
-      // APPROACH 2: Fall back to stealth browser scraping
       try {
         const scraper = getStealthScraper();
         const stealthResponse = await scraper.scrapeProjections(sport);
         
-        console.log(`✅ PrizePicks: Successfully fetched ${stealthResponse.data?.length || 0} projections via stealth browser`);
+        console.log(`✅ PrizePicks: Fetched ${stealthResponse.data?.length || 0} projections via stealth browser`);
         return stealthResponse;
-      } catch (stealthError) {
-        console.error(`❌ PrizePicks stealth browser also failed:`, stealthError);
-        console.error(`❌ Both methods exhausted. Direct API error:`, directApiError);
-        throw new Error(`All PrizePicks methods failed. Last error: ${stealthError}`);
+      } catch (stealthError: any) {
+        const isConnectionClosed = stealthError?.message?.includes('Connection closed');
+        
+        if (isConnectionClosed) {
+          console.warn(`🚫 PrizePicks: Browser connection blocked - stealth detection active`);
+        } else {
+          console.error(`❌ PrizePicks stealth browser failed:`, stealthError.message);
+        }
+        
+        // Return empty instead of throwing to avoid scheduler noise
+        return { data: [], included: [] };
       }
     }
   }

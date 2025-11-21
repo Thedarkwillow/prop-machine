@@ -75,7 +75,9 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
   - [njraladdin/prizepicks-scrape-scheduler](https://github.com/njraladdin/prizepicks-scrape-scheduler) - Puppeteer + stealth
 - **Conclusion**: PrizePicks has enterprise-grade bot protection (PerimeterX) that defeats all community scraping methods
 - **Files Created**: `server/integrations/prizepicksStealth.ts` (stealth browser implementation)
-- **Recommendation**: Continue using The Odds API as primary source (superior multi-bookmaker coverage)
+- **Production Config**: PrizePicks disabled by default via `DISABLE_PRIZEPICKS=true` environment variable to prevent scheduler noise
+- **Error Handling**: Improved to detect PerimeterX/connection blocks and return empty gracefully (no stack trace flooding)
+- **Recommendation**: The Odds API provides superior multi-bookmaker coverage (8 sportsbooks for NFL vs PrizePicks' single source)
 
 ### API Integration Status
 - **The Odds API**: ✅ Working perfectly with paid tier (PRIMARY SOURCE)
