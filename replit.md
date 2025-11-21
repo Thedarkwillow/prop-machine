@@ -27,7 +27,8 @@ The platform utilizes a PostgreSQL database with Drizzle ORM and the Neon server
 ## External Dependencies
 
 -   **The Odds API**: Primary data source for player props across 8 traditional sportsbooks (DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers), providing extensive coverage for NFL, NBA, NHL, and MLB.
--   **OpticOdds API**: Integrated for PrizePicks and Underdog Fantasy player props, providing DFS-specific data with sportsbook-level attribution, parallel fetching, and comprehensive error handling. Trial key activated for evaluation.
+-   **OpticOdds API**: Integrated for Underdog Fantasy player props via SSE streaming, providing DFS-specific data with sportsbook-level attribution, parallel fetching, and comprehensive error handling. SSE-only access (REST API disabled).
+-   **PrizePicks API**: Direct integration with PrizePicks projections API for NBA, NFL, and NHL player props. Provides comprehensive stat coverage including combo props (PRA, Points+Rebounds, etc.), quarter-specific props (1st 3 minutes), and specialty stats (dunks, faceoffs won, etc.). Features aggressive Cloudflare rate limiting protection with automatic prop preservation during throttling. League IDs: NBA=7, NFL=2, NHL=8.
 -   **BallDontLie API**: Integrated for NBA player search and statistics.
 -   **ESPN API**: Used for player search (NHL, NFL), statistics (v2 and v3), and live scoreboard data across major sports (NBA, NHL, NFL, MLB).
 -   **Google OAuth**: Used for authentication in Railway production deployments.
