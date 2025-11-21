@@ -70,6 +70,7 @@ export interface IStorage {
   getAllActiveProps(): Promise<Prop[]>;
   getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]>;
   createProp(prop: InsertProp): Promise<Prop>;
+  upsertProp(prop: InsertProp): Promise<Prop>; // Upsert: create or update existing prop
   deactivateProp(propId: number): Promise<void>;
   deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
   deactivateSpecificProps(propIds: number[]): Promise<number>;
@@ -256,6 +257,30 @@ class MemStorage implements IStorage {
 
   async getAllActiveProps(): Promise<Prop[]> {
     return Array.from(this.props.values()).filter(p => p.isActive);
+  }
+
+  async upsertProp(prop: InsertProp): Promise<Prop> {
+    // Find existing prop by unique combination
+    const existing = Array.from(this.props.values()).find(p =>
+      p.sport === prop.sport &&
+      p.player === prop.player &&
+      p.stat === prop.stat &&
+      p.line === prop.line &&
+      p.direction === prop.direction &&
+      p.platform === prop.platform &&
+      p.isActive
+    );
+
+    if (existing) {
+      // Update existing prop with new odds
+      existing.odds = prop.odds;
+      existing.currentLine = prop.currentLine ?? null;
+      existing.gameTime = prop.gameTime;
+      return existing;
+    }
+
+    // Create new prop if none exists
+    return this.createProp(prop);
   }
 
   async createProp(prop: InsertProp): Promise<Prop> {
@@ -1099,6 +1124,42 @@ class DbStorage implements IStorage {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     const results = await db.select().from(props).where(eq(props.isActive, true));
     return normalizeDecimalsArray(results, propDecimalFields);
+  }
+
+  async upsertProp(prop: InsertProp): Promise<Prop> {
+    // Try to find existing active prop with same attributes
+    const existing = await db
+      .select()
+      .from(props)
+      .where(and(
+        eq(props.sport, prop.sport),
+        eq(props.player, prop.player),
+        eq(props.stat, prop.stat),
+        eq(props.line, prop.line),
+        eq(props.direction, prop.direction),
+        eq(props.platform, prop.platform),
+        eq(props.isActive, true)
+      ))
+      .limit(1);
+
+    if (existing.length > 0) {
+      // Update existing prop with new odds/price
+      const updated = await db
+        .update(props)
+        .set({
+          odds: prop.odds,
+          currentLine: prop.currentLine ?? null,
+          gameTime: prop.gameTime,
+        })
+        .where(eq(props.id, existing[0].id))
+        .returning();
+      
+      return updated[0];
+    }
+
+    // Create new prop if none exists
+    const result = await db.insert(props).values(prop).returning();
+    return result[0];
   }
 
   async createProp(prop: InsertProp): Promise<Prop> {

@@ -231,8 +231,8 @@ export class OpticOddsStreamService {
         // Format stat name
         const statName = this.formatStatName(odd.market);
 
-        // Create or update prop in database
-        await this.storage.createProp({
+        // Upsert prop (create new or update existing)
+        await this.storage.upsertProp({
           sport: this.inferSportFromMarket(odd.market_id),
           player: playerName,
           team: "TBD", // Would need fixture data to determine team

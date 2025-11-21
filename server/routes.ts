@@ -6,6 +6,34 @@ import { requireAuth, getUserId } from "./middleware/auth.js";
 import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
 import { opticOddsResultsStreamService } from "./services/opticOddsResultsStream.js";
 
+// Admin middleware
+async function requireAdmin(req: any, res: any, next: any) {
+  try {
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: "Authentication required for admin access",
+      });
+    }
+    
+    const user = await storage.getUser(userId);
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: "Admin privileges required for streaming control",
+      });
+    }
+    
+    next();
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: "Failed to verify admin status",
+    });
+  }
+}
+
 const router = express.Router();
 
 // Health check
@@ -503,9 +531,9 @@ router.get("/players/search", async (req, res) => {
   }
 });
 
-// ==================== STREAMING CONTROL ROUTES ====================
+// ==================== STREAMING CONTROL ROUTES (ADMIN ONLY) ====================
 // Start streaming live odds from PrizePicks/Underdog
-router.post("/streaming/odds/start", requireAuth, async (req, res) => {
+router.post("/streaming/odds/start", requireAdmin, async (req, res) => {
   try {
     const { sport, sportsbooks, leagues, markets, isMain } = req.body;
     
@@ -537,7 +565,7 @@ router.post("/streaming/odds/start", requireAuth, async (req, res) => {
 });
 
 // Stop specific odds stream
-router.post("/streaming/odds/stop/:streamId", requireAuth, async (req, res) => {
+router.post("/streaming/odds/stop/:streamId", requireAdmin, async (req, res) => {
   try {
     const { streamId } = req.params;
     const stopped = opticOddsStreamService.stopStream(streamId);
@@ -554,7 +582,7 @@ router.post("/streaming/odds/stop/:streamId", requireAuth, async (req, res) => {
 });
 
 // Get active odds streams
-router.get("/streaming/odds/active", requireAuth, async (req, res) => {
+router.get("/streaming/odds/active", requireAdmin, async (req, res) => {
   try {
     const activeStreams = opticOddsStreamService.getActiveStreams();
     res.json({ streams: activeStreams });
@@ -565,7 +593,7 @@ router.get("/streaming/odds/active", requireAuth, async (req, res) => {
 });
 
 // Start streaming live game results
-router.post("/streaming/results/start", requireAuth, async (req, res) => {
+router.post("/streaming/results/start", requireAdmin, async (req, res) => {
   try {
     const { sport, leagues } = req.body;
     
@@ -590,7 +618,7 @@ router.post("/streaming/results/start", requireAuth, async (req, res) => {
 });
 
 // Stop specific results stream
-router.post("/streaming/results/stop/:streamId", requireAuth, async (req, res) => {
+router.post("/streaming/results/stop/:streamId", requireAdmin, async (req, res) => {
   try {
     const { streamId } = req.params;
     const stopped = opticOddsResultsStreamService.stopStream(streamId);
@@ -607,7 +635,7 @@ router.post("/streaming/results/stop/:streamId", requireAuth, async (req, res) =
 });
 
 // Get active results streams
-router.get("/streaming/results/active", requireAuth, async (req, res) => {
+router.get("/streaming/results/active", requireAdmin, async (req, res) => {
   try {
     const activeStreams = opticOddsResultsStreamService.getActiveStreams();
     res.json({ streams: activeStreams });
