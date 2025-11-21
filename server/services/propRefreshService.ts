@@ -431,7 +431,7 @@ export class PropRefreshService {
       const cachedSnapshot = await storage.getLatestPrizePicksSnapshot(sport, leagueId);
       
       // Fetch fresh projections based on sport
-      let prizePicksProps;
+      let prizePicksProps: any[] = [];
       if (sport === 'NHL') {
         prizePicksProps = await prizePicksClient.getNHLProjections();
       } else if (sport === 'NBA') {
