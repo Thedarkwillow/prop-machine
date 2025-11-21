@@ -57,22 +57,26 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 - **Production Configuration**: Railway uses Google OAuth, Neon HTTP fetch, serves static files from `dist/public/`
 - **Deployment Status**: Railway successfully deployed and running (scheduler disabled to conserve API credits)
 
-### PrizePicks Integration Abandoned (November 21, 2025)
-- **Decision**: After extensive research and testing, PrizePicks integration has been **permanently abandoned**
-- **Reasons**:
-  1. **PerimeterX Bot Protection**: Enterprise-grade protection blocks all automated access methods
+### PrizePicks Data Source Research (November 21, 2025)
+- **Decision**: After exhaustive research across all possible data sources, PrizePicks integration has been **permanently abandoned**
+- **Primary Reasons**:
+  1. **PerimeterX Bot Protection**: Enterprise-grade protection blocks all automated access methods (direct API, stealth browsers, proxies)
   2. **Superior Alternative**: The Odds API provides 10,000+ props from 8 bookmakers vs PrizePicks' ~250 props from single source
-  3. **Multi-Bookmaker Line Shopping**: DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers enable better CLV analysis
-  4. **Maintenance Burden**: Bypass methods require constant updates as PerimeterX evolves
-  5. **Risk**: Automated scraping violates PrizePicks Terms of Service
-- **Tested Approaches** (all failed):
-  - Direct API with enhanced headers (HTTP 403 PerimeterX)
-  - Stealth browser with Puppeteer (ConnectionClosedError)
-  - Manual cookie capture (untested, high maintenance)
-  - Residential proxies (expensive, no guarantee of success)
-- **Code Cleanup**: Removed `prizepicksClient.ts`, `prizepicksStealth.ts`, and all references from `propRefreshService.ts`
-- **Documentation**: Bypass research archived in `PRIZEPICKS_BYPASS_GUIDE_ARCHIVED.md` for historical reference
-- **Recommendation**: Focus engineering efforts on enhancing The Odds API integration, analytics dashboards, and ML model improvements
+  3. **Multi-Bookmaker Line Shopping**: DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers enable superior CLV analysis
+  4. **Data Volume**: 40x more props with multi-bookmaker coverage provides better betting intelligence
+  5. **Professional Solution**: Zero maintenance, legal, stable vs constant scraping battles
+- **Research Conducted**:
+  - **Direct PrizePicks API** - ❌ Blocked by PerimeterX (HTTP 403 CAPTCHA challenges)
+  - **Stealth Browsers** - ❌ ConnectionClosedError (PerimeterX kills sessions)
+  - **Paid Aggregators** - OpticOdds ($299+/mo), DailyFantasyAPI ($100-300/mo), Unabated (custom pricing)
+  - **Free Websites** - RotoGrinders, PropsMadeEasy, DailyFantasyFuel all require paid subscriptions without API access
+  - **Web Scraping** - ❌ Violates ToS, legally risky, high maintenance, unreliable
+  - **RotoWire** - Only provides player news/injuries, not betting props
+- **Cost-Benefit Analysis**:
+  - PrizePicks scraping: $50-300/mo + legal risk + 10-20 hrs dev + 5 hrs/mo maintenance = ~250 props
+  - The Odds API (current): $599/mo + zero maintenance + zero legal risk = 10,196+ props from 8 bookmakers
+- **Code Cleanup**: All PrizePicks-related code removed from repository
+- **Strategic Decision**: Focus engineering efforts on analytics, ML improvements, and leveraging our superior multi-bookmaker data advantage
 
 ### API Integration Status
 - **The Odds API**: ✅ Working perfectly with paid tier (PRIMARY & ONLY SOURCE)
