@@ -39,7 +39,7 @@ const ODDS_API_RATE_LIMIT: RateLimitConfig = {
 const SPORT_MARKETS: Record<string, string> = {
   'basketball_nba': 'player_points,player_rebounds,player_assists,player_threes,player_blocks,player_steals',
   'icehockey_nhl': 'player_points,player_assists,player_shots_on_goal,player_blocked_shots,player_power_play_points',
-  'americanfootball_nfl': 'player_pass_yds,player_pass_tds,player_pass_completions,player_pass_attempts,player_pass_interceptions,player_rush_yds,player_rush_attempts,player_receptions,player_reception_yds,player_kicking_points,player_field_goals,player_anytime_td,player_first_td',
+  'americanfootball_nfl': 'player_pass_yds,player_pass_tds,player_pass_completions,player_pass_attempts,player_pass_interceptions,player_rush_yds,player_rush_attempts,player_receptions,player_reception_yds,player_kicking_points,player_field_goals,player_anytime_td',
   'baseball_mlb': 'player_hits,player_total_bases,player_rbis,player_runs_scored,player_home_runs,player_stolen_bases,pitcher_strikeouts,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs',
 };
 
