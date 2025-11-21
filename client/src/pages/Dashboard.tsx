@@ -43,6 +43,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSport, setSelectedSport] = useState('NHL');
   const [selectedStat, setSelectedStat] = useState('all');
+  const [selectedPlatform, setSelectedPlatform] = useState('all');
 
   // Set page title
   useEffect(() => {
@@ -200,12 +201,17 @@ export default function Dashboard() {
     lineMovement: prop.lineMovement || null,
   })) : [];
 
-  // Filter props by search query and stat type
+  // Filter props by search query, stat type, and platform
   const filteredProps = transformedProps.filter((prop: any) => {
     const matchesSearch = prop.player.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStat = selectedStat === 'all' || prop.stat === selectedStat;
-    return matchesSearch && matchesStat;
+    const matchesPlatform = selectedPlatform === 'all' || prop.platform === selectedPlatform;
+    return matchesSearch && matchesStat && matchesPlatform;
   });
+  
+  // Get unique platforms from props for filter dropdown
+  const availablePlatforms = Array.from(new Set(transformedProps.map((prop: any) => prop.platform)))
+    .sort();
 
   // Week 1 goals calculation
   const week1Goals = [
@@ -393,6 +399,23 @@ export default function Dashboard() {
                           {stat}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                  <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+                    <SelectTrigger className="w-44" data-testid="select-platform">
+                      <SelectValue placeholder="All Platforms" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Platforms</SelectItem>
+                      <SelectItem value="DraftKings">DraftKings</SelectItem>
+                      <SelectItem value="FanDuel">FanDuel</SelectItem>
+                      {availablePlatforms
+                        .filter(p => p !== 'DraftKings' && p !== 'FanDuel')
+                        .map((platform) => (
+                          <SelectItem key={platform} value={platform}>
+                            {platform}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <div className="relative flex-1 max-w-xs">
