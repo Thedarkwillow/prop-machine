@@ -347,6 +347,8 @@ export class PropRefreshService {
             direction: rawProp.direction,
             period: 'full_game',
             platform: rawProp.platform, // PrizePicks or Underdog
+            fixtureId: rawProp.fixtureId, // OpticOdds fixture ID
+            marketId: rawProp.marketId, // OpticOdds market ID
             confidence: basicConfidence,
             ev: basicEV.toFixed(2),
             modelProbability: basicProb.toFixed(3),

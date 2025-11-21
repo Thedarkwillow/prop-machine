@@ -271,6 +271,8 @@ class OpticOddsClient extends IntegrationClient {
     platform: string;
     gameTime: Date;
     odds: number;
+    fixtureId: string;
+    marketId: string;
   }> {
     const props: Array<any> = [];
 
@@ -321,6 +323,8 @@ class OpticOddsClient extends IntegrationClient {
             platform: fixture.sportsbook, // Use actual sportsbook from API response
             gameTime,
             odds: odd.price,
+            fixtureId: fixture.id,
+            marketId: odd.market_id,
           });
 
           // Create under prop
@@ -334,6 +338,8 @@ class OpticOddsClient extends IntegrationClient {
             platform: fixture.sportsbook, // Use actual sportsbook from API response
             gameTime,
             odds: odd.price,
+            fixtureId: fixture.id,
+            marketId: odd.market_id,
           });
         } else {
           // Explicit over/under in selection
@@ -364,6 +370,8 @@ class OpticOddsClient extends IntegrationClient {
             platform: fixture.sportsbook, // Use actual sportsbook from API response
             gameTime,
             odds: odd.price,
+            fixtureId: fixture.id,
+            marketId: odd.market_id,
           });
         }
       }
