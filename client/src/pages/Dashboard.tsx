@@ -38,6 +38,7 @@ export default function Dashboard() {
   const [selectedSport, setSelectedSport] = useState('NHL');
   const [selectedStat, setSelectedStat] = useState('all');
   const [selectedPlatform, setSelectedPlatform] = useState('all');
+  const [sortBy, setSortBy] = useState('confidence-desc');
 
   // Set page title
   useEffect(() => {
@@ -201,6 +202,22 @@ export default function Dashboard() {
     const matchesStat = selectedStat === 'all' || prop.stat === selectedStat;
     const matchesPlatform = selectedPlatform === 'all' || prop.platform === selectedPlatform;
     return matchesSearch && matchesStat && matchesPlatform;
+  });
+
+  // Sort props based on selected sort option
+  const sortedProps = [...filteredProps].sort((a: any, b: any) => {
+    switch (sortBy) {
+      case 'confidence-desc':
+        return b.confidence - a.confidence;
+      case 'confidence-asc':
+        return a.confidence - b.confidence;
+      case 'ev-desc':
+        return b.ev - a.ev;
+      case 'ev-asc':
+        return a.ev - b.ev;
+      default:
+        return b.confidence - a.confidence;
+    }
   });
   
   // Get unique platforms from props for filter dropdown
@@ -416,6 +433,17 @@ export default function Dashboard() {
                         ))}
                     </SelectContent>
                   </Select>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-48" data-testid="select-sort">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="confidence-desc">Confidence (High to Low)</SelectItem>
+                      <SelectItem value="confidence-asc">Confidence (Low to High)</SelectItem>
+                      <SelectItem value="ev-desc">EV (High to Low)</SelectItem>
+                      <SelectItem value="ev-asc">EV (Low to High)</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <div className="relative flex-1 max-w-xs">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -432,8 +460,8 @@ export default function Dashboard() {
                 <div className="text-center py-8 text-muted-foreground">
                   Loading props...
                 </div>
-              ) : filteredProps.length > 0 ? (
-                <PropsTable props={filteredProps} userId={user?.id || ''} />
+              ) : sortedProps.length > 0 ? (
+                <PropsTable props={sortedProps} userId={user?.id || ''} />
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   No props found matching your criteria
