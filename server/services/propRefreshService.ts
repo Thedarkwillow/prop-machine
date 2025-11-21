@@ -410,11 +410,27 @@ export class PropRefreshService {
     try {
       console.log(`Fetching props from PrizePicks for ${sport}...`);
 
+      // Map sport to PrizePicks league ID
+      const leagueIdMap: Record<string, string> = {
+        'NBA': '7',
+        'NFL': '2',
+        'NHL': '8',
+      };
+      const leagueId = leagueIdMap[sport];
+      if (!leagueId) {
+        console.log(`⚠️  PrizePicks integration does not support ${sport} yet`);
+        result.success = true;
+        return result;
+      }
+
       // Load existing props FIRST - critical for rate-limit preservation
       const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'PrizePicks');
       console.log(`Found ${oldPropIds.length} existing active PrizePicks ${sport} props`);
 
-      // Fetch projections based on sport
+      // Check if we have a recent cached snapshot (within TTL)
+      const cachedSnapshot = await storage.getLatestPrizePicksSnapshot(sport, leagueId);
+      
+      // Fetch fresh projections based on sport
       let prizePicksProps;
       if (sport === 'NHL') {
         prizePicksProps = await prizePicksClient.getNHLProjections();
@@ -422,22 +438,35 @@ export class PropRefreshService {
         prizePicksProps = await prizePicksClient.getNBAProjections();
       } else if (sport === 'NFL') {
         prizePicksProps = await prizePicksClient.getNFLProjections();
-      } else {
-        console.log(`⚠️  PrizePicks integration does not support ${sport} yet`);
-        result.success = true;
-        return result;
       }
       
-      // Critical: If rate limited (empty response), keep existing props active
+      // Critical: If rate limited (empty response), use cached data or preserve existing props
       if (prizePicksProps.length === 0) {
-        if (oldPropIds.length > 0) {
-          console.log(`⚠️  PrizePicks returned 0 props (likely rate limited) - keeping ${oldPropIds.length} existing props active`);
+        if (cachedSnapshot) {
+          const cacheAge = storage.getSnapshotAgeHours(cachedSnapshot);
+          const isStale = cacheAge > cachedSnapshot.ttlHours;
+          
+          if (isStale) {
+            console.log(`⚠️  PrizePicks rate limited AND cache is stale (${cacheAge.toFixed(1)}h > ${cachedSnapshot.ttlHours}h TTL)`);
+            console.log(`   Keeping ${oldPropIds.length} existing props active until fresh data available`);
+          } else {
+            console.log(`📦 Using cached PrizePicks data (age: ${cacheAge.toFixed(1)}h, ${cachedSnapshot.propCount} props)`);
+            prizePicksProps = cachedSnapshot.payload as any[];
+          }
         } else {
-          console.log(`No props found on PrizePicks for ${sport} and no existing props to preserve`);
+          console.log(`⚠️  PrizePicks returned 0 props (likely rate limited) and no cache available`);
+          console.log(`   Keeping ${oldPropIds.length} existing props active`);
         }
         
-        result.success = true;
-        return result;
+        // Return success without deactivating props
+        if (prizePicksProps.length === 0) {
+          result.success = true;
+          return result;
+        }
+      } else {
+        // Successful fetch - save to cache for future rate-limit scenarios
+        await storage.savePrizePicksSnapshot(sport, leagueId, prizePicksProps, prizePicksProps.length, 24);
+        console.log(`💾 Cached ${prizePicksProps.length} fresh PrizePicks ${sport} props for rate-limit resilience`);
       }
 
       result.propsFetched = prizePicksProps.length;

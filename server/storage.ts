@@ -968,7 +968,7 @@ class MemStorage implements IStorage {
 
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
-import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings } from "@shared/schema";
+import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings, prizePicksSnapshots } from "@shared/schema";
 import { eq, and, desc, gte, sql, inArray, or } from "drizzle-orm";
 
 class DbStorage implements IStorage {
@@ -1860,6 +1860,39 @@ class DbStorage implements IStorage {
 
   async deleteDiscordSettings(userId: string): Promise<void> {
     await db.delete(discordSettings).where(eq(discordSettings.userId, userId));
+  }
+
+  // PrizePicks snapshot cache for rate-limit resilience
+  async savePrizePicksSnapshot(sport: string, leagueId: string, payload: any, propCount: number, ttlHours: number = 24): Promise<PrizePicksSnapshot> {
+    const result = await db.insert(prizePicksSnapshots).values({
+      sport,
+      leagueId,
+      payload,
+      propCount,
+      ttlHours,
+    }).returning();
+    return result[0];
+  }
+
+  async getLatestPrizePicksSnapshot(sport: string, leagueId: string): Promise<PrizePicksSnapshot | undefined> {
+    const result = await db
+      .select()
+      .from(prizePicksSnapshots)
+      .where(and(
+        eq(prizePicksSnapshots.sport, sport),
+        eq(prizePicksSnapshots.leagueId, leagueId)
+      ))
+      .orderBy(desc(prizePicksSnapshots.fetchedAt))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  getSnapshotAgeHours(snapshot: PrizePicksSnapshot): number {
+    const now = new Date();
+    const fetchedAt = new Date(snapshot.fetchedAt);
+    const ageMs = now.getTime() - fetchedAt.getTime();
+    return ageMs / (1000 * 60 * 60); // Convert ms to hours
   }
 }
 
