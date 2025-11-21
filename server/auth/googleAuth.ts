@@ -83,12 +83,29 @@ export async function setupGoogleAuth(app: Express) {
   passport.deserializeUser(async (id: any, done) => {
     try {
       if (!id) {
-        return done(new Error("Invalid session ID"));
+        // No user ID in session - this is normal for unauthenticated users
+        return done(null, false);
       }
-      const user = await storage.getUser(String(id));
+      
+      // Convert to number for database lookup
+      const userId = typeof id === 'string' ? parseInt(id, 10) : id;
+      if (isNaN(userId)) {
+        console.error("Invalid user ID in session:", id);
+        return done(null, false);
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        // User not found in database - session is stale
+        console.warn(`User ${userId} not found in database, clearing session`);
+        return done(null, false);
+      }
+      
       done(null, user);
     } catch (error) {
-      done(error);
+      console.error("Error deserializing user:", error);
+      // Don't throw error - just treat as unauthenticated
+      done(null, false);
     }
   });
 
