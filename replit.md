@@ -57,13 +57,34 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 - **Production Configuration**: Railway uses Google OAuth, Neon HTTP fetch, serves static files from `dist/public/`
 - **Deployment Status**: Railway successfully deployed and running (scheduler disabled to conserve API credits)
 
+### PrizePicks Scraping Research & Implementation (November 21, 2025)
+- **GitHub Community Methods Tested**: Implemented both popular approaches from community repos
+  - **Approach 1 - Direct API (mada949's method)**: Enhanced HTTP headers with browser mimicry
+    - Implementation: Modified `IntegrationClient` with realistic User-Agent, Accept headers, Sec-Fetch directives
+    - Params: `league_id`, `per_page=250`, `single_stat=true`, `game_mode=pickem`
+    - Result: ❌ **HTTP 403 with PerimeterX CAPTCHA** (`"appId":"PXZNeitfzP"`)
+    - Protection: Enterprise-grade bot detection actively blocking all direct HTTP requests
+  - **Approach 2 - Stealth Browser (njraladdin's method)**: Puppeteer with stealth plugin
+    - Implementation: `puppeteer-extra` + `puppeteer-extra-plugin-stealth` + chromium
+    - Features: Request interception, response capture, realistic viewport, browser fingerprint evasion
+    - Result: ❌ **ConnectionClosedError: Connection closed**
+    - Protection: PrizePicks actively kills browser connections despite stealth techniques
+- **Community Repos Tested**:
+  - [mada949/PrizePicks-API](https://github.com/mada949/PrizePicks-API) - Direct API approach
+  - [lazarobeas/prizepicks-prop-scraper](https://github.com/lazarobeas/prizepicks-prop-scraper) - Selenium + undetected_chromedriver
+  - [njraladdin/prizepicks-scrape-scheduler](https://github.com/njraladdin/prizepicks-scrape-scheduler) - Puppeteer + stealth
+- **Conclusion**: PrizePicks has enterprise-grade bot protection (PerimeterX) that defeats all community scraping methods
+- **Files Created**: `server/integrations/prizepicksStealth.ts` (stealth browser implementation)
+- **Recommendation**: Continue using The Odds API as primary source (superior multi-bookmaker coverage)
+
 ### API Integration Status
-- **The Odds API**: Working perfectly with paid tier
-  - **NBA**: ~235,000 props (15,000+ player props across 50 games)
+- **The Odds API**: ✅ Working perfectly with paid tier (PRIMARY SOURCE)
+  - **NFL**: 10,196 props from 8 bookmakers (DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers)
+  - **NBA**: 2,968 props from 4 bookmakers (DraftKings, FanDuel, Caesars, Fanatics)
   - **NHL**: 4,842 props (coverage across 16 games)
-  - **NFL**: 949 props (coverage across 30 games)
-- **PrizePicks API**: Returns HTTP 403 Forbidden (access restricted)
-- **Underdog Fantasy API**: Returns HTTP 404 Not Found (endpoint unavailable)
+  - **Coverage**: Dramatically superior to PrizePicks with multi-bookmaker line shopping
+- **PrizePicks API**: ❌ HTTP 403 Forbidden (PerimeterX CAPTCHA blocks all access methods)
+- **Underdog Fantasy API**: ❌ HTTP 404 Not Found (endpoint unavailable)
 
 ### NBA Player Search Integration
 - **BallDontLie API**: Integrated BallDontLie API for NBA player search with authenticated requests
