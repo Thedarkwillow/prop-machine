@@ -317,3 +317,18 @@ export const discordSettings = pgTable("discord_settings", {
 export const insertDiscordSettingsSchema = createInsertSchema(discordSettings).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertDiscordSettings = z.infer<typeof insertDiscordSettingsSchema>;
 export type DiscordSettings = typeof discordSettings.$inferSelect;
+
+// PrizePicks snapshot cache for rate-limit resilience
+export const prizePicksSnapshots = pgTable("prizepicks_snapshots", {
+  id: serial("id").primaryKey(),
+  sport: text("sport").notNull(), // NBA, NFL, NHL, MLB
+  leagueId: text("league_id").notNull(), // PrizePicks API league ID (7=NBA, 2=NFL, 8=NHL)
+  payload: jsonb("payload").notNull(), // Raw PrizePicks API response
+  propCount: integer("prop_count").notNull(), // Number of props in this snapshot
+  fetchedAt: timestamp("fetched_at").defaultNow().notNull(),
+  ttlHours: integer("ttl_hours").notNull().default(24), // How long this cache is valid
+});
+
+export const insertPrizePicksSnapshotSchema = createInsertSchema(prizePicksSnapshots).omit({ id: true, fetchedAt: true });
+export type InsertPrizePicksSnapshot = z.infer<typeof insertPrizePicksSnapshotSchema>;
+export type PrizePicksSnapshot = typeof prizePicksSnapshots.$inferSelect;

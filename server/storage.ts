@@ -13,7 +13,8 @@ import type {
   Notification, InsertNotification,
   AnalyticsSnapshot, InsertAnalyticsSnapshot,
   LineMovement, InsertLineMovement,
-  DiscordSettings, InsertDiscordSettings
+  DiscordSettings, InsertDiscordSettings,
+  PrizePicksSnapshot, InsertPrizePicksSnapshot
 } from "@shared/schema";
 
 /**
@@ -149,6 +150,11 @@ export interface IStorage {
   getDiscordSettings(userId: string): Promise<DiscordSettings | undefined>;
   updateDiscordSettings(userId: string, settings: Partial<InsertDiscordSettings>): Promise<DiscordSettings>;
   deleteDiscordSettings(userId: string): Promise<void>;
+  
+  // PrizePicks snapshot cache for rate-limit resilience
+  savePrizePicksSnapshot(sport: string, leagueId: string, payload: any, propCount: number, ttlHours?: number): Promise<PrizePicksSnapshot>;
+  getLatestPrizePicksSnapshot(sport: string, leagueId: string): Promise<PrizePicksSnapshot | undefined>;
+  getSnapshotAgeHours(snapshot: PrizePicksSnapshot): number;
 }
 
 // In-memory storage implementation
