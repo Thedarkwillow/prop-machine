@@ -75,6 +75,7 @@ export interface IStorage {
   deactivateSpecificProps(propIds: number[]): Promise<number>;
   
   // Slips
+  getSlip(slipId: number): Promise<Slip | undefined>;
   getSlipsByUser(userId: string): Promise<Slip[]>;
   getPendingSlips(userId: string): Promise<Slip[]>;
   createSlip(slip: InsertSlip): Promise<Slip>;
@@ -319,6 +320,10 @@ class MemStorage implements IStorage {
       }
     }
     return count;
+  }
+
+  async getSlip(slipId: number): Promise<Slip | undefined> {
+    return this.slips.get(slipId);
   }
 
   async getSlipsByUser(userId: string): Promise<Slip[]> {
@@ -1148,6 +1153,11 @@ class DbStorage implements IStorage {
   }
 
   // Slips
+  async getSlip(slipId: number): Promise<Slip | undefined> {
+    const result = await db.select().from(slips).where(eq(slips.id, slipId));
+    return result[0];
+  }
+
   async getSlipsByUser(userId: string): Promise<Slip[]> {
     return await db.select().from(slips).where(eq(slips.userId, userId));
   }
