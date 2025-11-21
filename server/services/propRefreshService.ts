@@ -442,7 +442,7 @@ export class PropRefreshService {
             team: ppProp.team || 'TBD',
             opponent: 'TBD', // PrizePicks doesn't provide opponent info
             stat: ppProp.stat,
-            line: ppProp.line,
+            line: ppProp.line.toString(),
             direction: 'over' as const,
             platform: 'PrizePicks',
           };
@@ -455,8 +455,8 @@ export class PropRefreshService {
             team: ppProp.team || 'TBD',
             opponent: 'TBD',
             stat: ppProp.stat,
-            line: ppProp.line,
-            currentLine: ppProp.line,
+            line: ppProp.line.toString(),
+            currentLine: ppProp.line.toString(),
             direction: 'over',
             period: 'full_game',
             platform: 'PrizePicks',
