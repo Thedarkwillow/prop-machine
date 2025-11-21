@@ -177,8 +177,13 @@ export default function PropsTable({ props, userId }: PropsTableProps) {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="w-32">
-                  <ConfidenceBar confidence={prop.confidence} showLabel={false} />
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-sm min-w-[3rem]">
+                    {prop.confidence}%
+                  </span>
+                  <div className="w-24">
+                    <ConfidenceBar confidence={prop.confidence} showLabel={false} />
+                  </div>
                 </div>
               </TableCell>
               <TableCell className="text-right">
