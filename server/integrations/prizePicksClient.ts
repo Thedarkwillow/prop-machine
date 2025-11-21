@@ -111,34 +111,21 @@ export class PrizePicksClient extends IntegrationClient {
 
   /**
    * Get NHL projections (including faceoffs)
+   * League ID 8 = NHL (confirmed via testing)
    */
   async getNHLProjections(): Promise<ParsedPrizePick[]> {
-    // Try common NHL league IDs - need to test which one works
-    const possibleLeagueIds = ['7', '8', '4'];
-    
-    for (const leagueId of possibleLeagueIds) {
-      try {
-        console.log(`🏒 Trying NHL league ID: ${leagueId}`);
-        const projections = await this.getProjections(leagueId);
-        
-        // Check if we got NHL data by looking at league/sport in response
-        const nhlProps = projections.filter(p => 
-          p.sport?.toLowerCase() === 'hockey' || 
-          p.league?.toLowerCase().includes('nhl')
-        );
-        
-        if (nhlProps.length > 0) {
-          console.log(`✅ Found ${nhlProps.length} NHL projections with league ID ${leagueId}`);
-          return nhlProps;
-        }
-      } catch (error) {
-        console.log(`   League ID ${leagueId} failed, trying next...`);
-        continue;
+    try {
+      console.log(`🏒 Fetching NHL projections (league ID 8)...`);
+      const projections = await this.getProjections('8');
+      console.log(`✅ Found ${projections.length} NHL projections from PrizePicks`);
+      return projections;
+    } catch (error: any) {
+      console.error(`❌ Failed to fetch NHL projections:`, error.message);
+      if (error.message.includes('429')) {
+        console.log('⚠️  PrizePicks rate limit hit - data will be stale until next refresh window');
       }
+      return [];
     }
-    
-    console.log('⚠️  No NHL projections found');
-    return [];
   }
 
   /**

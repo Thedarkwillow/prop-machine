@@ -1,6 +1,7 @@
 import { underdogClient } from "../integrations/underdogClient";
 import { oddsApiClient } from "../integrations/oddsApiClient";
 import { opticOddsClient } from "../integrations/opticOddsClient";
+import { prizePicksClient, ParsedPrizePick } from "../integrations/prizePicksClient";
 import { propAnalysisService } from "./propAnalysisService";
 import { storage } from "../storage";
 
@@ -394,22 +395,128 @@ export class PropRefreshService {
     }
   }
 
+  async refreshFromPrizePicks(sport: string = 'NHL'): Promise<RefreshResult> {
+    const result: RefreshResult = {
+      success: false,
+      platform: 'PrizePicks',
+      sport,
+      propsFetched: 0,
+      propsCreated: 0,
+      propsSkipped: 0,
+      errors: [],
+      timestamp: new Date(),
+    };
+
+    try {
+      console.log(`Fetching props from PrizePicks for ${sport}...`);
+
+      let prizePicksProps: ParsedPrizePick[] = [];
+      
+      // Only NHL is currently supported (league ID 8)
+      if (sport === 'NHL') {
+        prizePicksProps = await prizePicksClient.getNHLProjections();
+      } else {
+        console.log(`⚠️  PrizePicks integration only supports NHL currently`);
+        result.success = true;
+        return result;
+      }
+      
+      if (prizePicksProps.length === 0) {
+        console.log(`No props found on PrizePicks for ${sport}`);
+        result.success = true;
+        return result;
+      }
+
+      result.propsFetched = prizePicksProps.length;
+      console.log(`Found ${prizePicksProps.length} props from PrizePicks`);
+      
+      // Get old prop IDs before inserting new ones
+      const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'PrizePicks');
+      console.log(`Found ${oldPropIds.length} existing active PrizePicks ${sport} props to replace`);
+
+      for (const ppProp of prizePicksProps) {
+        try {
+          const analysisInput = {
+            sport,
+            player: ppProp.player,
+            team: ppProp.team || 'TBD',
+            opponent: 'TBD', // PrizePicks doesn't provide opponent info
+            stat: ppProp.stat,
+            line: ppProp.line,
+            direction: 'over' as const,
+            platform: 'PrizePicks',
+          };
+
+          const analysis = await propAnalysisService.analyzeProp(analysisInput);
+
+          await storage.createProp({
+            sport,
+            player: ppProp.player,
+            team: ppProp.team || 'TBD',
+            opponent: 'TBD',
+            stat: ppProp.stat,
+            line: ppProp.line,
+            currentLine: ppProp.line,
+            direction: 'over',
+            period: 'full_game',
+            platform: 'PrizePicks',
+            confidence: analysis.confidence,
+            ev: analysis.ev.toString(),
+            modelProbability: analysis.modelProbability.toString(),
+            gameTime: ppProp.startTime ? new Date(ppProp.startTime) : new Date(),
+            isActive: true,
+          });
+
+          result.propsCreated++;
+
+          if (result.propsCreated % 25 === 0) {
+            console.log(`Created ${result.propsCreated} PrizePicks props...`);
+          }
+
+        } catch (error) {
+          const err = error as Error;
+          result.propsSkipped++;
+          result.errors.push(`${ppProp.player}: ${err.message}`);
+        }
+      }
+
+      // Deactivate old props only if we created new ones
+      if (result.propsCreated > 0 && oldPropIds.length > 0) {
+        const deactivatedCount = await storage.deactivateSpecificProps(oldPropIds);
+        console.log(`Deactivated ${deactivatedCount} old PrizePicks ${sport} props after creating ${result.propsCreated} new props`);
+      } else if (result.propsCreated === 0) {
+        console.log(`No props created for PrizePicks ${sport}, keeping ${oldPropIds.length} existing props active`);
+      }
+
+      result.success = true;
+      console.log(`PrizePicks ${sport}: Created ${result.propsCreated}/${result.propsFetched} props`);
+      return result;
+
+    } catch (error) {
+      const err = error as Error;
+      result.errors.push(err.message);
+      console.error(`Error refreshing PrizePicks ${sport} props:`, err);
+      return result;
+    }
+  }
+
   async refreshAllPlatforms(sports: string[] = ['NBA', 'NFL', 'NHL']): Promise<MultiPlatformRefreshResult> {
     const results: RefreshResult[] = [];
     
     console.log(`Starting multi-platform prop refresh for: ${sports.join(', ')}`);
-    console.log(`Platforms: Underdog, The Odds API (OpticOdds via SSE streaming only)`);
+    console.log(`Platforms: Underdog, The Odds API, PrizePicks (NHL only)`);
 
     // Fetch from all platforms in parallel for each sport
     for (const sport of sports) {
       // Launch all platform fetches in parallel to avoid blocking on failures
       // NOTE: OpticOdds REST API disabled - using SSE streaming instead (user has SSE-only access)
-      const [underdogResult, oddsApiResult] = await Promise.all([
+      const [underdogResult, oddsApiResult, prizePicksResult] = await Promise.all([
         this.refreshFromUnderdog(sport),
         this.refreshFromOddsApi(sport),
+        this.refreshFromPrizePicks(sport),
       ]);
       
-      results.push(underdogResult, oddsApiResult);
+      results.push(underdogResult, oddsApiResult, prizePicksResult);
     }
 
     const totalPropsFetched = results.reduce((sum, r) => sum + r.propsFetched, 0);
