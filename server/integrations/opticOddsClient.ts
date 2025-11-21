@@ -76,6 +76,7 @@ const LEAGUE_MAPPINGS: Record<string, string> = {
 
 // Market mappings for player props
 const PLAYER_PROP_MARKETS = [
+  // NBA
   'player_points',
   'player_rebounds',
   'player_assists',
@@ -88,11 +89,25 @@ const PLAYER_PROP_MARKETS = [
   'player_pts_rebs',
   'player_pts_asts',
   'player_rebs_asts',
+  'player_blocks_steals',
+  'player_turnovers',
+  'player_fouls',
+  'player_first_basket',
   // NHL
   'player_goals',
+  'player_assists',
+  'player_points',
   'player_shots_on_goal',
   'player_blocked_shots',
   'player_power_play_points',
+  'player_faceoffs_won',
+  'player_faceoffs',
+  'player_saves',
+  'player_goals_allowed',
+  'player_hits',
+  'player_time_on_ice',
+  'goalie_saves',
+  'goalie_goals_allowed',
   // NFL
   'player_passing_yards',
   'player_passing_tds',
@@ -100,6 +115,12 @@ const PLAYER_PROP_MARKETS = [
   'player_receiving_yards',
   'player_receptions',
   'player_anytime_td',
+  'player_pass_attempts',
+  'player_completions',
+  'player_interceptions',
+  'player_rush_attempts',
+  'player_receiving_tds',
+  'player_rushing_tds',
   // MLB
   'player_hits',
   'player_total_bases',
@@ -384,32 +405,47 @@ class OpticOddsClient extends IntegrationClient {
    * Format market name to stat name
    */
   private formatStatName(market: string): string {
-    // Remove "player_" prefix and format
-    const stat = market.replace('player_', '').replace('pitcher_', '');
+    // Remove "player_" / "pitcher_" / "goalie_" prefix and format
+    const stat = market.replace('player_', '').replace('pitcher_', '').replace('goalie_', '');
     
     // Handle special cases
     const specialCases: Record<string, string> = {
-      'pts_rebs_asts': 'Pts+Reb+Ast',
-      'pts_rebs': 'Pts+Reb',
-      'pts_asts': 'Pts+Ast',
-      'rebs_asts': 'Reb+Ast',
-      'threes': '3-PT Made',
+      // NBA
+      'pts_rebs_asts': 'PRA',
+      'pts_rebs': 'Points+Rebounds',
+      'pts_asts': 'Points+Assists',
+      'rebs_asts': 'Rebounds+Assists',
+      'blocks_steals': 'Blocks+Steals',
+      'threes': '3-Pointers Made',
       'double_double': 'Double Double',
       'triple_double': 'Triple Double',
+      'first_basket': 'First Basket',
+      // NHL
+      'shots_on_goal': 'Shots on Goal',
+      'blocked_shots': 'Blocked Shots',
+      'power_play_points': 'Power Play Points',
+      'faceoffs_won': 'Faceoffs Won',
+      'faceoffs': 'Faceoffs Won',
+      'time_on_ice': 'Time on Ice',
+      'goals_allowed': 'Goals Allowed',
+      'saves': 'Goalie Saves',
+      // NFL
       'passing_yards': 'Pass Yds',
       'passing_tds': 'Pass TD',
+      'pass_attempts': 'Pass Attempts',
       'rushing_yards': 'Rush Yds',
+      'rush_attempts': 'Rush Attempts',
+      'rushing_tds': 'Rush TD',
       'receiving_yards': 'Rec Yds',
+      'receiving_tds': 'Rec TD',
       'anytime_td': 'Anytime TD',
+      // MLB
       'total_bases': 'Total Bases',
       'runs_scored': 'Runs',
       'home_runs': 'Home Runs',
       'stolen_bases': 'Stolen Bases',
       'hits_allowed': 'Hits Allowed',
       'earned_runs': 'Earned Runs',
-      'shots_on_goal': 'Shots on Goal',
-      'blocked_shots': 'Blocked Shots',
-      'power_play_points': 'Power Play Pts',
     };
 
     if (specialCases[stat]) {

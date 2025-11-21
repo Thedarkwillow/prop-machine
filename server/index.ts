@@ -166,8 +166,13 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   }
   
   // Auto-start OpticOdds streaming for PrizePicks/Underdog
+  console.log(`🔍 OPTICODDS_STREAM_DEBUG: Checking streaming prerequisites...`);
+  console.log(`   - API Key present: ${!!process.env.OPTICODDS_API_KEY}`);
+  console.log(`   - ENABLE_STREAMING: ${process.env.ENABLE_STREAMING || 'not set (defaults to enabled)'}`);
+  
   if (process.env.OPTICODDS_API_KEY && process.env.ENABLE_STREAMING !== "false") {
-    console.log("📡 Auto-starting OpticOdds streaming for DFS platforms...");
+    console.log("📡 Auto-starting OpticOdds SSE streaming for DFS platforms...");
+    console.log(`🔍 OPTICODDS_STREAM_DEBUG: Trial key restriction - REST API blocked (403), using SSE only`);
     
     // Start league-based streams for NBA, NFL, NHL
     const leagues = [
@@ -181,12 +186,14 @@ const server = app.listen(PORT, "0.0.0.0", () => {
     
     leagues.forEach(({ sport, league }) => {
       try {
+        console.log(`🔍 OPTICODDS_STREAM_DEBUG: Attempting to start ${league} stream (sport: ${sport})...`);
         const streamId = opticOddsStreamService.startOddsStream({
           sport,
           sportsbooks,
           leagues: [league],
         });
-        console.log(`✅ Started ${league} stream: ${streamId}`);
+        console.log(`✅ Started ${league} SSE stream: ${streamId}`);
+        console.log(`🔍 OPTICODDS_STREAM_DEBUG: Stream ${streamId} should now be receiving live odds`);
       } catch (error) {
         console.error(`❌ Failed to start ${league} stream:`, error);
       }
