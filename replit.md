@@ -57,36 +57,31 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 - **Production Configuration**: Railway uses Google OAuth, Neon HTTP fetch, serves static files from `dist/public/`
 - **Deployment Status**: Railway successfully deployed and running (scheduler disabled to conserve API credits)
 
-### PrizePicks Scraping Research & Implementation (November 21, 2025)
-- **GitHub Community Methods Tested**: Implemented both popular approaches from community repos
-  - **Approach 1 - Direct API (mada949's method)**: Enhanced HTTP headers with browser mimicry
-    - Implementation: Modified `IntegrationClient` with realistic User-Agent, Accept headers, Sec-Fetch directives
-    - Params: `league_id`, `per_page=250`, `single_stat=true`, `game_mode=pickem`
-    - Result: ❌ **HTTP 403 with PerimeterX CAPTCHA** (`"appId":"PXZNeitfzP"`)
-    - Protection: Enterprise-grade bot detection actively blocking all direct HTTP requests
-  - **Approach 2 - Stealth Browser (njraladdin's method)**: Puppeteer with stealth plugin
-    - Implementation: `puppeteer-extra` + `puppeteer-extra-plugin-stealth` + chromium
-    - Features: Request interception, response capture, realistic viewport, browser fingerprint evasion
-    - Result: ❌ **ConnectionClosedError: Connection closed**
-    - Protection: PrizePicks actively kills browser connections despite stealth techniques
-- **Community Repos Tested**:
-  - [mada949/PrizePicks-API](https://github.com/mada949/PrizePicks-API) - Direct API approach
-  - [lazarobeas/prizepicks-prop-scraper](https://github.com/lazarobeas/prizepicks-prop-scraper) - Selenium + undetected_chromedriver
-  - [njraladdin/prizepicks-scrape-scheduler](https://github.com/njraladdin/prizepicks-scrape-scheduler) - Puppeteer + stealth
-- **Conclusion**: PrizePicks has enterprise-grade bot protection (PerimeterX) that defeats all community scraping methods
-- **Files Created**: `server/integrations/prizepicksStealth.ts` (stealth browser implementation)
-- **Production Config**: PrizePicks disabled by default via `DISABLE_PRIZEPICKS=true` environment variable to prevent scheduler noise
-- **Error Handling**: Improved to detect PerimeterX/connection blocks and return empty gracefully (no stack trace flooding)
-- **Recommendation**: The Odds API provides superior multi-bookmaker coverage (8 sportsbooks for NFL vs PrizePicks' single source)
+### PrizePicks Integration Abandoned (November 21, 2025)
+- **Decision**: After extensive research and testing, PrizePicks integration has been **permanently abandoned**
+- **Reasons**:
+  1. **PerimeterX Bot Protection**: Enterprise-grade protection blocks all automated access methods
+  2. **Superior Alternative**: The Odds API provides 10,000+ props from 8 bookmakers vs PrizePicks' ~250 props from single source
+  3. **Multi-Bookmaker Line Shopping**: DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers enable better CLV analysis
+  4. **Maintenance Burden**: Bypass methods require constant updates as PerimeterX evolves
+  5. **Risk**: Automated scraping violates PrizePicks Terms of Service
+- **Tested Approaches** (all failed):
+  - Direct API with enhanced headers (HTTP 403 PerimeterX)
+  - Stealth browser with Puppeteer (ConnectionClosedError)
+  - Manual cookie capture (untested, high maintenance)
+  - Residential proxies (expensive, no guarantee of success)
+- **Code Cleanup**: Removed `prizepicksClient.ts`, `prizepicksStealth.ts`, and all references from `propRefreshService.ts`
+- **Documentation**: Bypass research archived in `PRIZEPICKS_BYPASS_GUIDE_ARCHIVED.md` for historical reference
+- **Recommendation**: Focus engineering efforts on enhancing The Odds API integration, analytics dashboards, and ML model improvements
 
 ### API Integration Status
-- **The Odds API**: ✅ Working perfectly with paid tier (PRIMARY SOURCE)
+- **The Odds API**: ✅ Working perfectly with paid tier (PRIMARY & ONLY SOURCE)
   - **NFL**: 10,196 props from 8 bookmakers (DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers)
   - **NBA**: 2,968 props from 4 bookmakers (DraftKings, FanDuel, Caesars, Fanatics)
   - **NHL**: 4,842 props (coverage across 16 games)
-  - **Coverage**: Dramatically superior to PrizePicks with multi-bookmaker line shopping
-- **PrizePicks API**: ❌ HTTP 403 Forbidden (PerimeterX CAPTCHA blocks all access methods)
-- **Underdog Fantasy API**: ❌ HTTP 404 Not Found (endpoint unavailable)
+  - **Coverage**: Multi-bookmaker line shopping enables superior CLV analysis
+- **PrizePicks**: ❌ NOT SUPPORTED (PerimeterX bot protection blocks all automated access)
+- **Underdog Fantasy**: ❌ NOT SUPPORTED (endpoint unavailable, HTTP 404)
 
 ### NBA Player Search Integration
 - **BallDontLie API**: Integrated BallDontLie API for NBA player search with authenticated requests
@@ -130,7 +125,7 @@ The backend is developed with Express.js and TypeScript on Node.js. It features 
 
 The platform utilizes a PostgreSQL database, configured with Drizzle ORM and Neon serverless driver. The schema, defined in `/shared/schema.ts`, includes:
 - **Users Table**: Tracks bankroll, Kelly sizing, risk tolerance, and an `isAdmin` boolean for RBAC.
-- **Props Table**: Stores ML-analyzed betting propositions, including sport, player, team, stat type, confidence scores, expected value (EV%), model probability, and platform origin (e.g., PrizePicks, Underdog). It supports quarter/period specific props.
+- **Props Table**: Stores ML-analyzed betting propositions, including sport, player, team, stat type, confidence scores, expected value (EV%), model probability, and platform origin (e.g., DraftKings, FanDuel, Caesars). It supports quarter/period specific props.
 - **Slips Table**: Stores pre-generated betting slips with `picks` (JSONB array of prop details), suggested bet amount, potential return, and status.
 - **Bets Table**: Records individual bets, linking to either `propId` (single bets) or `slipId` (parlays), captures closing line value (CLV), and tracks status. Atomic bankroll updates are handled via transactions.
 - **Performance Snapshots Table**: Tracks time-series metrics like win rate, ROI, and total bets for historical analysis.
@@ -159,10 +154,9 @@ Drizzle Kit is used for schema migrations.
 - **ws (WebSocket)**: For Neon serverless connection protocol.
 
 ### External APIs/Services
-- **PrizePicks API**: For fetching sports propositions.
-- **Underdog Fantasy API**: For fetching sports propositions.
+- **The Odds API**: Primary data source for player props from 8 bookmakers (DraftKings, FanDuel, Caesars, BetMGM, Fanatics, Bovada, BetOnline, BetRivers). Paid tier required for player prop markets.
+- **Underdog Fantasy API**: For fetching sports propositions (currently endpoint unavailable).
 - **BallDontLie API**: Provides player statistics for ML model integration.
-- **ESPN API**: For player search and statistics (v2 and v3 versions).
-- **The Odds API**: Integrated for odds data (player props require paid tier).
+- **ESPN API**: For player search, statistics (v2 and v3 versions), and live scoreboard data.
 - **Google OAuth**: For authentication in Railway deployments.
-- **Replit Auth**: Default authentication provider.
+- **Replit Auth**: Default authentication provider in Replit environment.

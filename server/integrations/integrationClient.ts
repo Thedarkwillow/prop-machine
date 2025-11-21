@@ -140,7 +140,10 @@ export class IntegrationClient {
     }
 
     const url = `${this.baseUrl}${endpoint}`;
-    const headers = { ...this.defaultHeaders, ...options.headers };
+    const headers = { 
+      ...this.defaultHeaders, 
+      ...options.headers 
+    };
 
     try {
       const response = await fetch(url, {
