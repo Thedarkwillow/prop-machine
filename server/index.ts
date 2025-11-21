@@ -158,11 +158,11 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
 
-  // Scheduler
+  // Scheduler (reduced frequency - streaming handles real-time updates)
   if (process.env.DISABLE_PROP_SCHEDULER === "true") {
     console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
   } else {
-    propSchedulerService.start(15);
+    propSchedulerService.start(30); // 30 minutes (streaming provides real-time updates)
   }
   
   // Auto-start OpticOdds streaming for PrizePicks/Underdog
