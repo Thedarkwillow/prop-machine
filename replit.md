@@ -6,6 +6,26 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 
 ## Recent Changes
 
+### Prop Coverage Optimization (November 21, 2025)
+- **Configurable Event Limit**: Added `ODDS_API_MAX_EVENTS_PER_SPORT` environment variable (default: 50) to control how many games are queried per sport
+  - Increased from hardcoded 10 events to 50 events per sport
+  - Dramatically improves prop coverage across all sports
+- **Sport-Specific Markets**: Implemented dedicated market parameters for each sport
+  - **NFL**: `player_pass_yds`, `player_pass_tds`, `player_pass_completions`, `player_pass_attempts`, `player_pass_interceptions`, `player_rush_yds`, `player_rush_attempts`, `player_receptions`, `player_reception_yds`, `player_kicking_points`, `player_field_goals`, `player_anytime_td`
+  - **NHL**: `player_points`, `player_assists`, `player_shots_on_goal`, `player_blocked_shots`, `player_power_play_points`
+  - **NBA**: `player_points`, `player_rebounds`, `player_assists`, `player_threes`, `player_blocks`, `player_steals`
+  - **MLB**: `player_hits`, `player_total_bases`, `player_rbis`, `player_runs_scored`, `player_home_runs`, `player_stolen_bases`, `pitcher_strikeouts`, `pitcher_hits_allowed`, `pitcher_walks`, `pitcher_earned_runs`
+- **Enhanced Logging**: Added emoji-based logging for easier monitoring
+  - 📊 Event discovery logging (e.g., "Found 30 upcoming americanfootball_nfl events")
+  - 🎯 Processing status (e.g., "Fetching player props from 30 events (limit: 50)")
+  - ✅ Success indicators (e.g., "Successfully fetched props from 30/30 events")
+  - ❌ Error indicators for failed API calls
+- **Prop Coverage Results**:
+  - **NFL**: 28 → 949 props (34x increase!)
+  - **NHL**: 3,296 → 4,842 props (47% increase!)
+  - **NBA**: ~235,000 props (maintained with paid tier)
+- **Fixed Invalid Markets**: Removed `player_first_td` from NFL markets (not supported by The Odds API)
+
 ### Google OAuth Authentication Refactor (November 20, 2025)
 - **Switched to Passport.js**: Migrated from `openid-client` to Passport's `GoogleStrategy` for cleaner, more maintainable OAuth implementation
 - **PostgreSQL-Backed Sessions**: Implemented `connect-pg-simple` for session persistence across Railway containers
@@ -38,7 +58,10 @@ Prop Machine is an AI-powered sports betting intelligence platform designed to a
 - **Deployment Status**: Railway successfully deployed and running (scheduler disabled to conserve API credits)
 
 ### API Integration Status
-- **The Odds API**: Working perfectly with paid tier (15,000+ NBA props, 1,100+ NHL props, NFL props)
+- **The Odds API**: Working perfectly with paid tier
+  - **NBA**: ~235,000 props (15,000+ player props across 50 games)
+  - **NHL**: 4,842 props (coverage across 16 games)
+  - **NFL**: 949 props (coverage across 30 games)
 - **PrizePicks API**: Returns HTTP 403 Forbidden (access restricted)
 - **Underdog Fantasy API**: Returns HTTP 404 Not Found (endpoint unavailable)
 
