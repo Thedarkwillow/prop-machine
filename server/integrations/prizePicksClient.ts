@@ -121,9 +121,15 @@ export class PrizePicksClient extends IntegrationClient {
       return projections;
     } catch (error: any) {
       console.error(`❌ Failed to fetch NHL projections:`, error.message);
+      
       if (error.message.includes('429')) {
-        console.log('⚠️  PrizePicks rate limit hit - data will be stale until next refresh window');
+        console.log('⚠️  PrizePicks rate limit (HTTP 429) - returning empty to preserve existing props');
+        console.log('   Recommended: Increase refresh interval or implement request caching');
+      } else if (error.message.includes('403') || error.message.includes('Cloudflare')) {
+        console.log('⚠️  PrizePicks blocked request (Cloudflare protection) - returning empty to preserve existing props');
       }
+      
+      // Return empty array so existing props are preserved (not deactivated)
       return [];
     }
   }

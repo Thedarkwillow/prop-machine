@@ -408,31 +408,35 @@ export class PropRefreshService {
     };
 
     try {
-      console.log(`Fetching props from PrizePicks for ${sport}...`);
-
-      let prizePicksProps: ParsedPrizePick[] = [];
-      
-      // Only NHL is currently supported (league ID 8)
-      if (sport === 'NHL') {
-        prizePicksProps = await prizePicksClient.getNHLProjections();
-      } else {
-        console.log(`⚠️  PrizePicks integration only supports NHL currently`);
+      // Gate: Double-check sport support (primary gate is in refreshAllPlatforms)
+      if (sport !== 'NHL') {
+        console.log(`⚠️  PrizePicks integration only supports NHL (skipping ${sport})`);
         result.success = true;
         return result;
       }
+
+      console.log(`Fetching props from PrizePicks for ${sport}...`);
+
+      // Load existing props FIRST - critical for rate-limit preservation
+      const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'PrizePicks');
+      console.log(`Found ${oldPropIds.length} existing active PrizePicks ${sport} props`);
+
+      const prizePicksProps = await prizePicksClient.getNHLProjections();
       
+      // Critical: If rate limited (empty response), keep existing props active
       if (prizePicksProps.length === 0) {
-        console.log(`No props found on PrizePicks for ${sport}`);
+        if (oldPropIds.length > 0) {
+          console.log(`⚠️  PrizePicks returned 0 props (likely rate limited) - keeping ${oldPropIds.length} existing props active`);
+        } else {
+          console.log(`No props found on PrizePicks for ${sport} and no existing props to preserve`);
+        }
+        
         result.success = true;
         return result;
       }
 
       result.propsFetched = prizePicksProps.length;
-      console.log(`Found ${prizePicksProps.length} props from PrizePicks`);
-      
-      // Get old prop IDs before inserting new ones
-      const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'PrizePicks');
-      console.log(`Found ${oldPropIds.length} existing active PrizePicks ${sport} props to replace`);
+      console.log(`Fetched ${prizePicksProps.length} new props from PrizePicks - will replace ${oldPropIds.length} existing props`);
 
       for (const ppProp of prizePicksProps) {
         try {
@@ -480,12 +484,13 @@ export class PropRefreshService {
         }
       }
 
-      // Deactivate old props only if we created new ones
+      // Deactivate old props only if we successfully created new ones
+      // This ensures rate-limited/failed fetches don't wipe out existing data
       if (result.propsCreated > 0 && oldPropIds.length > 0) {
         const deactivatedCount = await storage.deactivateSpecificProps(oldPropIds);
-        console.log(`Deactivated ${deactivatedCount} old PrizePicks ${sport} props after creating ${result.propsCreated} new props`);
+        console.log(`✅ Deactivated ${deactivatedCount} old PrizePicks ${sport} props after creating ${result.propsCreated} new props`);
       } else if (result.propsCreated === 0) {
-        console.log(`No props created for PrizePicks ${sport}, keeping ${oldPropIds.length} existing props active`);
+        console.log(`⚠️  No props created for PrizePicks ${sport} - preserving ${oldPropIds.length} existing props`);
       }
 
       result.success = true;
@@ -510,13 +515,18 @@ export class PropRefreshService {
     for (const sport of sports) {
       // Launch all platform fetches in parallel to avoid blocking on failures
       // NOTE: OpticOdds REST API disabled - using SSE streaming instead (user has SSE-only access)
-      const [underdogResult, oddsApiResult, prizePicksResult] = await Promise.all([
+      const fetchPromises: Promise<RefreshResult>[] = [
         this.refreshFromUnderdog(sport),
         this.refreshFromOddsApi(sport),
-        this.refreshFromPrizePicks(sport),
-      ]);
+      ];
       
-      results.push(underdogResult, oddsApiResult, prizePicksResult);
+      // Only fetch from PrizePicks for NHL (gate at scheduler level to avoid wasted API calls)
+      if (sport === 'NHL') {
+        fetchPromises.push(this.refreshFromPrizePicks(sport));
+      }
+      
+      const platformResults = await Promise.all(fetchPromises);
+      results.push(...platformResults);
     }
 
     const totalPropsFetched = results.reduce((sum, r) => sum + r.propsFetched, 0);
