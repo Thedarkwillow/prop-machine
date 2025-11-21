@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3, GitCompare, Users, Activity, MessageSquare, Target } from "lucide-react";
+import { LayoutDashboard, History, TrendingUp, Plus, LogOut, Settings, BarChart3, GitCompare, Users, Activity, MessageSquare, Target, Radio } from "lucide-react";
 import Dashboard from "@/pages/Dashboard";
 import BetHistory from "@/pages/BetHistory";
 import Performance from "@/pages/Performance";
@@ -19,12 +19,13 @@ import PlayerComparison from "@/pages/PlayerComparison";
 import LiveScoreboard from "@/pages/LiveScoreboard";
 import DiscordSettings from "@/pages/DiscordSettings";
 import DFSProps from "@/pages/DFSProps";
+import Streaming from "@/pages/Streaming";
 import { useHighConfidenceNotifications } from "@/hooks/use-high-confidence-notifications";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
 
 // Admin route guard - only admins can access
-function AdminRoute() {
+function AdminRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoading } = useAuth();
   
   if (isLoading) {
@@ -42,7 +43,7 @@ function AdminRoute() {
     return <Redirect to="/" />;
   }
   
-  return <Admin />;
+  return <Component />;
 }
 
 function Router() {
@@ -75,7 +76,12 @@ function Router() {
           <Route path="/scoreboard" component={LiveScoreboard} />
           <Route path="/settings/notifications" component={NotificationSettings} />
           <Route path="/settings/discord" component={DiscordSettings} />
-          <Route path="/admin" component={AdminRoute} />
+          <Route path="/admin">
+            <AdminRoute component={Admin} />
+          </Route>
+          <Route path="/streaming">
+            <AdminRoute component={Streaming} />
+          </Route>
         </>
       )}
       <Route component={NotFound} />
@@ -99,7 +105,9 @@ function Navigation({ highConfidenceCount }: { highConfidenceCount: number }) {
   
   // Only show admin link to admin users
   const navItems = user?.isAdmin 
-    ? [...baseNavItems, { path: "/admin", label: "Admin", icon: Settings, testId: "nav-admin" }]
+    ? [...baseNavItems, 
+       { path: "/streaming", label: "Streaming", icon: Radio, testId: "nav-streaming" },
+       { path: "/admin", label: "Admin", icon: Settings, testId: "nav-admin" }]
     : baseNavItems;
 
   const handleLogout = () => {
