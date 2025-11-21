@@ -398,18 +398,18 @@ export class PropRefreshService {
     const results: RefreshResult[] = [];
     
     console.log(`Starting multi-platform prop refresh for: ${sports.join(', ')}`);
-    console.log(`Platforms: Underdog, The Odds API, OpticOdds (PrizePicks/Underdog)`);
+    console.log(`Platforms: Underdog, The Odds API (OpticOdds via SSE streaming only)`);
 
     // Fetch from all platforms in parallel for each sport
     for (const sport of sports) {
       // Launch all platform fetches in parallel to avoid blocking on failures
-      const [underdogResult, oddsApiResult, opticOddsResult] = await Promise.all([
+      // NOTE: OpticOdds REST API disabled - using SSE streaming instead (user has SSE-only access)
+      const [underdogResult, oddsApiResult] = await Promise.all([
         this.refreshFromUnderdog(sport),
         this.refreshFromOddsApi(sport),
-        this.refreshFromOpticOdds(sport),
       ]);
       
-      results.push(underdogResult, oddsApiResult, opticOddsResult);
+      results.push(underdogResult, oddsApiResult);
     }
 
     const totalPropsFetched = results.reduce((sum, r) => sum + r.propsFetched, 0);

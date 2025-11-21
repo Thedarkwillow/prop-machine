@@ -1067,6 +1067,8 @@ class DbStorage implements IStorage {
         direction: props.direction,
         period: props.period,
         platform: props.platform,
+        fixtureId: props.fixtureId, // OpticOdds fixture ID
+        marketId: props.marketId,   // OpticOdds market ID
         confidence: props.confidence,
         ev: props.ev,
         modelProbability: props.modelProbability,
@@ -1118,6 +1120,8 @@ class DbStorage implements IStorage {
         direction: row.direction,
         period: row.period,
         platform: row.platform,
+        fixtureId: row.fixtureId,   // OpticOdds fixture ID
+        marketId: row.marketId,     // OpticOdds market ID
         confidence: row.confidence,
         ev: row.ev,
         modelProbability: row.modelProbability,

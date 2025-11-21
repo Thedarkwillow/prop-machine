@@ -353,8 +353,12 @@ export class OpticOddsStreamService {
           console.warn(`⚠️  Missing fixture_id for ${odd.sportsbook}: ${playerName} ${statName} - will use global matching`);
         }
 
+        // Debug: Log what we're about to upsert
+        const fixtureDebug = odd.fixture_id || 'NULL';
+        console.log(`  🔍 [DEBUG] Upserting ${playerName} ${statName} with fixtureId: ${fixtureDebug}`);
+
         // Upsert prop (create new or update existing)
-        await this.storage.upsertProp({
+        const result = await this.storage.upsertProp({
           sport: this.inferSportFromMarket(odd.market_id),
           player: playerName,
           team,
@@ -372,6 +376,9 @@ export class OpticOddsStreamService {
           gameTime: new Date(),
           isActive: true,
         });
+
+        // Debug: Verify what was saved
+        console.log(`  🔍 [DEBUG] Saved prop ID ${result.id} with fixtureId: ${result.fixtureId || 'NULL'}`);
 
         const fixtureTag = odd.fixture_id ? `[fixture: ${odd.fixture_id.substring(0, 8)}]` : '[no fixture_id]';
         console.log(`  ✅ ${odd.sportsbook}: ${playerName} ${statName} ${direction} ${odd.points} @ ${odd.price} ${fixtureTag}`);
