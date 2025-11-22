@@ -211,7 +211,7 @@ export class PropRefreshService {
           const basicEV = (basicConfidence - 50) / 10; // Simple EV calculation
           const basicProb = basicConfidence / 100;
 
-          await storage.createProp({
+          await storage.upsertProp({
             sport,
             player: rawProp.player,
             team: rawProp.team,

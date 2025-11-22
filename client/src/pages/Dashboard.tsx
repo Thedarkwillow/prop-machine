@@ -56,10 +56,10 @@ export default function Dashboard() {
   });
 
   // Fetch props with higher limit to ensure we get all props for the selected sport
-  // This prevents missing platforms (Underdog Fantasy) and stats due to pagination
-  // Object format: queryClient converts ['/api/props', { sport: 'NHL', limit: 5000 }] to /api/props?sport=NHL&limit=5000
+  // NFL has ~15K props, NHL ~9K, NBA ~7K (after duplicate cleanup)
+  // Object format: queryClient converts ['/api/props', { sport: 'NHL', limit: 20000 }] to /api/props?sport=NHL&limit=20000
   const { data: props = [], isLoading: propsLoading, isError: propsError } = useQuery({
-    queryKey: ['/api/props', { sport: selectedSport, limit: 5000 }],
+    queryKey: ['/api/props', { sport: selectedSport, limit: 20000 }],
   });
 
   // Refresh props mutation
