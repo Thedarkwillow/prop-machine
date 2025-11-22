@@ -1068,6 +1068,9 @@ class DbStorage implements IStorage {
   async getActivePropsWithLineMovement(sport?: string, limit = 100, offset = 0): Promise<PropWithLineMovement[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
+    // Compute cutoff in JavaScript to avoid SQL injection
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    
     // PERFORMANCE OPTIMIZATION: Single query with LEFT JOIN instead of N+1 queries
     // This fetches props with their latest line movement in one database round-trip
     // Using window functions (ROW_NUMBER) to get only the most recent movement per prop
@@ -1119,11 +1122,11 @@ class DbStorage implements IStorage {
           ? and(
               eq(props.isActive, true),
               eq(props.sport, sport),
-              gt(props.gameTime, sql`NOW() - INTERVAL '1 hour'`) // Exclude games older than 1 hour
+              gt(props.gameTime, oneHourAgo) // Exclude games older than 1 hour (parameterized)
             )
           : and(
               eq(props.isActive, true),
-              gt(props.gameTime, sql`NOW() - INTERVAL '1 hour'`) // Exclude games older than 1 hour
+              gt(props.gameTime, oneHourAgo) // Exclude games older than 1 hour (parameterized)
             )
       )
       .orderBy(desc(props.confidence), desc(props.createdAt))

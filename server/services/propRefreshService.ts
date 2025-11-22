@@ -498,11 +498,11 @@ export class PropRefreshService {
           const analysis = await propAnalysisService.analyzeProp(analysisInput);
 
           // Generate synthetic fixtureId for grouping props from same game
-          // Format: prizepicks_{sport}_{team}_{YYYYMMDD}
-          const gameDate = ppProp.startTime 
-            ? new Date(ppProp.startTime).toISOString().split('T')[0].replace(/-/g, '')
-            : new Date().toISOString().split('T')[0].replace(/-/g, '');
-          const fixtureId = `prizepicks_${sport}_${(ppProp.team || 'TBD').replace(/\s+/g, '_')}_${gameDate}`;
+          // Format: prizepicks_{sport}_{team}_{YYYYMMDD_HHMM} - includes hour/minute for uniqueness
+          const gameTime = ppProp.startTime ? new Date(ppProp.startTime) : new Date();
+          const gameDate = gameTime.toISOString().split('T')[0].replace(/-/g, '');
+          const gameHourMin = gameTime.toISOString().split('T')[1].substring(0, 5).replace(':', '');
+          const fixtureId = `prizepicks_${sport}_${(ppProp.team || 'TBD').replace(/\s+/g, '_')}_${gameDate}_${gameHourMin}`;
 
           await storage.createProp({
             sport,
@@ -576,18 +576,26 @@ export class PropRefreshService {
       results.push(...platformResults);
     }
 
-    // Clean up expired props (fallback for props that couldn't be deactivated by fixtureId)
-    const expiredCount = await storage.deactivateExpiredProps(1); // Deactivate games older than 1 hour
-
     const totalPropsFetched = results.reduce((sum, r) => sum + r.propsFetched, 0);
     const totalPropsCreated = results.reduce((sum, r) => sum + r.propsCreated, 0);
     const totalErrors = results.reduce((sum, r) => sum + r.errors.length, 0);
     const allSuccessful = results.every(r => r.success);
 
+    // Clean up expired props ONLY if we successfully created new data
+    // This prevents wiping props during rate-limit scenarios
+    let expiredCount = 0;
+    if (totalPropsCreated > 0) {
+      expiredCount = await storage.deactivateExpiredProps(1); // Deactivate games older than 1 hour
+    } else {
+      console.log(`⚠️  No new props created - skipping deactivation to preserve existing data`);
+    }
+
     console.log(`\n=== Multi-Platform Refresh Summary ===`);
     console.log(`Total props fetched: ${totalPropsFetched}`);
     console.log(`Total props created: ${totalPropsCreated}`);
-    console.log(`Expired props cleaned: ${expiredCount}`);
+    if (expiredCount > 0) {
+      console.log(`Expired props cleaned: ${expiredCount}`);
+    }
     console.log(`Total errors: ${totalErrors}`);
     console.log(`========================================\n`);
 
