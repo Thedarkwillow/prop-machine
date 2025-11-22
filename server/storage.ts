@@ -361,6 +361,18 @@ class MemStorage implements IStorage {
     return count;
   }
 
+  async deactivateExpiredProps(hoursAgo = 1): Promise<number> {
+    const cutoffTime = new Date(Date.now() - hoursAgo * 60 * 60 * 1000);
+    let count = 0;
+    for (const prop of this.props.values()) {
+      if (prop.isActive && prop.gameTime < cutoffTime) {
+        prop.isActive = false;
+        count++;
+      }
+    }
+    return count;
+  }
+
   async getActivePropsByFixtureId(fixtureId: string): Promise<Prop[]> {
     return Array.from(this.props.values()).filter(
       p => p.fixtureId === fixtureId && p.isActive
@@ -1290,6 +1302,20 @@ class DbStorage implements IStorage {
       ))
       .returning({ id: props.id });
     
+    return result.length;
+  }
+
+  async deactivateExpiredProps(hoursAgo = 1): Promise<number> {
+    const result = await db
+      .update(props)
+      .set({ isActive: false })
+      .where(and(
+        eq(props.isActive, true),
+        sql`${props.gameTime} < NOW() - INTERVAL '${sql.raw(hoursAgo.toString())} hours'`
+      ))
+      .returning({ id: props.id });
+    
+    console.log(`🧹 Deactivated ${result.length} expired props (older than ${hoursAgo} hour${hoursAgo > 1 ? 's' : ''})`);
     return result.length;
   }
 

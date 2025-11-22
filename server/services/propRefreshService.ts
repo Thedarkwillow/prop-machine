@@ -568,6 +568,9 @@ export class PropRefreshService {
       results.push(...platformResults);
     }
 
+    // Clean up expired props (fallback for props that couldn't be deactivated by fixtureId)
+    const expiredCount = await storage.deactivateExpiredProps(1); // Deactivate games older than 1 hour
+
     const totalPropsFetched = results.reduce((sum, r) => sum + r.propsFetched, 0);
     const totalPropsCreated = results.reduce((sum, r) => sum + r.propsCreated, 0);
     const totalErrors = results.reduce((sum, r) => sum + r.errors.length, 0);
@@ -576,6 +579,7 @@ export class PropRefreshService {
     console.log(`\n=== Multi-Platform Refresh Summary ===`);
     console.log(`Total props fetched: ${totalPropsFetched}`);
     console.log(`Total props created: ${totalPropsCreated}`);
+    console.log(`Expired props cleaned: ${expiredCount}`);
     console.log(`Total errors: ${totalErrors}`);
     console.log(`========================================\n`);
 
