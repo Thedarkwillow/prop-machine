@@ -77,6 +77,7 @@ export interface IStorage {
   deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
   deactivatePropsByFixtureId(fixtureId: string): Promise<number>; // Deactivate props for specific fixture
   deactivateSpecificProps(propIds: number[]): Promise<number>;
+  deactivateExpiredProps(hoursAgo?: number): Promise<number>; // Deactivate props with gameTime older than X hours
   
   // Slips
   getSlip(slipId: number): Promise<Slip | undefined>;
