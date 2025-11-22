@@ -1,4 +1,4 @@
-import { balldontlieClient } from "../integrations/balldontlieClient";
+import { espnPlayerClient } from "../integrations/espnPlayerClient";
 import { modelScorer } from "../ml/modelScorer";
 import { WeatherService } from "./weatherService";
 import type { IStorage } from "../storage";
@@ -40,7 +40,7 @@ export class PropAnalysisService {
     }
   }
 
-  private statMapping: { [key: string]: keyof typeof this.extractStatValue } = {
+  private statMapping: { [key: string]: string } = {
     'Points': 'pts',
     'Rebounds': 'reb',
     'Assists': 'ast',
@@ -76,30 +76,33 @@ export class PropAnalysisService {
     }
 
     try {
-      const playersResponse = await balldontlieClient.searchPlayers(input.player);
+      // Use ESPN API for NBA player search (more reliable than BallDontLie)
+      const players = await espnPlayerClient.searchNBAPlayers(input.player);
       
-      if (!playersResponse.data || playersResponse.data.length === 0) {
-        console.log(`Player not found: ${input.player}`);
+      if (!players || players.length === 0) {
+        console.log(`[NBA Analysis] Player not found: ${input.player}`);
         return this.fallbackAnalysis(input, line, `Player "${input.player}" not found in database`);
       }
 
-      const player = playersResponse.data[0];
-      console.log(`Found player: ${player.first_name} ${player.last_name} (ID: ${player.id})`);
+      const player = players[0];
+      console.log(`[NBA Analysis] Found player: ${player.fullName} (ID: ${player.id})`);
 
-      const recentStats = await balldontlieClient.getRecentPlayerStats(player.id, 10);
-      const currentSeason = new Date().getMonth() < 6 ? new Date().getFullYear() - 1 : new Date().getFullYear();
-      const seasonStats = await balldontlieClient.getPlayerStats(player.id, currentSeason);
+      // Get season stats from ESPN
+      const seasonStats = await espnPlayerClient.getNBAPlayerStats(player.id);
 
-      const statKey = this.statMapping[input.stat];
-      if (!statKey) {
-        console.log(`Stat type not supported: ${input.stat}`);
+      // Map stat type to ESPN stat field
+      const statValue = this.mapNBAStatValue(seasonStats, input.stat);
+      
+      if (statValue === null) {
+        console.log(`[NBA Analysis] Stat type not supported: ${input.stat}`);
         return this.fallbackAnalysis(input, line, `Stat type "${input.stat}" not yet supported`);
       }
 
-      const recentAverage = this.calculateAverage(recentStats.data, statKey);
-      const seasonAverage = this.calculateAverage(seasonStats.data, statKey);
+      // Use season average as both recent and season (ESPN provides season averages)
+      const seasonAverage = statValue;
+      const recentAverage = statValue; // ESPN provides season averages, not recent games
 
-      console.log(`Recent avg: ${recentAverage.toFixed(2)}, Season avg: ${seasonAverage.toFixed(2)}, Line: ${line}`);
+      console.log(`[NBA Analysis] Season avg: ${seasonAverage.toFixed(2)}, Line: ${line}`);
 
       const modelScore = await modelScorer.scoreProp({
         playerName: input.player,
@@ -127,7 +130,7 @@ export class PropAnalysisService {
       };
 
     } catch (error) {
-      console.error('Error in prop analysis:', error);
+      console.error('[NBA Analysis] Error in prop analysis:', error);
       return this.fallbackAnalysis(input, line, 'API error, using basic analysis');
     }
   }
@@ -140,6 +143,34 @@ export class PropAnalysisService {
     }, 0);
     
     return total / games.length;
+  }
+
+  /**
+   * Map stat type to ESPN NBA stat value
+   * Returns null if stat type not supported
+   */
+  private mapNBAStatValue(stats: any, statType: string): number | null {
+    const statMappings: { [key: string]: string } = {
+      'Points': 'points',
+      'Rebounds': 'rebounds',
+      'Assists': 'assists',
+      'Steals': 'steals',
+      'Blocks': 'blocks',
+      '3-PT Made': 'threePointFieldGoalsMade',
+      '3-Pointers Made': 'threePointFieldGoalsMade',
+      'PTS': 'points',
+      'REB': 'rebounds',
+      'AST': 'assists',
+      'STL': 'steals',
+      'BLK': 'blocks',
+    };
+
+    const espnStatKey = statMappings[statType];
+    if (!espnStatKey) {
+      return null;
+    }
+
+    return stats[espnStatKey] || 0;
   }
 
   private async handleNonNBAProps(input: PropAnalysisInput, line: number): Promise<PropAnalysisResult> {
