@@ -49,6 +49,15 @@ interface NBAPlayerStats {
   steals?: number;
   blocks?: number;
   threePointFieldGoalsMade?: number;
+  threePointFieldGoalsAttempted?: number;
+  fieldGoalsMade?: number;
+  fieldGoalsAttempted?: number;
+  freeThrowsMade?: number;
+  freeThrowsAttempted?: number;
+  twoPointFieldGoalsMade?: number;
+  twoPointFieldGoalsAttempted?: number;
+  turnovers?: number;
+  personalFouls?: number;
   gamesPlayed: number;
 }
 
@@ -257,6 +266,15 @@ class ESPNPlayerClient extends IntegrationClient {
         steals: findStat(['avgSteals', 'steals', 'spg', 'stealsPerGame']),
         blocks: findStat(['avgBlocks', 'blocks', 'bpg', 'blocksPerGame']),
         threePointFieldGoalsMade: findStat(['avgThreePointFieldGoalsMade', 'threePointFieldGoalsMade', '3ptm', 'threePointersMade']),
+        threePointFieldGoalsAttempted: findStat(['avgThreePointFieldGoalsAttempted', 'threePointFieldGoalsAttempted', '3pta', 'threePointersAttempted']),
+        fieldGoalsMade: findStat(['avgFieldGoalsMade', 'fieldGoalsMade', 'fgm']),
+        fieldGoalsAttempted: findStat(['avgFieldGoalsAttempted', 'fieldGoalsAttempted', 'fga']),
+        freeThrowsMade: findStat(['avgFreeThrowsMade', 'freeThrowsMade', 'ftm']),
+        freeThrowsAttempted: findStat(['avgFreeThrowsAttempted', 'freeThrowsAttempted', 'fta']),
+        twoPointFieldGoalsMade: findStat(['avgTwoPointFieldGoalsMade', 'twoPointFieldGoalsMade']),
+        twoPointFieldGoalsAttempted: findStat(['avgTwoPointFieldGoalsAttempted', 'twoPointFieldGoalsAttempted']),
+        turnovers: findStat(['avgTurnovers', 'turnovers', 'tpg', 'turnoversPerGame']),
+        personalFouls: findStat(['avgPersonalFouls', 'personalFouls', 'fpg', 'foulsPerGame']),
         gamesPlayed: findStat(['gamesPlayed', 'games', 'gp']),
       };
       

@@ -3,6 +3,7 @@ import type { IStorage } from '../storage';
 import { storage } from '../storage';
 import { opticOddsClient } from '../integrations/opticOddsClient';
 import { normalizeStat } from '../utils/statNormalizer';
+import { propAnalysisService } from './propAnalysisService';
 
 interface StreamOddsEvent {
   id: string;
@@ -361,9 +362,45 @@ export class OpticOddsStreamService {
         const fixtureDebug = odd.fixture_id || 'NULL';
         console.log(`  🔍 [DEBUG] Upserting ${playerName} ${normalizedStat} with fixtureId: ${fixtureDebug}`);
 
+        // Run ML analysis to get real confidence scores
+        const sport = this.inferSportFromMarket(odd.market_id);
+        let confidence = 50;
+        let ev = "0";
+        let modelProbability = "0.5";
+        
+        console.log(`  🤖 Starting ML analysis for ${playerName} ${normalizedStat}...`);
+        try {
+          // Add 15-second timeout for ESPN API calls
+          const analysisPromise = propAnalysisService.analyzeProp({
+            sport,
+            player: playerName,
+            team,
+            opponent,
+            stat: normalizedStat,
+            line: odd.points?.toString() || "0",
+            direction,
+            platform: odd.sportsbook,
+            gameTime: new Date(),
+          });
+          
+          const timeoutPromise = new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error('ML analysis timeout (15s)')), 15000)
+          );
+          
+          const analysis = await Promise.race([analysisPromise, timeoutPromise]);
+          
+          confidence = analysis.confidence;
+          ev = analysis.ev.toString();
+          modelProbability = analysis.modelProbability.toString();
+          console.log(`  ✅ ML analysis complete: confidence=${confidence}%`);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          console.error(`  ⚠️  ML analysis failed for ${playerName} ${normalizedStat}: ${errorMessage}`);
+        }
+
         // Upsert prop (create new or update existing)
         const result = await this.storage.upsertProp({
-          sport: this.inferSportFromMarket(odd.market_id),
+          sport,
           player: playerName,
           team,
           opponent,
@@ -373,9 +410,9 @@ export class OpticOddsStreamService {
           platform: odd.sportsbook,
           fixtureId: odd.fixture_id || null, // Store OpticOdds fixture ID (null if missing)
           marketId: odd.market_id,   // Store OpticOdds market ID
-          confidence: 50, // Placeholder (0-100 scale) - would be calculated by ML model
-          ev: "0",
-          modelProbability: "0.5",
+          confidence,
+          ev,
+          modelProbability,
           period: "full_game",
           gameTime: new Date(),
           isActive: true,
@@ -436,11 +473,31 @@ export class OpticOddsStreamService {
     if (lockedFixtures.length > 0) {
       console.log(`  Deactivating props for ${lockedFixtures.length} fixtures`);
       
-      // Deactivate props for each locked fixture
+      // Deactivate props for each locked fixture with deadlock retry
       for (const fixtureId of lockedFixtures) {
-        const count = await this.storage.deactivatePropsByFixtureId(fixtureId);
-        if (count > 0) {
-          console.log(`    🔒 Deactivated ${count} props for locked fixture ${fixtureId.substring(0, 8)}...`);
+        const maxRetries = 3;
+        let success = false;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            const count = await this.storage.deactivatePropsByFixtureId(fixtureId);
+            if (count > 0) {
+              console.log(`    🔒 Deactivated ${count} props for locked fixture ${fixtureId.substring(0, 8)}...`);
+            }
+            success = true;
+            break;
+          } catch (error: any) {
+            const isDeadlock = error?.code === '40P01';
+            
+            if (isDeadlock && attempt < maxRetries) {
+              const delay = Math.pow(2, attempt - 1) * 100;
+              console.warn(`  ⚠️  Deadlock on fixture ${fixtureId.substring(0, 8)}, retry ${attempt}/${maxRetries} in ${delay}ms`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+            } else if (!isDeadlock || attempt === maxRetries) {
+              console.error(`  ❌ Failed to deactivate fixture ${fixtureId.substring(0, 8)}:`, error);
+              break;
+            }
+          }
         }
       }
     }
