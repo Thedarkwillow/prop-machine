@@ -42,6 +42,16 @@ interface NHLPlayerStats {
   gamesPlayed: number;
 }
 
+interface NBAPlayerStats {
+  points?: number;
+  rebounds?: number;
+  assists?: number;
+  steals?: number;
+  blocks?: number;
+  threePointFieldGoalsMade?: number;
+  gamesPlayed: number;
+}
+
 class ESPNPlayerClient extends IntegrationClient {
   constructor() {
     super("https://sports.core.api.espn.com", ESPN_PLAYER_RATE_LIMIT);
@@ -175,6 +185,69 @@ class ESPNPlayerClient extends IntegrationClient {
       };
     } catch (error) {
       console.error("Error fetching NHL player stats:", error);
+      return { gamesPlayed: 0 };
+    }
+  }
+
+  /**
+   * Search for NBA players by name using v3 athletes endpoint with full data
+   */
+  async searchNBAPlayers(searchTerm: string): Promise<any[]> {
+    try {
+      const searchLower = searchTerm.toLowerCase();
+      const response = await this.get<any>(`/v3/sports/basketball/nba/athletes?limit=2000`);
+      
+      if (!response?.data?.items) return [];
+      
+      // Pre-filter by name using data already in items (no additional API calls needed!)
+      const rawMatches = response.data.items.filter((player: any) => {
+        const fullName = player.fullName?.toLowerCase() || "";
+        const displayName = player.displayName?.toLowerCase() || "";
+        return fullName.includes(searchLower) || displayName.includes(searchLower);
+      });
+      
+      // Ensure consistent structure for downstream use
+      return rawMatches.slice(0, 10).map((player: any) => ({
+        id: player.id,
+        fullName: player.fullName,
+        displayName: player.displayName,
+        shortName: player.shortName,
+        team: { name: player.team?.name || player.team?.displayName || "Unknown" },
+        position: player.position,
+      }));
+    } catch (error) {
+      console.error("Error searching NBA players:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Get NBA player season stats
+   */
+  async getNBAPlayerStats(playerId: string): Promise<NBAPlayerStats> {
+    try {
+      const statsUrl = `/v2/sports/basketball/leagues/nba/seasons/2025/athletes/${playerId}/statistics/0`;
+      console.log(`[ESPN] Fetching NBA stats for player ${playerId}: ${statsUrl}`);
+      const response = await this.get<any>(statsUrl);
+      console.log(`[ESPN] NBA stats response structure:`, JSON.stringify({ 
+        hasData: !!response?.data,
+        hasSplits: !!response?.data?.splits,
+        categories: response?.data?.splits?.categories?.length || 0
+      }));
+      
+      const stats = response?.data?.splits?.categories?.[0]?.stats || [];
+      
+      return {
+        points: stats.find((s: any) => s.name === 'avgPoints')?.value || 0,
+        rebounds: stats.find((s: any) => s.name === 'avgRebounds')?.value || 0,
+        assists: stats.find((s: any) => s.name === 'avgAssists')?.value || 0,
+        steals: stats.find((s: any) => s.name === 'avgSteals')?.value || 0,
+        blocks: stats.find((s: any) => s.name === 'avgBlocks')?.value || 0,
+        threePointFieldGoalsMade: stats.find((s: any) => s.name === 'avg3PointFieldGoalsMade')?.value || 0,
+        gamesPlayed: stats.find((s: any) => s.name === 'gamesPlayed')?.value || 0,
+      };
+    } catch (error) {
+      console.error("Error fetching NBA player stats:", error);
       return { gamesPlayed: 0 };
     }
   }
