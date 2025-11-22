@@ -969,7 +969,7 @@ class MemStorage implements IStorage {
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
 import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings, prizePicksSnapshots } from "@shared/schema";
-import { eq, and, desc, gte, sql, inArray, or } from "drizzle-orm";
+import { eq, and, desc, gte, gt, sql, inArray, or } from "drizzle-orm";
 
 class DbStorage implements IStorage {
   // User management
@@ -1103,8 +1103,15 @@ class DbStorage implements IStorage {
       )
       .where(
         sport
-          ? and(eq(props.isActive, true), eq(props.sport, sport))
-          : eq(props.isActive, true)
+          ? and(
+              eq(props.isActive, true),
+              eq(props.sport, sport),
+              gt(props.gameTime, sql`NOW() - INTERVAL '1 hour'`) // Exclude games older than 1 hour
+            )
+          : and(
+              eq(props.isActive, true),
+              gt(props.gameTime, sql`NOW() - INTERVAL '1 hour'`) // Exclude games older than 1 hour
+            )
       )
       .orderBy(desc(props.confidence), desc(props.createdAt))
       .limit(limit)
