@@ -230,20 +230,21 @@ class ESPNPlayerClient extends IntegrationClient {
       const statsUrl = `/v2/sports/basketball/leagues/nba/athletes/${playerId}/statistics`;
       const response = await this.get<any>(statsUrl);
       
-      // ESPN NBA stats are in splits.categories array
+      // ESPN NBA stats are split across multiple categories: defensive, general, offensive
       const categories = response?.data?.splits?.categories || [];
-      const generalStats = categories.find((c: any) => c.name === 'general' || c.name === 'per game')?.stats || [];
       
-      // Debug: log all available stat names to understand the response structure
-      if (generalStats.length > 0) {
-        const statNames = generalStats.map((s: any) => s.name).join(', ');
-        console.log(`[ESPN DEBUG] Available stats for player ${playerId}: ${statNames}`);
-      }
+      // Combine all stats from all categories for easier searching
+      const allStats: any[] = [];
+      categories.forEach((category: any) => {
+        if (category.stats) {
+          allStats.push(...category.stats);
+        }
+      });
       
       // Helper to find stat value by multiple possible names
       const findStat = (names: string[]): number => {
         for (const name of names) {
-          const stat = generalStats.find((s: any) => s.name === name);
+          const stat = allStats.find((s: any) => s.name === name);
           if (stat && stat.value != null) return parseFloat(stat.value);
         }
         return 0;
@@ -255,11 +256,11 @@ class ESPNPlayerClient extends IntegrationClient {
         assists: findStat(['avgAssists', 'assists', 'apg', 'assistsPerGame']),
         steals: findStat(['avgSteals', 'steals', 'spg', 'stealsPerGame']),
         blocks: findStat(['avgBlocks', 'blocks', 'bpg', 'blocksPerGame']),
-        threePointFieldGoalsMade: findStat(['avg3PointFieldGoalsMade', 'threePointFieldGoalsMade', '3ptm', 'threePointersMade']),
+        threePointFieldGoalsMade: findStat(['avgThreePointFieldGoalsMade', 'threePointFieldGoalsMade', '3ptm', 'threePointersMade']),
         gamesPlayed: findStat(['gamesPlayed', 'games', 'gp']),
       };
       
-      console.log(`[ESPN] NBA stats parsed for player ${playerId}: PTS=${stats.points} REB=${stats.rebounds} AST=${stats.assists}`);
+      console.log(`[ESPN] NBA stats for player ${playerId}: PTS=${stats.points} REB=${stats.rebounds} AST=${stats.assists}`);
       
       return stats;
     } catch (error) {
