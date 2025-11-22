@@ -226,26 +226,42 @@ class ESPNPlayerClient extends IntegrationClient {
    */
   async getNBAPlayerStats(playerId: string): Promise<NBAPlayerStats> {
     try {
-      const statsUrl = `/v2/sports/basketball/leagues/nba/seasons/2025/athletes/${playerId}/statistics/0`;
-      console.log(`[ESPN] Fetching NBA stats for player ${playerId}: ${statsUrl}`);
+      // NBA uses a different endpoint structure than NHL/NFL
+      const statsUrl = `/v2/sports/basketball/leagues/nba/athletes/${playerId}/statistics`;
       const response = await this.get<any>(statsUrl);
-      console.log(`[ESPN] NBA stats response structure:`, JSON.stringify({ 
-        hasData: !!response?.data,
-        hasSplits: !!response?.data?.splits,
-        categories: response?.data?.splits?.categories?.length || 0
-      }));
       
-      const stats = response?.data?.splits?.categories?.[0]?.stats || [];
+      // ESPN NBA stats are in splits.categories array
+      const categories = response?.data?.splits?.categories || [];
+      const generalStats = categories.find((c: any) => c.name === 'general' || c.name === 'per game')?.stats || [];
       
-      return {
-        points: stats.find((s: any) => s.name === 'avgPoints')?.value || 0,
-        rebounds: stats.find((s: any) => s.name === 'avgRebounds')?.value || 0,
-        assists: stats.find((s: any) => s.name === 'avgAssists')?.value || 0,
-        steals: stats.find((s: any) => s.name === 'avgSteals')?.value || 0,
-        blocks: stats.find((s: any) => s.name === 'avgBlocks')?.value || 0,
-        threePointFieldGoalsMade: stats.find((s: any) => s.name === 'avg3PointFieldGoalsMade')?.value || 0,
-        gamesPlayed: stats.find((s: any) => s.name === 'gamesPlayed')?.value || 0,
+      // Debug: log all available stat names to understand the response structure
+      if (generalStats.length > 0) {
+        const statNames = generalStats.map((s: any) => s.name).join(', ');
+        console.log(`[ESPN DEBUG] Available stats for player ${playerId}: ${statNames}`);
+      }
+      
+      // Helper to find stat value by multiple possible names
+      const findStat = (names: string[]): number => {
+        for (const name of names) {
+          const stat = generalStats.find((s: any) => s.name === name);
+          if (stat && stat.value != null) return parseFloat(stat.value);
+        }
+        return 0;
       };
+      
+      const stats = {
+        points: findStat(['avgPoints', 'points', 'ppg', 'pointsPerGame']),
+        rebounds: findStat(['avgRebounds', 'rebounds', 'rpg', 'reboundsPerGame']),
+        assists: findStat(['avgAssists', 'assists', 'apg', 'assistsPerGame']),
+        steals: findStat(['avgSteals', 'steals', 'spg', 'stealsPerGame']),
+        blocks: findStat(['avgBlocks', 'blocks', 'bpg', 'blocksPerGame']),
+        threePointFieldGoalsMade: findStat(['avg3PointFieldGoalsMade', 'threePointFieldGoalsMade', '3ptm', 'threePointersMade']),
+        gamesPlayed: findStat(['gamesPlayed', 'games', 'gp']),
+      };
+      
+      console.log(`[ESPN] NBA stats parsed for player ${playerId}: PTS=${stats.points} REB=${stats.rebounds} AST=${stats.assists}`);
+      
+      return stats;
     } catch (error) {
       console.error("Error fetching NBA player stats:", error);
       return { gamesPlayed: 0 };
