@@ -497,6 +497,13 @@ export class PropRefreshService {
 
           const analysis = await propAnalysisService.analyzeProp(analysisInput);
 
+          // Generate synthetic fixtureId for grouping props from same game
+          // Format: prizepicks_{sport}_{team}_{YYYYMMDD}
+          const gameDate = ppProp.startTime 
+            ? new Date(ppProp.startTime).toISOString().split('T')[0].replace(/-/g, '')
+            : new Date().toISOString().split('T')[0].replace(/-/g, '');
+          const fixtureId = `prizepicks_${sport}_${(ppProp.team || 'TBD').replace(/\s+/g, '_')}_${gameDate}`;
+
           await storage.createProp({
             sport,
             player: ppProp.player,
@@ -508,6 +515,7 @@ export class PropRefreshService {
             direction: 'over',
             period: 'full_game',
             platform: 'PrizePicks',
+            fixtureId, // Add synthetic fixture ID for proper deactivation
             confidence: analysis.confidence,
             ev: analysis.ev.toString(),
             modelProbability: analysis.modelProbability.toString(),
