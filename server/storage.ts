@@ -1000,12 +1000,24 @@ class MemStorage implements IStorage {
     return;
   }
 
-  // PrizePicks snapshot cache (in-memory not used, stubs for interface)
+  // DEPRECATED: PrizePicks snapshot caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.savePrizePicksSnapshot() and fileCache.getLatestPrizePicksSnapshot() instead
   async savePrizePicksSnapshot(sport: string, leagueId: string, payload: any, propCount: number, ttlHours: number = 24): Promise<PrizePicksSnapshot> {
-    throw new Error("PrizePicks snapshots not implemented in MemStorage");
+    console.warn('savePrizePicksSnapshot is deprecated - use fileCache.savePrizePicksSnapshot() instead');
+    // Return a mock object to prevent type errors
+    return {
+      id: this.dataFeedIdCounter++,
+      sport,
+      leagueId,
+      payload,
+      propCount,
+      ttlHours,
+      fetchedAt: new Date(),
+    };
   }
 
   async getLatestPrizePicksSnapshot(sport: string, leagueId: string): Promise<PrizePicksSnapshot | undefined> {
+    console.warn('getLatestPrizePicksSnapshot is deprecated - use fileCache.getLatestPrizePicksSnapshot() instead');
     return undefined;
   }
 
@@ -1110,11 +1122,9 @@ class DbStorage implements IStorage {
   async getActivePropsWithLineMovement(sport?: string, limit = 100, offset = 0): Promise<PropWithLineMovement[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    // Show props for games that are happening now or starting soon
-    // Include games that started in the last 24 hours (for live games) or are starting in the next 7 days
-    const now = new Date();
-    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    // Show all active props - removed gameTime filter to ensure all props are visible
+    // Previously filtered by gameTime which was excluding valid props
+    // Props are now shown regardless of gameTime to ensure they appear in the feed
     
     // PERFORMANCE OPTIMIZATION: Single query with LEFT JOIN instead of N+1 queries
     // Join on propId and filter for latest movement using a subquery in the join condition
@@ -1156,20 +1166,12 @@ class DbStorage implements IStorage {
         sport
           ? and(
               eq(props.isActive, true),
-              eq(props.sport, sport),
-              // Show props for games that started in the last 24 hours (live games) or are starting in the next 7 days
-              or(
-                and(gte(props.gameTime, twentyFourHoursAgo), lte(props.gameTime, now)), // Games that started recently (live)
-                and(gt(props.gameTime, now), lte(props.gameTime, sevenDaysFromNow)) // Upcoming games within 7 days
-              )
+              eq(props.sport, sport)
+              // Removed gameTime filter - show all active props regardless of game time
             )
           : and(
-              eq(props.isActive, true),
-              // Show props for games that started in the last 24 hours (live games) or are starting in the next 7 days
-              or(
-                and(gte(props.gameTime, twentyFourHoursAgo), lte(props.gameTime, now)), // Games that started recently (live)
-                and(gt(props.gameTime, now), lte(props.gameTime, sevenDaysFromNow)) // Upcoming games within 7 days
-              )
+              eq(props.isActive, true)
+              // Removed gameTime filter - show all active props regardless of game time
             )
       )
       .orderBy(desc(props.confidence), desc(props.createdAt), desc(lineMovements.timestamp))
@@ -1994,30 +1996,29 @@ class DbStorage implements IStorage {
     await db.delete(discordSettings).where(eq(discordSettings.userId, userId));
   }
 
-  // PrizePicks snapshot cache for rate-limit resilience
+  // DEPRECATED: PrizePicks snapshot caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.savePrizePicksSnapshot() and fileCache.getLatestPrizePicksSnapshot() instead
+  // This method is kept for interface compatibility but no longer writes to database
   async savePrizePicksSnapshot(sport: string, leagueId: string, payload: any, propCount: number, ttlHours: number = 24): Promise<PrizePicksSnapshot> {
-    const result = await db.insert(prizePicksSnapshots).values({
+    console.warn('savePrizePicksSnapshot is deprecated - use fileCache.savePrizePicksSnapshot() instead');
+    // Return a mock object to prevent type errors
+    return {
+      id: 0,
       sport,
       leagueId,
       payload,
       propCount,
       ttlHours,
-    }).returning();
-    return result[0];
+      fetchedAt: new Date(),
+    };
   }
 
+  // DEPRECATED: PrizePicks snapshot caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.getLatestPrizePicksSnapshot() instead
+  // This method is kept for interface compatibility but no longer reads from database
   async getLatestPrizePicksSnapshot(sport: string, leagueId: string): Promise<PrizePicksSnapshot | undefined> {
-    const result = await db
-      .select()
-      .from(prizePicksSnapshots)
-      .where(and(
-        eq(prizePicksSnapshots.sport, sport),
-        eq(prizePicksSnapshots.leagueId, leagueId)
-      ))
-      .orderBy(desc(prizePicksSnapshots.fetchedAt))
-      .limit(1);
-    
-    return result[0];
+    console.warn('getLatestPrizePicksSnapshot is deprecated - use fileCache.getLatestPrizePicksSnapshot() instead');
+    return undefined; // Return undefined to indicate no cache
   }
 
   getSnapshotAgeHours(snapshot: PrizePicksSnapshot): number {

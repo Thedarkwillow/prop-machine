@@ -434,8 +434,9 @@ export class PropRefreshService {
       const oldPropIds = await storage.getActivePropIdsBySportAndPlatform(sport, 'PrizePicks');
       console.log(`Found ${oldPropIds.length} existing active PrizePicks ${sport} props`);
 
-      // Check if we have a recent cached snapshot (within TTL)
-      const cachedSnapshot = await storage.getLatestPrizePicksSnapshot(sport, leagueId);
+      // Check if we have a recent cached snapshot (within TTL) - using file cache
+      const { fileCache } = await import('../utils/fileCache');
+      const cachedSnapshot = await fileCache.getLatestPrizePicksSnapshot(sport, leagueId);
       
       // Fetch fresh projections based on sport
       let prizePicksProps: any[] = [];
@@ -450,7 +451,7 @@ export class PropRefreshService {
       // Critical: If rate limited (empty response), use cached data or preserve existing props
       if (prizePicksProps.length === 0) {
         if (cachedSnapshot) {
-          const cacheAge = storage.getSnapshotAgeHours(cachedSnapshot);
+          const cacheAge = fileCache.getSnapshotAgeHours(cachedSnapshot);
           const isStale = cacheAge > cachedSnapshot.ttlHours;
           
           if (isStale) {
@@ -471,8 +472,8 @@ export class PropRefreshService {
           return result;
         }
       } else {
-        // Successful fetch - save to cache for future rate-limit scenarios
-        await storage.savePrizePicksSnapshot(sport, leagueId, prizePicksProps, prizePicksProps.length, 24);
+        // Successful fetch - save to cache for future rate-limit scenarios (using file cache)
+        await fileCache.savePrizePicksSnapshot(sport, leagueId, prizePicksProps, prizePicksProps.length, 24);
         console.log(`💾 Cached ${prizePicksProps.length} fresh PrizePicks ${sport} props for rate-limit resilience`);
       }
 

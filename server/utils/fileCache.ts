@@ -168,6 +168,82 @@ class FileCache {
 
     return namespaceMap[provider] || provider.toLowerCase().replace(/[^a-z0-9]/g, '_');
   }
+
+  /**
+   * PrizePicks snapshot-specific cache methods
+   * These maintain compatibility with the PrizePicksSnapshot interface
+   */
+  async savePrizePicksSnapshot(
+    sport: string,
+    leagueId: string,
+    payload: any,
+    propCount: number,
+    ttlHours: number = 24
+  ): Promise<void> {
+    const namespace = 'prizepicks';
+    const key = `snapshot_${sport}_${leagueId}`;
+    const ttl = ttlHours * 60 * 60; // Convert hours to seconds
+    
+    // Store with metadata matching PrizePicksSnapshot structure
+    const snapshotData = {
+      sport,
+      leagueId,
+      payload,
+      propCount,
+      ttlHours,
+      fetchedAt: new Date().toISOString(),
+    };
+    
+    await this.setCache(namespace, key, snapshotData, ttl);
+  }
+
+  async getLatestPrizePicksSnapshot(
+    sport: string,
+    leagueId: string
+  ): Promise<{ sport: string; leagueId: string; payload: any; propCount: number; ttlHours: number; fetchedAt: string } | null> {
+    const namespace = 'prizepicks';
+    const key = `snapshot_${sport}_${leagueId}`;
+    
+    // Use a long TTL for the get - we'll check ttlHours in the caller
+    const cached = await this.getCache<any>(namespace, key, 86400 * 7); // 7 days max
+    
+    if (!cached) return null;
+    
+    // Check if cache is still valid based on ttlHours
+    const fetchedAt = new Date(cached.fetchedAt);
+    const ageHours = (Date.now() - fetchedAt.getTime()) / (1000 * 60 * 60);
+    
+    if (ageHours > cached.ttlHours) {
+      // Cache expired, delete it
+      const filePath = this.getCacheFilePath(namespace, key);
+      await fs.unlink(filePath).catch(() => {});
+      return null;
+    }
+    
+    return cached;
+  }
+
+  /**
+   * Get age of a PrizePicks snapshot in hours
+   */
+  getSnapshotAgeHours(snapshot: { fetchedAt: string }): number {
+    const fetchedAt = new Date(snapshot.fetchedAt);
+    return (Date.now() - fetchedAt.getTime()) / (1000 * 60 * 60);
+  }
+
+  /**
+   * Clean up all expired cache entries across all namespaces
+   */
+  async cleanupAll(): Promise<void> {
+    try {
+      const namespaces = ['espn', 'prizepicks', 'odds'];
+      for (const namespace of namespaces) {
+        await this.cleanupNamespace(namespace);
+      }
+    } catch (error) {
+      console.error('Cache cleanup error:', error);
+    }
+  }
 }
 
 // Singleton instance
