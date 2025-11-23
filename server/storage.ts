@@ -1032,7 +1032,7 @@ class MemStorage implements IStorage {
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
 import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings, prizePicksSnapshots } from "@shared/schema";
-import { eq, and, desc, gte, gt, lte, sql, inArray, or } from "drizzle-orm";
+import { eq, and, desc, gte, gt, lte, sql, inArray, or, ne } from "drizzle-orm";
 
 class DbStorage implements IStorage {
   // User management
@@ -1111,9 +1111,19 @@ class DbStorage implements IStorage {
       results = await db
         .select()
         .from(props)
-        .where(and(eq(props.isActive, true), eq(props.sport, sport)));
+        .where(and(
+          eq(props.isActive, true), 
+          eq(props.sport, sport),
+          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
+        ));
     } else {
-      results = await db.select().from(props).where(eq(props.isActive, true));
+      results = await db
+        .select()
+        .from(props)
+        .where(and(
+          eq(props.isActive, true),
+          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
+        ));
     }
     
     return normalizeDecimalsArray(results, propDecimalFields);
@@ -1166,11 +1176,13 @@ class DbStorage implements IStorage {
         sport
           ? and(
               eq(props.isActive, true),
-              eq(props.sport, sport)
+              eq(props.sport, sport),
+              sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
               // Removed gameTime filter - show all active props regardless of game time
             )
           : and(
-              eq(props.isActive, true)
+              eq(props.isActive, true),
+              sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
               // Removed gameTime filter - show all active props regardless of game time
             )
       )

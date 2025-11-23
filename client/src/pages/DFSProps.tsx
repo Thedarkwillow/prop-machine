@@ -37,12 +37,15 @@ export default function DFSProps() {
   const isLoading = queries.some(q => q.isLoading);
 
   // Filter for DFS platforms: DraftKings, FanDuel, PrizePicks, Underdog Fantasy
+  // Also filter out props with "TBD" opponents (old/incomplete props)
   // Memoize this separately since it only depends on props
   const dfsPropsFiltered = useMemo(() => {
     if (!props || props.length === 0) return [];
     return props.filter(
       (p) =>
         p.isActive &&
+        p.opponent &&
+        p.opponent.toUpperCase() !== "TBD" &&
         (p.platform.toLowerCase().includes("draftkings") ||
           p.platform.toLowerCase().includes("fanduel") ||
           p.platform.toLowerCase().includes("prizepicks") ||
