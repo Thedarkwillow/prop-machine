@@ -1017,7 +1017,7 @@ class MemStorage implements IStorage {
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
 import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings, prizePicksSnapshots } from "@shared/schema";
-import { eq, and, desc, gte, gt, sql, inArray, or } from "drizzle-orm";
+import { eq, and, desc, gte, gt, lte, sql, inArray, or } from "drizzle-orm";
 
 class DbStorage implements IStorage {
   // User management
@@ -1107,10 +1107,11 @@ class DbStorage implements IStorage {
   async getActivePropsWithLineMovement(sport?: string, limit = 100, offset = 0): Promise<PropWithLineMovement[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    // Show props for all upcoming games (games that haven't started yet or started recently)
-    // Changed from filtering by "oneHourAgo" to showing all future games
-    // This ensures the Live Props Feed shows all available props
+    // Show props for games that are happening now or starting soon
+    // Include games that started in the last 24 hours (for live games) or are starting in the next 7 days
     const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     
     // PERFORMANCE OPTIMIZATION: Single query with LEFT JOIN instead of N+1 queries
     // Join on propId and filter for latest movement using a subquery in the join condition
@@ -1153,11 +1154,19 @@ class DbStorage implements IStorage {
           ? and(
               eq(props.isActive, true),
               eq(props.sport, sport),
-              gt(props.gameTime, now) // Show all future games
+              // Show props for games that started in the last 24 hours (live games) or are starting in the next 7 days
+              or(
+                and(gte(props.gameTime, twentyFourHoursAgo), lte(props.gameTime, now)), // Games that started recently (live)
+                and(gt(props.gameTime, now), lte(props.gameTime, sevenDaysFromNow)) // Upcoming games within 7 days
+              )
             )
           : and(
               eq(props.isActive, true),
-              gt(props.gameTime, now) // Show all future games
+              // Show props for games that started in the last 24 hours (live games) or are starting in the next 7 days
+              or(
+                and(gte(props.gameTime, twentyFourHoursAgo), lte(props.gameTime, now)), // Games that started recently (live)
+                and(gt(props.gameTime, now), lte(props.gameTime, sevenDaysFromNow)) // Upcoming games within 7 days
+              )
             )
       )
       .orderBy(desc(props.confidence), desc(props.createdAt), desc(lineMovements.timestamp))
