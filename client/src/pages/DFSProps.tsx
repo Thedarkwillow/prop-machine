@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp, TrendingDown, Target, Star } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { Prop } from "@shared/schema";
 
 export default function DFSProps() {
@@ -24,25 +24,53 @@ export default function DFSProps() {
     }))
   });
 
-  // Merge results from all sport queries
+  // Extract data from queries to create stable dependencies
+  const nbaData = queries[0]?.data;
+  const nflData = queries[1]?.data;
+  const nhlData = queries[2]?.data;
+
+  // Merge results from all sport queries - depend on data, not queries array
   const props = useMemo(() => {
-    return queries.flatMap(q => q.data || []) as Prop[];
-  }, [queries]);
+    return [nbaData || [], nflData || [], nhlData || []].flat() as Prop[];
+  }, [nbaData, nflData, nhlData]);
 
   const isLoading = queries.some(q => q.isLoading);
 
-  // Memoize filtered and grouped props for performance
-  const { dfsProps, filteredProps, sortedGroups, topPicks, sports, stats, platforms } = useMemo(() => {
-    // Filter for DFS platforms: DraftKings, FanDuel, PrizePicks, Underdog Fantasy
-    const dfsPropsFiltered = props?.filter(
+  // Filter for DFS platforms: DraftKings, FanDuel, PrizePicks, Underdog Fantasy
+  // Memoize this separately since it only depends on props
+  const dfsPropsFiltered = useMemo(() => {
+    if (!props || props.length === 0) return [];
+    return props.filter(
       (p) =>
         p.isActive &&
         (p.platform.toLowerCase().includes("draftkings") ||
           p.platform.toLowerCase().includes("fanduel") ||
           p.platform.toLowerCase().includes("prizepicks") ||
           p.platform.toLowerCase().includes("underdog"))
-    ) || [];
+    );
+  }, [props]);
 
+  // Build filter options - memoize separately to avoid recalculation
+  const { sports, stats, platforms } = useMemo(() => {
+    const sportsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.sport)))];
+    
+    // Build stats and platforms based on currently selected sport
+    const sportFilteredProps = sportFilter === "all" 
+      ? dfsPropsFiltered 
+      : dfsPropsFiltered.filter(p => p.sport === sportFilter);
+    
+    const statsList = ["all", ...Array.from(new Set(sportFilteredProps.map(p => p.stat)))];
+    const platformsList = ["all", ...Array.from(new Set(sportFilteredProps.map(p => p.platform)))];
+
+    return {
+      sports: sportsList,
+      stats: statsList,
+      platforms: platformsList
+    };
+  }, [dfsPropsFiltered, sportFilter]);
+
+  // Apply filters and group/sort - this is the expensive computation
+  const { filteredProps, sortedGroups, topPicks } = useMemo(() => {
     // Apply filters
     const filtered = dfsPropsFiltered.filter((prop) => {
       if (sportFilter !== "all" && prop.sport !== sportFilter) return false;
@@ -76,26 +104,20 @@ export default function DFSProps() {
       props.some(p => p.confidence >= 75)
     ).slice(0, 6);
 
-    // Build filter options based on currently selected sport
-    // This prevents cross-sport stat collisions (e.g., "Points" in NHL vs NBA)
-    const sportFilteredProps = sportFilter === "all" 
-      ? dfsPropsFiltered 
-      : dfsPropsFiltered.filter(p => p.sport === sportFilter);
-
-    const sportsList = ["all", ...Array.from(new Set(dfsPropsFiltered.map(p => p.sport)))];
-    const statsList = ["all", ...Array.from(new Set(sportFilteredProps.map(p => p.stat)))];
-    const platformsList = ["all", ...Array.from(new Set(sportFilteredProps.map(p => p.platform)))];
-
     return {
-      dfsProps: dfsPropsFiltered,
       filteredProps: filtered,
       sortedGroups: sorted,
-      topPicks: top,
-      sports: sportsList,
-      stats: statsList,
-      platforms: platformsList
+      topPicks: top
     };
-  }, [props, sportFilter, statFilter, confidenceFilter, platformFilter]);
+  }, [dfsPropsFiltered, sportFilter, statFilter, confidenceFilter, platformFilter]);
+
+  // Memoize clear filters handler
+  const handleClearFilters = useCallback(() => {
+    setSportFilter("all");
+    setPlatformFilter("all");
+    setStatFilter("all");
+    setConfidenceFilter("all");
+  }, []);
 
   if (isLoading) {
     return (
@@ -187,12 +209,7 @@ export default function DFSProps() {
 
             <Button
               variant="outline"
-              onClick={() => {
-                setSportFilter("all");
-                setPlatformFilter("all");
-                setStatFilter("all");
-                setConfidenceFilter("all");
-              }}
+              onClick={handleClearFilters}
               data-testid="button-clear-filters"
             >
               Clear Filters
