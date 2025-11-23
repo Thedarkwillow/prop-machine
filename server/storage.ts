@@ -31,7 +31,7 @@ function normalizeDecimals<T extends Record<string, any>>(
   for (const field of decimalFields) {
     const value = normalized[field];
     if (value !== null && value !== undefined) {
-      normalized[field] = typeof value === 'string' ? parseFloat(value) : value;
+      (normalized as any)[field] = typeof value === 'string' ? parseFloat(value) : value;
     }
   }
   return normalized as T;
@@ -192,7 +192,7 @@ class MemStorage implements IStorage {
   private analyticsSnapshotIdCounter = 1;
 
   // Mutex for atomic bet placement per user
-  private userLocks: Map<string, Promise<void>> = new Map();
+  private userLocks: Map<string, Promise<any>> = new Map();
 
   async getUser(userId: string): Promise<User | undefined> {
     return this.users.get(userId);
@@ -289,8 +289,7 @@ class MemStorage implements IStorage {
     );
 
     if (existing) {
-      // Update existing prop with new odds/data
-      existing.odds = prop.odds;
+      // Update existing prop with new data
       existing.currentLine = prop.currentLine ?? null;
       existing.gameTime = prop.gameTime;
       existing.marketId = prop.marketId ?? null;
@@ -348,7 +347,7 @@ class MemStorage implements IStorage {
 
   async getActivePropIdsBySportAndPlatform(sport: string, platform: string): Promise<number[]> {
     const ids: number[] = [];
-    for (const prop of this.props.values()) {
+    for (const prop of Array.from(this.props.values())) {
       if (prop.sport === sport && prop.platform === platform && prop.isActive) {
         ids.push(prop.id);
       }
@@ -358,7 +357,7 @@ class MemStorage implements IStorage {
 
   async deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number> {
     let count = 0;
-    for (const prop of this.props.values()) {
+    for (const prop of Array.from(this.props.values())) {
       if (prop.sport === sport && prop.platform === platform && prop.isActive) {
         prop.isActive = false;
         count++;
@@ -382,7 +381,7 @@ class MemStorage implements IStorage {
   async deactivateExpiredProps(hoursAgo = 1): Promise<number> {
     const cutoffTime = new Date(Date.now() - hoursAgo * 60 * 60 * 1000);
     let count = 0;
-    for (const prop of this.props.values()) {
+    for (const prop of Array.from(this.props.values())) {
       if (prop.isActive && prop.gameTime < cutoffTime) {
         prop.isActive = false;
         count++;
@@ -399,7 +398,7 @@ class MemStorage implements IStorage {
 
   async deactivatePropsByFixtureId(fixtureId: string): Promise<number> {
     let count = 0;
-    for (const prop of this.props.values()) {
+    for (const prop of Array.from(this.props.values())) {
       if (prop.fixtureId === fixtureId && prop.isActive) {
         prop.isActive = false;
         count++;
@@ -547,16 +546,17 @@ class MemStorage implements IStorage {
     // Chain the new operation and store it
     const newLock = previousLock.then(operation).catch((error) => {
       // Convert any thrown errors to result format
-      return { success: false, error: error.message || "Unknown error occurred" };
+      return { success: false as const, error: error.message || "Unknown error occurred" };
     });
     
-    this.userLocks.set(userId, newLock as any);
+    this.userLocks.set(userId, newLock);
     
     // Wait for our operation to complete
     const result = await newLock;
     
-    // Clean up lock if this was the last operation
-    if (this.userLocks.get(userId) === newLock) {
+    // Clean up lock if this was the last operation (compare by reference)
+    const currentLock = this.userLocks.get(userId);
+    if (currentLock === newLock) {
       this.userLocks.delete(userId);
     }
     
@@ -624,16 +624,17 @@ class MemStorage implements IStorage {
     
     // Chain the new operation and store it
     const newLock = previousLock.then(operation).catch((error) => {
-      return { success: false, error: error.message || "Unknown error occurred" };
+      return { success: false as const, error: error.message || "Unknown error occurred" };
     });
     
-    this.userLocks.set(userId, newLock as any);
+    this.userLocks.set(userId, newLock);
     
     // Wait for our operation to complete
     const result = await newLock;
     
-    // Clean up lock if this was the last operation
-    if (this.userLocks.get(userId) === newLock) {
+    // Clean up lock if this was the last operation (compare by reference)
+    const currentLock = this.userLocks.get(userId);
+    if (currentLock === newLock) {
       this.userLocks.delete(userId);
     }
     
@@ -995,6 +996,22 @@ class MemStorage implements IStorage {
   async deleteDiscordSettings(userId: string): Promise<void> {
     return;
   }
+
+  // PrizePicks snapshot cache (in-memory not used, stubs for interface)
+  async savePrizePicksSnapshot(sport: string, leagueId: string, payload: any, propCount: number, ttlHours: number = 24): Promise<PrizePicksSnapshot> {
+    throw new Error("PrizePicks snapshots not implemented in MemStorage");
+  }
+
+  async getLatestPrizePicksSnapshot(sport: string, leagueId: string): Promise<PrizePicksSnapshot | undefined> {
+    return undefined;
+  }
+
+  getSnapshotAgeHours(snapshot: PrizePicksSnapshot): number {
+    const now = new Date();
+    const fetchedAt = new Date(snapshot.fetchedAt);
+    const ageMs = now.getTime() - fetchedAt.getTime();
+    return ageMs / (1000 * 60 * 60); // Convert ms to hours
+  }
 }
 
 // Database storage implementation using Drizzle ORM
@@ -1023,8 +1040,8 @@ class DbStorage implements IStorage {
       .from(users)
       .where(
         or(
-          eq(users.id, userData.id),
-          userData.email ? eq(users.email, userData.email) : sql`false`
+          userData.id ? eq(users.id, userData.id) : sql<boolean>`false`,
+          userData.email ? eq(users.email, userData.email) : sql<boolean>`false`
         )
       )
       .limit(1);
@@ -1090,13 +1107,14 @@ class DbStorage implements IStorage {
   async getActivePropsWithLineMovement(sport?: string, limit = 100, offset = 0): Promise<PropWithLineMovement[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    // Compute cutoff in JavaScript to avoid SQL injection
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    // Show props for all upcoming games (games that haven't started yet or started recently)
+    // Changed from filtering by "oneHourAgo" to showing all future games
+    // This ensures the Live Props Feed shows all available props
+    const now = new Date();
     
     // PERFORMANCE OPTIMIZATION: Single query with LEFT JOIN instead of N+1 queries
-    // This fetches props with their latest line movement in one database round-trip
-    // Using window functions (ROW_NUMBER) to get only the most recent movement per prop
-    
+    // Join on propId and filter for latest movement using a subquery in the join condition
+    // Using DISTINCT ON or a window function would be ideal, but this approach works reliably
     const query = db
       .select({
         // All prop fields
@@ -1128,37 +1146,36 @@ class DbStorage implements IStorage {
       .from(props)
       .leftJoin(
         lineMovements,
-        and(
-          eq(props.id, lineMovements.propId),
-          // Subquery to ensure we only get the most recent line movement
-          eq(
-            lineMovements.timestamp,
-            db.select({ maxTimestamp: sql`MAX(${lineMovements.timestamp})` })
-              .from(lineMovements)
-              .where(eq(lineMovements.propId, props.id))
-          )
-        )
+        eq(props.id, lineMovements.propId)
       )
       .where(
         sport
           ? and(
               eq(props.isActive, true),
               eq(props.sport, sport),
-              gt(props.gameTime, oneHourAgo) // Exclude games older than 1 hour (parameterized)
+              gt(props.gameTime, now) // Show all future games
             )
           : and(
               eq(props.isActive, true),
-              gt(props.gameTime, oneHourAgo) // Exclude games older than 1 hour (parameterized)
+              gt(props.gameTime, now) // Show all future games
             )
       )
-      .orderBy(desc(props.confidence), desc(props.createdAt))
+      .orderBy(desc(props.confidence), desc(props.createdAt), desc(lineMovements.timestamp))
       .limit(limit)
       .offset(offset);
 
     const results = await query;
     
+    // Group results by prop ID and take the latest line movement (first one due to ORDER BY)
+    const propsMap = new Map<number, typeof results[0]>();
+    for (const row of results) {
+      if (!propsMap.has(row.id) || (row.latestTimestamp && (!propsMap.get(row.id)?.latestTimestamp || row.latestTimestamp > propsMap.get(row.id)!.latestTimestamp!))) {
+        propsMap.set(row.id, row);
+      }
+    }
+    
     // Transform results into PropWithLineMovement format
-    const propsWithMovement: PropWithLineMovement[] = results.map((row) => {
+    const propsWithMovement: PropWithLineMovement[] = Array.from(propsMap.values()).map((row) => {
       const prop: Prop = {
         id: row.id,
         sport: row.sport,
@@ -1200,6 +1217,14 @@ class DbStorage implements IStorage {
       };
     });
     
+    // Re-sort by confidence and createdAt since grouping may have changed order
+    propsWithMovement.sort((a, b) => {
+      if (b.confidence !== a.confidence) {
+        return b.confidence - a.confidence;
+      }
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+    
     return propsWithMovement;
   }
 
@@ -1233,11 +1258,10 @@ class DbStorage implements IStorage {
       .limit(1);
 
     if (existing.length > 0) {
-      // Update existing prop with new odds/data
+      // Update existing prop with new data
       const updated = await db
         .update(props)
         .set({
-          odds: prop.odds,
           currentLine: prop.currentLine ?? null,
           gameTime: prop.gameTime,
           marketId: prop.marketId ?? null,
@@ -1424,7 +1448,7 @@ class DbStorage implements IStorage {
         .orderBy(desc(bets.createdAt));
 
       // Fetch all unique prop IDs
-      const propIds = [...new Set(userBets.map(b => b.propId).filter((id): id is number => id !== null))];
+      const propIds = Array.from(new Set(userBets.map(b => b.propId).filter((id): id is number => id !== null)));
       
       const propsMap = new Map<number, Prop>();
       if (propIds.length > 0) {
@@ -1437,7 +1461,7 @@ class DbStorage implements IStorage {
       }
 
       // Fetch all unique slip IDs
-      const slipIds = [...new Set(userBets.map(b => b.slipId).filter((id): id is number => id !== null))];
+      const slipIds = Array.from(new Set(userBets.map(b => b.slipId).filter((id): id is number => id !== null)));
       
       const slipsMap = new Map<number, Slip>();
       if (slipIds.length > 0) {
