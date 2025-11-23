@@ -80,15 +80,16 @@ export class PrizePicksClient extends IntegrationClient {
 
   /**
    * Get all projections for a specific league
-   * @param leagueId - League ID (7 for NHL, 2 for NFL, etc.)
-   * @param perPage - Results per page (max 250)
+   * @param leagueId - League ID (7 for NBA, 9 for NFL, 3 for NHL)
+   * @param perPage - Results per page (max 500)
    */
-  async getProjections(leagueId: string, perPage: number = 250): Promise<ParsedPrizePick[]> {
+  async getProjections(leagueId: string, perPage: number = 500): Promise<ParsedPrizePick[]> {
     try {
       const params = new URLSearchParams({
         league_id: leagueId,
         per_page: perPage.toString(),
         single_stat: 'true',
+        'types[]': 'all',
       });
 
       const response = await this.get<PrizePicksResponse>(
@@ -111,12 +112,12 @@ export class PrizePicksClient extends IntegrationClient {
 
   /**
    * Get NHL projections (including faceoffs)
-   * League ID 8 = NHL (confirmed via testing)
+   * League ID 3 = NHL
    */
   async getNHLProjections(): Promise<ParsedPrizePick[]> {
     try {
-      console.log(`🏒 Fetching NHL projections (league ID 8)...`);
-      const projections = await this.getProjections('8');
+      console.log(`🏒 Fetching NHL projections (league ID 3)...`);
+      const projections = await this.getProjections('3');
       console.log(`✅ Found ${projections.length} NHL projections from PrizePicks`);
       return projections;
     } catch (error: any) {
@@ -159,12 +160,12 @@ export class PrizePicksClient extends IntegrationClient {
 
   /**
    * Get NFL projections
-   * League ID 2 = NFL
+   * League ID 9 = NFL
    */
   async getNFLProjections(): Promise<ParsedPrizePick[]> {
     try {
-      console.log(`🏈 Fetching NFL projections (league ID 2)...`);
-      const projections = await this.getProjections('2');
+      console.log(`🏈 Fetching NFL projections (league ID 9)...`);
+      const projections = await this.getProjections('9');
       console.log(`✅ Found ${projections.length} NFL projections from PrizePicks`);
       return projections;
     } catch (error: any) {

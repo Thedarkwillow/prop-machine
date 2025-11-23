@@ -55,8 +55,8 @@ const UNDERDOG_RATE_LIMIT: RateLimitConfig = {
 // Sport IDs from Underdog
 const SPORT_IDS: { [key: string]: number } = {
   NBA: 2,
-  NFL: 1,
-  NHL: 3,
+  NFL: 4,
+  NHL: 8,
   MLB: 4,
 };
 
@@ -96,6 +96,8 @@ class UnderdogClient extends IntegrationClient {
     const params = new URLSearchParams({
       sport_id: sportId.toString(),
       status: 'upcoming',
+      projection_types: 'all',
+      market_type: 'daily',
     });
 
     try {

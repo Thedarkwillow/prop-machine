@@ -59,12 +59,18 @@ export class PropCacheService {
   async saveProps(
     sport: string,
     platform: string,
-    props: CachedProp[],
+    props: CachedProp[] | null | undefined,
     ttl: number = this.defaultTTL,
     source: 'api' | 'cache' | 'repair' | 'empty' = 'api',
     success: boolean = true,
     warning?: string
   ): Promise<void> {
+    if (!Array.isArray(props)) props = [];
+
+    console.log(`[CACHE] Writing ${props.length} props for ${sport}/${platform}`);
+
+    // ALWAYS write props even when empty, for debugging
+
     try {
       // Always create directory
       await fs.mkdir(this.cacheDir, { recursive: true });

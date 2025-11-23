@@ -228,7 +228,20 @@ export class PropRefreshService {
       
       console.log(`[ODDS API] API call SUCCEEDED - received ${response.data.length} games for ${sport}`);
 
-      const normalizedProps = oddsApiClient.normalizeToProps(response.data, sport);
+      let normalizedProps = oddsApiClient.normalizeToProps(response.data, sport);
+
+      // Hardening: prevent crashes if normalization fails
+      if (!Array.isArray(normalizedProps)) {
+        console.error(`[REFRESH] ❌ normalizeProps returned invalid data for ${sport}/The Odds API`);
+        normalizedProps = [];
+      }
+
+      if (normalizedProps.length === 0) {
+        console.warn(
+          `[REFRESH] ⚠️ No normalized props returned for ${sport}/The Odds API. Writing empty cache for debugging.`
+        );
+      }
+
       result.propsFetched = normalizedProps.length;
 
       console.log(`[ODDS API] Found ${normalizedProps.length} props from The Odds API`);
