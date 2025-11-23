@@ -164,14 +164,12 @@ export class SettlementService {
     }
     
     // Get all pending bets for this prop across all users
-    // Note: This is inefficient - ideally we'd have getBetsByProp(propId)
-    // For now, we'll need to get all users' bets and filter
-    // In production, add a getBetsByProp method to storage interface
-    const allUsers = ['seed-user-1']; // TODO: Get all user IDs from database
+    // Note: We could optimize this with getBetsByPropId(propId) if needed
+    const allUsers = await storage.getAllUsers();
     let propBets: any[] = [];
     
-    for (const userId of allUsers) {
-      const userBets = await storage.getBetsWithProps(userId);
+    for (const user of allUsers) {
+      const userBets = await storage.getBetsWithProps(user.id);
       const userPropBets = userBets.filter(bet => bet.propId === prop.id && bet.status === 'pending');
       propBets.push(...userPropBets);
     }

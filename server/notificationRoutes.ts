@@ -15,16 +15,9 @@ export function createNotificationRoutes(storage: IStorage): Router {
     }
 
     try {
-      // Return default preferences for now (authenticated users only)
-      // TODO: Implement database-backed per-user preferences using notificationPreferences table
-      res.json({
-        emailEnabled: true,
-        newPropsEnabled: true,
-        highConfidenceOnly: false,
-        minConfidence: 70,
-        sports: ["NHL", "NBA", "NFL", "MLB"],
-        platforms: ["PrizePicks", "Underdog"],
-      });
+      // Get or create user preferences from database
+      const preferences = await notificationService.getOrCreatePreferences(userId);
+      res.json(preferences);
     } catch (error) {
       console.error("Error getting notification preferences:", error);
       res.status(500).json({ error: "Failed to get preferences" });
@@ -41,9 +34,9 @@ export function createNotificationRoutes(storage: IStorage): Router {
       // Validate request body using Zod schema
       const validatedData = updateNotificationPreferencesSchema.parse(req.body);
       
-      // Acknowledge the update (authenticated users only)
-      // TODO: Store preferences in database per-user using notificationPreferences table
-      res.json({ success: true, preferences: validatedData });
+      // Update preferences in database
+      const updatedPreferences = await notificationService.updatePreferences(userId, validatedData);
+      res.json({ success: true, preferences: updatedPreferences });
     } catch (error: any) {
       if (error.name === 'ZodError') {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });

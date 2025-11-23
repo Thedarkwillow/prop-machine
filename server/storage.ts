@@ -61,6 +61,7 @@ export interface IStorage {
   // User management (required for Replit Auth)
   getUser(userId: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>; // Get all users (for settlement service)
   upsertUser(user: UpsertUser): Promise<User>;
   createUser(user: InsertUser): Promise<User>;
   updateBankroll(userId: string, newBankroll: string): Promise<User>;
@@ -73,6 +74,7 @@ export interface IStorage {
   getActivePropsByFixtureId(fixtureId: string): Promise<Prop[]>; // Get active props for specific fixture
   createProp(prop: InsertProp): Promise<Prop>;
   upsertProp(prop: InsertProp): Promise<Prop>; // Upsert: create or update existing prop
+  updateProp(propId: number, updates: Partial<Pick<Prop, 'confidence' | 'ev' | 'modelProbability' | 'currentLine'>>): Promise<Prop>; // Update specific prop fields (e.g., for rescoring)
   deactivateProp(propId: number): Promise<void>;
   deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
   deactivatePropsByFixtureId(fixtureId: string): Promise<number>; // Deactivate props for specific fixture
@@ -246,6 +248,10 @@ class MemStorage implements IStorage {
     return user;
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
   async getActiveProps(sport?: string): Promise<Prop[]> {
     const allProps = Array.from(this.props.values()).filter(p => p.isActive);
     if (sport) {
@@ -293,6 +299,18 @@ class MemStorage implements IStorage {
 
     // Create new prop if none exists
     return this.createProp(prop);
+  }
+
+  async updateProp(propId: number, updates: Partial<Pick<Prop, 'confidence' | 'ev' | 'modelProbability' | 'currentLine'>>): Promise<Prop> {
+    const prop = this.props.get(propId);
+    if (!prop) throw new Error("Prop not found");
+    
+    if (updates.confidence !== undefined) prop.confidence = updates.confidence;
+    if (updates.ev !== undefined) prop.ev = updates.ev;
+    if (updates.modelProbability !== undefined) prop.modelProbability = updates.modelProbability;
+    if (updates.currentLine !== undefined) prop.currentLine = updates.currentLine;
+    
+    return prop;
   }
 
   async createProp(prop: InsertProp): Promise<Prop> {
@@ -1048,6 +1066,10 @@ class DbStorage implements IStorage {
     return result[0];
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
   // Props
   async getActiveProps(sport?: string): Promise<Prop[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
@@ -1229,6 +1251,30 @@ class DbStorage implements IStorage {
 
     // Create new prop if none exists
     const result = await db.insert(props).values(prop).returning();
+    return result[0];
+  }
+
+  async updateProp(propId: number, updates: Partial<Pick<Prop, 'confidence' | 'ev' | 'modelProbability' | 'currentLine'>>): Promise<Prop> {
+    const updateData: any = {};
+    if (updates.confidence !== undefined) updateData.confidence = updates.confidence;
+    if (updates.ev !== undefined) updateData.ev = updates.ev;
+    if (updates.modelProbability !== undefined) updateData.modelProbability = updates.modelProbability;
+    if (updates.currentLine !== undefined) updateData.currentLine = updates.currentLine;
+    
+    if (Object.keys(updateData).length === 0) {
+      // No updates provided, just return the existing prop
+      const existing = await db.select().from(props).where(eq(props.id, propId)).limit(1);
+      if (!existing[0]) throw new Error("Prop not found");
+      return existing[0];
+    }
+    
+    const result = await db
+      .update(props)
+      .set(updateData)
+      .where(eq(props.id, propId))
+      .returning();
+    
+    if (!result[0]) throw new Error("Prop not found");
     return result[0];
   }
 

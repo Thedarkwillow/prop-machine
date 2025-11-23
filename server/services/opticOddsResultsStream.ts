@@ -195,7 +195,7 @@ export class OpticOddsResultsStreamService {
       console.log(`✅ Final: ${fixture.away_team} ${fixture.away_score} @ ${fixture.home_team} ${fixture.home_score}`);
       console.log(`📊 Player stats available for ${player_stats.length} players`);
       
-      // TODO: Grade bets based on final stats
+      // Grade bets based on final stats
       await this.gradeBetsForFixture(fixture.fixture_id, player_stats);
     } else if (fixture.status === 'in_progress') {
       console.log(`⏱️  Live: ${fixture.away_team} ${fixture.away_score} @ ${fixture.home_team} ${fixture.home_score} - ${fixture.period} ${fixture.time_remaining}`);

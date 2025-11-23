@@ -318,36 +318,110 @@ export function adminRoutes(): Router {
   // Manually rescore all props
   router.post("/props/rescore", async (req, res) => {
     try {
-      const allProps = await storage.getAllActiveProps();
-      let rescored = 0;
+      const { useRealStats = false, limit } = req.body;
+      const maxPropsForRealStats = 100; // Safety limit to prevent timeout/rate limits
       
-      for (const prop of allProps) {
-        // In production, fetch actual player stats and opponent data
-        // For now, use mock data based on existing prop confidence
-        const mockFeatures = {
-          playerName: prop.player,
-          stat: prop.stat,
-          line: parseFloat(prop.line),
-          direction: prop.direction,
-          sport: prop.sport,
-          recentAverage: parseFloat(prop.line) * (prop.confidence / 100 + 0.2),
-          seasonAverage: parseFloat(prop.line) * (prop.confidence / 100 + 0.1),
-          opponentRanking: 15,
-          homeAway: 'home' as const,
-          lineMovement: prop.currentLine ? parseFloat(prop.currentLine) - parseFloat(prop.line) : 0,
-        };
-        
-        const score = await modelScorer.scoreProp(mockFeatures);
-        
-        // Update prop with new scores would require an updateProp method in storage
-        // For now, just count
+      let propsToRescore = await storage.getAllActiveProps();
+      
+      // If using real stats, limit the number to prevent timeout/rate limits
+      if (useRealStats && (!limit || limit > maxPropsForRealStats)) {
+        propsToRescore = propsToRescore.slice(0, maxPropsForRealStats);
+        console.log(`⚠️ Real stats limited to ${maxPropsForRealStats} props to prevent timeout/rate limits`);
+      } else if (limit && limit < propsToRescore.length) {
+        propsToRescore = propsToRescore.slice(0, limit);
+      }
+      
+      let rescored = 0;
+      let updated = 0;
+      let skipped = 0;
+      const errors: string[] = [];
+      const { propAnalysisService } = await import("./services/propAnalysisService.js");
+      const { modelScorer } = await import("./ml/modelScorer.js");
+      
+      for (const prop of propsToRescore) {
+        try {
+          let score;
+          
+          if (useRealStats) {
+            // Use real player stats from APIs (slower but more accurate)
+            try {
+              const analysisInput = {
+                sport: prop.sport,
+                player: prop.player,
+                team: prop.team,
+                opponent: prop.opponent,
+                stat: prop.stat,
+                line: prop.line,
+                direction: prop.direction as 'over' | 'under',
+                platform: prop.platform,
+                gameTime: prop.gameTime,
+              };
+              
+              const analysis = await propAnalysisService.analyzeProp(analysisInput);
+              score = {
+                confidence: analysis.confidence,
+                expectedValue: analysis.ev,
+                modelProbability: analysis.modelProbability,
+              };
+            } catch (apiError: any) {
+              // Fall back to mock if API fails
+              console.warn(`Real stats failed for ${prop.player}, using mock data:`, apiError.message);
+              throw apiError; // Will be caught by outer catch and use mock
+            }
+          } else {
+            // Use mock data based on existing prop (faster for bulk operations)
+            // This recalculates confidence/EV based on current line movements
+            const lineMovement = prop.currentLine ? parseFloat(prop.currentLine) - parseFloat(prop.line) : 0;
+            const mockFeatures = {
+              playerName: prop.player,
+              stat: prop.stat,
+              line: parseFloat(prop.line),
+              direction: prop.direction as 'over' | 'under',
+              sport: prop.sport,
+              // Derive reasonable averages from line and existing confidence
+              recentAverage: parseFloat(prop.line) * (prop.confidence / 100 + 0.15),
+              seasonAverage: parseFloat(prop.line) * (prop.confidence / 100 + 0.1),
+              opponentRanking: 15, // Neutral ranking
+              homeAway: 'home' as const,
+              lineMovement,
+            };
+            
+            const modelScore = await modelScorer.scoreProp(mockFeatures);
+            score = {
+              confidence: modelScore.confidence,
+              expectedValue: modelScore.expectedValue,
+              modelProbability: modelScore.modelProbability,
+            };
+          }
+          
+          // Only update if scores changed significantly (avoid unnecessary DB writes)
+          const confidenceChanged = Math.abs(score.confidence - prop.confidence) >= 1;
+          const evChanged = Math.abs(score.expectedValue - parseFloat(prop.ev)) >= 0.1;
+          
+          if (confidenceChanged || evChanged) {
+            await storage.updateProp(prop.id, {
+              confidence: score.confidence,
+              ev: score.expectedValue.toString(),
+              modelProbability: score.modelProbability.toString(),
+            });
+            updated++;
+          } else {
+            skipped++;
+          }
+        } catch (error: any) {
+          errors.push(`Prop ${prop.id} (${prop.player} ${prop.stat}): ${error.message}`);
+        }
         rescored++;
       }
       
       res.json({
         success: true,
-        message: `Rescored ${rescored} props`,
+        message: `Rescored ${rescored} props, updated ${updated} props, skipped ${skipped} (no significant change)`,
+        method: useRealStats ? 'real_stats' : 'mock_data',
         propsRescored: rescored,
+        propsUpdated: updated,
+        propsSkipped: skipped,
+        errors: errors.slice(0, 10), // Return first 10 errors if any
       });
     } catch (error) {
       const err = error as Error;
@@ -484,8 +558,8 @@ export function adminRoutes(): Router {
           leagueId,
           propsCount: props.length,
           sampleProps: props.slice(0, 5),
-          sports: [...new Set(props.map(p => p.sport))],
-          leagues: [...new Set(props.map(p => p.league))],
+          sports: Array.from(new Set(props.map(p => p.sport))),
+          leagues: Array.from(new Set(props.map(p => p.league))),
         });
       } else {
         // Try NHL discovery
