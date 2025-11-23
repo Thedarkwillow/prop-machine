@@ -97,14 +97,21 @@ const STAT_MAPPINGS: Record<string, string> = {
   // NBA - Combo Stats
   'pts+rebs+asts': 'Pts+Rebs+Asts',
   'pra': 'Pts+Rebs+Asts',
+  'points + rebounds + assists': 'Pts+Rebs+Asts',
   'pts+rebs': 'Pts+Rebs',
+  'points + rebs': 'Pts+Rebs',
   'pr': 'Pts+Rebs',
   'pts+asts': 'Pts+Asts',
+  'pts +asts': 'Pts+Asts',
+  'points + assists': 'Pts+Asts',
   'pa': 'Pts+Asts',
   'rebs+asts': 'Rebs+Asts',
+  'rebounds +asts': 'Rebs+Asts',
+  'rebounds + assists': 'Rebs+Asts',
   'ra': 'Rebs+Asts',
   'blks+stls': 'Blks+Stls',
   'blocks+steals': 'Blks+Stls',
+  'blocks + steals': 'Blks+Stls',
   
   // NBA - Other
   'personal_fouls': 'Personal Fouls',
@@ -116,6 +123,17 @@ const STAT_MAPPINGS: Record<string, string> = {
   'fantasy score': 'Fantasy Score',
   'fantasy_points': 'Fantasy Score',
   'fantasy points': 'Fantasy Score',
+  'dunks': 'Dunks',
+  'nba_blocked_shots': 'Blocked Shots',
+  'nba_blocked shots': 'Blocked Shots',
+  
+  // NBA - Period Specific (1st 3 minutes, 1Q, 1H)
+  'rebounds 1st 3 minutes': 'Rebounds 1st 3 Min',
+  'rebounds 1st3 minutes': 'Rebounds 1st 3 Min',
+  'points 1st 3 minutes': 'Points 1st 3 Min',
+  'points 1st3 minutes': 'Points 1st 3 Min',
+  'assists 1st3 minutes': 'Assists 1st 3 Min',
+  'assists 1st 3 minutes': 'Assists 1st 3 Min',
   
   // NFL - Passing
   'passing_yards': 'Passing Yards',
@@ -154,9 +172,37 @@ const STAT_MAPPINGS: Record<string, string> = {
   'rush+rec_yds': 'Rush+Rec Yards',
   'rush+rec yards': 'Rush+Rec Yards',
   'rush+receiving yards': 'Rush+Rec Yards',
+  'rush + receiving yards': 'Rush+Rec Yards',
+  'pass + rush yards': 'Pass+Rush Yards',
   'rush+rec_tds': 'Rush+Rec TDs',
   'rush+rec tds': 'Rush+Rec TDs',
   'rush+receiving tds': 'Rush+Rec TDs',
+  'rush + receiving tds': 'Rush+Rec TDs',
+  
+  // NFL - Kicking
+  'kicking_points': 'Kicking Points',
+  'kicking points': 'Kicking Points',
+  'pat_made': 'PAT Made',
+  'pat made': 'PAT Made',
+  'nfl_fg_made': 'FGs Made',
+  'nfl_fgs made': 'FGs Made',
+  'nfl_field goals made': 'FGs Made',
+  
+  // NFL - Other
+  'sacks': 'Sacks',
+  'tackles+assists': 'Tackles+Assists',
+  'tackles + assists': 'Tackles+Assists',
+  'punts': 'Punts',
+  'longest_completion': 'Longest Completion',
+  'longest completion': 'Longest Completion',
+  'longest_rush': 'Longest Rush',
+  'longest rush': 'Longest Rush',
+  'interceptions': 'Interceptions',
+  'int': 'Interceptions',
+  
+  // NHL - Additional
+  'hits': 'Hits',
+  'player hits': 'Hits',
   
   // General - Common variations
   'player points': 'Points',
@@ -166,9 +212,7 @@ const STAT_MAPPINGS: Record<string, string> = {
   'player steals': 'Steals',
   'player blocks': 'Blocked Shots',
   'player shots on goal': 'Shots On Goal',
-  'player hits': 'Hits',
   'player time on ice': 'Time On Ice',
-  'player faceoffs won': 'Faceoffs Won',
   'player longest reception': 'Longest Reception',
   'player longest rush': 'Longest Rush',
 };
