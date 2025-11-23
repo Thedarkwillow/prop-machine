@@ -5,6 +5,7 @@ import { prizePicksClient, ParsedPrizePick } from "../integrations/prizePicksCli
 import { propAnalysisService } from "./propAnalysisService";
 import { storage } from "../storage";
 import { normalizeStat } from "../utils/statNormalizer";
+import { resolveOpponent } from "../utils/opponentResolver";
 
 interface RefreshResult {
   success: boolean;
@@ -61,7 +62,16 @@ export class PropRefreshService {
 
       for (const rawProp of normalizedProps) {
         try {
-          const opponent = rawProp.opponent || 'TBD';
+          // Resolve opponent if missing or TBD
+          let opponent = rawProp.opponent || 'TBD';
+          if (opponent === 'TBD' && rawProp.team) {
+            const resolvedOpponent = await resolveOpponent(rawProp.team, sport, rawProp.gameTime);
+            if (resolvedOpponent) {
+              opponent = resolvedOpponent;
+            } else {
+              console.log(`[Underdog] Could not resolve opponent for ${rawProp.team} on ${rawProp.gameTime.toISOString()}`);
+            }
+          }
 
           // Normalize stat name for consistency across platforms
           const normalizedStat = normalizeStat(rawProp.stat);
@@ -485,11 +495,25 @@ export class PropRefreshService {
           // Normalize stat name for consistency across platforms
           const normalizedStat = normalizeStat(ppProp.stat);
           
+          // Resolve opponent from team name and game time
+          const gameTime = ppProp.startTime ? new Date(ppProp.startTime) : new Date();
+          const teamName = ppProp.team || 'TBD';
+          let opponent = 'TBD';
+          
+          if (teamName !== 'TBD') {
+            const resolvedOpponent = await resolveOpponent(teamName, sport, gameTime);
+            if (resolvedOpponent) {
+              opponent = resolvedOpponent;
+            } else {
+              console.log(`[PrizePicks] Could not resolve opponent for ${teamName} on ${gameTime.toISOString()}`);
+            }
+          }
+          
           const analysisInput = {
             sport,
             player: ppProp.player,
-            team: ppProp.team || 'TBD',
-            opponent: 'TBD', // PrizePicks doesn't provide opponent info
+            team: teamName,
+            opponent: opponent,
             stat: normalizedStat,
             line: ppProp.line.toString(),
             direction: 'over' as const,
@@ -500,16 +524,15 @@ export class PropRefreshService {
 
           // Generate synthetic fixtureId for grouping props from same game
           // Format: prizepicks_{sport}_{team}_{YYYYMMDD_HHMM} - includes hour/minute for uniqueness
-          const gameTime = ppProp.startTime ? new Date(ppProp.startTime) : new Date();
           const gameDate = gameTime.toISOString().split('T')[0].replace(/-/g, '');
           const gameHourMin = gameTime.toISOString().split('T')[1].substring(0, 5).replace(':', '');
-          const fixtureId = `prizepicks_${sport}_${(ppProp.team || 'TBD').replace(/\s+/g, '_')}_${gameDate}_${gameHourMin}`;
+          const fixtureId = `prizepicks_${sport}_${teamName.replace(/\s+/g, '_')}_${gameDate}_${gameHourMin}`;
 
           await storage.createProp({
             sport,
             player: ppProp.player,
-            team: ppProp.team || 'TBD',
-            opponent: 'TBD',
+            team: teamName,
+            opponent: opponent,
             stat: normalizedStat,
             line: ppProp.line.toString(),
             currentLine: ppProp.line.toString(),
@@ -520,7 +543,7 @@ export class PropRefreshService {
             confidence: analysis.confidence,
             ev: analysis.ev.toString(),
             modelProbability: analysis.modelProbability.toString(),
-            gameTime: ppProp.startTime ? new Date(ppProp.startTime) : new Date(),
+            gameTime: gameTime,
             isActive: true,
           });
 

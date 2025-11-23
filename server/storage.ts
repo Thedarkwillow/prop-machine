@@ -1106,6 +1106,9 @@ class DbStorage implements IStorage {
   async getActiveProps(sport?: string): Promise<Prop[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
+    // Only show props for games that haven't started yet (gameTime >= now)
+    const now = new Date();
+    
     let results: Prop[];
     if (sport) {
       results = await db
@@ -1114,7 +1117,8 @@ class DbStorage implements IStorage {
         .where(and(
           eq(props.isActive, true), 
           eq(props.sport, sport),
-          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
+          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
+          gte(props.gameTime, now)
         ));
     } else {
       results = await db
@@ -1122,7 +1126,8 @@ class DbStorage implements IStorage {
         .from(props)
         .where(and(
           eq(props.isActive, true),
-          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
+          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
+          gte(props.gameTime, now)
         ));
     }
     
@@ -1177,13 +1182,15 @@ class DbStorage implements IStorage {
           ? and(
               eq(props.isActive, true),
               eq(props.sport, sport),
-              sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
-              // Removed gameTime filter - show all active props regardless of game time
+              sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
+              gte(props.gameTime, new Date())
+              // Only show props for games that haven't started yet
             )
           : and(
               eq(props.isActive, true),
-              sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
-              // Removed gameTime filter - show all active props regardless of game time
+              sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
+              gte(props.gameTime, new Date())
+              // Only show props for games that haven't started yet
             )
       )
       .orderBy(desc(props.confidence), desc(props.createdAt), desc(lineMovements.timestamp))

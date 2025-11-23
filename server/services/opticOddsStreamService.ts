@@ -4,6 +4,7 @@ import { storage } from '../storage';
 import { opticOddsClient } from '../integrations/opticOddsClient';
 import { normalizeStat } from '../utils/statNormalizer';
 import { propAnalysisService } from './propAnalysisService';
+import { resolveOpponent } from '../utils/opponentResolver';
 
 interface StreamOddsEvent {
   id: string;
@@ -351,6 +352,16 @@ export class OpticOddsStreamService {
           // Default to home team, but check team_id if available
           team = fixture.homeTeam;
           opponent = fixture.awayTeam;
+        }
+        
+        // If opponent is still TBD, try to resolve it
+        if (opponent === "TBD" && team !== "TBD") {
+          const sport = this.inferSportFromMarket(odd.market_id);
+          const resolvedOpponent = await resolveOpponent(team, sport, new Date());
+          if (resolvedOpponent) {
+            opponent = resolvedOpponent;
+            console.log(`[OpticOdds Stream] Resolved opponent for ${team}: ${opponent}`);
+          }
         }
 
         // Log warning if fixture_id is missing (for monitoring data quality)

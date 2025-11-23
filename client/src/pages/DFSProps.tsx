@@ -38,14 +38,18 @@ export default function DFSProps() {
 
   // Filter for DFS platforms: DraftKings, FanDuel, PrizePicks, Underdog Fantasy
   // Also filter out props with "TBD" opponents (old/incomplete props)
+  // And filter out props from past games (gameTime < now)
   // Memoize this separately since it only depends on props
   const dfsPropsFiltered = useMemo(() => {
     if (!props || props.length === 0) return [];
+    const now = new Date();
     return props.filter(
       (p) =>
         p.isActive &&
         p.opponent &&
         p.opponent.toUpperCase() !== "TBD" &&
+        p.gameTime &&
+        new Date(p.gameTime) >= now &&
         (p.platform.toLowerCase().includes("draftkings") ||
           p.platform.toLowerCase().includes("fanduel") ||
           p.platform.toLowerCase().includes("prizepicks") ||
