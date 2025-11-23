@@ -133,8 +133,10 @@ export class IntegrationClient {
     const canProceed = await this.checkRateLimit();
     
     if (!canProceed) {
+      console.log(`[RATE LIMIT] Rate limit exceeded for ${this.rateLimitConfig.provider}, attempting cache fallback for ${endpoint}`);
       const cached = await this.getCachedResponse<T>(endpoint);
       if (cached) {
+        console.log(`[RATE LIMIT] Using cached data due to rate limit for ${endpoint}`);
         return { data: cached, cached: true };
       }
       throw new Error(`Rate limit exceeded for ${this.rateLimitConfig.provider} and no cached data available`);
@@ -147,11 +149,23 @@ export class IntegrationClient {
     };
 
     try {
+      const fetchStartTime = Date.now();
+      console.log(`[API FETCH] ========================================`);
+      console.log(`[API FETCH] Attempting fresh API fetch`);
+      console.log(`[API FETCH] Provider: ${this.rateLimitConfig.provider}`);
+      console.log(`[API FETCH] Endpoint: ${endpoint}`);
+      console.log(`[API FETCH] Full URL: ${url}`);
+      console.log(`[API FETCH] Timestamp: ${new Date(fetchStartTime).toISOString()}`);
+      
       const response = await fetch(url, {
         ...options,
         method: 'GET',
         headers,
       });
+
+      const fetchDuration = Date.now() - fetchStartTime;
+      console.log(`[API FETCH] Response received in ${fetchDuration}ms`);
+      console.log(`[API FETCH] Status: ${response.status} ${response.statusText}`);
 
       if (!response.ok) {
         let errorBody = '';
@@ -161,6 +175,7 @@ export class IntegrationClient {
         } catch {
           errorBody = response.statusText;
         }
+        console.error(`[API FETCH] ❌ HTTP Error ${response.status}: ${errorBody}`);
         throw new Error(`HTTP ${response.status}: ${errorBody}`);
       }
 
@@ -170,17 +185,26 @@ export class IntegrationClient {
       const etag = response.headers.get('etag') || undefined;
       const lastModified = response.headers.get('last-modified') || undefined;
 
+      console.log(`[API FETCH] ✅ Successfully fetched fresh data from ${this.rateLimitConfig.provider} for ${endpoint}`);
+      console.log(`[API FETCH] Response size: ${JSON.stringify(data).length} bytes`);
+      console.log(`[API FETCH] ETag: ${etag || 'none'}, LastModified: ${lastModified || 'none'}`);
+      console.log(`[API FETCH] ========================================`);
+      
       await this.cacheResponse(endpoint, data, etag, lastModified);
 
       return { data, cached: false, etag, lastModified };
     } catch (error) {
-      console.error(`Integration error for ${this.rateLimitConfig.provider}:`, error);
+      console.error(`[API FETCH] ❌ Integration error for ${this.rateLimitConfig.provider}:`, error);
+      console.error(`[API FETCH] Error details:`, error instanceof Error ? error.message : String(error));
+      console.log(`[API FETCH] Falling back to cache for ${endpoint}`);
       
       const cached = await this.getCachedResponse<T>(endpoint);
       if (cached) {
+        console.log(`[API FETCH] ✅ Using cached data as fallback for ${endpoint}`);
         return { data: cached, cached: true };
       }
       
+      console.error(`[API FETCH] ❌ No cached data available, throwing error`);
       throw error;
     }
   }
@@ -215,18 +239,61 @@ export class IntegrationClient {
   ): Promise<void> {
     try {
       const namespace = fileCache.getNamespace(this.rateLimitConfig.provider);
+      const filePath = fileCache.getCacheFilePath(namespace, endpoint);
+      const now = Date.now();
+      const expiresAt = now + (this.cacheConfig.ttl * 1000);
+      
+      console.log(`[CACHE WRITE] ========================================`);
+      console.log(`[CACHE WRITE] Provider: ${this.rateLimitConfig.provider}`);
+      console.log(`[CACHE WRITE] Namespace: ${namespace}`);
+      console.log(`[CACHE WRITE] Endpoint: ${endpoint}`);
+      console.log(`[CACHE WRITE] Full filepath: ${filePath}`);
+      console.log(`[CACHE WRITE] TTL: ${this.cacheConfig.ttl}s (${(this.cacheConfig.ttl / 60).toFixed(1)} minutes, ${(this.cacheConfig.ttl / 3600).toFixed(2)} hours)`);
+      console.log(`[CACHE WRITE] Current timestamp: ${new Date(now).toISOString()}`);
+      console.log(`[CACHE WRITE] Cache expires at: ${new Date(expiresAt).toISOString()}`);
+      console.log(`[CACHE WRITE] ETag: ${etag || 'none'}, LastModified: ${lastModified || 'none'}`);
+      console.log(`[CACHE WRITE] Data size: ${JSON.stringify(data).length} bytes`);
+      
       await fileCache.setCache(namespace, endpoint, data, this.cacheConfig.ttl, etag, lastModified);
+      
+      console.log(`[CACHE WRITE] ✅ Successfully cached response for ${endpoint}`);
+      console.log(`[CACHE WRITE] ========================================`);
     } catch (error) {
-      console.error('Cache write error:', error);
+      console.error('[CACHE WRITE] ❌ Cache write error:', error);
+      console.error(`[CACHE WRITE] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[CACHE WRITE] Stack:`, error instanceof Error ? error.stack : 'N/A');
     }
   }
 
   private async getCachedResponse<T>(endpoint: string): Promise<T | null> {
     try {
       const namespace = fileCache.getNamespace(this.rateLimitConfig.provider);
-      return await fileCache.getCache<T>(namespace, endpoint, this.cacheConfig.ttl);
+      const filePath = fileCache.getCacheFilePath(namespace, endpoint);
+      const now = Date.now();
+      
+      console.log(`[CACHE READ] ========================================`);
+      console.log(`[CACHE READ] Provider: ${this.rateLimitConfig.provider}`);
+      console.log(`[CACHE READ] Namespace: ${namespace}`);
+      console.log(`[CACHE READ] Endpoint: ${endpoint}`);
+      console.log(`[CACHE READ] Full filepath: ${filePath}`);
+      console.log(`[CACHE READ] TTL: ${this.cacheConfig.ttl}s (${(this.cacheConfig.ttl / 60).toFixed(1)} minutes, ${(this.cacheConfig.ttl / 3600).toFixed(2)} hours)`);
+      console.log(`[CACHE READ] Current timestamp: ${new Date(now).toISOString()}`);
+      
+      const cached = await fileCache.getCache<T>(namespace, endpoint, this.cacheConfig.ttl);
+      
+      if (cached) {
+        console.log(`[CACHE READ] ✅ Cache HIT - returning cached data for ${endpoint}`);
+      } else {
+        console.log(`[CACHE READ] ❌ Cache MISS - no valid cache found for ${endpoint}`);
+        console.log(`[CACHE READ] This will trigger a fresh API fetch`);
+      }
+      console.log(`[CACHE READ] ========================================`);
+      
+      return cached;
     } catch (error) {
-      console.error('Cache read error:', error);
+      console.error('[CACHE READ] ❌ Cache read error:', error);
+      console.error(`[CACHE READ] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[CACHE READ] Stack:`, error instanceof Error ? error.stack : 'N/A');
     }
     
     return null;

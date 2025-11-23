@@ -76,18 +76,29 @@ export class PropAnalysisService {
     }
 
     try {
+      const analysisStartTime = Date.now();
+      console.log(`[PROP ANALYSIS] ========================================`);
+      console.log(`[PROP ANALYSIS] Starting NBA prop analysis`);
+      console.log(`[PROP ANALYSIS] Player: ${input.player}`);
+      console.log(`[PROP ANALYSIS] Stat: ${input.stat}, Line: ${line}, Direction: ${input.direction}`);
+      console.log(`[PROP ANALYSIS] Platform: ${input.platform}`);
+      console.log(`[PROP ANALYSIS] Timestamp: ${new Date(analysisStartTime).toISOString()}`);
+      
       // Use ESPN API for NBA player search (more reliable than BallDontLie)
+      console.log(`[PROP ANALYSIS] Searching for NBA player: ${input.player}`);
       const players = await espnPlayerClient.searchNBAPlayers(input.player);
       
       if (!players || players.length === 0) {
-        console.log(`[NBA Analysis] Player not found: ${input.player}`);
+        console.log(`[PROP ANALYSIS] ❌ Player not found: ${input.player}`);
+        console.log(`[PROP ANALYSIS] ========================================`);
         return this.fallbackAnalysis(input, line, `Player "${input.player}" not found in database`);
       }
 
       const player = players[0];
-      console.log(`[NBA Analysis] Found player: ${player.fullName} (ID: ${player.id})`);
+      console.log(`[PROP ANALYSIS] ✅ Found player: ${player.fullName} (ID: ${player.id})`);
 
       // Get season stats from ESPN
+      console.log(`[PROP ANALYSIS] Fetching NBA stats for player ${player.id}...`);
       const seasonStats = await espnPlayerClient.getNBAPlayerStats(player.id);
 
       // Map stat type to ESPN stat field
@@ -104,6 +115,8 @@ export class PropAnalysisService {
 
       console.log(`[NBA Analysis] Season avg: ${seasonAverage.toFixed(2)}, Line: ${line}`);
 
+      const analysisDuration = Date.now() - analysisStartTime;
+      console.log(`[PROP ANALYSIS] Calculating model score...`);
       const modelScore = await modelScorer.scoreProp({
         playerName: input.player,
         stat: input.stat,
@@ -113,6 +126,13 @@ export class PropAnalysisService {
         recentAverage,
         seasonAverage,
       });
+
+      console.log(`[PROP ANALYSIS] ✅ Analysis complete`);
+      console.log(`[PROP ANALYSIS] Duration: ${analysisDuration}ms`);
+      console.log(`[PROP ANALYSIS] Confidence: ${modelScore.confidence}%`);
+      console.log(`[PROP ANALYSIS] EV: ${modelScore.expectedValue}`);
+      console.log(`[PROP ANALYSIS] Model Probability: ${modelScore.modelProbability}`);
+      console.log(`[PROP ANALYSIS] ========================================`);
 
       return {
         confidence: modelScore.confidence,
@@ -130,7 +150,11 @@ export class PropAnalysisService {
       };
 
     } catch (error) {
-      console.error('[NBA Analysis] Error in prop analysis:', error);
+      const analysisDuration = Date.now() - analysisStartTime;
+      console.error('[PROP ANALYSIS] ❌ Error in prop analysis:', error);
+      console.error(`[PROP ANALYSIS] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[PROP ANALYSIS] Duration before error: ${analysisDuration}ms`);
+      console.error(`[PROP ANALYSIS] ========================================`);
       return this.fallbackAnalysis(input, line, 'API error, using basic analysis');
     }
   }
@@ -355,16 +379,27 @@ export class PropAnalysisService {
 
   private async analyzeNHLProp(input: PropAnalysisInput, line: number): Promise<PropAnalysisResult> {
     try {
+      const analysisStartTime = Date.now();
+      console.log(`[PROP ANALYSIS] ========================================`);
+      console.log(`[PROP ANALYSIS] Starting NHL prop analysis`);
+      console.log(`[PROP ANALYSIS] Player: ${input.player}`);
+      console.log(`[PROP ANALYSIS] Stat: ${input.stat}, Line: ${line}, Direction: ${input.direction}`);
+      console.log(`[PROP ANALYSIS] Platform: ${input.platform}`);
+      console.log(`[PROP ANALYSIS] Timestamp: ${new Date(analysisStartTime).toISOString()}`);
+      
+      console.log(`[PROP ANALYSIS] Searching for NHL player: ${input.player}`);
       const players = await espnPlayerClient.searchNHLPlayers(input.player);
       
       if (!players || players.length === 0) {
-        console.log(`[NHL Analysis] Player not found: ${input.player}`);
+        console.log(`[PROP ANALYSIS] ❌ Player not found: ${input.player}`);
+        console.log(`[PROP ANALYSIS] ========================================`);
         return this.fallbackAnalysis(input, line, `NHL player "${input.player}" not found in database`);
       }
 
       const player = players[0];
-      console.log(`[NHL Analysis] Found player: ${player.fullName} (ID: ${player.id})`);
+      console.log(`[PROP ANALYSIS] ✅ Found player: ${player.fullName} (ID: ${player.id})`);
 
+      console.log(`[PROP ANALYSIS] Fetching NHL stats for player ${player.id}...`);
       const seasonStats = await espnPlayerClient.getNHLPlayerStats(player.id);
       const statValue = this.mapNHLStatValue(seasonStats, input.stat);
       
@@ -385,6 +420,12 @@ export class PropAnalysisService {
         seasonAverage: statValue,
       });
 
+      const analysisDuration = Date.now() - analysisStartTime;
+      console.log(`[PROP ANALYSIS] ✅ NHL Analysis complete`);
+      console.log(`[PROP ANALYSIS] Duration: ${analysisDuration}ms`);
+      console.log(`[PROP ANALYSIS] Confidence: ${modelScore.confidence}%`);
+      console.log(`[PROP ANALYSIS] ========================================`);
+
       return {
         confidence: modelScore.confidence,
         ev: modelScore.expectedValue,
@@ -400,23 +441,38 @@ export class PropAnalysisService {
         platform: input.platform,
       };
     } catch (error) {
-      console.error('[NHL Analysis] Error in prop analysis:', error);
+      const analysisDuration = Date.now() - analysisStartTime;
+      console.error('[PROP ANALYSIS] ❌ Error in NHL prop analysis:', error);
+      console.error(`[PROP ANALYSIS] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[PROP ANALYSIS] Duration before error: ${analysisDuration}ms`);
+      console.error(`[PROP ANALYSIS] ========================================`);
       return this.fallbackAnalysis(input, line, 'API error, using basic analysis');
     }
   }
 
   private async analyzeNFLProp(input: PropAnalysisInput, line: number): Promise<PropAnalysisResult> {
     try {
+      const analysisStartTime = Date.now();
+      console.log(`[PROP ANALYSIS] ========================================`);
+      console.log(`[PROP ANALYSIS] Starting NFL prop analysis`);
+      console.log(`[PROP ANALYSIS] Player: ${input.player}`);
+      console.log(`[PROP ANALYSIS] Stat: ${input.stat}, Line: ${line}, Direction: ${input.direction}`);
+      console.log(`[PROP ANALYSIS] Platform: ${input.platform}`);
+      console.log(`[PROP ANALYSIS] Timestamp: ${new Date(analysisStartTime).toISOString()}`);
+      
+      console.log(`[PROP ANALYSIS] Searching for NFL player: ${input.player}`);
       const players = await espnPlayerClient.searchNFLPlayers(input.player);
       
       if (!players || players.length === 0) {
-        console.log(`[NFL Analysis] Player not found: ${input.player}`);
+        console.log(`[PROP ANALYSIS] ❌ Player not found: ${input.player}`);
+        console.log(`[PROP ANALYSIS] ========================================`);
         return this.fallbackAnalysis(input, line, `NFL player "${input.player}" not found in database`);
       }
 
       const player = players[0];
-      console.log(`[NFL Analysis] Found player: ${player.fullName} (ID: ${player.id})`);
+      console.log(`[PROP ANALYSIS] ✅ Found player: ${player.fullName} (ID: ${player.id})`);
 
+      console.log(`[PROP ANALYSIS] Fetching NFL stats for player ${player.id}...`);
       const seasonStats = await espnPlayerClient.getNFLPlayerStats(player.id);
       const statValue = this.mapNFLStatValue(seasonStats, input.stat);
       
@@ -437,6 +493,12 @@ export class PropAnalysisService {
         seasonAverage: statValue,
       });
 
+      const analysisDuration = Date.now() - analysisStartTime;
+      console.log(`[PROP ANALYSIS] ✅ NFL Analysis complete`);
+      console.log(`[PROP ANALYSIS] Duration: ${analysisDuration}ms`);
+      console.log(`[PROP ANALYSIS] Confidence: ${modelScore.confidence}%`);
+      console.log(`[PROP ANALYSIS] ========================================`);
+
       return {
         confidence: modelScore.confidence,
         ev: modelScore.expectedValue,
@@ -452,7 +514,11 @@ export class PropAnalysisService {
         platform: input.platform,
       };
     } catch (error) {
-      console.error('[NFL Analysis] Error in prop analysis:', error);
+      const analysisDuration = Date.now() - analysisStartTime;
+      console.error('[PROP ANALYSIS] ❌ Error in NFL prop analysis:', error);
+      console.error(`[PROP ANALYSIS] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[PROP ANALYSIS] Duration before error: ${analysisDuration}ms`);
+      console.error(`[PROP ANALYSIS] ========================================`);
       return this.fallbackAnalysis(input, line, 'API error, using basic analysis');
     }
   }

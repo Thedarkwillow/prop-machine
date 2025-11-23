@@ -103,12 +103,23 @@ router.get("/props", async (req, res) => {
     const limitNum = limit ? parseInt(limit as string) : 100; // Default 100 props
     const offsetNum = offset ? parseInt(offset as string) : 0;
     
-    const props = await storage.getActivePropsWithLineMovement(
-      sport as string,
-      limitNum,
-      offsetNum
-    );
-    res.json(props);
+    // Read props from filesystem cache instead of database
+    const { propCacheService } = await import("./services/propCacheService.js");
+    
+    let props;
+    if (sport && typeof sport === 'string') {
+      // Get props for specific sport
+      props = await propCacheService.getPropsBySport(sport);
+    } else {
+      // Get all props if no sport specified
+      props = await propCacheService.getAllProps();
+    }
+    
+    // Apply limit and offset
+    const paginatedProps = props.slice(offsetNum, offsetNum + limitNum);
+    
+    console.log(`[API] Returning ${paginatedProps.length} props (${props.length} total, offset: ${offsetNum}, limit: ${limitNum})`);
+    res.json(paginatedProps);
   } catch (error) {
     console.error("Error fetching props:", error);
     res.status(500).json({ error: "Failed to fetch props" });

@@ -72,9 +72,25 @@ class ESPNPlayerClient extends IntegrationClient {
   async searchNFLPlayers(searchTerm: string): Promise<any[]> {
     try {
       const searchLower = searchTerm.toLowerCase();
-      const response = await this.get<any>(`/v3/sports/football/nfl/athletes?limit=5000`);
+      const searchStartTime = Date.now();
+      console.log(`[ESPN] ========================================`);
+      console.log(`[ESPN] Searching NFL players: "${searchTerm}"`);
+      console.log(`[ESPN] Timestamp: ${new Date(searchStartTime).toISOString()}`);
       
-      if (!response?.data?.items) return [];
+      const response = await this.get<any>(`/v3/sports/football/nfl/athletes?limit=5000`);
+      const searchDuration = Date.now() - searchStartTime;
+      
+      const cacheStatus = response.cached ? '✅ CACHED' : '🔄 FRESH';
+      const playerCount = response?.data?.items?.length || 0;
+      console.log(`[ESPN] NFL player search result: ${cacheStatus}`);
+      console.log(`[ESPN] Duration: ${searchDuration}ms`);
+      console.log(`[ESPN] Total players in response: ${playerCount}`);
+      
+      if (!response?.data?.items) {
+        console.log(`[ESPN] ❌ No items in response`);
+        console.log(`[ESPN] ========================================`);
+        return [];
+      }
       
       // Pre-filter by name using data already in items (no additional API calls needed!)
       const rawMatches = response.data.items.filter((player: any) => {
@@ -82,6 +98,9 @@ class ESPNPlayerClient extends IntegrationClient {
         const displayName = player.displayName?.toLowerCase() || "";
         return fullName.includes(searchLower) || displayName.includes(searchLower);
       });
+      
+      console.log(`[ESPN] Matched ${rawMatches.length} players for "${searchTerm}"`);
+      console.log(`[ESPN] ========================================`);
       
       // Ensure consistent structure for downstream use
       return rawMatches.slice(0, 10).map((player: any) => ({
@@ -93,7 +112,9 @@ class ESPNPlayerClient extends IntegrationClient {
         position: player.position,
       }));
     } catch (error) {
-      console.error("Error searching NFL players:", error);
+      console.error("[ESPN] ❌ Error searching NFL players:", error);
+      console.error(`[ESPN] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[ESPN] ========================================`);
       return [];
     }
   }
@@ -104,9 +125,25 @@ class ESPNPlayerClient extends IntegrationClient {
   async searchNHLPlayers(searchTerm: string): Promise<any[]> {
     try {
       const searchLower = searchTerm.toLowerCase();
-      const response = await this.get<any>(`/v3/sports/hockey/nhl/athletes?limit=2000`);
+      const searchStartTime = Date.now();
+      console.log(`[ESPN] ========================================`);
+      console.log(`[ESPN] Searching NHL players: "${searchTerm}"`);
+      console.log(`[ESPN] Timestamp: ${new Date(searchStartTime).toISOString()}`);
       
-      if (!response?.data?.items) return [];
+      const response = await this.get<any>(`/v3/sports/hockey/nhl/athletes?limit=2000`);
+      const searchDuration = Date.now() - searchStartTime;
+      
+      const cacheStatus = response.cached ? '✅ CACHED' : '🔄 FRESH';
+      const playerCount = response?.data?.items?.length || 0;
+      console.log(`[ESPN] NHL player search result: ${cacheStatus}`);
+      console.log(`[ESPN] Duration: ${searchDuration}ms`);
+      console.log(`[ESPN] Total players in response: ${playerCount}`);
+      
+      if (!response?.data?.items) {
+        console.log(`[ESPN] ❌ No items in response`);
+        console.log(`[ESPN] ========================================`);
+        return [];
+      }
       
       // Pre-filter by name using data already in items (no additional API calls needed!)
       const rawMatches = response.data.items.filter((player: any) => {
@@ -114,6 +151,9 @@ class ESPNPlayerClient extends IntegrationClient {
         const displayName = player.displayName?.toLowerCase() || "";
         return fullName.includes(searchLower) || displayName.includes(searchLower);
       });
+      
+      console.log(`[ESPN] Matched ${rawMatches.length} players for "${searchTerm}"`);
+      console.log(`[ESPN] ========================================`);
       
       // Ensure consistent structure for downstream use
       return rawMatches.slice(0, 10).map((player: any) => ({
@@ -125,7 +165,9 @@ class ESPNPlayerClient extends IntegrationClient {
         position: player.position,
       }));
     } catch (error) {
-      console.error("Error searching NHL players:", error);
+      console.error("[ESPN] ❌ Error searching NHL players:", error);
+      console.error(`[ESPN] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[ESPN] ========================================`);
       return [];
     }
   }
@@ -135,21 +177,29 @@ class ESPNPlayerClient extends IntegrationClient {
    */
   async getNFLPlayerStats(playerId: string): Promise<NFLPlayerStats> {
     try {
+      const statsStartTime = Date.now();
       const statsUrl = `/v2/sports/football/leagues/nfl/seasons/2024/athletes/${playerId}/statistics/0`;
-      console.log(`[ESPN] Fetching NFL stats for player ${playerId}: ${statsUrl}`);
+      console.log(`[ESPN] ========================================`);
+      console.log(`[ESPN] Fetching NFL stats for player ${playerId}`);
+      console.log(`[ESPN] URL: ${statsUrl}`);
+      console.log(`[ESPN] Timestamp: ${new Date(statsStartTime).toISOString()}`);
+      
       const response = await this.get<any>(statsUrl);
-      console.log(`[ESPN] NFL stats response structure:`, JSON.stringify({ 
-        hasData: !!response?.data,
-        hasSplits: !!response?.data?.splits,
-        categories: response?.data?.splits?.categories?.length || 0
-      }));
+      const statsDuration = Date.now() - statsStartTime;
+      
+      const cacheStatus = response.cached ? '✅ CACHED' : '🔄 FRESH';
+      const hasData = !!response?.data;
+      const categoryCount = response?.data?.splits?.categories?.length || 0;
+      console.log(`[ESPN] NFL stats response: ${cacheStatus}`);
+      console.log(`[ESPN] Duration: ${statsDuration}ms`);
+      console.log(`[ESPN] Has data: ${hasData}, Categories: ${categoryCount}`);
       
       const stats = response?.data?.splits?.categories || [];
       const passingStats = stats.find((c: any) => c.name === 'passing')?.stats || [];
       const rushingStats = stats.find((c: any) => c.name === 'rushing')?.stats || [];
       const receivingStats = stats.find((c: any) => c.name === 'receiving')?.stats || [];
       
-      return {
+      const result = {
         passing_yards: passingStats.find((s: any) => s.name === 'passingYards')?.value || 0,
         passing_touchdowns: passingStats.find((s: any) => s.name === 'passingTouchdowns')?.value || 0,
         rushing_yards: rushingStats.find((s: any) => s.name === 'rushingYards')?.value || 0,
@@ -161,8 +211,15 @@ class ESPNPlayerClient extends IntegrationClient {
                      rushingStats.find((s: any) => s.name === 'gamesPlayed')?.value || 
                      receivingStats.find((s: any) => s.name === 'gamesPlayed')?.value || 0,
       };
+      
+      console.log(`[ESPN] ✅ NFL stats retrieved: Games=${result.gamesPlayed}, PassYds=${result.passing_yards}, RushYds=${result.rushing_yards}, RecYds=${result.receiving_yards}`);
+      console.log(`[ESPN] ========================================`);
+      
+      return result;
     } catch (error) {
-      console.error("Error fetching NFL player stats:", error);
+      console.error("[ESPN] ❌ Error fetching NFL player stats:", error);
+      console.error(`[ESPN] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[ESPN] ========================================`);
       return { gamesPlayed: 0 };
     }
   }
@@ -172,18 +229,26 @@ class ESPNPlayerClient extends IntegrationClient {
    */
   async getNHLPlayerStats(playerId: string): Promise<NHLPlayerStats> {
     try {
+      const statsStartTime = Date.now();
       const statsUrl = `/v2/sports/hockey/leagues/nhl/seasons/2025/athletes/${playerId}/statistics/0`;
-      console.log(`[ESPN] Fetching NHL stats for player ${playerId}: ${statsUrl}`);
+      console.log(`[ESPN] ========================================`);
+      console.log(`[ESPN] Fetching NHL stats for player ${playerId}`);
+      console.log(`[ESPN] URL: ${statsUrl}`);
+      console.log(`[ESPN] Timestamp: ${new Date(statsStartTime).toISOString()}`);
+      
       const response = await this.get<any>(statsUrl);
-      console.log(`[ESPN] NHL stats response structure:`, JSON.stringify({ 
-        hasData: !!response?.data,
-        hasSplits: !!response?.data?.splits,
-        categories: response?.data?.splits?.categories?.length || 0
-      }));
+      const statsDuration = Date.now() - statsStartTime;
+      
+      const cacheStatus = response.cached ? '✅ CACHED' : '🔄 FRESH';
+      const hasData = !!response?.data;
+      const categoryCount = response?.data?.splits?.categories?.length || 0;
+      console.log(`[ESPN] NHL stats response: ${cacheStatus}`);
+      console.log(`[ESPN] Duration: ${statsDuration}ms`);
+      console.log(`[ESPN] Has data: ${hasData}, Categories: ${categoryCount}`);
       
       const stats = response?.data?.splits?.categories?.[0]?.stats || [];
       
-      return {
+      const result = {
         goals: stats.find((s: any) => s.name === 'goals')?.value || 0,
         assists: stats.find((s: any) => s.name === 'assists')?.value || 0,
         points: stats.find((s: any) => s.name === 'points')?.value || 0,
@@ -192,8 +257,15 @@ class ESPNPlayerClient extends IntegrationClient {
         shots: stats.find((s: any) => s.name === 'shots')?.value || 0,
         gamesPlayed: stats.find((s: any) => s.name === 'gamesPlayed')?.value || 0,
       };
+      
+      console.log(`[ESPN] ✅ NHL stats retrieved: Games=${result.gamesPlayed}, Goals=${result.goals}, Assists=${result.assists}, Points=${result.points}`);
+      console.log(`[ESPN] ========================================`);
+      
+      return result;
     } catch (error) {
-      console.error("Error fetching NHL player stats:", error);
+      console.error("[ESPN] ❌ Error fetching NHL player stats:", error);
+      console.error(`[ESPN] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[ESPN] ========================================`);
       return { gamesPlayed: 0 };
     }
   }
@@ -204,9 +276,25 @@ class ESPNPlayerClient extends IntegrationClient {
   async searchNBAPlayers(searchTerm: string): Promise<any[]> {
     try {
       const searchLower = searchTerm.toLowerCase();
-      const response = await this.get<any>(`/v3/sports/basketball/nba/athletes?limit=2000`);
+      const searchStartTime = Date.now();
+      console.log(`[ESPN] ========================================`);
+      console.log(`[ESPN] Searching NBA players: "${searchTerm}"`);
+      console.log(`[ESPN] Timestamp: ${new Date(searchStartTime).toISOString()}`);
       
-      if (!response?.data?.items) return [];
+      const response = await this.get<any>(`/v3/sports/basketball/nba/athletes?limit=2000`);
+      const searchDuration = Date.now() - searchStartTime;
+      
+      const cacheStatus = response.cached ? '✅ CACHED' : '🔄 FRESH';
+      const playerCount = response?.data?.items?.length || 0;
+      console.log(`[ESPN] NBA player search result: ${cacheStatus}`);
+      console.log(`[ESPN] Duration: ${searchDuration}ms`);
+      console.log(`[ESPN] Total players in response: ${playerCount}`);
+      
+      if (!response?.data?.items) {
+        console.log(`[ESPN] ❌ No items in response`);
+        console.log(`[ESPN] ========================================`);
+        return [];
+      }
       
       // Pre-filter by name using data already in items (no additional API calls needed!)
       const rawMatches = response.data.items.filter((player: any) => {
@@ -214,6 +302,9 @@ class ESPNPlayerClient extends IntegrationClient {
         const displayName = player.displayName?.toLowerCase() || "";
         return fullName.includes(searchLower) || displayName.includes(searchLower);
       });
+      
+      console.log(`[ESPN] Matched ${rawMatches.length} players for "${searchTerm}"`);
+      console.log(`[ESPN] ========================================`);
       
       // Ensure consistent structure for downstream use
       return rawMatches.slice(0, 10).map((player: any) => ({
@@ -225,7 +316,9 @@ class ESPNPlayerClient extends IntegrationClient {
         position: player.position,
       }));
     } catch (error) {
-      console.error("Error searching NBA players:", error);
+      console.error("[ESPN] ❌ Error searching NBA players:", error);
+      console.error(`[ESPN] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[ESPN] ========================================`);
       return [];
     }
   }
@@ -235,12 +328,26 @@ class ESPNPlayerClient extends IntegrationClient {
    */
   async getNBAPlayerStats(playerId: string): Promise<NBAPlayerStats> {
     try {
+      const statsStartTime = Date.now();
       // NBA uses a different endpoint structure than NHL/NFL
       const statsUrl = `/v2/sports/basketball/leagues/nba/athletes/${playerId}/statistics`;
+      console.log(`[ESPN] ========================================`);
+      console.log(`[ESPN] Fetching NBA stats for player ${playerId}`);
+      console.log(`[ESPN] URL: ${statsUrl}`);
+      console.log(`[ESPN] Timestamp: ${new Date(statsStartTime).toISOString()}`);
+      
       const response = await this.get<any>(statsUrl);
+      const statsDuration = Date.now() - statsStartTime;
+      
+      const cacheStatus = response.cached ? '✅ CACHED' : '🔄 FRESH';
+      const hasData = !!response?.data;
+      console.log(`[ESPN] NBA stats response: ${cacheStatus}`);
+      console.log(`[ESPN] Duration: ${statsDuration}ms`);
+      console.log(`[ESPN] Has data: ${hasData}`);
       
       // ESPN NBA stats are split across multiple categories: defensive, general, offensive
       const categories = response?.data?.splits?.categories || [];
+      console.log(`[ESPN] Categories found: ${categories.length}`);
       
       // Combine all stats from all categories for easier searching
       const allStats: any[] = [];
@@ -249,6 +356,7 @@ class ESPNPlayerClient extends IntegrationClient {
           allStats.push(...category.stats);
         }
       });
+      console.log(`[ESPN] Total stats entries: ${allStats.length}`);
       
       // Helper to find stat value by multiple possible names
       const findStat = (names: string[]): number => {
@@ -278,11 +386,14 @@ class ESPNPlayerClient extends IntegrationClient {
         gamesPlayed: findStat(['gamesPlayed', 'games', 'gp']),
       };
       
-      console.log(`[ESPN] NBA stats for player ${playerId}: PTS=${stats.points} REB=${stats.rebounds} AST=${stats.assists}`);
+      console.log(`[ESPN] ✅ NBA stats retrieved: Games=${stats.gamesPlayed}, PTS=${stats.points}, REB=${stats.rebounds}, AST=${stats.assists}`);
+      console.log(`[ESPN] ========================================`);
       
       return stats;
     } catch (error) {
-      console.error("Error fetching NBA player stats:", error);
+      console.error("[ESPN] ❌ Error fetching NBA player stats:", error);
+      console.error(`[ESPN] Error details:`, error instanceof Error ? error.message : String(error));
+      console.error(`[ESPN] ========================================`);
       return { gamesPlayed: 0 };
     }
   }

@@ -39,11 +39,15 @@ class FileCache {
   async getCache<T>(namespace: string, key: string, ttl: number): Promise<T | null> {
     try {
       const filePath = this.getCacheFilePath(namespace, key);
+      console.log(`[CACHE READ] Attempting to read cache: namespace=${namespace}, key=${key}`);
+      console.log(`[CACHE READ] Full filepath: ${filePath}`);
       
       // Check if file exists
       try {
         await fs.access(filePath);
+        console.log(`[CACHE READ] Cache file exists at ${filePath}`);
       } catch {
+        console.log(`[CACHE READ] Cache MISS - file does not exist: ${filePath}`);
         return null; // File doesn't exist
       }
 
@@ -53,15 +57,29 @@ class FileCache {
 
       // Check if cache is expired
       const age = Date.now() - entry.createdAt;
+      const ageSeconds = age / 1000;
+      const ageMinutes = ageSeconds / 60;
+      const ageHours = ageMinutes / 60;
+      const ttlSeconds = entry.ttl;
+      const ttlMinutes = ttlSeconds / 60;
+      
+      console.log(`[CACHE READ] Cache entry found - Created: ${new Date(entry.createdAt).toISOString()}`);
+      console.log(`[CACHE READ] Cache age: ${ageSeconds.toFixed(1)}s (${ageMinutes.toFixed(2)} minutes, ${ageHours.toFixed(2)} hours)`);
+      console.log(`[CACHE READ] Cache TTL: ${ttlSeconds}s (${ttlMinutes.toFixed(1)} minutes)`);
+      
       if (age > entry.ttl * 1000) {
         // Cache expired, delete file
+        console.log(`[CACHE READ] STALE CACHE DETECTED - age ${ageSeconds.toFixed(1)}s exceeds TTL ${ttlSeconds}s`);
+        console.log(`[CACHE READ] Deleting expired cache file: ${filePath}`);
         await fs.unlink(filePath).catch(() => {}); // Ignore errors
         return null;
       }
 
+      const remainingTTL = entry.ttl - ageSeconds;
+      console.log(`[CACHE READ] Cache HIT - valid cache found, remaining TTL: ${remainingTTL.toFixed(1)}s (${(remainingTTL / 60).toFixed(2)} minutes)`);
       return entry.data;
     } catch (error) {
-      console.error(`Cache read error for ${namespace}/${key}:`, error);
+      console.error(`[CACHE READ] Cache read error for ${namespace}/${key}:`, error);
       return null;
     }
   }
@@ -82,6 +100,11 @@ class FileCache {
       await fs.mkdir(namespaceDir, { recursive: true });
 
       const filePath = this.getCacheFilePath(namespace, key);
+      console.log(`[CACHE WRITE] Writing cache: namespace=${namespace}, key=${key}`);
+      console.log(`[CACHE WRITE] Full filepath: ${filePath}`);
+      console.log(`[CACHE WRITE] TTL: ${ttl}s (${(ttl / 60).toFixed(1)} minutes, ${(ttl / 3600).toFixed(2)} hours)`);
+      console.log(`[CACHE WRITE] ETag: ${etag || 'none'}, LastModified: ${lastModified || 'none'}`);
+      
       const entry: CacheEntry<T> = {
         data,
         etag,
@@ -91,8 +114,10 @@ class FileCache {
       };
 
       await fs.writeFile(filePath, JSON.stringify(entry, null, 2), 'utf-8');
+      console.log(`[CACHE WRITE] Successfully wrote cache file: ${filePath}`);
+      console.log(`[CACHE WRITE] Cache will expire at: ${new Date(Date.now() + ttl * 1000).toISOString()}`);
     } catch (error) {
-      console.error(`Cache write error for ${namespace}/${key}:`, error);
+      console.error(`[CACHE WRITE] Cache write error for ${namespace}/${key}:`, error);
       // Don't throw - caching failures shouldn't break the app
     }
   }
@@ -144,7 +169,7 @@ class FileCache {
   /**
    * Get cache file path for a namespace and key
    */
-  private getCacheFilePath(namespace: string, key: string): string {
+  getCacheFilePath(namespace: string, key: string): string {
     // Sanitize key to be filesystem-safe
     const safeKey = key
       .replace(/[^a-zA-Z0-9._-]/g, '_')
@@ -184,6 +209,8 @@ class FileCache {
     const key = `snapshot_${sport}_${leagueId}`;
     const ttl = ttlHours * 60 * 60; // Convert hours to seconds
     
+    console.log(`[PRIZEPICKS SNAPSHOT] Saving snapshot: sport=${sport}, leagueId=${leagueId}, propCount=${propCount}, ttlHours=${ttlHours}`);
+    
     // Store with metadata matching PrizePicksSnapshot structure
     const snapshotData = {
       sport,
@@ -195,6 +222,7 @@ class FileCache {
     };
     
     await this.setCache(namespace, key, snapshotData, ttl);
+    console.log(`[PRIZEPICKS SNAPSHOT] Successfully saved snapshot for ${sport}/${leagueId} with ${propCount} props`);
   }
 
   async getLatestPrizePicksSnapshot(
@@ -203,23 +231,36 @@ class FileCache {
   ): Promise<{ sport: string; leagueId: string; payload: any; propCount: number; ttlHours: number; fetchedAt: string } | null> {
     const namespace = 'prizepicks';
     const key = `snapshot_${sport}_${leagueId}`;
+    console.log(`[PRIZEPICKS SNAPSHOT] Reading snapshot: sport=${sport}, leagueId=${leagueId}`);
     
     // Use a long TTL for the get - we'll check ttlHours in the caller
     const cached = await this.getCache<any>(namespace, key, 86400 * 7); // 7 days max
     
-    if (!cached) return null;
+    if (!cached) {
+      console.log(`[PRIZEPICKS SNAPSHOT] No snapshot found for ${sport}/${leagueId}`);
+      return null;
+    }
     
     // Check if cache is still valid based on ttlHours
     const fetchedAt = new Date(cached.fetchedAt);
     const ageHours = (Date.now() - fetchedAt.getTime()) / (1000 * 60 * 60);
+    const ageMinutes = ageHours * 60;
+    
+    console.log(`[PRIZEPICKS SNAPSHOT] Snapshot found - Fetched: ${cached.fetchedAt}`);
+    console.log(`[PRIZEPICKS SNAPSHOT] Snapshot age: ${ageHours.toFixed(2)} hours (${ageMinutes.toFixed(1)} minutes)`);
+    console.log(`[PRIZEPICKS SNAPSHOT] Snapshot TTL: ${cached.ttlHours} hours, Prop count: ${cached.propCount}`);
     
     if (ageHours > cached.ttlHours) {
       // Cache expired, delete it
+      console.log(`[PRIZEPICKS SNAPSHOT] STALE SNAPSHOT - age ${ageHours.toFixed(2)}h exceeds TTL ${cached.ttlHours}h`);
       const filePath = this.getCacheFilePath(namespace, key);
+      console.log(`[PRIZEPICKS SNAPSHOT] Deleting expired snapshot: ${filePath}`);
       await fs.unlink(filePath).catch(() => {});
       return null;
     }
     
+    const remainingHours = cached.ttlHours - ageHours;
+    console.log(`[PRIZEPICKS SNAPSHOT] Valid snapshot found, remaining TTL: ${remainingHours.toFixed(2)} hours`);
     return cached;
   }
 
