@@ -122,6 +122,85 @@ export default function DFSProps() {
         </Badge>
       </div>
 
+      {/* Filters */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex gap-4 flex-wrap">
+            <div className="flex-1 min-w-[200px]">
+              <Select value={sportFilter} onValueChange={setSportFilter}>
+                <SelectTrigger data-testid="select-sport-filter">
+                  <SelectValue placeholder="Sport" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sports.map((sport) => (
+                    <SelectItem key={sport} value={sport}>
+                      {sport === "all" ? "All Sports" : sport}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1 min-w-[200px]">
+              <Select value={platformFilter} onValueChange={setPlatformFilter}>
+                <SelectTrigger data-testid="select-platform-filter">
+                  <SelectValue placeholder="Platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  {platforms.map((platform) => (
+                    <SelectItem key={platform} value={platform}>
+                      {platform === "all" ? "All Platforms" : platform}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1 min-w-[200px]">
+              <Select value={statFilter} onValueChange={setStatFilter}>
+                <SelectTrigger data-testid="select-stat-filter">
+                  <SelectValue placeholder="Stat Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stats.map((stat) => (
+                    <SelectItem key={stat} value={stat}>
+                      {stat === "all" ? "All Props" : stat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1 min-w-[200px]">
+              <Select value={confidenceFilter} onValueChange={setConfidenceFilter}>
+                <SelectTrigger data-testid="select-confidence-filter">
+                  <SelectValue placeholder="Confidence" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Confidence</SelectItem>
+                  <SelectItem value="high">High (75%+)</SelectItem>
+                  <SelectItem value="medium">Medium (60-74%)</SelectItem>
+                  <SelectItem value="low">Low (&lt;60%)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSportFilter("all");
+                setPlatformFilter("all");
+                setStatFilter("all");
+                setConfidenceFilter("all");
+              }}
+              data-testid="button-clear-filters"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Top Picks Section */}
       {topPicks.length > 0 && (
         <Card>
@@ -212,85 +291,6 @@ export default function DFSProps() {
           </CardContent>
         </Card>
       )}
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex gap-4 flex-wrap">
-            <div className="flex-1 min-w-[200px]">
-              <Select value={sportFilter} onValueChange={setSportFilter}>
-                <SelectTrigger data-testid="select-sport-filter">
-                  <SelectValue placeholder="Sport" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sports.map((sport) => (
-                    <SelectItem key={sport} value={sport}>
-                      {sport === "all" ? "All Sports" : sport}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1 min-w-[200px]">
-              <Select value={platformFilter} onValueChange={setPlatformFilter}>
-                <SelectTrigger data-testid="select-platform-filter">
-                  <SelectValue placeholder="Platform" />
-                </SelectTrigger>
-                <SelectContent>
-                  {platforms.map((platform) => (
-                    <SelectItem key={platform} value={platform}>
-                      {platform === "all" ? "All Platforms" : platform}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1 min-w-[200px]">
-              <Select value={statFilter} onValueChange={setStatFilter}>
-                <SelectTrigger data-testid="select-stat-filter">
-                  <SelectValue placeholder="Stat Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {stats.map((stat) => (
-                    <SelectItem key={stat} value={stat}>
-                      {stat === "all" ? "All Props" : stat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1 min-w-[200px]">
-              <Select value={confidenceFilter} onValueChange={setConfidenceFilter}>
-                <SelectTrigger data-testid="select-confidence-filter">
-                  <SelectValue placeholder="Confidence" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Confidence</SelectItem>
-                  <SelectItem value="high">High (75%+)</SelectItem>
-                  <SelectItem value="medium">Medium (60-74%)</SelectItem>
-                  <SelectItem value="low">Low (&lt;60%)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSportFilter("all");
-                setPlatformFilter("all");
-                setStatFilter("all");
-                setConfidenceFilter("all");
-              }}
-              data-testid="button-clear-filters"
-            >
-              Clear Filters
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* All Props */}
       <div className="space-y-4">
