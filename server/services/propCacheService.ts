@@ -88,7 +88,19 @@ export class PropCacheService {
       // Standardized logging format
       console.log(`[CACHE] sport=${sport} platform=${platform} count=${props.length} action=write`);
       
-      await fileCache.setCache(this.namespace, key, cacheEntry, ttl);
+      //
+      // 🔥 FIX: fileCache always wraps data as { data: ... }
+      // We need to store inside "data" so getProps can unwrap correctly.
+      //
+      const wrappedEntry = {
+        sport,
+        platform,
+        props: cacheEntry.props,
+        cachedAt: cacheEntry.cachedAt,
+        ttl: cacheEntry.ttl,
+        metadata: cacheEntry.metadata,
+      };
+      await fileCache.setCache(this.namespace, key, wrappedEntry, ttl);
       
       // Write metadata file
       const metadata: CacheMetadata = {
@@ -136,7 +148,15 @@ export class PropCacheService {
           throw new Error("Empty file");
         }
 
-        cached = JSON.parse(content);
+        //
+        // 🔥 FIX: fileCache stores entries as { data: { ... }, createdAt, ttl }
+        // We must unwrap ".data" before interpreting as PropsCacheEntry.
+        //
+        const parsed = JSON.parse(content);
+        if (!parsed || !parsed.data) {
+          throw new Error("Invalid fileCache format");
+        }
+        cached = parsed.data;
       } catch (error) {
         // Corruption detected - repair it
         console.warn(`[CACHE] sport=${sport} platform=${platform} count=0 action=corruption_detected`);
