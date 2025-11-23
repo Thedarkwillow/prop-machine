@@ -136,13 +136,28 @@ export class PropRefreshService {
         }
       }
 
-      // Save all props to cache in one batch
-      if (processedProps.length > 0) {
-        console.log(`[UNDERDOG] Saving ${processedProps.length} normalized props to cache...`);
-        await propCacheService.saveProps(sport, 'Underdog', processedProps, 3600); // 1 hour TTL
-        console.log(`[UNDERDOG] ✅ Successfully cached ${processedProps.length} Underdog ${sport} props`);
-      } else {
-        console.log(`[UNDERDOG] ⚠️  No props to cache for ${sport}`);
+      // ALWAYS write to cache (even if empty) - ensures cache is updated
+      try {
+        if (processedProps.length > 0) {
+          console.log(`[REFRESH] ${sport}/Underdog → ${processedProps.length} props`);
+          await propCacheService.saveProps(sport, 'Underdog', processedProps, 3600); // 1 hour TTL
+          console.log(`[UNDERDOG] ✅ Successfully cached ${processedProps.length} Underdog ${sport} props`);
+        } else {
+          console.warn(`[REFRESH WARNING] ${sport}/Underdog returned 0 props`);
+          // Write empty cache to mark refresh attempt
+          await propCacheService.saveProps(sport, 'Underdog', [], 3600);
+        }
+      } catch (cacheError) {
+        // Self-healing: if cache write fails, delete corrupted file and write placeholder
+        console.error(`[UNDERDOG] ❌ Cache write failed for ${sport}/Underdog:`, cacheError);
+        try {
+          await propCacheService.clearProps(sport, 'Underdog');
+          // Write minimal placeholder to prevent stale data
+          await propCacheService.saveProps(sport, 'Underdog', [], 3600);
+          console.log(`[UNDERDOG] 🔧 Self-healed: cleared corrupted cache and wrote placeholder`);
+        } catch (healError) {
+          console.error(`[UNDERDOG] ❌ Self-healing failed:`, healError);
+        }
       }
 
       result.success = true;
@@ -155,6 +170,16 @@ export class PropRefreshService {
       console.error(`[UNDERDOG] Error details:`, err.stack || 'No stack trace');
       console.error(`[UNDERDOG] ========================================`);
       result.errors.push(`API error: ${err.message}`);
+      
+      // Self-healing: Write placeholder to prevent stale data
+      try {
+        await propCacheService.clearProps(sport, 'Underdog');
+        await propCacheService.saveProps(sport, 'Underdog', [], 3600);
+        console.log(`[UNDERDOG] 🔧 Self-healed: wrote placeholder after failure`);
+      } catch (healError) {
+        console.error(`[UNDERDOG] ❌ Self-healing failed:`, healError);
+      }
+      
       return result;
     }
   }
@@ -270,12 +295,42 @@ export class PropRefreshService {
         }
       }
 
-      // Save props grouped by platform
+      // ALWAYS write to cache for each platform (even if empty) - ensures cache is updated
       for (const [platform, props] of Array.from(propsByPlatform.entries())) {
-        if (props.length > 0) {
-          console.log(`[ODDS API] Saving ${props.length} ${platform} props to cache...`);
-          await propCacheService.saveProps(sport, platform, props, 3600); // 1 hour TTL
-          console.log(`[ODDS API] ✅ Successfully cached ${props.length} ${platform} ${sport} props`);
+        try {
+          if (props.length > 0) {
+            console.log(`[REFRESH] ${sport}/${platform} → ${props.length} props`);
+            await propCacheService.saveProps(sport, platform, props, 3600); // 1 hour TTL
+            console.log(`[ODDS API] ✅ Successfully cached ${props.length} ${platform} ${sport} props`);
+          } else {
+            console.warn(`[REFRESH WARNING] ${sport}/${platform} returned 0 props`);
+            // Write empty cache to mark refresh attempt
+            await propCacheService.saveProps(sport, platform, [], 3600);
+          }
+        } catch (cacheError) {
+          // Self-healing: if cache write fails, delete corrupted file and write placeholder
+          console.error(`[ODDS API] ❌ Cache write failed for ${sport}/${platform}:`, cacheError);
+          try {
+            await propCacheService.clearProps(sport, platform);
+            // Write minimal placeholder to prevent stale data
+            await propCacheService.saveProps(sport, platform, [], 3600);
+            console.log(`[ODDS API] 🔧 Self-healed: cleared corrupted cache and wrote placeholder for ${platform}`);
+          } catch (healError) {
+            console.error(`[ODDS API] ❌ Self-healing failed for ${platform}:`, healError);
+          }
+        }
+      }
+      
+      // Also handle platforms that had no props at all
+      const allPlatforms = new Set(normalizedProps.map(p => p.platform));
+      for (const platform of ['DraftKings', 'FanDuel', 'Caesars', 'BetMGM', 'PointsBet']) {
+        if (!allPlatforms.has(platform)) {
+          // Platform had no props - write empty cache
+          try {
+            await propCacheService.saveProps(sport, platform, [], 3600);
+          } catch (error) {
+            // Ignore errors for platforms with no data
+          }
         }
       }
 
@@ -285,13 +340,25 @@ export class PropRefreshService {
 
     } catch (error) {
       const err = error as Error;
-      console.error(`[ODDS API] API call FAILED for ${sport}:`, err.message);
+      console.error(`[ODDS API] ❌ API call FAILED for ${sport}:`, err.message);
       
       if (err.message.includes('INVALID_MARKET') || err.message.includes('Markets not supported')) {
         result.errors.push('Player props require paid API tier. Free tier detected.');
       } else {
         result.errors.push(`API error: ${err.message}`);
       }
+      
+      // Self-healing: Clear all platform caches for this sport
+      const platforms = ['DraftKings', 'FanDuel', 'Caesars', 'BetMGM', 'PointsBet'];
+      for (const platform of platforms) {
+        try {
+          await propCacheService.clearProps(sport, platform);
+          await propCacheService.saveProps(sport, platform, [], 3600);
+        } catch (healError) {
+          // Ignore individual platform errors
+        }
+      }
+      console.log(`[ODDS API] 🔧 Self-healed: cleared all platform caches after failure`);
       
       return result;
     }
@@ -403,12 +470,29 @@ export class PropRefreshService {
         }
       }
 
-      // Save props grouped by platform
+      // ALWAYS write to cache for each platform (even if empty) - ensures cache is updated
       for (const [platform, props] of Array.from(propsByPlatform.entries())) {
-        if (props.length > 0) {
-          console.log(`[OPTICODDS] Saving ${props.length} ${platform} props to cache...`);
-          await propCacheService.saveProps(sport, platform, props, 3600); // 1 hour TTL
-          console.log(`[OPTICODDS] ✅ Successfully cached ${props.length} ${platform} ${sport} props`);
+        try {
+          if (props.length > 0) {
+            console.log(`[REFRESH] ${sport}/${platform} → ${props.length} props`);
+            await propCacheService.saveProps(sport, platform, props, 3600); // 1 hour TTL
+            console.log(`[OPTICODDS] ✅ Successfully cached ${props.length} ${platform} ${sport} props`);
+          } else {
+            console.warn(`[REFRESH WARNING] ${sport}/${platform} returned 0 props`);
+            // Write empty cache to mark refresh attempt
+            await propCacheService.saveProps(sport, platform, [], 3600);
+          }
+        } catch (cacheError) {
+          // Self-healing: if cache write fails, delete corrupted file and write placeholder
+          console.error(`[OPTICODDS] ❌ Cache write failed for ${sport}/${platform}:`, cacheError);
+          try {
+            await propCacheService.clearProps(sport, platform);
+            // Write minimal placeholder to prevent stale data
+            await propCacheService.saveProps(sport, platform, [], 3600);
+            console.log(`[OPTICODDS] 🔧 Self-healed: cleared corrupted cache and wrote placeholder for ${platform}`);
+          } catch (healError) {
+            console.error(`[OPTICODDS] ❌ Self-healing failed for ${platform}:`, healError);
+          }
         }
       }
 
@@ -602,13 +686,28 @@ export class PropRefreshService {
         }
       }
 
-      // Save all props to cache in one batch
-      if (normalizedProps.length > 0) {
-        console.log(`[PRIZEPICKS] Saving ${normalizedProps.length} normalized props to cache...`);
-        await propCacheService.saveProps(sport, 'PrizePicks', normalizedProps, 3600); // 1 hour TTL
-        console.log(`[PRIZEPICKS] ✅ Successfully cached ${normalizedProps.length} PrizePicks ${sport} props`);
-      } else {
-        console.log(`[PRIZEPICKS] ⚠️  No props to cache for ${sport}`);
+      // ALWAYS write to cache (even if empty) - ensures cache is updated
+      try {
+        if (normalizedProps.length > 0) {
+          console.log(`[REFRESH] ${sport}/PrizePicks → ${normalizedProps.length} props`);
+          await propCacheService.saveProps(sport, 'PrizePicks', normalizedProps, 3600); // 1 hour TTL
+          console.log(`[PRIZEPICKS] ✅ Successfully cached ${normalizedProps.length} PrizePicks ${sport} props`);
+        } else {
+          console.warn(`[REFRESH WARNING] ${sport}/PrizePicks returned 0 props`);
+          // Write empty cache to mark refresh attempt
+          await propCacheService.saveProps(sport, 'PrizePicks', [], 3600);
+        }
+      } catch (cacheError) {
+        // Self-healing: if cache write fails, delete corrupted file and write placeholder
+        console.error(`[PRIZEPICKS] ❌ Cache write failed for ${sport}/PrizePicks:`, cacheError);
+        try {
+          await propCacheService.clearProps(sport, 'PrizePicks');
+          // Write minimal placeholder to prevent stale data
+          await propCacheService.saveProps(sport, 'PrizePicks', [], 3600);
+          console.log(`[PRIZEPICKS] 🔧 Self-healed: cleared corrupted cache and wrote placeholder`);
+        } catch (healError) {
+          console.error(`[PRIZEPICKS] ❌ Self-healing failed:`, healError);
+        }
       }
 
       result.success = true;
@@ -621,6 +720,16 @@ export class PropRefreshService {
       console.error(`[PRIZEPICKS] Error details:`, err.stack || 'No stack trace');
       console.error(`[PRIZEPICKS] ========================================`);
       result.errors.push(err.message);
+      
+      // Self-healing: Write placeholder to prevent stale data
+      try {
+        await propCacheService.clearProps(sport, 'PrizePicks');
+        await propCacheService.saveProps(sport, 'PrizePicks', [], 3600);
+        console.log(`[PRIZEPICKS] 🔧 Self-healed: wrote placeholder after failure`);
+      } catch (healError) {
+        console.error(`[PRIZEPICKS] ❌ Self-healing failed:`, healError);
+      }
+      
       return result;
     }
   }

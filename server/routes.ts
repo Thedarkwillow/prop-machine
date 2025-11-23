@@ -659,4 +659,121 @@ router.get("/streaming/results/active", requireAdmin, async (req, res) => {
   }
 });
 
+// ==================== DEBUG ROUTES ====================
+router.get("/debug/props", async (req, res) => {
+  try {
+    const { sport, platform } = req.query;
+    
+    if (!sport || !platform) {
+      return res.status(400).json({ 
+        error: "sport and platform query parameters are required",
+        example: "/api/debug/props?sport=NBA&platform=PrizePicks"
+      });
+    }
+
+    const { propCacheService } = await import("./services/propCacheService.js");
+    const { fileCache } = await import("./utils/fileCache.js");
+    
+    const key = `${sport}_${platform}`;
+    const filePath = fileCache.getCacheFilePath('props', key);
+    
+    // Try to read raw cache
+    const fs = await import('fs/promises');
+    let rawContent: any = null;
+    let cacheEntry: any = null;
+    
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      rawContent = content;
+      cacheEntry = JSON.parse(content);
+    } catch (error) {
+      // File doesn't exist or is corrupted
+    }
+
+    // Get props count
+    const props = await propCacheService.getProps(sport as string, platform as string);
+    const propsCount = Array.isArray(props) ? props.length : 0;
+
+    // Calculate TTL remaining
+    let ttlRemaining = 0;
+    let lastUpdated: string | null = null;
+    if (cacheEntry) {
+      lastUpdated = cacheEntry.cachedAt;
+      const cachedAt = new Date(cacheEntry.cachedAt).getTime();
+      const age = Date.now() - cachedAt;
+      const ageSeconds = age / 1000;
+      ttlRemaining = Math.max(0, (cacheEntry.ttl || 0) - ageSeconds);
+    }
+
+    res.json({
+      sport,
+      platform,
+      propsCount,
+      lastUpdated,
+      ttlRemaining: Math.round(ttlRemaining),
+      ttlRemainingFormatted: `${Math.round(ttlRemaining / 60)}m ${Math.round(ttlRemaining % 60)}s`,
+      filePath,
+      fileExists: rawContent !== null,
+      rawCache: cacheEntry ? {
+        cachedAt: cacheEntry.cachedAt,
+        ttl: cacheEntry.ttl,
+        corrupted: cacheEntry.corrupted || false,
+        lastRefreshFailed: cacheEntry.lastRefreshFailed || false,
+        error: cacheEntry.error || null,
+        stale: cacheEntry.stale || false,
+      } : null,
+    });
+  } catch (error) {
+    console.error("Error in debug/props:", error);
+    res.status(500).json({ error: "Failed to fetch debug info", details: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+router.get("/debug/cache", async (req, res) => {
+  try {
+    const { propCacheService } = await import("./services/propCacheService.js");
+    const cacheInfo = await propCacheService.getCacheInfo();
+    
+    res.json({
+      summary: {
+        total: cacheInfo.total,
+        corrupted: cacheInfo.corrupted,
+        stale: cacheInfo.stale,
+        healthy: cacheInfo.total - cacheInfo.corrupted - cacheInfo.stale,
+      },
+      files: cacheInfo.files,
+    });
+  } catch (error) {
+    console.error("Error in debug/cache:", error);
+    res.status(500).json({ error: "Failed to fetch cache info", details: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+router.post("/debug/refresh-all", async (req, res) => {
+  try {
+    const { propRefreshService } = await import("./services/propRefreshService.js");
+    
+    // Trigger refresh in background (don't wait for completion)
+    const refreshPromise = propRefreshService.refreshAllPlatforms(['NBA', 'NFL', 'NHL']);
+    
+    // Don't await - return immediately
+    refreshPromise.catch(error => {
+      console.error("[DEBUG REFRESH] Background refresh error:", error);
+    });
+
+    res.json({
+      started: true,
+      servicesTriggered: ['PrizePicks', 'Underdog', 'The Odds API', 'OpticOdds'],
+      sports: ['NBA', 'NFL', 'NHL'],
+      message: "Refresh started in background. Check logs for progress.",
+    });
+  } catch (error) {
+    console.error("Error starting refresh:", error);
+    res.status(500).json({ 
+      error: "Failed to start refresh", 
+      details: error instanceof Error ? error.message : String(error) 
+    });
+  }
+});
+
 export default router;
