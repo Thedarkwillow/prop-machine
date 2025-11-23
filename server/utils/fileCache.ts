@@ -104,14 +104,24 @@ class FileCache {
       console.log(`[CACHE WRITE] Full filepath: ${filePath}`);
       console.log(`[CACHE WRITE] TTL: ${ttl}s (${(ttl / 60).toFixed(1)} minutes, ${(ttl / 3600).toFixed(2)} hours)`);
       console.log(`[CACHE WRITE] ETag: ${etag || 'none'}, LastModified: ${lastModified || 'none'}`);
-      
-      const entry: CacheEntry<T> = {
-        data,
-        etag,
-        lastModified,
+
+      // ---------------------------------------------
+      // CRITICAL FIX:
+      // Flatten the cache entry so PropCacheService
+      // reads props correctly (no nested "data" field)
+      // ---------------------------------------------
+      const entry = {
+        ...data,          // 🔥 flatten instead of wrapping in { data: ... }
         createdAt: Date.now(),
         ttl,
+        etag,
+        lastModified,
       };
+
+      // Prevent undefined TTL
+      if (!entry.ttl) {
+        entry.ttl = ttl;
+      }
 
       await fs.writeFile(filePath, JSON.stringify(entry, null, 2), 'utf-8');
       console.log(`[CACHE WRITE] Successfully wrote cache file: ${filePath}`);
