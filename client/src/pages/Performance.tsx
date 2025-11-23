@@ -9,9 +9,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useAuth } from '@/hooks/useAuth';
 import type { Bet, Prop } from '@shared/schema';
-
-const USER_ID = 1;
 
 type BetWithProp = Bet & { prop: Prop | null };
 
@@ -29,8 +28,10 @@ type SportStats = {
 };
 
 export default function Performance() {
+  const { user: authUser } = useAuth();
   const { data: bets = [], isLoading } = useQuery<BetWithProp[]>({
-    queryKey: ['/api/bets', USER_ID],
+    queryKey: ['/api/bets'],
+    enabled: !!authUser,
   });
 
   // Calculate sport-specific stats

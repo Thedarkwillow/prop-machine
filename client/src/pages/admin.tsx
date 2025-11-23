@@ -138,7 +138,7 @@ export default function Admin() {
   const handleStartStream = async (sport: string) => {
     setIsStreamingAction(true);
     try {
-      const res = await apiRequest("POST", "/api/admin/streaming/start", { sport, sportsbooks: ['PrizePicks', 'Underdog'] });
+      const res = await apiRequest("POST", "/api/streaming/odds/start", { sport, sportsbooks: ['PrizePicks', 'Underdog Fantasy'] });
       const response: any = await res.json();
 
       toast({
@@ -161,7 +161,7 @@ export default function Admin() {
   const handleStopStream = async (streamId: string) => {
     setIsStreamingAction(true);
     try {
-      const res = await apiRequest("POST", "/api/admin/streaming/stop", { streamId });
+      const res = await apiRequest("POST", `/api/streaming/odds/stop/${streamId}`, {});
       const response: any = await res.json();
 
       toast({
@@ -184,8 +184,25 @@ export default function Admin() {
   const handleStopAllStreams = async () => {
     setIsStreamingAction(true);
     try {
-      const res = await apiRequest("POST", "/api/admin/streaming/stop-all");
-      const response: any = await res.json();
+      // Stop all odds streams
+      const oddsRes = await apiRequest("GET", "/api/streaming/odds/active");
+      const oddsData: any = await oddsRes.json();
+      if (oddsData.streams && oddsData.streams.length > 0) {
+        await Promise.all(oddsData.streams.map((id: string) => 
+          apiRequest("POST", `/api/streaming/odds/stop/${id}`, {})
+        ));
+      }
+      
+      // Stop all results streams
+      const resultsRes = await apiRequest("GET", "/api/streaming/results/active");
+      const resultsData: any = await resultsRes.json();
+      if (resultsData.streams && resultsData.streams.length > 0) {
+        await Promise.all(resultsData.streams.map((id: string) => 
+          apiRequest("POST", `/api/streaming/results/stop/${id}`, {})
+        ));
+      }
+      
+      const response = { success: true, message: "All streams stopped" };
 
       toast({
         title: "All Streams Stopped",

@@ -472,6 +472,54 @@ router.get("/prop-comparison/player", async (req, res) => {
   }
 });
 
+// ==================== USER ROUTES ====================
+router.get("/user", requireAuth, async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    
+    const user = await storage.getUser(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
+});
+
+// ==================== PLAYER COMPARISON ROUTES ====================
+router.get("/player-comparison", async (req, res) => {
+  try {
+    const { player1, player2, sport } = req.query;
+    
+    if (!player1 || !player2 || typeof player1 !== 'string' || typeof player2 !== 'string') {
+      return res.status(400).json({ error: "player1 and player2 query parameters are required" });
+    }
+    
+    const selectedSport = (sport as string) || "NBA";
+    if (!["NBA", "NHL", "NFL"].includes(selectedSport)) {
+      return res.status(400).json({ error: "sport must be NBA, NHL, or NFL" });
+    }
+    
+    const { playerComparisonService } = await import("./services/playerComparisonService");
+    const comparison = await playerComparisonService.comparePlayers(
+      player1,
+      player2,
+      selectedSport as "NBA" | "NHL" | "NFL"
+    );
+    
+    res.json(comparison);
+  } catch (error: any) {
+    console.error("Error comparing players:", error);
+    res.status(500).json({ error: error.message || "Failed to compare players" });
+  }
+});
+
 // ==================== PLAYER SEARCH ROUTES ====================
 router.get("/players/search", async (req, res) => {
   try {

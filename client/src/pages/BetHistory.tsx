@@ -29,9 +29,8 @@ import {
 } from "@/components/ui/table";
 import { Search, Check, X, Minus, MoreVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-
-const USER_ID = 1;
 
 type BetWithProp = {
   id: number;
@@ -66,6 +65,7 @@ type BetWithProp = {
 
 export default function BetHistory() {
   const { toast } = useToast();
+  const { user: authUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSport, setSelectedSport] = useState('all');
@@ -73,22 +73,25 @@ export default function BetHistory() {
   const [selectedDateRange, setSelectedDateRange] = useState('all');
 
   const { data: bets = [], isLoading } = useQuery<BetWithProp[]>({
-    queryKey: ['/api/bets', USER_ID],
+    queryKey: ['/api/bets'],
+    enabled: !!authUser,
   });
 
-  const { data: user } = useQuery({
-    queryKey: ['/api/user', USER_ID],
+  const { data: user } = useQuery<{ bankroll: string }>({
+    queryKey: ['/api/user'],
+    enabled: !!authUser,
   });
 
   // Mutation for settling bets
   const settleBetMutation = useMutation({
     mutationFn: async ({ betId, outcome }: { betId: number; outcome: 'won' | 'lost' | 'pushed' }) => {
-      return await apiRequest('PATCH', `/api/bets/${betId}/settle`, { status: outcome });
+      const response = await apiRequest('PATCH', `/api/bets/${betId}/settle`, { outcome });
+      return await response.json();
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/bets', USER_ID] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user', USER_ID] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard', USER_ID] });
+      queryClient.invalidateQueries({ queryKey: ['/api/bets'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
       
       const outcomeLabels = { won: 'Won', lost: 'Lost', pushed: 'Pushed' };
       const bankrollChange = data.bankrollChange || 0;
@@ -200,8 +203,7 @@ export default function BetHistory() {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader
-          bankroll={parseFloat(user?.bankroll ?? "0")}
-          alertCount={0}
+          bankroll={parseFloat((user as any)?.bankroll ?? "0")}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         />
 
@@ -320,7 +322,7 @@ export default function BetHistory() {
                               <div className="flex items-center gap-2">
                                 <Badge variant="default">{pickCount}-Pick Parlay</Badge>
                                 <span className="text-xs text-muted-foreground">
-                                  {bet.slip.picks.map((p: any) => p.player).join(", ").slice(0, 30)}...
+                                  {bet.slip?.picks?.map((p: any) => p.player).join(", ").slice(0, 30)}...
                                 </span>
                               </div>
                             ) : (

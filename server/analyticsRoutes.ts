@@ -23,12 +23,25 @@ export function createAnalyticsRoutes(storage: IStorage): Router {
         analyticsService.getConfidenceAccuracy(userId),
       ]);
 
+      // Get trends from history (last 30 days)
+      const history = await analyticsService.getAnalyticsHistory(userId, 30);
+      const trends = history.map((snapshot: any) => ({
+        date: new Date(snapshot.date).toISOString().split('T')[0],
+        winRate: snapshot.sportStats && snapshot.sportStats.length > 0
+          ? snapshot.sportStats.reduce((sum: number, s: any) => sum + (s.winRate || 0), 0) / snapshot.sportStats.length
+          : 0,
+        roi: snapshot.sportStats && snapshot.sportStats.length > 0
+          ? snapshot.sportStats.reduce((sum: number, s: any) => sum + (s.roi || 0), 0) / snapshot.sportStats.length
+          : 0,
+        clv: 0, // CLV not stored in snapshots currently
+      }));
+
       res.json({
         overview: overview || { totalBets: 0, winRate: 0, roi: 0, avgClv: 0, currentStreak: { type: 'none', count: 0 } },
         bySport: bySport || [],
         byPlatform: byPlatform || [],
         confidenceBrackets: confidenceBrackets || {},
-        trends: [], // Trends data can be fetched separately if needed
+        trends: trends || [],
       });
     } catch (error) {
       console.error("Error getting analytics overview:", error);

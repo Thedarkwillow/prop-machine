@@ -255,7 +255,7 @@ export default function DFSProps() {
                 <SelectContent>
                   {stats.map((stat) => (
                     <SelectItem key={stat} value={stat}>
-                      {stat === "all" ? "All Stats" : stat}
+                      {stat === "all" ? "All Props" : stat}
                     </SelectItem>
                   ))}
                 </SelectContent>

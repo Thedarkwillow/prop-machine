@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 import SlipBuilder from "@/components/SlipBuilder";
 import {
   Select,
@@ -12,20 +13,20 @@ import {
 } from "@/components/ui/select";
 import type { Prop } from "@shared/schema";
 
-const USER_ID = 1;
-
 export default function BuildSlip() {
   const [selectedSport, setSelectedSport] = useState('NHL');
   const { toast } = useToast();
+  const { user: authUser } = useAuth();
 
   // Fetch props for selected sport
   const { data: props = [], isLoading, isError } = useQuery<Prop[]>({
-    queryKey: ['/api/props', selectedSport],
+    queryKey: ['/api/props', { sport: selectedSport, limit: 20000 }],
   });
 
   // Fetch user data for bankroll info
   const { data: user } = useQuery({
-    queryKey: ['/api/user', USER_ID],
+    queryKey: ['/api/user'],
+    enabled: !!authUser,
   });
 
   useEffect(() => {
@@ -49,19 +50,19 @@ export default function BuildSlip() {
   // Mutation for placing a bet
   const placeBetMutation = useMutation({
     mutationFn: async (betData: any) => {
-      const response = await apiRequest('POST', `/api/bets/${USER_ID}`, betData);
+      const response = await apiRequest('POST', `/api/bets`, betData);
       return await response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/bets', USER_ID] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user', USER_ID] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard', USER_ID] });
-      queryClient.invalidateQueries({ queryKey: ['/api/slips', USER_ID] });
+      queryClient.invalidateQueries({ queryKey: ['/api/bets'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/slips'] });
     },
   });
 
   const handlePlaceSlip = async (propIds: number[]) => {
-    if (!user || propIds.length === 0) return;
+    if (!user || !authUser || propIds.length === 0) return;
 
     const selectedPropsList = props.filter(p => propIds.includes(p.id));
     const avgConfidence = Math.round(
@@ -80,7 +81,6 @@ export default function BuildSlip() {
     try {
       // First, create a slip with all the props
       const slipData = {
-        userId: USER_ID,
         type: 'balanced' as const,
         title: `${selectedPropsList.length}-Pick Custom Parlay`,
         picks: selectedPropsList.map(p => ({
@@ -104,7 +104,6 @@ export default function BuildSlip() {
 
       // Then place the bet referencing the slip
       const betData = {
-        userId: USER_ID,
         slipId: slip.id,
         propId: null, // Parlay bets reference the slip, not individual props
         amount: betAmount.toFixed(2),

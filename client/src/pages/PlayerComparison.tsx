@@ -19,17 +19,17 @@ export default function PlayerComparison() {
     setPlayer2(null);
   }, [sport]);
 
-  const { data: comparison, isLoading } = useQuery<any>({
-    queryKey: ["/api/player-comparison", searchKey],
-    enabled: searchKey.length > 0,
-  });
-
   const handleCompare = (e: React.FormEvent) => {
     e.preventDefault();
     if (player1 && player2) {
       setSearchKey(`${player1.displayName}/${player2.displayName}/${sport}`);
     }
   };
+
+  const { data: comparison, isLoading } = useQuery<any>({
+    queryKey: ["/api/player-comparison", { player1: player1?.displayName, player2: player2?.displayName, sport }],
+    enabled: !!player1 && !!player2 && searchKey.length > 0,
+  });
 
   const getDiffIcon = (diff: number) => {
     if (diff > 1) return <TrendingUp className="h-4 w-4 text-green-600" />;

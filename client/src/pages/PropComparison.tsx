@@ -16,7 +16,7 @@ export default function PropComparison() {
   }, [sport]);
 
   const { data: comparisons, isLoading } = useQuery<any[]>({
-    queryKey: [`/api/prop-comparison/player?player=${selectedPlayer?.displayName || ""}&sport=${sport}`],
+    queryKey: ['/api/prop-comparison/player', { player: selectedPlayer?.displayName || "", sport }],
     enabled: !!selectedPlayer,
   });
 

@@ -406,10 +406,10 @@ export default function Dashboard() {
                   </Select>
                   <Select value={selectedStat} onValueChange={setSelectedStat}>
                     <SelectTrigger className="w-40" data-testid="select-stat">
-                      <SelectValue placeholder="All Stats" />
+                      <SelectValue placeholder="All Props" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Stats</SelectItem>
+                      <SelectItem value="all">All Props</SelectItem>
                       {availableStats.map((stat) => (
                         <SelectItem key={stat} value={stat}>
                           {stat}
@@ -425,8 +425,10 @@ export default function Dashboard() {
                       <SelectItem value="all">All Platforms</SelectItem>
                       <SelectItem value="DraftKings">DraftKings</SelectItem>
                       <SelectItem value="FanDuel">FanDuel</SelectItem>
+                      <SelectItem value="PrizePicks">PrizePicks</SelectItem>
+                      <SelectItem value="Underdog">Underdog</SelectItem>
                       {availablePlatforms
-                        .filter(p => p !== 'DraftKings' && p !== 'FanDuel')
+                        .filter(p => p !== 'DraftKings' && p !== 'FanDuel' && p !== 'PrizePicks' && p !== 'Underdog')
                         .map((platform) => (
                           <SelectItem key={platform} value={platform}>
                             {platform}

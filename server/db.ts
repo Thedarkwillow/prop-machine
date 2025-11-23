@@ -1,7 +1,13 @@
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
+import dotenv from "dotenv";
+import path from "path";
 import * as schema from "@shared/schema";
+
+// Load environment variables before checking
+// Load .env from project root (where npm run dev is executed from)
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 if (!process.env.DATABASE_URL) {
   throw new Error(

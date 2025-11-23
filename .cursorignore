@@ -1,0 +1,31 @@
+# Replit junk
+.replit
+*.replit
+replit.nix
+.nix
+.nix*
+.hidden
+.env.development.local
+
+# Replit build artifacts
+node_modules/**
+**/node_modules/**
+dist/**
+build/**
+out/**
+.vercel/**
+.next/**
+
+# Cursor should ignore environment files
+.env
+.env.*
+!.env.example
+
+# Ignore lock files if they cause conflicts
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
+
+# OS junk
+.DS_Store
+Thumbs.db
