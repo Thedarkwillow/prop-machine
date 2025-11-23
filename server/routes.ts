@@ -677,30 +677,46 @@ router.get("/debug/props", async (req, res) => {
     const key = `${sport}_${platform}`;
     const filePath = fileCache.getCacheFilePath('props', key);
     
-    // Try to read raw cache
+    // Try to read raw cache - handle corruption gracefully
     const fs = await import('fs/promises');
-    let rawContent: any = null;
+    let rawContent: string | null = null;
     let cacheEntry: any = null;
+    let parseError: string | null = null;
+    let fileExists = false;
     
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
-      rawContent = content;
-      cacheEntry = JSON.parse(content);
-    } catch (error) {
-      // File doesn't exist or is corrupted
+      await fs.access(filePath);
+      fileExists = true;
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        rawContent = content;
+        if (content && content.trim().length > 0) {
+          cacheEntry = JSON.parse(content);
+        } else {
+          parseError = "File is empty";
+        }
+      } catch (parseErr) {
+        parseError = parseErr instanceof Error ? parseErr.message : String(parseErr);
+        // File exists but is corrupted - still return info
+      }
+    } catch {
+      // File doesn't exist
+      fileExists = false;
     }
 
-    // Get props count
+    // Get props count (this will handle corruption internally)
     const props = await propCacheService.getProps(sport as string, platform as string);
     const propsCount = Array.isArray(props) ? props.length : 0;
+    const isStale = typeof props === 'object' && 'stale' in props && props.stale;
 
     // Calculate TTL remaining
     let ttlRemaining = 0;
     let lastUpdated: string | null = null;
-    if (cacheEntry) {
+    let age = 0;
+    if (cacheEntry && cacheEntry.cachedAt) {
       lastUpdated = cacheEntry.cachedAt;
       const cachedAt = new Date(cacheEntry.cachedAt).getTime();
-      const age = Date.now() - cachedAt;
+      age = Date.now() - cachedAt;
       const ageSeconds = age / 1000;
       ttlRemaining = Math.max(0, (cacheEntry.ttl || 0) - ageSeconds);
     }
@@ -709,18 +725,23 @@ router.get("/debug/props", async (req, res) => {
       sport,
       platform,
       propsCount,
+      isStale,
       lastUpdated,
+      age: Math.round(age / 1000),
       ttlRemaining: Math.round(ttlRemaining),
       ttlRemainingFormatted: `${Math.round(ttlRemaining / 60)}m ${Math.round(ttlRemaining % 60)}s`,
       filePath,
-      fileExists: rawContent !== null,
+      fileExists,
+      parseError,
       rawCache: cacheEntry ? {
         cachedAt: cacheEntry.cachedAt,
         ttl: cacheEntry.ttl,
         corrupted: cacheEntry.corrupted || false,
         lastRefreshFailed: cacheEntry.lastRefreshFailed || false,
         error: cacheEntry.error || null,
-        stale: cacheEntry.stale || false,
+        warning: cacheEntry.warning || null,
+        metadata: cacheEntry.metadata || null,
+        repairedAt: cacheEntry.repairedAt || null,
       } : null,
     });
   } catch (error) {

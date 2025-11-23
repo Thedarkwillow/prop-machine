@@ -14,10 +14,17 @@ interface PropsCacheEntry {
   props: CachedProp[];
   cachedAt: string;
   ttl: number; // TTL in seconds
+  metadata: {
+    updatedAt: string;
+    source: string; // 'api' | 'cache' | 'repair' | 'empty'
+    success: boolean;
+  };
   corrupted?: boolean;
   lastRefreshFailed?: boolean;
   error?: string;
   stale?: boolean;
+  warning?: string; // For empty responses
+  repairedAt?: string; // When file was repaired
 }
 
 interface CacheMetadata {
@@ -53,7 +60,10 @@ export class PropCacheService {
     sport: string,
     platform: string,
     props: CachedProp[],
-    ttl: number = this.defaultTTL
+    ttl: number = this.defaultTTL,
+    source: 'api' | 'cache' | 'repair' | 'empty' = 'api',
+    success: boolean = true,
+    warning?: string
   ): Promise<void> {
     try {
       // Always create directory
@@ -64,13 +74,19 @@ export class PropCacheService {
       const cacheEntry: PropsCacheEntry = {
         sport,
         platform,
-        props,
+        props: props || [],
         cachedAt: now,
         ttl,
+        metadata: {
+          updatedAt: now,
+          source,
+          success,
+        },
+        ...(warning ? { warning } : {}),
       };
 
-      console.log(`[CACHE WRITE] ${sport}/${platform}: ${props.length} props saved`);
-      console.log(`[PROP CACHE] Saving ${props.length} props to cache: sport=${sport}, platform=${platform}`);
+      // Standardized logging format
+      console.log(`[CACHE] sport=${sport} platform=${platform} count=${props.length} action=write`);
       
       await fileCache.setCache(this.namespace, key, cacheEntry, ttl);
       
@@ -107,7 +123,7 @@ export class PropCacheService {
       try {
         await fs.access(filePath);
       } catch {
-        console.log(`[PROP CACHE] No cache found for ${sport}/${platform}`);
+        console.log(`[CACHE] sport=${sport} platform=${platform} count=0 action=read_miss`);
         return [];
       }
 
@@ -123,6 +139,7 @@ export class PropCacheService {
         cached = JSON.parse(content);
       } catch (error) {
         // Corruption detected - repair it
+        console.warn(`[CACHE] sport=${sport} platform=${platform} count=0 action=corruption_detected`);
         console.warn(`[CACHE CORRUPTION] file damaged: ${filePath}`);
         await this.repairCorruptedFile(filePath, sport, platform, error instanceof Error ? error.message : String(error));
         return [];
@@ -134,7 +151,7 @@ export class PropCacheService {
       const ageSeconds = age / 1000;
 
       if (ageSeconds > cached.ttl) {
-        console.warn(`[CACHE STALE] ${sport}/${platform}: age ${ageSeconds.toFixed(0)}s > TTL ${cached.ttl}s`);
+        console.warn(`[CACHE] sport=${sport} platform=${platform} count=0 action=stale_detected age=${Math.round(ageSeconds)}s ttl=${cached.ttl}s`);
         // Delete stale file
         await fs.unlink(filePath).catch(() => {});
         return { stale: true };
@@ -142,12 +159,13 @@ export class PropCacheService {
 
       // Check for corruption markers
       if (cached.corrupted || cached.lastRefreshFailed) {
-        console.warn(`[CACHE CORRUPTION] ${sport}/${platform}: marked as corrupted or failed`);
+        console.warn(`[CACHE] sport=${sport} platform=${platform} count=0 action=corruption_marker`);
         await this.repairCorruptedFile(filePath, sport, platform, cached.error || "Previous refresh failed");
         return [];
       }
 
-      console.log(`[PROP CACHE] ✅ Found ${cached.props.length} cached props for ${sport}/${platform}`);
+      const propsCount = cached.props?.length || 0;
+      console.log(`[CACHE] sport=${sport} platform=${platform} count=${propsCount} action=read_success`);
       return cached.props || [];
     } catch (error) {
       console.error(`[PROP CACHE] ❌ Error reading props from cache:`, error);
@@ -165,18 +183,31 @@ export class PropCacheService {
     errorMessage: string
   ): Promise<void> {
     try {
+      // Delete corrupted file first
+      await fs.unlink(filePath).catch(() => {});
+      
+      const now = new Date().toISOString();
       const safeEntry: PropsCacheEntry = {
         sport,
         platform,
         props: [],
-        cachedAt: new Date().toISOString(),
+        cachedAt: now,
         ttl: this.defaultTTL,
+        metadata: {
+          updatedAt: now,
+          source: 'repair',
+          success: false,
+        },
         corrupted: true,
-        lastRefreshFailed: true,
+        repairedAt: now,
         error: errorMessage,
       };
 
+      // Ensure directory exists
+      await fs.mkdir(this.cacheDir, { recursive: true });
+      
       await fs.writeFile(filePath, JSON.stringify(safeEntry, null, 2), 'utf-8');
+      console.log(`[CACHE] sport=${sport} platform=${platform} count=0 action=repair`);
       console.log(`[CACHE REPAIR] Replaced corrupted file: ${filePath}`);
     } catch (error) {
       console.error(`[CACHE REPAIR] Failed to repair file ${filePath}:`, error);
@@ -198,7 +229,7 @@ export class PropCacheService {
         
         // Skip if stale
         if (typeof result === 'object' && 'stale' in result && result.stale) {
-          console.log(`[PROP CACHE] Skipping stale cache for ${sport}/${platform}`);
+          console.log(`[CACHE] sport=${sport} platform=${platform} count=0 action=stale_skipped`);
           continue;
         }
         
