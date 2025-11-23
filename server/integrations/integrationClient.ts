@@ -1,4 +1,5 @@
 import { storage } from "../storage";
+import { fileCache } from "../utils/fileCache";
 
 export interface RateLimitConfig {
   provider: string;
@@ -213,13 +214,8 @@ export class IntegrationClient {
     lastModified?: string
   ): Promise<void> {
     try {
-      await storage.createDataFeed({
-        provider: this.rateLimitConfig.provider,
-        endpoint,
-        response: data as any,
-        etag,
-        lastModified,
-      });
+      const namespace = fileCache.getNamespace(this.rateLimitConfig.provider);
+      await fileCache.setCache(namespace, endpoint, data, this.cacheConfig.ttl, etag, lastModified);
     } catch (error) {
       console.error('Cache write error:', error);
     }
@@ -227,15 +223,8 @@ export class IntegrationClient {
 
   private async getCachedResponse<T>(endpoint: string): Promise<T | null> {
     try {
-      const feeds = await storage.getDataFeeds(this.rateLimitConfig.provider, endpoint);
-      if (feeds.length > 0) {
-        const latest = feeds[0];
-        const age = Date.now() - new Date(latest.createdAt).getTime();
-        
-        if (age < this.cacheConfig.ttl * 1000) {
-          return latest.response as T;
-        }
-      }
+      const namespace = fileCache.getNamespace(this.rateLimitConfig.provider);
+      return await fileCache.getCache<T>(namespace, endpoint, this.cacheConfig.ttl);
     } catch (error) {
       console.error('Cache read error:', error);
     }

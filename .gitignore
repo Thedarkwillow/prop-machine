@@ -51,3 +51,6 @@ vite.config.ts.*
 .cache/
 temp/
 tmp/
+
+# File-based API cache
+cache/

@@ -699,8 +699,12 @@ class MemStorage implements IStorage {
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
+  // DEPRECATED: API caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.setCache() and fileCache.getCache() instead
   async createDataFeed(feed: InsertDataFeed): Promise<DataFeed> {
-    const newFeed: DataFeed = {
+    console.warn('createDataFeed is deprecated - use fileCache.setCache() instead');
+    // Return a mock object to prevent type errors
+    return {
       id: this.dataFeedIdCounter++,
       provider: feed.provider,
       endpoint: feed.endpoint,
@@ -709,14 +713,13 @@ class MemStorage implements IStorage {
       lastModified: feed.lastModified ?? null,
       createdAt: new Date(),
     };
-    this.dataFeeds.set(newFeed.id, newFeed);
-    return newFeed;
   }
 
+  // DEPRECATED: API caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.getCache() instead
   async getDataFeeds(provider: string, endpoint: string): Promise<DataFeed[]> {
-    return Array.from(this.dataFeeds.values()).filter(
-      f => f.provider === provider && f.endpoint === endpoint
-    );
+    console.warn('getDataFeeds is deprecated - use fileCache.getCache() instead');
+    return []; // Return empty array to prevent errors
   }
 
   async createGameEvent(event: InsertGameEvent): Promise<GameEvent> {
@@ -1696,16 +1699,29 @@ class DbStorage implements IStorage {
   }
 
   // Data feeds
+  // DEPRECATED: API caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.setCache() and fileCache.getCache() instead
+  // This method is kept for interface compatibility but no longer writes to database
   async createDataFeed(feed: InsertDataFeed): Promise<DataFeed> {
-    const result = await db.insert(dataFeeds).values(feed).returning();
-    return result[0];
+    console.warn('createDataFeed is deprecated - use fileCache.setCache() instead');
+    // Return a mock object to prevent type errors
+    return {
+      id: 0,
+      provider: feed.provider,
+      endpoint: feed.endpoint,
+      response: feed.response,
+      etag: feed.etag ?? null,
+      lastModified: feed.lastModified ?? null,
+      createdAt: new Date(),
+    };
   }
 
+  // DEPRECATED: API caching moved to file-based cache (server/utils/fileCache.ts)
+  // Use fileCache.getCache() instead
+  // This method is kept for interface compatibility but no longer reads from database
   async getDataFeeds(provider: string, endpoint: string): Promise<DataFeed[]> {
-    return await db
-      .select()
-      .from(dataFeeds)
-      .where(and(eq(dataFeeds.provider, provider), eq(dataFeeds.endpoint, endpoint)));
+    console.warn('getDataFeeds is deprecated - use fileCache.getCache() instead');
+    return []; // Return empty array to prevent errors
   }
 
   // Game events
