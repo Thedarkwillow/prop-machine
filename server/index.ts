@@ -126,21 +126,21 @@ app.use("/api", router);
 /* ------------------------- PRODUCTION STATIC FILES ------------------------- */
 
 if (process.env.NODE_ENV === "production") {
-  const distPath = path.join(process.cwd(), "dist", "public");
+  const clientPath = path.resolve(process.cwd(), "client/dist");
 
-  if (!fs.existsSync(distPath)) {
-    console.error(`❌ Build directory not found: ${distPath}`);
+  if (!fs.existsSync(clientPath)) {
+    console.error(`❌ Build directory not found: ${clientPath}`);
     console.error("Run `npm run build` before deploying.");
     process.exit(1);
   }
 
-  console.log(`📦 Serving static files from: ${distPath}`);
+  console.log(`📦 Serving static files from: ${clientPath}`);
 
-  app.use(express.static(distPath));
+  app.use(express.static(clientPath));
 
   // SPA fallback
   app.get("*", (_req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
+    res.sendFile(path.join(clientPath, "index.html"));
   });
 }
 
