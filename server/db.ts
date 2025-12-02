@@ -1,4 +1,5 @@
 import pg from "pg";
+import dns from "dns";
 import { drizzle } from "drizzle-orm/node-postgres";
 import dotenv from "dotenv";
 import path from "path";
@@ -53,6 +54,10 @@ try {
 export const pool = new Pool({
   connectionString: databaseUrl,
   ssl: { rejectUnauthorized: false },
+  // Force IPv4 to avoid ENETUNREACH errors to IPv6 addresses in some hosts
+  lookup: (hostname, options, callback) => {
+    return dns.lookup(hostname, { ...options, family: 4 }, callback as any);
+  },
 });
 
 // Initialize Drizzle using the node-postgres adapter
