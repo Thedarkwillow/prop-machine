@@ -1,25 +1,20 @@
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "../shared/schema"; // adjust if path differs
+import * as schema from "../shared/schema";
 
 const { Pool } = pg;
 
-/**
- * Railway IPv6 fix:
- * Force PostgreSQL DNS to resolve using IPv4 internal hostname
- */
 export function createIPv4Pool(): pg.Pool {
-  const databaseUrl = process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL;
-  if (!databaseUrl) {
+  if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set");
   }
 
-  const url = new URL(databaseUrl);
+  const url = new URL(process.env.DATABASE_URL);
   url.hostname = "postgres.railway.internal";
 
   return new Pool({
     connectionString: url.toString(),
-    ssl: { rejectUnauthorized: false },
+    ssl: { rejectUnauthorized: false }
   });
 }
 
