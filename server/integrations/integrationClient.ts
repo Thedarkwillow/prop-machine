@@ -167,6 +167,10 @@ export class IntegrationClient {
       console.log(`[API FETCH] Response received in ${fetchDuration}ms`);
       console.log(`[API FETCH] Status: ${response.status} ${response.statusText}`);
 
+      if (response.status === 404) {
+        return { data: undefined as T, cached: false };
+      }
+
       if (!response.ok) {
         let errorBody = '';
         try {
