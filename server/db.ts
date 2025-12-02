@@ -54,9 +54,25 @@ try {
 export const pool = new Pool({
   connectionString: databaseUrl,
   ssl: { rejectUnauthorized: false },
-  // Force IPv4 to avoid ENETUNREACH errors to IPv6 addresses in some hosts
-  lookup: (hostname, options, callback) => {
-    return dns.lookup(hostname, { ...options, family: 4 }, callback as any);
+  // Force IPv4 to avoid ENETUNREACH errors to IPv6 addresses in some hosts.
+  // Handle both (hostname, options, callback) and (hostname, callback) call shapes.
+  lookup: (
+    hostname: string,
+    options: dns.LookupOneOptions | dns.LookupAllOptions | number | any,
+    callback: (err: NodeJS.ErrnoException | null, address: any, family?: number) => void,
+  ) => {
+    if (typeof options === "function") {
+      // Called as lookup(host, callback)
+      return dns.lookup(hostname, { family: 4 }, options as any);
+    }
+
+    // Called as lookup(host, options, callback)
+    const opts =
+      typeof options === "number"
+        ? { family: 4 }
+        : { ...(options || {}), family: 4 };
+
+    return dns.lookup(hostname, opts as any, callback as any);
   },
 });
 
