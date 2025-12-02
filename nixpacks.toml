@@ -1,8 +1,11 @@
-[phases.build]
-cmds = ["npx vite build"]
-
 [phases.setup]
 nixPkgs = ["nodejs_18", "npm-9_x", "openssl"]
+
+[phases.install]
+cmds = ["npm install"]
+
+[phases.build]
+cmds = ["npx vite build"]
 
 [start]
 cmd = "npm run start"

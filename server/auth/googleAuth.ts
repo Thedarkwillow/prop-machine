@@ -37,10 +37,16 @@ export async function setupGoogleAuth(app: Express) {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
+          console.log("🔐 Google OAuth strategy callback:", {
+            profileId: profile.id,
+            hasEmail: !!profile.emails?.[0]?.value,
+            displayName: profile.displayName,
+          });
+
           // Validate email exists
           const email = profile.emails?.[0]?.value;
           if (!email) {
-            console.error("Google OAuth error: No email provided");
+            console.error("❌ Google OAuth error: No email provided");
             return done(new Error("Google account must have an email address"));
           }
 
@@ -50,8 +56,10 @@ export async function setupGoogleAuth(app: Express) {
 
           // Find or create user
           let user = await storage.getUserByEmail(email);
+          console.log("👤 User lookup result:", { found: !!user, email });
 
           if (!user) {
+            console.log("➕ Creating new user:", { email, firstName, lastName });
             user = await storage.createUser({
               email,
               firstName,
@@ -63,11 +71,18 @@ export async function setupGoogleAuth(app: Express) {
               riskTolerance: "balanced",
               isAdmin: false,
             });
+            console.log("✅ New user created:", { userId: user.id, email });
+          } else {
+            console.log("✅ Existing user found:", { userId: user.id, email });
           }
 
           return done(null, user);
         } catch (error) {
-          console.error("Google OAuth error:", error);
+          console.error("❌ Google OAuth strategy error:", error);
+          if (error instanceof Error) {
+            console.error("   Error message:", error.message);
+            console.error("   Error stack:", error.stack);
+          }
           return done(error as Error);
         }
       }
@@ -87,9 +102,9 @@ export async function setupGoogleAuth(app: Express) {
         return done(null, false);
       }
       
-      // Convert to number for database lookup
-      const userId = typeof id === 'string' ? parseInt(id, 10) : id;
-      if (isNaN(userId)) {
+      // User ID is a UUID string (varchar), not a number
+      const userId = String(id);
+      if (!userId) {
         console.error("Invalid user ID in session:", id);
         return done(null, false);
       }
@@ -125,12 +140,44 @@ export async function setupGoogleAuth(app: Express) {
   // Google OAuth callback
   app.get(
     "/api/auth/google/callback",
-    passport.authenticate("google", {
-      failureRedirect: "/",
-      failureMessage: true,
-    }),
-    (req, res) => {
-      res.redirect("/");
+    (req, res, next) => {
+      // Log callback attempt for debugging
+      console.log("🔐 Google OAuth callback received:", {
+        hasCode: !!req.query.code,
+        hasState: !!req.query.state,
+        hasError: !!req.query.error,
+        error: req.query.error,
+        errorDescription: req.query.error_description,
+      });
+      next();
+    },
+    (req, res, next) => {
+      passport.authenticate("google", (err: any, user: any, info: any) => {
+        if (err) {
+          console.error("❌ Passport authentication error:", err);
+          console.error("   Error details:", {
+            message: err.message,
+            stack: err.stack,
+          });
+          return res.redirect("/?auth_error=authentication_failed");
+        }
+        if (!user) {
+          console.error("❌ Passport authentication failed - no user:", info);
+          return res.redirect("/?auth_error=no_user");
+        }
+        req.logIn(user, (loginErr) => {
+          if (loginErr) {
+            console.error("❌ Login error:", loginErr);
+            return res.redirect("/?auth_error=login_failed");
+          }
+          // Success callback - user is authenticated
+          console.log("✅ Google OAuth successful, user authenticated:", {
+            userId: user.id,
+            email: user.email,
+          });
+          res.redirect("/");
+        });
+      })(req, res, next);
     }
   );
 
