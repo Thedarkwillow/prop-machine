@@ -72,26 +72,32 @@ app.use(express.json());
 /* ------------------------- SHARED SESSION MIDDLEWARE ------------------------- */
 // PostgreSQL-backed sessions for Railway multi-instance support
 // In development, Replit Auth uses this session store too
-const PgStore = connectPgSimple(session);
+if (!process.env.DISABLE_SESSIONS) {
+  const PgStore = connectPgSimple(session);
 
-app.use(
-  session({
-    store: new PgStore({
-      pool: createIPv4Pool(),
-      tableName: "sessions", // Use existing sessions table
-      createTableIfMissing: false, // Managed by Drizzle schema
-    }),
-    secret: process.env.SESSION_SECRET || "your-secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Only secure in production (HTTPS)
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // "none" required for Railway OAuth
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    },
-  })
-);
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET!,
+      resave: false,
+      saveUninitialized: false,
+      store: new PgStore({
+        pool: createIPv4Pool(),
+        tableName: "sessions",
+        createTableIfMissing: false,
+      }),
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      },
+    })
+  );
+
+  console.log("📦 Sessions enabled (Postgres-backed)");
+} else {
+  console.log("🚫 Sessions disabled (seed/deploy mode)");
+}
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
