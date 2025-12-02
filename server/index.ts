@@ -5,7 +5,7 @@ import path from "path";
 import fs from "fs";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import { pool } from "./db.js";
+import { createIPv4Pool } from "./db.js";
 
 import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
@@ -77,7 +77,7 @@ const PgStore = connectPgSimple(session);
 app.use(
   session({
     store: new PgStore({
-      pool,
+      pool: createIPv4Pool(),
       tableName: "sessions", // Use existing sessions table
       createTableIfMissing: false, // Managed by Drizzle schema
     }),
