@@ -24,7 +24,16 @@ export async function setupGoogleAuth(app: Express) {
   
   // Initialize Passport
   app.use(passport.initialize());
-  app.use(passport.session());
+  
+  // Only use passport.session() if sessions are enabled
+  // When DISABLE_SESSIONS=true, sessions won't work, so skip passport.session()
+  // Passport.authenticate() will still work but won't persist sessions
+  if (!process.env.DISABLE_SESSIONS) {
+    app.use(passport.session());
+  } else {
+    // NOOP middleware to replace passport.session() when sessions disabled
+    app.use((req, res, next) => next());
+  }
 
   // Configure Google OAuth Strategy
   passport.use(
@@ -165,6 +174,18 @@ export async function setupGoogleAuth(app: Express) {
           console.error("❌ Passport authentication failed - no user:", info);
           return res.redirect("/?auth_error=no_user");
         }
+        
+        // If sessions disabled, skip req.logIn() (which requires sessions)
+        if (process.env.DISABLE_SESSIONS) {
+          // Sessions disabled - just set req.user manually and redirect
+          (req as any).user = user;
+          console.log("✅ Google OAuth successful (sessions disabled):", {
+            userId: user.id,
+            email: user.email,
+          });
+          return res.redirect("/");
+        }
+        
         req.logIn(user, (loginErr) => {
           if (loginErr) {
             console.error("❌ Login error:", loginErr);
@@ -215,6 +236,10 @@ export async function setupGoogleAuth(app: Express) {
 
   // Logout (GET endpoint for compatibility with Replit Auth)
   app.get("/api/logout", (req, res) => {
+    if (process.env.DISABLE_SESSIONS) {
+      // Sessions disabled - just redirect
+      return res.redirect("/");
+    }
     req.logout((err) => {
       if (err) {
         console.error("Logout error:", err);
@@ -226,6 +251,10 @@ export async function setupGoogleAuth(app: Express) {
 
   // Logout (POST endpoint for API clients)
   app.post("/api/logout", (req, res) => {
+    if (process.env.DISABLE_SESSIONS) {
+      // Sessions disabled - just return success
+      return res.json({ success: true });
+    }
     req.logout((err) => {
       if (err) {
         return res.status(500).json({ error: "Logout failed" });
