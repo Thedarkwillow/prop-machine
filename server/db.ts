@@ -9,11 +9,12 @@ const { Pool } = pg;
  * Force PostgreSQL DNS to resolve using IPv4 internal hostname
  */
 export function createIPv4Pool(): pg.Pool {
-  if (!process.env.DATABASE_URL) {
+  const databaseUrl = process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL;
+  if (!databaseUrl) {
     throw new Error("DATABASE_URL is not set");
   }
 
-  const url = new URL(process.env.DATABASE_URL);
+  const url = new URL(databaseUrl);
   url.hostname = "postgres.railway.internal";
 
   return new Pool({
