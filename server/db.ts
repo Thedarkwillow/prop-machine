@@ -48,17 +48,22 @@ try {
   throw error;
 }
 
-// Configure Neon for Railway deployment (avoid WebSocket TLS issues)
-if (process.env.NODE_ENV === "production") {
-  // Use HTTP fetch instead of WebSockets in production (Railway)
-  // This avoids TLS certificate issues with Railway
+// Configure Neon for deployment
+// NOTE: The HTTP fetch mode is only valid for Neon-hosted databases.
+// For Supabase (hosts ending with .supabase.co), forcing HTTP fetch causes it
+// to try hitting api.<host>, which does not exist and results in ENOTFOUND.
+const dbHost = new URL(databaseUrl).hostname;
+const isNeonHost = dbHost.endsWith(".neon.tech");
+
+if (process.env.NODE_ENV === "production" && isNeonHost) {
+  // Use HTTP fetch instead of WebSockets in production *only for Neon*
   neonConfig.fetchConnectionCache = true;
   neonConfig.poolQueryViaFetch = true;
-  console.log("🔧 Using Neon HTTP fetch (production mode)");
+  console.log("🔧 Using Neon HTTP fetch (production mode, Neon host detected)");
 } else {
-  // Use WebSockets in development (Replit) for better performance
+  // Use WebSockets for Supabase and all non-Neon hosts (and in development)
   neonConfig.webSocketConstructor = ws;
-  console.log("🔧 Using Neon WebSockets (development mode)");
+  console.log("🔧 Using Neon WebSockets (non-Neon or development mode)");
 }
 
 export const pool = new Pool({ connectionString: databaseUrl });
