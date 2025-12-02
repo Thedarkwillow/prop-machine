@@ -94,7 +94,7 @@ if (!process.env.DISABLE_SESSIONS) {
     })
   );
 
-  console.log("📦 Sessions enabled (Postgres-backed)");
+  console.log("✅ Sessions enabled with PostgreSQL store");
 } else {
   console.log("🚫 Sessions disabled (seed/deploy mode)");
 }
