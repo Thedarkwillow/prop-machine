@@ -146,9 +146,15 @@ if (process.env.NODE_ENV === "production") {
 
 /* ------------------------- DATABASE SEED ------------------------- */
 
-seedDatabase().catch((err) => {
-  console.error("❌ Error seeding database:", err);
-});
+// Only run the database seeder outside production, or when explicitly enabled.
+if (process.env.NODE_ENV !== "production" || process.env.RUN_SEED_ON_START === "true") {
+  console.log("🌱 Running database seed on startup...");
+  seedDatabase().catch((err) => {
+    console.error("❌ Error seeding database:", err);
+  });
+} else {
+  console.log("🌱 Skipping database seed on startup (production mode).");
+}
 
 /* ------------------------- SERVER START ------------------------- */
 
