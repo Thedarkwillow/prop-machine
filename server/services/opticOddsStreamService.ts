@@ -45,7 +45,8 @@ interface FixtureCache {
 
 export class OpticOddsStreamService {
   private storage: IStorage;
-  private apiKey: string;
+  private apiKey: string = "";
+  private enabled: boolean = true;
   private baseUrl = 'https://api.opticodds.com/api/v3';
   private activeStreams: Map<string, EventSource> = new Map();
   private lastEntryIds: Map<string, string> = new Map();
@@ -61,10 +62,19 @@ export class OpticOddsStreamService {
 
   constructor(storageInstance: IStorage = storage) {
     this.storage = storageInstance;
-    this.apiKey = process.env.OPTICODDS_API_KEY || '';
+
+    // Safety guard: completely disable streaming when ENABLE_STREAMING === "false"
+    // This ensures the WEB service never starts SSE streams or performs DB writes
+    if (process.env.ENABLE_STREAMING === "false") {
+      this.enabled = false;
+      console.log("⏸️  OpticOddsStreamService disabled (ENABLE_STREAMING=false) - WEB mode, no streaming will start.");
+      return;
+    }
+
+    this.apiKey = process.env.OPTICODDS_API_KEY || "";
 
     if (!this.apiKey) {
-      console.warn('⚠️  No OPTICODDS_API_KEY configured for streaming');
+      console.warn("⚠️  No OPTICODDS_API_KEY configured for streaming");
     }
   }
 
@@ -94,6 +104,12 @@ export class OpticOddsStreamService {
    * Start streaming real-time odds for a specific sport/sportsbooks
    */
   startOddsStream(config: StreamConfig): string {
+    // Hard guard: if streaming is disabled, this becomes a NOOP
+    if (!this.enabled) {
+      console.log("⏸️  OpticOdds streaming is disabled (ENABLE_STREAMING=false) - startOddsStream() is a NOOP in WEB mode.");
+      return this.generateStreamId(config);
+    }
+
     const streamId = this.generateStreamId(config);
 
     if (this.activeStreams.has(streamId)) {
