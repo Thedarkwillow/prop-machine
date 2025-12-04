@@ -2052,6 +2052,8 @@ class DbStorage implements IStorage {
 export const storage = new DbStorage();
 // export const storage = new MemStorage(); // Fallback to in-memory if DB unavailable
 
-// Export flag to indicate if we have DATABASE_URL configured
+// Export flag to indicate if we have a database URL configured
 // This doesn't guarantee the DB is accessible, just that it's configured
-export const isDatabaseConfigured = !!process.env.DATABASE_URL;
+export const isDatabaseConfigured = !!(
+  process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL
+);

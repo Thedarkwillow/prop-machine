@@ -8,7 +8,7 @@ const url = new URL(process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL ??
 url.hostname = "postgres.railway.internal";
 
 export function createIPv4Pool(): pg.Pool {
-  return new Pool({
+  const pool = new Pool({
     host: url.hostname,
     port: Number(url.port),
     user: url.username,
@@ -18,6 +18,13 @@ export function createIPv4Pool(): pg.Pool {
     // @ts-expect-error family is forwarded to underlying socket options at runtime
     family: 4,
   } as any);
+
+  console.log(
+    "[DB] Connection source:",
+    process.env.DATABASE_URL_IPV4 ? "DATABASE_URL_IPV4" : "DATABASE_URL"
+  );
+
+  return pool;
 }
 
 export const pool = createIPv4Pool();
