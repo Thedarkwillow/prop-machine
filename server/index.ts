@@ -27,7 +27,7 @@ dotenv.config();
 
 const requiredEnvVars: { name: string; critical: boolean; description: string }[] = [
   { name: "SESSION_SECRET", critical: true, description: "Required for secure session management" },
-  { name: "DATABASE_URL", critical: true, description: "Required for database connection" },
+  { name: "DATABASE_URL_IPV4", critical: true, description: "Required for IPv4 database connection" },
 ];
 
 const recommendedEnvVars: { name: string; description: string }[] = [
