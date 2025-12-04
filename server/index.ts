@@ -70,27 +70,50 @@ app.use(cors());
 app.use(express.json());
 
 /* ------------------------- SHARED SESSION MIDDLEWARE ------------------------- */
-// PostgreSQL-backed sessions for Railway multi-instance support
-// Required for Google OAuth and Replit Auth
-console.log("🟢 Sessions enabled for OAuth");
-const PgStore = connectPgSimple(session);
+if (process.env.SESSION_SECRET) {
+  console.log("🟢 Sessions enabled for OAuth");
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: false,
-    store: new PgStore({
-      pool: createIPv4Pool(),
-      tableName: "sessions",
-    }),
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    },
-  })
-);
+  const sessionPool = createIPv4Pool(); // forced IPv4-only pool
+
+  const PgStore = connectPgSimple(session);
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      store: new PgStore({
+        pool: sessionPool,
+        tableName: "sessions",
+        createTableIfMissing: false, // We override this manually now
+      }),
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      },
+    })
+  );
+
+  // Ensure sessions table exists (connect-pg-simple will NOT do this reliably on Render)
+  (async () => {
+    try {
+      const result = await sessionPool.query(`
+        CREATE TABLE IF NOT EXISTS sessions (
+          sid varchar NOT NULL PRIMARY KEY,
+          sess json NOT NULL,
+          expire timestamp(6) NOT NULL
+        );
+      `);
+
+      console.log("✅ sessions table verified/created");
+    } catch (err) {
+      console.error("❌ Failed to ensure sessions table exists:", err);
+    }
+  })();
+} else {
+  console.log("🚫 Sessions disabled (no SESSION_SECRET set)");
+}
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
@@ -146,16 +169,6 @@ if (process.env.NODE_ENV === "production") {
 
 /* ------------------------- DATABASE SEED ------------------------- */
 
-// Only run the database seeder outside production, or when explicitly enabled.
-if (process.env.NODE_ENV !== "production" || process.env.RUN_SEED_ON_START === "true") {
-  console.log("🌱 Running database seed on startup...");
-  seedDatabase().catch((err) => {
-    console.error("❌ Error seeding database:", err);
-  });
-} else {
-  console.log("🌱 Skipping database seed on startup (production mode).");
-}
-
 /* ------------------------- SERVER START ------------------------- */
 
 const PORT = parseInt(process.env.PORT || "5000", 10);
@@ -199,6 +212,13 @@ async function startOpticOddsStreaming() {
 const server = app.listen(PORT, "0.0.0.0", async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
+
+  // Database seed (non-production only)
+  if (process.env.NODE_ENV !== "production") {
+    await seedDatabase();
+  } else {
+    console.log("🌱 Skipping database seed on startup (production mode).");
+  }
 
   // Scheduler (5-minute refresh for fast prop updates)
   if (process.env.DISABLE_PROP_SCHEDULER === "true") {
