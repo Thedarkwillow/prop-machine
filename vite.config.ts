@@ -7,13 +7,14 @@ export default defineConfig({
   publicDir: "public",
   build: {
     outDir: "../dist",
-    emptyOutDir: true,
+    emptyOutDir: true
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client/src"),
-    },
+      "@": path.resolve(__dirname, "client/src")
+    }
   },
-  plugins: [react()],
+  plugins: [react()]
 });
+
 
