@@ -8,7 +8,7 @@ export function createIPv4Pool() {
   const url = process.env.DATABASE_URL_IPV4;
 
   if (!url) {
-    throw new Error("DATABASE_URL_IPV4 must be set for IPv4 session and DB pool.");
+    throw new Error("DATABASE_URL_IPV4 must be set for all database connections.");
   }
 
   return new Pool({

@@ -1,0 +1,33 @@
+[1mdiff --git a/server/db.ts b/server/db.ts[m
+[1mindex f8dbdb7..7627c16 100644[m
+[1m--- a/server/db.ts[m
+[1m+++ b/server/db.ts[m
+[36m@@ -5,14 +5,25 @@[m [mimport * as schema from "../shared/schema";[m
+ const { Pool } = pg;[m
+ [m
+ export function createIPv4Pool() {[m
+[31m-  const url = process.env.DATABASE_URL_IPV4;[m
+[32m+[m[32m  const urlString = process.env.DATABASE_URL_IPV4;[m
+ [m
+[31m-  if (!url) {[m
+[32m+[m[32m  if (!urlString) {[m
+     throw new Error("DATABASE_URL_IPV4 must be set for IPv4 session and DB pool.");[m
+   }[m
+ [m
+[32m+[m[32m  // Parse connection string to allow hostname override (for Render PostgreSQL DNS issues)[m
+[32m+[m[32m  const url = new URL(urlString);[m
+[32m+[m[41m  [m
+[32m+[m[32m  // If DATABASE_HOST is set, replace hostname (useful when Railway can't resolve Render hostnames)[m
+[32m+[m[32m  if (process.env.DATABASE_HOST) {[m
+[32m+[m[32m    url.hostname = process.env.DATABASE_HOST;[m
+[32m+[m[32m    console.log(`[DB] Overriding hostname to: ${process.env.DATABASE_HOST}`);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const connectionString = url.toString();[m
+[32m+[m
+   return new Pool({[m
+[31m-    connectionString: url,[m
+[32m+[m[32m    connectionString: connectionString,[m
+     ssl: {[m
+       rejectUnauthorized: false,[m
+     },[m

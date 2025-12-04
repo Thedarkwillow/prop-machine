@@ -2054,6 +2054,4 @@ export const storage = new DbStorage();
 
 // Export flag to indicate if we have a database URL configured
 // This doesn't guarantee the DB is accessible, just that it's configured
-export const isDatabaseConfigured = !!(
-  process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL
-);
+export const isDatabaseConfigured = !!process.env.DATABASE_URL_IPV4;
