@@ -125,21 +125,22 @@ app.use("/api", router);
 /* ------------------------- PRODUCTION STATIC FILES ------------------------- */
 
 if (process.env.NODE_ENV === "production") {
-  const clientPath = path.resolve(process.cwd(), "client/dist");
+  // Vite builds client assets to /app/dist in Docker
+  const staticPath = path.resolve(process.cwd(), "dist");
 
-  if (!fs.existsSync(clientPath)) {
-    console.error(`❌ Build directory not found: ${clientPath}`);
+  if (!fs.existsSync(staticPath)) {
+    console.error(`❌ Build directory not found: ${staticPath}`);
     console.error("Run `npm run build` before deploying.");
     process.exit(1);
   }
 
-  console.log(`📦 Serving static files from: ${clientPath}`);
+  console.log(`📦 Serving static files from: ${staticPath}`);
 
-  app.use(express.static(clientPath));
+  app.use(express.static(staticPath));
 
   // SPA fallback
   app.get("*", (_req, res) => {
-    res.sendFile(path.join(clientPath, "index.html"));
+    res.sendFile(path.join(staticPath, "index.html"));
   });
 }
 
