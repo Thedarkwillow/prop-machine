@@ -71,33 +71,26 @@ app.use(express.json());
 
 /* ------------------------- SHARED SESSION MIDDLEWARE ------------------------- */
 // PostgreSQL-backed sessions for Railway multi-instance support
-// In development, Replit Auth uses this session store too
-if (!process.env.DISABLE_SESSIONS) {
-  const PgStore = connectPgSimple(session);
+// Required for Google OAuth and Replit Auth
+console.log("🟢 Sessions enabled for OAuth");
+const PgStore = connectPgSimple(session);
 
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET!,
-      resave: false,
-      saveUninitialized: false,
-      store: new PgStore({
-        pool: createIPv4Pool(),
-        tableName: "sessions",
-        createTableIfMissing: false,
-      }),
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      },
-    })
-  );
-
-  console.log("✅ Sessions enabled with PostgreSQL store");
-} else {
-  console.log("🚫 Sessions disabled (seed/deploy mode)");
-}
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    store: new PgStore({
+      pool: createIPv4Pool(),
+      tableName: "sessions",
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
+  })
+);
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
@@ -160,7 +153,43 @@ seedDatabase().catch((err) => {
 
 const PORT = parseInt(process.env.PORT || "5000", 10);
 
-const server = app.listen(PORT, "0.0.0.0", () => {
+async function startOpticOddsStreaming() {
+  console.log(`🔍 OPTICODDS_STREAM_DEBUG: Checking streaming prerequisites...`);
+  console.log(`   - API Key present: ${!!process.env.OPTICODDS_API_KEY}`);
+  console.log(`   - ENABLE_STREAMING: ${process.env.ENABLE_STREAMING || "not set (defaults to disabled in WEB mode)"}`);
+
+  if (!process.env.OPTICODDS_API_KEY) {
+    console.log("⚠️  OpticOdds streaming disabled: No API key configured");
+    return;
+  }
+
+  // Start league-based streams for NBA, NFL, NHL
+  const leagues = [
+    { sport: "basketball", league: "NBA" },
+    { sport: "football", league: "NFL" },
+    { sport: "hockey", league: "NHL" },
+  ];
+
+  // Use exact sportsbook names (capitalized as shown in OpticOdds examples)
+  const sportsbooks = ["PrizePicks", "Underdog Fantasy"];
+
+  leagues.forEach(({ sport, league }) => {
+    try {
+      console.log(`🔍 OPTICODDS_STREAM_DEBUG: Attempting to start ${league} stream (sport: ${sport})...`);
+      const streamId = opticOddsStreamService.startOddsStream({
+        sport,
+        sportsbooks,
+        leagues: [league],
+      });
+      console.log(`✅ Started ${league} SSE stream: ${streamId}`);
+      console.log(`🔍 OPTICODDS_STREAM_DEBUG: Stream ${streamId} should now be receiving live odds`);
+    } catch (error) {
+      console.error(`❌ Failed to start ${league} stream:`, error);
+    }
+  });
+}
+
+const server = app.listen(PORT, "0.0.0.0", async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
 
@@ -170,44 +199,16 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   } else {
     propSchedulerService.start(5); // 5 minutes for frequent updates
   }
-  
-  // Auto-start OpticOdds streaming for PrizePicks/Underdog
-  console.log(`🔍 OPTICODDS_STREAM_DEBUG: Checking streaming prerequisites...`);
-  console.log(`   - API Key present: ${!!process.env.OPTICODDS_API_KEY}`);
-  console.log(`   - ENABLE_STREAMING: ${process.env.ENABLE_STREAMING || 'not set (defaults to enabled)'}`);
-  
-  if (process.env.OPTICODDS_API_KEY && process.env.ENABLE_STREAMING !== "false") {
-    console.log("📡 Auto-starting OpticOdds SSE streaming for DFS platforms...");
-    console.log(`🔍 OPTICODDS_STREAM_DEBUG: Trial key restriction - REST API blocked (403), using SSE only`);
-    
-    // Start league-based streams for NBA, NFL, NHL
-    const leagues = [
-      { sport: 'basketball', league: 'NBA' },
-      { sport: 'football', league: 'NFL' },
-      { sport: 'hockey', league: 'NHL' },
-    ];
-    
-    // Use exact sportsbook names (capitalized as shown in OpticOdds examples)
-    const sportsbooks = ['PrizePicks', 'Underdog Fantasy'];
-    
-    leagues.forEach(({ sport, league }) => {
-      try {
-        console.log(`🔍 OPTICODDS_STREAM_DEBUG: Attempting to start ${league} stream (sport: ${sport})...`);
-        const streamId = opticOddsStreamService.startOddsStream({
-          sport,
-          sportsbooks,
-          leagues: [league],
-        });
-        console.log(`✅ Started ${league} SSE stream: ${streamId}`);
-        console.log(`🔍 OPTICODDS_STREAM_DEBUG: Stream ${streamId} should now be receiving live odds`);
-      } catch (error) {
-        console.error(`❌ Failed to start ${league} stream:`, error);
-      }
-    });
-  } else if (!process.env.OPTICODDS_API_KEY) {
-    console.log("⚠️  OpticOdds streaming disabled: No API key configured");
+
+  // OpticOdds streaming: explicitly disabled in WEB mode unless ENABLE_STREAMING === "true"
+  if (process.env.ENABLE_STREAMING !== "true") {
+    console.log("⏸️ OpticOddsStreamService disabled (WEB mode)");
   } else {
-    console.log("⏸️  OpticOdds streaming disabled: ENABLE_STREAMING=false");
+    try {
+      await startOpticOddsStreaming();
+    } catch (error) {
+      console.error("❌ Failed to start OpticOdds streaming:", error);
+    }
   }
 });
 

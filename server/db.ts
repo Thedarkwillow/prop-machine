@@ -1,38 +1,23 @@
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../shared/schema";
-import dns from "dns";
 
 const { Pool } = pg;
 
-// prefer explicit IPv4 URL if set
-const DB_URL = process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL;
-if (!DB_URL) throw new Error("DATABASE_URL or DATABASE_URL_IPV4 must be set");
+const url = new URL(process.env.DATABASE_URL_IPV4 ?? process.env.DATABASE_URL ?? "");
+url.hostname = "postgres.railway.internal";
 
 export function createIPv4Pool(): pg.Pool {
-  const url = new URL(DB_URL);
-
-  const database = url.pathname.replace("/", "");
-  const user = decodeURIComponent(url.username || "postgres");
-  const password = decodeURIComponent(url.password || "");
-
-  const hostname = process.env.DATABASE_HOST ?? "postgres.railway.internal";
-
-  const lookup: pg.LookupFunction = (host, opts, cb) => {
-    dns.lookup(host, { family: 4, all: false }, (err, addr) => {
-      cb(err, addr, 4);
-    });
-  };
-
   return new Pool({
-    host: hostname,
-    user,
-    password,
-    port: Number(url.port) || 5432,
-    database,
+    host: url.hostname,
+    port: Number(url.port),
+    user: url.username,
+    password: url.password,
+    database: url.pathname.replace("/", ""),
     ssl: { rejectUnauthorized: false },
-    lookup,
-  });
+    // @ts-expect-error family is forwarded to underlying socket options at runtime
+    family: 4,
+  } as any);
 }
 
 export const pool = createIPv4Pool();
