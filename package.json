@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite --config vite.config.ts",
     "build": "vite build --config vite.config.ts",
-    "start": "NODE_ENV=production tsx server/index.ts",
-    "postinstall": "npm run build"
+    "start": "NODE_ENV=production tsx server/index.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
