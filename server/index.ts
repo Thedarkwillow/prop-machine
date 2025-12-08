@@ -19,6 +19,7 @@ import { storage } from "./storage.js";
 import { seedDatabase } from "./seed.js";
 import { propSchedulerService } from "./services/propSchedulerService.js";
 import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
+import { runPermissionFix } from "./fixDbPermissions.js";
 
 dotenv.config();
 
@@ -95,8 +96,12 @@ if (process.env.SESSION_SECRET) {
     })
   );
 
-  // Ensure sessions table exists (connect-pg-simple will NOT do this reliably on Render)
+  // Fix DB permissions and ensure sessions table exists
   (async () => {
+    // Fix permissions first
+    await runPermissionFix();
+
+    // Then create sessions table
     try {
       const result = await sessionPool.query(`
         CREATE TABLE IF NOT EXISTS sessions (
