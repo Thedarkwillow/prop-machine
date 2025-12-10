@@ -1,0 +1,6 @@
+{
+  "deploy": {
+    "startCommand": "npm run db:push && npm start"
+  }
+}
+
