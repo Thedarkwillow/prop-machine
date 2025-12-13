@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5000",
-    "build": "vite build && tsc -b",
+    "build": "vite build",
+    "typecheck": "tsc -b",
     "start": "NODE_ENV=production tsx server/index.ts",
     "check": "tsc --noEmit",
     "db:push": "drizzle-kit push"
