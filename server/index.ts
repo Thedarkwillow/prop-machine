@@ -96,25 +96,9 @@ if (process.env.SESSION_SECRET) {
     })
   );
 
-  // Fix DB permissions and ensure sessions table exists
+  // Fix DB permissions (sessions table is created by Drizzle migrations)
   (async () => {
-    // Fix permissions first
     await runPermissionFix();
-
-    // Then create sessions table
-    try {
-      const result = await sessionPool.query(`
-        CREATE TABLE IF NOT EXISTS sessions (
-          sid varchar NOT NULL PRIMARY KEY,
-          sess json NOT NULL,
-          expire timestamp(6) NOT NULL
-        );
-      `);
-
-      console.log("✅ sessions table verified/created");
-    } catch (err) {
-      console.error("❌ Failed to ensure sessions table exists:", err);
-    }
   })();
 } else {
   console.log("🚫 Sessions disabled (no SESSION_SECRET set)");
