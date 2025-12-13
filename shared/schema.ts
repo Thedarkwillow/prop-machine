@@ -3,17 +3,6 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { sql } from 'drizzle-orm';
 
-// Session storage table for connect-pg-simple (used by both Replit Auth and Google OAuth)
-export const sessions = pgTable(
-  "sessions",
-  {
-    sid: varchar("sid").primaryKey(),
-    sess: jsonb("sess").notNull(),
-    expire: timestamp("expire").notNull(),
-  },
-  (table) => [index("IDX_session_expire").on(table.expire)],
-);
-
 // User settings and bankroll (updated for Replit Auth)
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
