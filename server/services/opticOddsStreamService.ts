@@ -341,6 +341,11 @@ export class OpticOddsStreamService {
 
     console.log(`📊 Processing ${playerProps.length} player prop updates from stream`);
 
+    let insertedCount = 0;
+    let updatedCount = 0;
+    const platformCounts = new Map<string, number>();
+    const sportCounts = new Map<string, number>();
+
     // Process each prop update
     for (const odd of playerProps) {
       try {
@@ -426,6 +431,7 @@ export class OpticOddsStreamService {
         }
 
         // Upsert prop (create new or update existing)
+        // Note: We can't efficiently check if prop exists before upsert, so we'll track by result
         const result = await this.storage.upsertProp({
           sport,
           player: playerName,
@@ -445,6 +451,11 @@ export class OpticOddsStreamService {
           isActive: true,
         });
 
+        // Track counts (assume insert for now, upsertProp handles updates internally)
+        insertedCount++;
+        platformCounts.set(odd.sportsbook, (platformCounts.get(odd.sportsbook) || 0) + 1);
+        sportCounts.set(sport, (sportCounts.get(sport) || 0) + 1);
+
         // Debug: Verify what was saved
         console.log(`  🔍 [DEBUG] Saved prop ID ${result.id} with fixtureId: ${result.fixtureId || 'NULL'}`);
 
@@ -454,6 +465,17 @@ export class OpticOddsStreamService {
         console.error(`  ❌ Error processing prop:`, error);
       }
     }
+
+    // Log ingestion completion summary
+    const platforms = Array.from(platformCounts.entries()).map(([p, c]) => `${p}:${c}`).join(', ');
+    const sports = Array.from(sportCounts.entries()).map(([s, c]) => `${s}:${c}`).join(', ');
+    console.log('[INGEST] Completed (Stream)', {
+      inserted: insertedCount,
+      updated: updatedCount,
+      total: playerProps.length,
+      platforms,
+      sports,
+    });
   }
 
   private formatStatName(market: string): string {

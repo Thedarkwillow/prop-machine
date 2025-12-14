@@ -6,6 +6,16 @@ import { requireAuth, getUserId } from "./middleware/auth.js";
 import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
 import { opticOddsResultsStreamService } from "./services/opticOddsResultsStream.js";
 
+// Normalization helpers
+function normalizeSport(s: string): string {
+  return s.toUpperCase();
+}
+
+function normalizePlatform(p: string): string {
+  if (!p) return 'Unknown';
+  return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+}
+
 // Admin middleware
 async function requireAdmin(req: any, res: any, next: any) {
   try {
@@ -103,17 +113,59 @@ router.get("/props", async (req, res) => {
     const limitNum = limit ? parseInt(limit as string) : 100; // Default 100 props
     const offsetNum = offset ? parseInt(offset as string) : 0;
     
-    // Read props from filesystem cache instead of database
+    // Read props from filesystem cache first
     const { propCacheService } = await import("./services/propCacheService.js");
+    const { storage } = await import("./storage.js");
     
-    let props;
-    if (sport && typeof sport === 'string') {
-      // Get props for specific sport
-      props = await propCacheService.getPropsBySport(sport);
+    let props: any[] = [];
+    const normalizedSport = sport && typeof sport === 'string' ? normalizeSport(sport) : undefined;
+    
+    // Try cache first
+    if (normalizedSport) {
+      props = await propCacheService.getPropsBySport(normalizedSport);
     } else {
-      // Get all props if no sport specified
       props = await propCacheService.getAllProps();
     }
+    
+    // Fallback to DB if cache is empty
+    if (props.length === 0) {
+      console.warn('[CACHE MISS] Falling back to DB for props');
+      if (normalizedSport) {
+        props = await storage.getActiveProps(normalizedSport);
+      } else {
+        props = await storage.getAllActiveProps();
+      }
+      
+      // Only cache if DB returned results
+      if (props.length > 0) {
+        console.log(`[CACHE] Caching ${props.length} props from DB fallback`);
+        // Group by platform and cache
+        const propsByPlatform = new Map<string, any[]>();
+        for (const prop of props) {
+          const platform = normalizePlatform(prop.platform || 'Unknown');
+          if (!propsByPlatform.has(platform)) {
+            propsByPlatform.set(platform, []);
+          }
+          propsByPlatform.get(platform)!.push(prop);
+        }
+        
+        for (const [platform, platformProps] of propsByPlatform.entries()) {
+          await propCacheService.saveProps(normalizedSport || 'ALL', platform, platformProps, 3600, 'api', true);
+        }
+      }
+    }
+    
+    // Log query results
+    console.log('[PROPS QUERY]', {
+      sport: normalizedSport || 'ALL',
+      count: props.length,
+      source: props.length > 0 && props[0].id ? 'DB' : 'cache',
+      sample: props.slice(0, 2).map(p => ({
+        player: p.player,
+        stat: p.stat,
+        platform: p.platform,
+      })),
+    });
     
     // Apply limit and offset
     const paginatedProps = props.slice(offsetNum, offsetNum + limitNum);
@@ -747,6 +799,59 @@ router.get("/debug/props", async (req, res) => {
   } catch (error) {
     console.error("Error in debug/props:", error);
     res.status(500).json({ error: "Failed to fetch debug info", details: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+router.get("/api/debug/props", async (req, res) => {
+  try {
+    const { storage } = await import("./storage.js");
+    
+    // Get total prop count
+    const allProps = await storage.getAllActiveProps();
+    const totalCount = allProps.length;
+    
+    // Count by sport
+    const sportCounts: Record<string, number> = {};
+    for (const prop of allProps) {
+      const sport = normalizeSport(prop.sport || 'Unknown');
+      sportCounts[sport] = (sportCounts[sport] || 0) + 1;
+    }
+    
+    // Count by platform
+    const platformCounts: Record<string, number> = {};
+    for (const prop of allProps) {
+      const platform = normalizePlatform(prop.platform || 'Unknown');
+      platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+    }
+    
+    // Find most recent prop
+    const mostRecent = allProps.length > 0 
+      ? allProps.reduce((latest, prop) => {
+          const propTime = prop.gameTime ? new Date(prop.gameTime).getTime() : 0;
+          const latestTime = latest.gameTime ? new Date(latest.gameTime).getTime() : 0;
+          return propTime > latestTime ? prop : latest;
+        })
+      : null;
+    
+    res.json({
+      totalProps: totalCount,
+      bySport: sportCounts,
+      byPlatform: platformCounts,
+      mostRecentProp: mostRecent ? {
+        id: mostRecent.id,
+        player: mostRecent.player,
+        stat: mostRecent.stat,
+        platform: mostRecent.platform,
+        sport: mostRecent.sport,
+        gameTime: mostRecent.gameTime,
+      } : null,
+    });
+  } catch (error) {
+    console.error("Error in /api/debug/props:", error);
+    res.status(500).json({ 
+      error: "Failed to fetch debug info", 
+      details: error instanceof Error ? error.message : String(error) 
+    });
   }
 });
 

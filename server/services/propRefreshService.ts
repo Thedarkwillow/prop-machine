@@ -492,6 +492,15 @@ export class PropRefreshService {
             console.log(`[OPTICODDS] ✅ Successfully cached ${props.length} ${platform} ${sport} props`);
           } else {
             console.warn(`[REFRESH WARNING] ${sport}/${platform} returned 0 props`);
+            // Log sample raw props if available
+            if (normalizedProps.length > 0) {
+              console.warn(`[INGEST] Sample raw props (first 3):`, normalizedProps.slice(0, 3).map(p => ({
+                player: p.player,
+                stat: p.stat,
+                platform: p.platform,
+                line: p.line,
+              })));
+            }
             // Write empty cache with warning to mark refresh attempt
             await propCacheService.saveProps(sport, platform, [], 3600, 'empty', true, 'emptyResponse');
           }
@@ -508,6 +517,18 @@ export class PropRefreshService {
           }
         }
       }
+
+      // Log ingestion completion summary
+      const totalInserted = result.propsCreated;
+      const totalUpdated = 0; // OpticOdds refresh doesn't track updates separately
+      console.log('[INGEST] Completed', {
+        sport,
+        platform: 'OpticOdds (PrizePicks/Underdog)',
+        inserted: totalInserted,
+        updated: totalUpdated,
+        total: result.propsFetched,
+        skipped: result.propsSkipped,
+      });
 
       result.success = true;
       console.log(`OpticOdds ${sport}: Created ${result.propsCreated}/${result.propsFetched} props`);
