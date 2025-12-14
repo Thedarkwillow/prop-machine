@@ -9,7 +9,7 @@
     "typecheck": "tsc -b",
     "start": "NODE_ENV=production tsx server/index.ts",
     "check": "tsc --noEmit",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push --force"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
