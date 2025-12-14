@@ -187,11 +187,16 @@ export async function setupGoogleAuth(app: Express) {
       const token = getTokenFromRequest(req);
       
       if (!token) {
+        console.log("🔍 /api/auth/user: No token found in cookies", {
+          hasCookies: !!req.cookies,
+          cookieKeys: req.cookies ? Object.keys(req.cookies) : [],
+        });
         return res.status(401).json({ error: "Not authenticated" });
       }
       
       const payload = verifyToken(token);
       if (!payload) {
+        console.log("🔍 /api/auth/user: Invalid or expired token");
         return res.status(401).json({ error: "Invalid token" });
       }
       
