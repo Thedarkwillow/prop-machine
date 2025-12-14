@@ -1,11 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import path from "path";
 import fs from "fs";
-import session from "express-session";
-import connectPgSimple from "connect-pg-simple";
-import { createIPv4Pool } from "./db.js";
 
 import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
@@ -20,6 +18,7 @@ import { seedDatabase } from "./seed.js";
 import { propSchedulerService } from "./services/propSchedulerService.js";
 import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
 import { runPermissionFix } from "./fixDbPermissions.js";
+import { verifyToken, getTokenFromRequest } from "./utils/jwt.js";
 
 dotenv.config();
 
@@ -27,7 +26,7 @@ dotenv.config();
 // Validate critical environment variables to prevent silent misconfigurations
 
 const requiredEnvVars: { name: string; critical: boolean; description: string }[] = [
-  { name: "SESSION_SECRET", critical: true, description: "Required for secure session management" },
+  { name: "JWT_SECRET", critical: true, description: "Required for JWT token signing" },
   { name: "DATABASE_URL_IPV4", critical: true, description: "Required for IPv4 database connection" },
 ];
 
@@ -69,59 +68,12 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser()); // Required for reading JWT from cookies
 
-/* ------------------------- SHARED SESSION MIDDLEWARE ------------------------- */
-if (process.env.SESSION_SECRET) {
-  console.log("🟢 Sessions enabled for OAuth");
-
-  const sessionPool = createIPv4Pool(); // forced IPv4-only pool
-
-  const PgStore = connectPgSimple(session);
-
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-      store: new PgStore({
-        pool: sessionPool,
-        tableName: "sessions",
-        createTableIfMissing: true, // Auto-create sessions table if missing
-      }),
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      },
-    })
-  );
-
-  // Fix DB permissions and verify sessions table
-  (async () => {
-    await runPermissionFix();
-    
-    // Verify sessions table exists (connect-pg-simple will create it if missing)
-    try {
-      const result = await sessionPool.query(`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'sessions'
-        );
-      `);
-      const tableExists = result.rows[0]?.exists;
-      if (tableExists) {
-        console.log("✅ Sessions table verified (exists)");
-      } else {
-        console.log("📝 Sessions table will be created by connect-pg-simple on first use");
-      }
-    } catch (err) {
-      console.error("❌ Failed to check sessions table:", err);
-    }
-  })();
-} else {
-  console.log("🚫 Sessions disabled (no SESSION_SECRET set)");
-}
+// Fix DB permissions on startup
+(async () => {
+  await runPermissionFix();
+})();
 
 /* ------------------------- AUTH SETUP ------------------------- */
 
@@ -133,14 +85,23 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.NODE_ENV === "production") {
   setupAuth(app);
 }
 
-/* Make req.user available (only for Replit Auth - Passport handles it for Google OAuth) */
-app.use((req: any, _res, next) => {
-  // Google OAuth: Passport already sets req.user via deserializeUser - don't overwrite it!
-  // Replit Auth: req.session.user exists, so bridge it to req.user
-  
-  // Only bridge if Passport hasn't already set req.user (i.e., Replit Auth)
-  if (!req.user && req.session?.user) {
-    req.user = req.session.user;
+/* JWT Authentication Middleware - sets req.user from JWT cookie */
+app.use(async (req: any, _res, next) => {
+  // Try to get user from JWT cookie
+  const token = getTokenFromRequest(req);
+  if (token) {
+    const payload = verifyToken(token);
+    if (payload) {
+      // Load full user from database
+      try {
+        const user = await storage.getUser(payload.userId);
+        if (user) {
+          req.user = user;
+        }
+      } catch (error) {
+        console.error("Error loading user from JWT:", error);
+      }
+    }
   }
   
   next();

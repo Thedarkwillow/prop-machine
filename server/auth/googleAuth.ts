@@ -3,6 +3,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 import type { Express } from "express";
 import { storage } from "../storage.js";
+import { generateToken, verifyToken, getTokenFromRequest } from "../utils/jwt.js";
 
 dotenv.config();
 
@@ -20,20 +21,8 @@ const getCallbackURL = () => {
 };
 
 export async function setupGoogleAuth(app: Express) {
-  // Session middleware is configured in server/index.ts (shared with Replit Auth)
-  
-  // Initialize Passport
+  // Initialize Passport (no session middleware - using JWT instead)
   app.use(passport.initialize());
-  
-  // Only use passport.session() if sessions are enabled
-  // When DISABLE_SESSIONS=true, sessions won't work, so skip passport.session()
-  // Passport.authenticate() will still work but won't persist sessions
-  if (!process.env.DISABLE_SESSIONS) {
-    app.use(passport.session());
-  } else {
-    // NOOP middleware to replace passport.session() when sessions disabled
-    app.use((req, res, next) => next());
-  }
 
   // Configure Google OAuth Strategy
   passport.use(
@@ -98,40 +87,7 @@ export async function setupGoogleAuth(app: Express) {
     )
   );
 
-  // Serialize user to session
-  passport.serializeUser((user: any, done) => {
-    done(null, user.id);
-  });
-
-  // Deserialize user from session
-  passport.deserializeUser(async (id: any, done) => {
-    try {
-      if (!id) {
-        // No user ID in session - this is normal for unauthenticated users
-        return done(null, false);
-      }
-      
-      // User ID is a UUID string (varchar), not a number
-      const userId = String(id);
-      if (!userId) {
-        console.error("Invalid user ID in session:", id);
-        return done(null, false);
-      }
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        // User not found in database - session is stale
-        console.warn(`User ${userId} not found in database, clearing session`);
-        return done(null, false);
-      }
-      
-      done(null, user);
-    } catch (error) {
-      console.error("Error deserializing user:", error);
-      // Don't throw error - just treat as unauthenticated
-      done(null, false);
-    }
-  });
+  // No serializeUser/deserializeUser needed - using JWT instead of sessions
 
   // Routes
   app.get("/api/login", (req, res) => {
@@ -175,46 +131,45 @@ export async function setupGoogleAuth(app: Express) {
           return res.redirect("/?auth_error=no_user");
         }
         
-        // If sessions disabled, skip req.logIn() (which requires sessions)
-        if (process.env.DISABLE_SESSIONS) {
-          // Sessions disabled - just set req.user manually and redirect
-          (req as any).user = user;
-          console.log("✅ Google OAuth successful (sessions disabled):", {
-            userId: user.id,
-            email: user.email,
-          });
-          return res.redirect("/");
-        }
-        
-        req.logIn(user, (loginErr) => {
-          if (loginErr) {
-            console.error("❌ Login error:", loginErr);
-            return res.redirect("/?auth_error=login_failed");
-          }
-          // Success callback - user is authenticated
-          console.log("✅ Google OAuth successful, user authenticated:", {
-            userId: user.id,
-            email: user.email,
-          });
-          res.redirect("/");
+        // Generate JWT token
+        const token = generateToken({
+          userId: user.id,
+          email: user.email || "",
         });
+        
+        // Set JWT as httpOnly cookie
+        res.cookie("auth_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+        
+        console.log("✅ Google OAuth successful, JWT set:", {
+          userId: user.id,
+          email: user.email,
+        });
+        
+        res.redirect("/");
       })(req, res, next);
     }
   );
 
-  // Get current user (used by useAuth hook)
-  app.get("/api/auth/user", async (req, res) => {
-    if (!req.user) {
-      return res.status(401).json({ error: "Not authenticated" });
-    }
-
+  // Get current user from JWT (used by useAuth hook)
+  app.get("/auth/me", async (req, res) => {
     try {
-      const userId = (req.user as any).id;
-      if (!userId) {
-        return res.status(401).json({ error: "Invalid user session" });
+      const token = getTokenFromRequest(req);
+      
+      if (!token) {
+        return res.status(401).json({ error: "Not authenticated" });
       }
-
-      const fullUser = await storage.getUser(userId);
+      
+      const payload = verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+      
+      const fullUser = await storage.getUser(payload.userId);
       if (!fullUser) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -234,32 +189,15 @@ export async function setupGoogleAuth(app: Express) {
     }
   });
 
-  // Logout (GET endpoint for compatibility with Replit Auth)
+  // Logout (GET endpoint) - clear JWT cookie
   app.get("/api/logout", (req, res) => {
-    if (process.env.DISABLE_SESSIONS) {
-      // Sessions disabled - just redirect
-      return res.redirect("/");
-    }
-    req.logout((err) => {
-      if (err) {
-        console.error("Logout error:", err);
-        return res.redirect("/");
-      }
-      res.redirect("/");
-    });
+    res.clearCookie("auth_token");
+    res.redirect("/");
   });
 
-  // Logout (POST endpoint for API clients)
+  // Logout (POST endpoint for API clients) - clear JWT cookie
   app.post("/api/logout", (req, res) => {
-    if (process.env.DISABLE_SESSIONS) {
-      // Sessions disabled - just return success
-      return res.json({ success: true });
-    }
-    req.logout((err) => {
-      if (err) {
-        return res.status(500).json({ error: "Logout failed" });
-      }
-      res.json({ success: true });
-    });
+    res.clearCookie("auth_token");
+    res.json({ success: true });
   });
 }
