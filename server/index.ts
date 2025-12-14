@@ -69,7 +69,10 @@ if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
-app.use(cors());
+app.use(cors({
+  origin: true, // Allow all origins (or specify your frontend URL)
+  credentials: true, // REQUIRED for cookies to work
+}));
 app.use(express.json());
 app.use(cookieParser()); // Required for reading JWT from cookies
 

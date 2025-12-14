@@ -170,9 +170,10 @@ export async function setupGoogleAuth(app: Express) {
           path: "/",
         });
         
-        console.log("✅ Google OAuth successful, JWT set:", {
+        console.log("✅ Google OAuth successful, JWT cookie set:", {
           userId: user.id,
           email: user.email,
+          tokenLength: token.length,
         });
         
         res.redirect("/");
@@ -181,7 +182,7 @@ export async function setupGoogleAuth(app: Express) {
   );
 
   // Get current user from JWT (used by useAuth hook)
-  app.get("/auth/me", async (req, res) => {
+  app.get("/api/auth/user", async (req, res) => {
     try {
       const token = getTokenFromRequest(req);
       
