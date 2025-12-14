@@ -86,7 +86,7 @@ if (process.env.SESSION_SECRET) {
       store: new PgStore({
         pool: sessionPool,
         tableName: "sessions",
-        createTableIfMissing: false, // We override this manually now
+        createTableIfMissing: true, // Auto-create sessions table if missing
       }),
       cookie: {
         httpOnly: true,
@@ -96,9 +96,28 @@ if (process.env.SESSION_SECRET) {
     })
   );
 
-  // Fix DB permissions (sessions table is created by Drizzle migrations)
+  // Fix DB permissions and verify sessions table
   (async () => {
     await runPermissionFix();
+    
+    // Verify sessions table exists (connect-pg-simple will create it if missing)
+    try {
+      const result = await sessionPool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'sessions'
+        );
+      `);
+      const tableExists = result.rows[0]?.exists;
+      if (tableExists) {
+        console.log("✅ Sessions table verified (exists)");
+      } else {
+        console.log("📝 Sessions table will be created by connect-pg-simple on first use");
+      }
+    } catch (err) {
+      console.error("❌ Failed to check sessions table:", err);
+    }
   })();
 } else {
   console.log("🚫 Sessions disabled (no SESSION_SECRET set)");
