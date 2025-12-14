@@ -1106,8 +1106,9 @@ class DbStorage implements IStorage {
   async getActiveProps(sport?: string): Promise<Prop[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    // Only show props for games that haven't started yet (gameTime >= now)
+    // Show props for games within the last 7 days or future games (relaxed from only future)
     const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     
     // DEBUG: Check total props in DB first
     const totalProps = await db.select().from(props);
@@ -1121,13 +1122,13 @@ class DbStorage implements IStorage {
       console.log(`[PROPS DEBUG] Total ${sport} props:`, sportProps.length);
       console.log(`[PROPS DEBUG] Active ${sport} props:`, activeSportProps.length);
       
-      // Check gameTime filter
-      const futureProps = await db.select().from(props).where(and(
+      // Check gameTime filter (relaxed to last 7 days)
+      const recentProps = await db.select().from(props).where(and(
         eq(props.isActive, true),
         eq(props.sport, sport),
-        gte(props.gameTime, now)
+        gte(props.gameTime, sevenDaysAgo)
       ));
-      console.log(`[PROPS DEBUG] ${sport} props with gameTime >= now:`, futureProps.length);
+      console.log(`[PROPS DEBUG] ${sport} props with gameTime >= 7 days ago:`, recentProps.length);
       
       // Check opponent filter
       const withOpponent = await db.select().from(props).where(and(
@@ -1147,7 +1148,7 @@ class DbStorage implements IStorage {
           eq(props.isActive, true), 
           eq(props.sport, sport),
           sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
-          gte(props.gameTime, now)
+          gte(props.gameTime, sevenDaysAgo) // Changed from 'now' to 'sevenDaysAgo'
         ));
     } else {
       results = await db
@@ -1156,7 +1157,7 @@ class DbStorage implements IStorage {
         .where(and(
           eq(props.isActive, true),
           sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
-          gte(props.gameTime, now)
+          gte(props.gameTime, sevenDaysAgo) // Changed from 'now' to 'sevenDaysAgo'
         ));
     }
     
@@ -1172,6 +1173,7 @@ class DbStorage implements IStorage {
         opponent: p.opponent,
         isActive: p.isActive,
         gameTimeInFuture: p.gameTime ? new Date(p.gameTime) >= now : false,
+        gameTimeInLast7Days: p.gameTime ? new Date(p.gameTime) >= sevenDaysAgo : false,
       })));
     }
     
