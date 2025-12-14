@@ -2,8 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import path from "path";
 import fs from "fs";
+import { createIPv4Pool } from "./db.js";
 
 import { setupAuth } from "./replitAuth.js";
 import { setupGoogleAuth } from "./auth/googleAuth.js";
@@ -69,6 +72,37 @@ if (process.env.NODE_ENV === "production") {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser()); // Required for reading JWT from cookies
+
+// Session middleware (required for Passport OAuth state)
+const sessionSecret = process.env.SESSION_SECRET || process.env.JWT_SECRET;
+if (!sessionSecret) {
+  console.warn("⚠️  WARNING: No SESSION_SECRET or JWT_SECRET found. Sessions may not work correctly.");
+}
+
+const sessionPool = createIPv4Pool();
+const PgStore = connectPgSimple(session);
+
+app.use(
+  session({
+    name: "prop-machine.sid",
+    secret: sessionSecret || "fallback-secret-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    store: new PgStore({
+      pool: sessionPool,
+      tableName: "sessions",
+      createTableIfMissing: true, // Auto-create sessions table if missing
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    },
+  })
+);
+
+console.log("✅ Session middleware enabled (PostgreSQL-backed)");
 
 // Fix DB permissions on startup
 (async () => {

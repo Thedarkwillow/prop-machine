@@ -21,8 +21,9 @@ const getCallbackURL = () => {
 };
 
 export async function setupGoogleAuth(app: Express) {
-  // Initialize Passport (no session middleware - using JWT instead)
+  // Initialize Passport
   app.use(passport.initialize());
+  app.use(passport.session()); // Required for OAuth state parameter
 
   // Configure Google OAuth Strategy
   passport.use(
@@ -87,7 +88,30 @@ export async function setupGoogleAuth(app: Express) {
     )
   );
 
-  // No serializeUser/deserializeUser needed - using JWT instead of sessions
+  // Serialize user to session (required for passport.session())
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  // Deserialize user from session (required for passport.session())
+  passport.deserializeUser(async (id: any, done) => {
+    try {
+      if (!id) {
+        return done(null, false);
+      }
+      
+      const userId = String(id);
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return done(null, false);
+      }
+      
+      done(null, user);
+    } catch (error) {
+      console.error("Error deserializing user:", error);
+      done(null, false);
+    }
+  });
 
   // Routes
   app.get("/api/login", (req, res) => {
