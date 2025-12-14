@@ -1109,6 +1109,35 @@ class DbStorage implements IStorage {
     // Only show props for games that haven't started yet (gameTime >= now)
     const now = new Date();
     
+    // DEBUG: Check total props in DB first
+    const totalProps = await db.select().from(props);
+    const activeProps = await db.select().from(props).where(eq(props.isActive, true));
+    console.log('[PROPS DEBUG] Total props in DB:', totalProps.length);
+    console.log('[PROPS DEBUG] Active props in DB:', activeProps.length);
+    
+    if (sport) {
+      const sportProps = await db.select().from(props).where(eq(props.sport, sport));
+      const activeSportProps = await db.select().from(props).where(and(eq(props.isActive, true), eq(props.sport, sport)));
+      console.log(`[PROPS DEBUG] Total ${sport} props:`, sportProps.length);
+      console.log(`[PROPS DEBUG] Active ${sport} props:`, activeSportProps.length);
+      
+      // Check gameTime filter
+      const futureProps = await db.select().from(props).where(and(
+        eq(props.isActive, true),
+        eq(props.sport, sport),
+        gte(props.gameTime, now)
+      ));
+      console.log(`[PROPS DEBUG] ${sport} props with gameTime >= now:`, futureProps.length);
+      
+      // Check opponent filter
+      const withOpponent = await db.select().from(props).where(and(
+        eq(props.isActive, true),
+        eq(props.sport, sport),
+        sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
+      ));
+      console.log(`[PROPS DEBUG] ${sport} props with valid opponent:`, withOpponent.length);
+    }
+    
     let results: Prop[];
     if (sport) {
       results = await db
@@ -1129,6 +1158,21 @@ class DbStorage implements IStorage {
           sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
           gte(props.gameTime, now)
         ));
+    }
+    
+    console.log('[PROPS DEBUG] Final results after all filters:', results.length);
+    if (results.length === 0 && activeProps.length > 0) {
+      // Show sample of what's being filtered out
+      const sample = activeProps.slice(0, 3);
+      console.log('[PROPS DEBUG] Sample active props (being filtered out):', sample.map(p => ({
+        id: p.id,
+        sport: p.sport,
+        player: p.player,
+        gameTime: p.gameTime,
+        opponent: p.opponent,
+        isActive: p.isActive,
+        gameTimeInFuture: p.gameTime ? new Date(p.gameTime) >= now : false,
+      })));
     }
     
     return normalizeDecimalsArray(results, propDecimalFields);

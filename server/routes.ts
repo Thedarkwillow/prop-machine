@@ -129,11 +129,15 @@ router.get("/props", async (req, res) => {
     
     // Fallback to DB if cache is empty
     if (props.length === 0) {
-      console.warn('[CACHE MISS] Falling back to DB for props');
+      console.warn('[CACHE MISS] Falling back to DB for props', { sport: normalizedSport });
       if (normalizedSport) {
+        console.log('[PROPS DEBUG] Calling getActiveProps() with sport filter:', normalizedSport);
         props = await storage.getActiveProps(normalizedSport);
+        console.log('[PROPS DEBUG] getActiveProps() returned:', props.length, 'props');
       } else {
+        console.log('[PROPS DEBUG] Calling getAllActiveProps() (no sport filter)');
         props = await storage.getAllActiveProps();
+        console.log('[PROPS DEBUG] getAllActiveProps() returned:', props.length, 'props');
       }
       
       // Only cache if DB returned results
@@ -805,36 +809,76 @@ router.get("/debug/props", async (req, res) => {
 router.get("/api/debug/props", async (req, res) => {
   try {
     const { storage } = await import("./storage.js");
+    const { db } = await import("./db.js");
+    const { props } = await import("../shared/schema.js");
+    const { sql, eq, and, gte } = await import("drizzle-orm");
     
-    // Get total prop count
-    const allProps = await storage.getAllActiveProps();
-    const totalCount = allProps.length;
+    // Get raw counts from DB
+    const totalProps = await db.select().from(props);
+    const activeProps = await db.select().from(props).where(eq(props.isActive, true));
+    const now = new Date();
+    const futureProps = await db.select().from(props).where(and(
+      eq(props.isActive, true),
+      gte(props.gameTime, now)
+    ));
+    const withValidOpponent = await db.select().from(props).where(and(
+      eq(props.isActive, true),
+      sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
+    ));
     
     // Count by sport
-    const sportCounts: Record<string, number> = {};
-    for (const prop of allProps) {
-      const sport = normalizeSport(prop.sport || 'Unknown');
-      sportCounts[sport] = (sportCounts[sport] || 0) + 1;
+    const sportCounts: Record<string, { total: number; active: number; future: number }> = {};
+    for (const prop of totalProps) {
+      const sport = prop.sport || 'Unknown';
+      if (!sportCounts[sport]) {
+        sportCounts[sport] = { total: 0, active: 0, future: 0 };
+      }
+      sportCounts[sport].total++;
+      if (prop.isActive) {
+        sportCounts[sport].active++;
+      }
+      if (prop.isActive && prop.gameTime && new Date(prop.gameTime) >= now) {
+        sportCounts[sport].future++;
+      }
     }
     
     // Count by platform
     const platformCounts: Record<string, number> = {};
-    for (const prop of allProps) {
+    for (const prop of activeProps) {
       const platform = normalizePlatform(prop.platform || 'Unknown');
       platformCounts[platform] = (platformCounts[platform] || 0) + 1;
     }
     
     // Find most recent prop
-    const mostRecent = allProps.length > 0 
-      ? allProps.reduce((latest, prop) => {
+    const mostRecent = activeProps.length > 0 
+      ? activeProps.reduce((latest, prop) => {
           const propTime = prop.gameTime ? new Date(prop.gameTime).getTime() : 0;
           const latestTime = latest.gameTime ? new Date(latest.gameTime).getTime() : 0;
           return propTime > latestTime ? prop : latest;
         })
       : null;
     
+    // Sample props to show what's in DB
+    const sampleProps = activeProps.slice(0, 5).map(p => ({
+      id: p.id,
+      sport: p.sport,
+      player: p.player,
+      stat: p.stat,
+      platform: p.platform,
+      gameTime: p.gameTime,
+      opponent: p.opponent,
+      isActive: p.isActive,
+      gameTimeInFuture: p.gameTime ? new Date(p.gameTime) >= now : false,
+    }));
+    
     res.json({
-      totalProps: totalCount,
+      summary: {
+        totalProps: totalProps.length,
+        activeProps: activeProps.length,
+        futureProps: futureProps.length,
+        withValidOpponent: withValidOpponent.length,
+        now: now.toISOString(),
+      },
       bySport: sportCounts,
       byPlatform: platformCounts,
       mostRecentProp: mostRecent ? {
@@ -844,7 +888,10 @@ router.get("/api/debug/props", async (req, res) => {
         platform: mostRecent.platform,
         sport: mostRecent.sport,
         gameTime: mostRecent.gameTime,
+        opponent: mostRecent.opponent,
+        gameTimeInFuture: mostRecent.gameTime ? new Date(mostRecent.gameTime) >= now : false,
       } : null,
+      sampleProps,
     });
   } catch (error) {
     console.error("Error in /api/debug/props:", error);
