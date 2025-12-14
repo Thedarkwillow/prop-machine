@@ -764,5 +764,36 @@ export function adminRoutes(): Router {
     }
   });
 
+  // Prop ingestion endpoint
+  router.post("/ingest-props", requireAdmin, async (req, res) => {
+    try {
+      const { sport } = req.query;
+      const sports = sport ? [sport as string] : ['NBA', 'NFL', 'NHL'];
+      
+      console.log('[INGEST] Manual ingestion triggered for sports:', sports);
+      
+      const { propIngestionService } = await import("./services/propIngestionService.js");
+      const result = await propIngestionService.ingestProps(sports);
+      
+      res.json({
+        ok: true,
+        totals: {
+          fetched: result.fetched,
+          upserted: result.upserted,
+          invalid: result.invalid,
+        },
+        byPlatform: result.byPlatform,
+        errors: result.errors.slice(0, 10), // Limit error output
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error('[INGEST] Ingestion error:', err);
+      res.status(500).json({
+        ok: false,
+        error: err.message,
+      });
+    }
+  });
+
   return router;
 }

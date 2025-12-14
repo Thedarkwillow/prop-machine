@@ -1032,7 +1032,7 @@ class MemStorage implements IStorage {
 // Database storage implementation using Drizzle ORM
 import { db } from "./db";
 import { users, props, slips, bets, performanceSnapshots, dataFeeds, gameEvents, providerLimits, models, weatherData, notificationPreferences, notifications, analyticsSnapshots, lineMovements, discordSettings, prizePicksSnapshots } from "@shared/schema";
-import { eq, and, desc, gte, gt, lte, sql, inArray, or, ne } from "drizzle-orm";
+import { eq, and, desc, gte, gt, lte, sql, inArray, or, ne, asc } from "drizzle-orm";
 
 class DbStorage implements IStorage {
   // User management
@@ -1139,32 +1139,46 @@ class DbStorage implements IStorage {
       console.log(`[PROPS DEBUG] ${sport} props with valid opponent:`, withOpponent.length);
     }
     
+    // Build query with relaxed filters
     let results: Prop[];
+    const conditions: any[] = [eq(props.isActive, true)];
+    
     if (sport) {
-      results = await db
-        .select()
-        .from(props)
-        .where(and(
-          eq(props.isActive, true), 
-          eq(props.sport, sport),
-          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
-          gte(props.gameTime, sevenDaysAgo) // Changed from 'now' to 'sevenDaysAgo'
-        ));
-    } else {
-      results = await db
-        .select()
-        .from(props)
-        .where(and(
-          eq(props.isActive, true),
-          sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`,
-          gte(props.gameTime, sevenDaysAgo) // Changed from 'now' to 'sevenDaysAgo'
-        ));
+      conditions.push(eq(props.sport, sport));
     }
+    
+    // Only filter opponent if it's explicitly empty string (not null or 'TBD')
+    // Allow null and 'TBD' to pass through
+    conditions.push(
+      or(
+        sql`${props.opponent} IS NULL`,
+        sql`${props.opponent} = ''`,
+        sql`LOWER(${props.opponent}) = 'tbd'`,
+        sql`LOWER(${props.opponent}) != 'tbd'`
+      )
+    );
+    
+    // Allow null gameTime or gameTime within last 7 days
+    conditions.push(
+      or(
+        sql`${props.gameTime} IS NULL`,
+        gte(props.gameTime, sevenDaysAgo)
+      )
+    );
+    
+    results = await db
+      .select()
+      .from(props)
+      .where(and(...conditions))
+      .orderBy(asc(props.gameTime), desc(props.createdAt))
+      .limit(10000); // Reasonable limit
     
     // Simple debug summary
     const totalRows = totalProps.length;
     const rowsAfterActiveFilter = activeProps.length;
-    const rowsAfterSportFilter = sport ? activeSportProps.length : rowsAfterActiveFilter;
+    const rowsAfterSportFilter = sport 
+      ? (await db.select().from(props).where(and(eq(props.isActive, true), eq(props.sport, sport)))).length
+      : rowsAfterActiveFilter;
     const rowsAfterAllFilters = results.length;
     
     console.log('[PROPS DEBUG] Query summary:', {
@@ -1174,11 +1188,26 @@ class DbStorage implements IStorage {
       rowsAfterAllFilters,
     });
     
-    console.log('[PROPS DEBUG] Final results after all filters:', results.length);
+    // Structured debug log with sample
+    const sample = results.slice(0, 3).map(p => ({
+      id: p.id,
+      player: p.player,
+      stat: p.stat,
+      line: p.line,
+      platform: p.platform,
+      gameTime: p.gameTime,
+    }));
+    
+    console.log('[PROPS DEBUG] Query result:', {
+      totalReturned: results.length,
+      sport: sport || 'ALL',
+      sample,
+    });
+    
     if (results.length === 0 && activeProps.length > 0) {
       // Show sample of what's being filtered out
-      const sample = activeProps.slice(0, 3);
-      console.log('[PROPS DEBUG] Sample active props (being filtered out):', sample.map(p => ({
+      const filteredSample = activeProps.slice(0, 3);
+      console.log('[PROPS DEBUG] Sample active props (being filtered out):', filteredSample.map(p => ({
         id: p.id,
         sport: p.sport,
         player: p.player,
@@ -1188,6 +1217,12 @@ class DbStorage implements IStorage {
         gameTimeInFuture: p.gameTime ? new Date(p.gameTime) >= now : false,
         gameTimeInLast7Days: p.gameTime ? new Date(p.gameTime) >= sevenDaysAgo : false,
       })));
+      
+      // Diagnostic: count by sport without filters
+      if (sport) {
+        const unfilteredCount = await db.select().from(props).where(eq(props.sport, sport));
+        console.log(`[PROPS DEBUG] Total ${sport} props in DB (no filters):`, unfilteredCount.length);
+      }
     }
     
     return normalizeDecimalsArray(results, propDecimalFields);

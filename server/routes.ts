@@ -134,6 +134,15 @@ router.get("/props", async (req, res) => {
         console.log('[PROPS DEBUG] Calling getActiveProps() with sport filter:', normalizedSport);
         props = await storage.getActiveProps(normalizedSport);
         console.log('[PROPS DEBUG] getActiveProps() returned:', props.length, 'props');
+        
+        // Diagnostic: if still 0, check unfiltered count
+        if (props.length === 0) {
+          const { db } = await import("./db.js");
+          const { props: propsTable } = await import("../shared/schema.js");
+          const { eq } = await import("drizzle-orm");
+          const unfiltered = await db.select().from(propsTable).where(eq(propsTable.sport, normalizedSport));
+          console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, unfiltered.length);
+        }
       } else {
         console.log('[PROPS DEBUG] Calling getAllActiveProps() (no sport filter)');
         props = await storage.getAllActiveProps();
