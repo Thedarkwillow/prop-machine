@@ -164,9 +164,10 @@ export async function setupGoogleAuth(app: Express) {
         // Set JWT as httpOnly cookie
         res.cookie("auth_token", token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          secure: true,        // REQUIRED on Railway (HTTPS)
+          sameSite: "none",    // REQUIRED for OAuth redirects
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+          path: "/",
         });
         
         console.log("✅ Google OAuth successful, JWT set:", {
