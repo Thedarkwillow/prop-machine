@@ -1161,6 +1161,19 @@ class DbStorage implements IStorage {
         ));
     }
     
+    // Simple debug summary
+    const totalRows = totalProps.length;
+    const rowsAfterActiveFilter = activeProps.length;
+    const rowsAfterSportFilter = sport ? activeSportProps.length : rowsAfterActiveFilter;
+    const rowsAfterAllFilters = results.length;
+    
+    console.log('[PROPS DEBUG] Query summary:', {
+      totalRows,
+      rowsAfterActiveFilter,
+      rowsAfterSportFilter: sport ? rowsAfterSportFilter : 'N/A (no sport filter)',
+      rowsAfterAllFilters,
+    });
+    
     console.log('[PROPS DEBUG] Final results after all filters:', results.length);
     if (results.length === 0 && activeProps.length > 0) {
       // Show sample of what's being filtered out

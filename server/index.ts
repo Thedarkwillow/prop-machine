@@ -233,16 +233,8 @@ const server = app.listen(PORT, "0.0.0.0", async () => {
     propSchedulerService.start(5); // 5 minutes for frequent updates
   }
 
-  // OpticOdds streaming: explicitly disabled in WEB mode unless ENABLE_STREAMING === "true"
-  if (process.env.ENABLE_STREAMING !== "true") {
-    console.log("⏸️ OpticOddsStreamService disabled (WEB mode)");
-  } else {
-    try {
-      await startOpticOddsStreaming();
-    } catch (error) {
-      console.error("❌ Failed to start OpticOdds streaming:", error);
-    }
-  }
+  // OpticOdds streaming: DISABLED (no longer used)
+  console.log("⏸️ OpticOdds streaming disabled (not in use)");
 });
 
 /* ------------------------- ERRORS ------------------------- */

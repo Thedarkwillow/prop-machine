@@ -586,5 +586,183 @@ export function adminRoutes(): Router {
     }
   });
 
+  // Manual test prop ingestion endpoint
+  router.post("/ingest/test-props", requireAdmin, async (req, res) => {
+    try {
+      console.log("[INGEST] Starting manual test prop ingestion...");
+      
+      const gameTime = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+      
+      const testProps = [
+        {
+          sport: "NHL",
+          player: "Connor McDavid",
+          team: "EDM",
+          opponent: "TOR",
+          stat: "SOG",
+          line: "3.5",
+          currentLine: "3.5",
+          direction: "over" as const,
+          platform: "PrizePicks",
+          confidence: 87,
+          ev: "8.2",
+          modelProbability: "0.7234",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NHL",
+          player: "Auston Matthews",
+          team: "TOR",
+          opponent: "EDM",
+          stat: "Points",
+          line: "1.5",
+          currentLine: "1.5",
+          direction: "over" as const,
+          platform: "Underdog",
+          confidence: 78,
+          ev: "6.1",
+          modelProbability: "0.6812",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NHL",
+          player: "Igor Shesterkin",
+          team: "NYR",
+          opponent: "BOS",
+          stat: "Saves",
+          line: "30.5",
+          currentLine: "30.5",
+          direction: "over" as const,
+          platform: "PrizePicks",
+          confidence: 81,
+          ev: "7.4",
+          modelProbability: "0.6945",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NBA",
+          player: "LeBron James",
+          team: "LAL",
+          opponent: "GSW",
+          stat: "Points",
+          line: "25.5",
+          currentLine: "25.5",
+          direction: "over" as const,
+          platform: "PrizePicks",
+          confidence: 75,
+          ev: "5.8",
+          modelProbability: "0.6523",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NBA",
+          player: "Stephen Curry",
+          team: "GSW",
+          opponent: "LAL",
+          stat: "Assists",
+          line: "6.5",
+          currentLine: "6.5",
+          direction: "over" as const,
+          platform: "Underdog",
+          confidence: 72,
+          ev: "4.5",
+          modelProbability: "0.6234",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NBA",
+          player: "Nikola Jokic",
+          team: "DEN",
+          opponent: "PHX",
+          stat: "Rebounds",
+          line: "12.5",
+          currentLine: "12.5",
+          direction: "over" as const,
+          platform: "PrizePicks",
+          confidence: 82,
+          ev: "7.8",
+          modelProbability: "0.7123",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NHL",
+          player: "Nathan MacKinnon",
+          team: "COL",
+          opponent: "VGK",
+          stat: "SOG",
+          line: "4.5",
+          currentLine: "4.5",
+          direction: "over" as const,
+          platform: "Underdog",
+          confidence: 65,
+          ev: "3.2",
+          modelProbability: "0.6234",
+          gameTime,
+          isActive: true,
+        },
+        {
+          sport: "NHL",
+          player: "Leon Draisaitl",
+          team: "EDM",
+          opponent: "TOR",
+          stat: "Points",
+          line: "1.5",
+          currentLine: "1.5",
+          direction: "over" as const,
+          platform: "PrizePicks",
+          confidence: 72,
+          ev: "4.8",
+          modelProbability: "0.6523",
+          gameTime,
+          isActive: true,
+        },
+      ];
+      
+      console.log(`[INGEST] Inserting ${testProps.length} test props...`);
+      
+      const insertedProps = [];
+      for (const prop of testProps) {
+        const inserted = await storage.createProp(prop);
+        insertedProps.push(inserted);
+        console.log(`[INGEST] Inserted prop ID ${inserted.id}: ${prop.sport} - ${prop.player} ${prop.stat} ${prop.direction} ${prop.line} (${prop.platform})`);
+      }
+      
+      console.log(`[INGEST] ✅ Completed: ${insertedProps.length} props inserted`);
+      console.log(`[INGEST] Sample inserted prop:`, {
+        id: insertedProps[0].id,
+        sport: insertedProps[0].sport,
+        player: insertedProps[0].player,
+        stat: insertedProps[0].stat,
+        platform: insertedProps[0].platform,
+        gameTime: insertedProps[0].gameTime,
+      });
+      
+      res.json({
+        success: true,
+        inserted: insertedProps.length,
+        props: insertedProps.map(p => ({
+          id: p.id,
+          sport: p.sport,
+          player: p.player,
+          stat: p.stat,
+          platform: p.platform,
+        })),
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("[INGEST] ❌ Error inserting test props:", err);
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  });
+
   return router;
 }
