@@ -50,13 +50,14 @@ export const props = pgTable("props", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
-  // Unique index on (platform, sport, externalId) for deduplication
-  platformSportExternalIdIdx: index("props_platform_sport_external_id_idx").on(table.platform, table.sport, table.externalId),
   // Indexes for common queries
   sportIdx: index("props_sport_idx").on(table.sport),
   platformIdx: index("props_platform_idx").on(table.platform),
   isActiveIdx: index("props_is_active_idx").on(table.isActive),
   gameTimeIdx: index("props_game_time_idx").on(table.gameTime),
+  // Unique index on (platform, sport, externalId) for deduplication
+  // Note: externalId is nullable, so unique index will allow multiple NULLs
+  platformSportExternalIdIdx: index("props_platform_sport_external_id_idx").on(table.platform, table.sport, table.externalId),
 }));
 
 export const insertPropSchema = createInsertSchema(props).omit({ id: true, createdAt: true });
