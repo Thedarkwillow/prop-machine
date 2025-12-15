@@ -1424,15 +1424,29 @@ class DbStorage implements IStorage {
 
     for (const prop of propsToUpsert) {
       try {
-        const beforeCount = await db.select().from(props).where(eq(props.isActive, true));
-        await this.upsertProp(prop);
-        const afterCount = await db.select().from(props).where(eq(props.isActive, true));
+        // Check if prop exists before upsert
+        const existing = await db
+          .select()
+          .from(props)
+          .where(and(
+            eq(props.sport, prop.sport),
+            eq(props.player, prop.player),
+            eq(props.stat, prop.stat),
+            eq(props.line, prop.line),
+            eq(props.direction, prop.direction),
+            eq(props.platform, prop.platform),
+            eq(props.isActive, true)
+          ))
+          .limit(1);
         
-        // Simple heuristic: if count increased, it was inserted
-        if (afterCount.length > beforeCount.length) {
-          inserted++;
-        } else {
+        if (existing.length > 0) {
+          // Update existing
+          await this.upsertProp(prop);
           updated++;
+        } else {
+          // Insert new
+          await this.upsertProp(prop);
+          inserted++;
         }
       } catch (error) {
         console.error(`[STORAGE] Error upserting prop:`, error);
