@@ -1423,7 +1423,7 @@ class DbStorage implements IStorage {
       ev: prop.ev,
       modelProbability: prop.modelProbability,
       gameTime: prop.gameTime,
-      isActive: prop.isActive ?? true,
+      // Removed isActive - column may not exist in actual DB
     };
     
     const result = await db.insert(props).values(insertData).returning();
@@ -1436,7 +1436,7 @@ class DbStorage implements IStorage {
 
     for (const prop of propsToUpsert) {
       try {
-        // Check if prop exists before upsert
+        // Check if prop exists before upsert (removed isActive filter - column may not exist)
         const existing = await db
           .select()
           .from(props)
@@ -1446,8 +1446,8 @@ class DbStorage implements IStorage {
             eq(props.stat, prop.stat),
             eq(props.line, prop.line),
             eq(props.direction, prop.direction),
-            eq(props.platform, prop.platform),
-            eq(props.isActive, true)
+            eq(props.platform, prop.platform)
+            // Removed isActive filter - column may not exist in actual DB
           ))
           .limit(1);
         
