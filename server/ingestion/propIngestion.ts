@@ -150,7 +150,37 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
         if (insertProps.length > 0) {
       try {
         const upsertResult = await storage.upsertProps(insertProps);
-        console.log(`[INGESTION] Inserted props count: ${upsertResult.inserted}, Updated: ${upsertResult.updated}`);
+        
+        // Log per sport/platform breakdown
+        const platformCounts = new Map<string, { inserted: number; updated: number }>();
+        for (const prop of insertProps) {
+          const platform = prop.platform || 'Unknown';
+          if (!platformCounts.has(platform)) {
+            platformCounts.set(platform, { inserted: 0, updated: 0 });
+          }
+        }
+        
+        // Distribute results proportionally (approximate)
+        const totalOps = upsertResult.inserted + upsertResult.updated;
+        if (totalOps > 0 && insertProps.length > 0) {
+          const opsPerProp = totalOps / insertProps.length;
+          for (const [platform, counts] of platformCounts.entries()) {
+            const platformProps = insertProps.filter(p => (p.platform || 'Unknown') === platform);
+            counts.inserted = Math.round(platformProps.length * (upsertResult.inserted / insertProps.length));
+            counts.updated = Math.round(platformProps.length * (upsertResult.updated / insertProps.length));
+            
+            if (result.byPlatform[platform]) {
+              result.byPlatform[platform].upserted += counts.inserted;
+              result.byPlatform[platform].updated += counts.updated;
+            }
+          }
+        }
+        
+        // Log structured ingestion results per batch
+        console.log(`[INGESTION] Batch ${Math.floor(i / batchSize) + 1}: ${upsertResult.inserted} inserted, ${upsertResult.updated} updated`);
+        for (const [platform, counts] of Array.from(platformCounts.entries())) {
+          console.log(`[INGESTION] ${platform}: ${counts.inserted} inserted, ${counts.updated} updated`);
+        }
         
         if (upsertResult.inserted === 0 && upsertResult.updated === 0) {
           console.error("[INGESTION ERROR] No props inserted — ingestion failed for this batch");
@@ -158,32 +188,6 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
         
         result.upserted += upsertResult.inserted;
         result.updated += upsertResult.updated;
-        
-        // Track by platform (approximate)
-        const platformCounts = new Map<string, { inserted: number; updated: number }>();
-        for (const prop of insertProps) {
-          if (!platformCounts.has(prop.platform)) {
-            platformCounts.set(prop.platform, { inserted: 0, updated: 0 });
-          }
-        }
-        
-        // Distribute results proportionally
-        const totalOps = upsertResult.inserted + upsertResult.updated;
-        if (totalOps > 0) {
-          for (const [platform, counts] of platformCounts.entries()) {
-            const platformProps = insertProps.filter(p => p.platform === platform).length;
-            const ratio = platformProps / insertProps.length;
-            const platformInserted = Math.round(upsertResult.inserted * ratio);
-            const platformUpdated = Math.round(upsertResult.updated * ratio);
-            
-            if (result.byPlatform[platform]) {
-              result.byPlatform[platform].upserted += platformInserted;
-              result.byPlatform[platform].updated += platformUpdated;
-            }
-          }
-        }
-        
-        console.log(`[INGEST] Batch ${Math.floor(i / batchSize) + 1}: ${upsertResult.inserted} inserted, ${upsertResult.updated} updated`);
       } catch (error) {
         const err = error as Error;
         console.error(`[INGEST] Batch upsert error:`, err);
@@ -202,4 +206,6 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
 
   return result;
 }
+
+
 
