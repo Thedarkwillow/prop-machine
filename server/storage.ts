@@ -1367,7 +1367,7 @@ class DbStorage implements IStorage {
   }
 
   async upsertProp(prop: InsertProp): Promise<Prop> {
-    // Find existing prop by attribute matching (externalId column may not exist)
+    // Find existing prop by attribute matching (externalId and isActive columns may not exist)
     const conditions = [
       eq(props.sport, prop.sport),
       eq(props.player, prop.player),
@@ -1375,7 +1375,7 @@ class DbStorage implements IStorage {
       eq(props.line, prop.line),
       eq(props.direction, prop.direction),
       eq(props.platform, prop.platform),
-      eq(props.isActive, true)
+      // Removed isActive filter - column may not exist in actual DB
     ];
 
     if (prop.fixtureId) {
