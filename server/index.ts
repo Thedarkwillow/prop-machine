@@ -247,12 +247,27 @@ const server = app.listen(PORT, "0.0.0.0", async () => {
           console.log("[BOOTSTRAP] Props table is empty, running bootstrap ingestion...");
           const { ingestAllProps } = await import("./ingestion/propIngestion.js");
           const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
-          console.log(`[BOOTSTRAP] ✅ Bootstrap completed: ${result.upserted} props inserted`);
+          console.log(`[BOOTSTRAP] ✅ Bootstrap completed: ${result.upserted} props inserted, ${result.updated} updated`);
         } else {
           console.log(`[BOOTSTRAP] Props table has ${allProps.length} props, skipping bootstrap`);
         }
       } catch (error) {
         console.error("[BOOTSTRAP] Bootstrap ingestion failed (non-fatal):", error);
+      }
+    })();
+  } else {
+    // Log helpful message if bootstrap is disabled and table might be empty
+    (async () => {
+      try {
+        const { storage } = await import("./storage.js");
+        const allProps = await storage.getAllActiveProps();
+        if (allProps.length === 0) {
+          console.log("[STARTUP] ⚠️  Props table is empty. To populate:");
+          console.log("[STARTUP]    1. Set ENABLE_PROP_BOOTSTRAP=true and restart");
+          console.log("[STARTUP]    2. Or POST /api/admin/ingest/props (requires admin auth)");
+        }
+      } catch (error) {
+        // Ignore - just a helpful log
       }
     })();
   }

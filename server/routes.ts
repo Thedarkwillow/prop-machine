@@ -126,19 +126,28 @@ router.get("/props", async (req, res) => {
       props = await storage.getAllActiveProps();
     }
     
-    // If DB returns 0, log diagnostic info
+    // If DB returns 0, log diagnostic info and suggest ingestion
     if (props.length === 0) {
       console.warn('[PROPS QUERY] No props found in DB', { sport: normalizedSport });
       const { db } = await import("./db.js");
       const { props: propsTable } = await import("../shared/schema.js");
       const { eq } = await import("drizzle-orm");
       
+      let totalCount = 0;
       if (normalizedSport) {
         const unfiltered = await db.select().from(propsTable).where(eq(propsTable.sport, normalizedSport));
-        console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, unfiltered.length);
+        totalCount = unfiltered.length;
+        console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, totalCount);
       } else {
         const total = await db.select().from(propsTable);
-        console.log(`[PROPS DEBUG] Total props in DB (unfiltered):`, total.length);
+        totalCount = total.length;
+        console.log(`[PROPS DEBUG] Total props in DB (unfiltered):`, totalCount);
+      }
+      
+      if (totalCount === 0) {
+        console.warn('[PROPS QUERY] ⚠️  Props table is empty. Run ingestion to populate:');
+        console.warn('[PROPS QUERY]    POST /api/admin/ingest/props (requires admin auth)');
+        console.warn('[PROPS QUERY]    Or set ENABLE_PROP_BOOTSTRAP=true to auto-ingest on startup');
       }
     }
     
