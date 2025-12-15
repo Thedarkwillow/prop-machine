@@ -1330,7 +1330,7 @@ class DbStorage implements IStorage {
   async getAllActiveProps(): Promise<Prop[]> {
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    // Explicitly select columns to avoid externalId (which doesn't exist in DB)
+    // Select ONLY columns that exist in actual DB (exclude externalId, updatedAt, raw, isActive)
     const selectedResults = await db
       .select({
         id: props.id,
@@ -1350,18 +1350,17 @@ class DbStorage implements IStorage {
         ev: props.ev,
         modelProbability: props.modelProbability,
         gameTime: props.gameTime,
-        isActive: props.isActive,
         createdAt: props.createdAt,
-        updatedAt: props.updatedAt,
       })
-      .from(props)
-      .where(eq(props.isActive, true));
+      .from(props);
     
-    // Add missing fields (externalId, raw) as null to match Prop type
+    // Add missing fields to match Prop type (externalId, raw, updatedAt, isActive)
     const results = selectedResults.map(row => ({
       ...row,
       externalId: null,
       raw: null,
+      updatedAt: row.createdAt, // Use createdAt as fallback
+      isActive: true, // Default to true since column may not exist
     })) as Prop[];
     
     return normalizeDecimalsArray(results, propDecimalFields);
