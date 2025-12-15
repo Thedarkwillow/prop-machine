@@ -136,12 +136,12 @@ router.get("/props", async (req, res) => {
       
       let totalCount = 0;
       if (normalizedSport) {
-        const unfiltered = await db.select().from(propsTable).where(eq(propsTable.sport, normalizedSport));
-        totalCount = unfiltered.length;
+        const unfiltered = await db.select({ count: sql<number>`count(*)` }).from(propsTable).where(eq(propsTable.sport, normalizedSport));
+        totalCount = Number(unfiltered[0]?.count || 0);
         console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, totalCount);
       } else {
-        const total = await db.select().from(propsTable);
-        totalCount = total.length;
+        const total = await db.select({ count: sql<number>`count(*)` }).from(propsTable);
+        totalCount = Number(total[0]?.count || 0);
         console.log(`[PROPS DEBUG] Total props in DB (unfiltered):`, totalCount);
       }
       
