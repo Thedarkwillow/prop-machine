@@ -1113,36 +1113,21 @@ class DbStorage implements IStorage {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     
-    // DEBUG: Check total props in DB first
-    const totalProps = await db.select().from(props);
-    const activeProps = await db.select().from(props).where(eq(props.isActive, true));
-    console.log('[PROPS DEBUG] Total props in DB:', totalProps.length);
-    console.log('[PROPS DEBUG] Active props in DB:', activeProps.length);
+    // DEBUG: Check total props in DB first (use count to avoid selecting externalId)
+    const totalPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props);
+    const activePropsCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.isActive, true));
+    console.log('[PROPS DEBUG] Total props in DB:', totalPropsCount[0]?.count || 0);
+    console.log('[PROPS DEBUG] Active props in DB:', activePropsCount[0]?.count || 0);
     
     if (sport) {
-      const sportProps = await db.select().from(props).where(eq(props.sport, sport));
-      const activeSportProps = await db.select().from(props).where(and(eq(props.isActive, true), eq(props.sport, sport)));
-      console.log(`[PROPS DEBUG] Total ${sport} props:`, sportProps.length);
-      console.log(`[PROPS DEBUG] Active ${sport} props:`, activeSportProps.length);
-      
-      // Check gameTime filter (relaxed to last 7 days)
-      const recentProps = await db.select().from(props).where(and(
-        eq(props.isActive, true),
-        eq(props.sport, sport),
-        gte(props.gameTime, sevenDaysAgo)
-      ));
-      console.log(`[PROPS DEBUG] ${sport} props with gameTime >= 7 days ago:`, recentProps.length);
-      
-      // Check opponent filter
-      const withOpponent = await db.select().from(props).where(and(
-        eq(props.isActive, true),
-        eq(props.sport, sport),
-        sql`(${props.opponent} IS NOT NULL AND LOWER(${props.opponent}) != 'tbd')`
-      ));
-      console.log(`[PROPS DEBUG] ${sport} props with valid opponent:`, withOpponent.length);
+      const sportPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.sport, sport));
+      const activeSportPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(and(eq(props.isActive, true), eq(props.sport, sport)));
+      console.log(`[PROPS DEBUG] Total ${sport} props:`, sportPropsCount[0]?.count || 0);
+      console.log(`[PROPS DEBUG] Active ${sport} props:`, activeSportPropsCount[0]?.count || 0);
     }
     
     // Build query with minimal, safe filters (only use columns that exist)
+    // Explicitly select columns to avoid externalId (which doesn't exist in DB)
     let results: Prop[];
     const conditions: any[] = [eq(props.isActive, true)];
     
@@ -1151,20 +1136,40 @@ class DbStorage implements IStorage {
       conditions.push(eq(props.sport, sport));
     }
     
-    // Simple query - no complex filters that might fail
-    // Just filter by isActive and sport (if provided)
+    // Select only columns that exist in the database (exclude externalId)
     results = await db
-      .select()
+      .select({
+        id: props.id,
+        sport: props.sport,
+        player: props.player,
+        team: props.team,
+        opponent: props.opponent,
+        stat: props.stat,
+        line: props.line,
+        currentLine: props.currentLine,
+        direction: props.direction,
+        period: props.period,
+        platform: props.platform,
+        fixtureId: props.fixtureId,
+        marketId: props.marketId,
+        confidence: props.confidence,
+        ev: props.ev,
+        modelProbability: props.modelProbability,
+        gameTime: props.gameTime,
+        isActive: props.isActive,
+        createdAt: props.createdAt,
+        updatedAt: props.updatedAt,
+      })
       .from(props)
       .where(and(...conditions))
       .orderBy(desc(props.createdAt)) // Use createdAt for ordering (guaranteed to exist)
       .limit(10000); // Reasonable limit
     
-    // Simple debug summary
-    const totalRows = totalProps.length;
-    const rowsAfterActiveFilter = activeProps.length;
+    // Simple debug summary (use counts to avoid selecting externalId)
+    const totalRows = totalPropsCount[0]?.count || 0;
+    const rowsAfterActiveFilter = activePropsCount[0]?.count || 0;
     const rowsAfterSportFilter = sport 
-      ? (await db.select().from(props).where(and(eq(props.isActive, true), eq(props.sport, sport)))).length
+      ? (await db.select({ count: sql<number>`count(*)` }).from(props).where(and(eq(props.isActive, true), eq(props.sport, sport))))[0]?.count || 0
       : rowsAfterActiveFilter;
     const rowsAfterAllFilters = results.length;
     
@@ -1197,26 +1202,16 @@ class DbStorage implements IStorage {
       console.warn("[PROPS WARNING] No props returned from DB");
     }
     
-    if (results.length === 0 && activeProps.length > 0) {
-      // Show sample of what's being filtered out
-      const filteredSample = activeProps.slice(0, 3);
-      console.log('[PROPS DEBUG] Sample active props (being filtered out):', filteredSample.map(p => ({
-        id: p.id,
-        sport: p.sport,
-        player: p.player,
-        gameTime: p.gameTime,
-        opponent: p.opponent,
-        isActive: p.isActive,
-        gameTimeInFuture: p.gameTime ? new Date(p.gameTime) >= now : false,
-        gameTimeInLast7Days: p.gameTime ? new Date(p.gameTime) >= sevenDaysAgo : false,
-      })));
-      
+    if (results.length === 0 && rowsAfterActiveFilter > 0) {
       // Diagnostic: count by sport without filters
       if (sport) {
-        const unfilteredCount = await db.select().from(props).where(eq(props.sport, sport));
-        console.log(`[PROPS DEBUG] Total ${sport} props in DB (no filters):`, unfilteredCount.length);
+        const unfilteredCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.sport, sport));
+        console.log(`[PROPS DEBUG] Total ${sport} props in DB (no filters):`, unfilteredCount[0]?.count || 0);
       }
     }
+    
+    // Final row count debug log
+    console.log(`[PROPS DEBUG] Final row count before return: ${results.length}`);
     
     return normalizeDecimalsArray(results, propDecimalFields);
   }
