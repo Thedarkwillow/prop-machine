@@ -132,7 +132,7 @@ router.get("/props", async (req, res) => {
       console.warn('[PROPS QUERY] No props found in DB', { sport: normalizedSport });
       const { db } = await import("./db.js");
       const { props: propsTable } = await import("../shared/schema.js");
-      const { eq } = await import("drizzle-orm");
+      const { eq, sql } = await import("drizzle-orm");
       
       let totalCount = 0;
       if (normalizedSport) {
