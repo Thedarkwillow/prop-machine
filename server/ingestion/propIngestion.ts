@@ -42,6 +42,14 @@ async function convertToInsertProp(normalized: NormalizedProp): Promise<any> {
     console.warn(`[INGEST] ML analysis failed for ${normalized.playerName}:`, error);
   }
 
+  // Determine direction from raw data if available, default to 'over'
+  let direction: 'over' | 'under' = 'over';
+  if (normalized.raw && typeof normalized.raw === 'object') {
+    if ('direction' in normalized.raw && normalized.raw.direction) {
+      direction = normalized.raw.direction as 'over' | 'under';
+    }
+  }
+
   return {
     sport: normalized.sport,
     player: normalized.playerName,
@@ -50,7 +58,7 @@ async function convertToInsertProp(normalized: NormalizedProp): Promise<any> {
     stat: normalized.statType,
     line: normalized.line.toString(),
     currentLine: normalized.line.toString(),
-    direction: 'over' as const, // PrizePicks/Underdog typically only have over props
+    direction,
     period: 'full_game' as const,
     platform: normalized.platform,
     externalId: normalized.externalId,
@@ -59,7 +67,7 @@ async function convertToInsertProp(normalized: NormalizedProp): Promise<any> {
     ev,
     modelProbability,
     isActive: normalized.isActive,
-    raw: normalized.raw,
+    raw: normalized.raw ? JSON.parse(JSON.stringify(normalized.raw)) : null,
   };
 }
 
