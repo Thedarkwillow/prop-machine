@@ -43,7 +43,7 @@ export class UnderdogProvider {
           opponent: prop.opponent || null,
           team: prop.team || null,
           isActive: true,
-          raw: prop,
+          raw: { ...prop, direction: prop.direction }, // Include direction in raw for ingestion
         });
       } catch (error) {
         console.error(`[UNDERDOG PROVIDER] Error normalizing prop:`, error);
