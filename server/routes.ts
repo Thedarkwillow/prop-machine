@@ -119,7 +119,7 @@ router.get("/props", async (req, res) => {
     let props: any[] = [];
     const normalizedSport = sport && typeof sport === 'string' ? normalizeSport(sport) : undefined;
     
-    // Query DB directly
+    // Always query DB directly (no cache dependency)
     if (normalizedSport) {
       props = await storage.getActiveProps(normalizedSport);
     } else {
@@ -128,6 +128,7 @@ router.get("/props", async (req, res) => {
     
     // If DB returns 0, log diagnostic info and suggest ingestion
     if (props.length === 0) {
+      console.warn("[CACHE MISS] Forcing DB read - no props found");
       console.warn('[PROPS QUERY] No props found in DB', { sport: normalizedSport });
       const { db } = await import("./db.js");
       const { props: propsTable } = await import("../shared/schema.js");

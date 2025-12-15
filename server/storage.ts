@@ -1105,6 +1105,8 @@ class DbStorage implements IStorage {
 
   // Props
   async getActiveProps(sport?: string): Promise<Prop[]> {
+    console.log("[PROPS DEBUG] getActiveProps() invoked", { sport });
+    
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
     // Show props for games within the last 7 days or future games (relaxed from only future)
@@ -1140,38 +1142,22 @@ class DbStorage implements IStorage {
       console.log(`[PROPS DEBUG] ${sport} props with valid opponent:`, withOpponent.length);
     }
     
-    // Build query with relaxed filters
+    // Build query with minimal, safe filters (only use columns that exist)
     let results: Prop[];
     const conditions: any[] = [eq(props.isActive, true)];
     
+    // Sport filter (if provided)
     if (sport) {
       conditions.push(eq(props.sport, sport));
     }
     
-    // Only filter opponent if it's explicitly empty string (not null or 'TBD')
-    // Allow null and 'TBD' to pass through
-    conditions.push(
-      or(
-        sql`${props.opponent} IS NULL`,
-        sql`${props.opponent} = ''`,
-        sql`LOWER(${props.opponent}) = 'tbd'`,
-        sql`LOWER(${props.opponent}) != 'tbd'`
-      )
-    );
-    
-    // Allow null gameTime or gameTime within last 7 days
-    conditions.push(
-      or(
-        sql`${props.gameTime} IS NULL`,
-        gte(props.gameTime, sevenDaysAgo)
-      )
-    );
-    
+    // Simple query - no complex filters that might fail
+    // Just filter by isActive and sport (if provided)
     results = await db
       .select()
       .from(props)
       .where(and(...conditions))
-      .orderBy(asc(props.gameTime), desc(props.createdAt))
+      .orderBy(desc(props.createdAt)) // Use createdAt for ordering (guaranteed to exist)
       .limit(10000); // Reasonable limit
     
     // Simple debug summary
@@ -1189,7 +1175,7 @@ class DbStorage implements IStorage {
       rowsAfterAllFilters,
     });
     
-    // Structured debug log with sample (including external_id for validation)
+    // Structured debug log with sample
     const sample = results.slice(0, 3).map(p => ({
       id: p.id,
       player: p.player,
@@ -1197,7 +1183,6 @@ class DbStorage implements IStorage {
       line: p.line,
       platform: p.platform,
       gameTime: p.gameTime,
-      externalId: (p as any).externalId || null, // Defensive: may not exist yet
     }));
     
     console.log('[PROPS DEBUG] Query result:', {
@@ -1206,15 +1191,10 @@ class DbStorage implements IStorage {
       sample,
     });
     
-    // Log one sample prop row after query (id + external_id)
-    if (results.length > 0) {
-      const sampleProp = results[0];
-      console.log('[PROPS DEBUG] Sample prop row:', {
-        id: sampleProp.id,
-        externalId: (sampleProp as any).externalId || 'NULL (column may not exist yet)',
-        player: sampleProp.player,
-        platform: sampleProp.platform,
-      });
+    console.log("[PROPS DEBUG] Returning props:", results.length);
+    
+    if (results.length === 0) {
+      console.warn("[PROPS WARNING] No props returned from DB");
     }
     
     if (results.length === 0 && activeProps.length > 0) {
@@ -1375,46 +1355,30 @@ class DbStorage implements IStorage {
   }
 
   async upsertProp(prop: InsertProp): Promise<Prop> {
-    // Try to find existing prop by externalId if provided (preferred method)
-    let existing: any[] = [];
-    
-    if (prop.externalId) {
-      existing = await db
-        .select()
-        .from(props)
-        .where(and(
-          eq(props.platform, prop.platform),
-          eq(props.sport, prop.sport),
-          eq(props.externalId, prop.externalId)
-        ))
-        .limit(1);
-    }
-    
-    // Fallback to attribute matching if no externalId or no match found
-    if (existing.length === 0) {
-      const conditions = [
-        eq(props.sport, prop.sport),
-        eq(props.player, prop.player),
-        eq(props.stat, prop.stat),
-        eq(props.line, prop.line),
-        eq(props.direction, prop.direction),
-        eq(props.platform, prop.platform),
-        eq(props.isActive, true)
-      ];
+    // Find existing prop by attribute matching (externalId column may not exist)
+    const conditions = [
+      eq(props.sport, prop.sport),
+      eq(props.player, prop.player),
+      eq(props.stat, prop.stat),
+      eq(props.line, prop.line),
+      eq(props.direction, prop.direction),
+      eq(props.platform, prop.platform),
+      eq(props.isActive, true)
+    ];
 
-      if (prop.fixtureId) {
-        conditions.push(eq(props.fixtureId, prop.fixtureId));
-      }
-
-      existing = await db
-        .select()
-        .from(props)
-        .where(and(...conditions))
-        .limit(1);
+    if (prop.fixtureId) {
+      conditions.push(eq(props.fixtureId, prop.fixtureId));
     }
+
+    const existing = await db
+      .select()
+      .from(props)
+      .where(and(...conditions))
+      .limit(1);
 
     if (existing.length > 0) {
       // Update existing prop with new data
+      // Update only columns that exist (exclude externalId and raw for now)
       const updated = await db
         .update(props)
         .set({
@@ -1422,9 +1386,6 @@ class DbStorage implements IStorage {
           gameTime: prop.gameTime,
           marketId: prop.marketId ?? null,
           fixtureId: prop.fixtureId ?? null,
-          externalId: prop.externalId ?? null,
-          raw: prop.raw ?? null,
-          updatedAt: new Date(),
         })
         .where(eq(props.id, existing[0].id))
         .returning();
@@ -1432,11 +1393,28 @@ class DbStorage implements IStorage {
       return updated[0];
     }
 
-    // Create new prop if none exists
-    const result = await db.insert(props).values({
-      ...prop,
-      updatedAt: new Date(),
-    }).returning();
+    // Create new prop if none exists (exclude externalId and raw if they don't exist in DB)
+    const insertData: any = {
+      sport: prop.sport,
+      player: prop.player,
+      team: prop.team,
+      opponent: prop.opponent,
+      stat: prop.stat,
+      line: prop.line,
+      currentLine: prop.currentLine ?? null,
+      direction: prop.direction,
+      period: prop.period ?? 'full_game',
+      platform: prop.platform,
+      fixtureId: prop.fixtureId ?? null,
+      marketId: prop.marketId ?? null,
+      confidence: prop.confidence,
+      ev: prop.ev,
+      modelProbability: prop.modelProbability,
+      gameTime: prop.gameTime,
+      isActive: prop.isActive ?? true,
+    };
+    
+    const result = await db.insert(props).values(insertData).returning();
     return result[0];
   }
 

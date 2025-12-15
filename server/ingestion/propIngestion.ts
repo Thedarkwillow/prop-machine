@@ -144,9 +144,15 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
       }
     }
     
-    if (insertProps.length > 0) {
+        if (insertProps.length > 0) {
       try {
         const upsertResult = await storage.upsertProps(insertProps);
+        console.log(`[INGESTION] Inserted props count: ${upsertResult.inserted}, Updated: ${upsertResult.updated}`);
+        
+        if (upsertResult.inserted === 0 && upsertResult.updated === 0) {
+          console.error("[INGESTION ERROR] No props inserted — ingestion failed for this batch");
+        }
+        
         result.upserted += upsertResult.inserted;
         result.updated += upsertResult.updated;
         
