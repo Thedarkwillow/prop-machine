@@ -196,13 +196,13 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     }
   }
 
-  console.log('[INGEST] ✅ Ingestion completed:', {
-    fetched: result.fetched,
-    upserted: result.upserted,
-    updated: result.updated,
-    invalid: result.invalid,
-    byPlatform: result.byPlatform,
-  });
+  // Final summary logging
+  console.log(`[INGEST] ✅ Ingestion completed: ${result.fetched} fetched, ${result.upserted} inserted, ${result.updated} updated, ${result.invalid} invalid`);
+  
+  // Log per-platform summary
+  for (const [platform, stats] of Object.entries(result.byPlatform)) {
+    console.log(`[INGEST] ${platform}: ${stats.fetched} fetched, ${stats.upserted} inserted, ${stats.updated} updated`);
+  }
 
   return result;
 }
