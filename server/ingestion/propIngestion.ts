@@ -50,6 +50,7 @@ async function convertToInsertProp(normalized: NormalizedProp): Promise<any> {
     }
   }
 
+  // Only include columns that exist in actual DB (exclude externalId, updatedAt, isActive, raw)
   return {
     sport: normalized.sport,
     player: normalized.playerName,
@@ -61,13 +62,15 @@ async function convertToInsertProp(normalized: NormalizedProp): Promise<any> {
     direction,
     period: 'full_game' as const,
     platform: normalized.platform,
-    externalId: normalized.externalId,
+    // Removed: externalId (column doesn't exist)
+    fixtureId: null,
+    marketId: null,
     gameTime: normalized.gameTime || new Date(),
     confidence,
     ev,
     modelProbability,
-    isActive: normalized.isActive,
-    raw: normalized.raw ? JSON.parse(JSON.stringify(normalized.raw)) : null,
+    // Removed: isActive (column may not exist)
+    // Removed: raw (column may not exist)
   };
 }
 

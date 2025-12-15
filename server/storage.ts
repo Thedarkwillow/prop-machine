@@ -1190,12 +1190,27 @@ class DbStorage implements IStorage {
     
     const rowsReturned = results.length;
     
-    // Single debug log as requested
+    // Structured debug logging as requested
     console.log('[PROPS DEBUG]', {
       totalRows,
       rowsAfterSportFilter: sport ? rowsAfterSportFilter : 'N/A',
+      rowsAfterActiveFilter: 'N/A (isActive column may not exist)',
       rowsReturned,
+      sample: results.slice(0, 2).map(p => ({
+        id: p.id,
+        sport: p.sport,
+        player: p.player,
+        stat: p.stat,
+        line: p.line,
+        platform: p.platform,
+      })),
     });
+    
+    if (totalRows === 0) {
+      console.warn('[PROPS DEBUG] ⚠️  Props table is empty. Run ingestion to populate:');
+      console.warn('[PROPS DEBUG]    POST /api/admin/ingest/props (requires admin auth)');
+      console.warn('[PROPS DEBUG]    Or set ENABLE_PROP_BOOTSTRAP=true to auto-ingest on startup');
+    }
     
     return normalizeDecimalsArray(results, propDecimalFields);
   }

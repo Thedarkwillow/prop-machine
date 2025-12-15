@@ -247,7 +247,12 @@ const server = app.listen(PORT, "0.0.0.0", async () => {
           console.log("[BOOTSTRAP] Props table is empty, running bootstrap ingestion...");
           const { ingestAllProps } = await import("./ingestion/propIngestion.js");
           const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
-          console.log(`[BOOTSTRAP] ✅ Bootstrap completed: ${result.upserted} props inserted, ${result.updated} updated`);
+          console.log(`[BOOTSTRAP] ✅ Inserted ${result.upserted} props, updated ${result.updated} props`);
+          
+          // Log per-platform breakdown
+          for (const [platform, stats] of Object.entries(result.byPlatform)) {
+            console.log(`[BOOTSTRAP] ${platform}: ${stats.inserted} inserted, ${stats.updated} updated`);
+          }
         } else {
           console.log(`[BOOTSTRAP] Props table has ${allProps.length} props, skipping bootstrap`);
         }
