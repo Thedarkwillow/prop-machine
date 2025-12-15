@@ -1109,35 +1109,43 @@ class DbStorage implements IStorage {
     
     const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
     
-    // Show props for games within the last 7 days or future games (relaxed from only future)
+    // Time-based filtering: show props from last 7 days or future
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     
-    // DEBUG: Check total props in DB first (use count to avoid selecting externalId)
+    // Get total row count (defensive - no column assumptions)
     const totalPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props);
-    const activePropsCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.isActive, true));
-    console.log('[PROPS DEBUG] Total props in DB:', totalPropsCount[0]?.count || 0);
-    console.log('[PROPS DEBUG] Active props in DB:', activePropsCount[0]?.count || 0);
+    const totalRows = Number(totalPropsCount[0]?.count || 0);
+    console.log('[PROPS DEBUG] Total props in DB:', totalRows);
     
+    // Build conditions array - only use columns that definitely exist
+    const conditions: any[] = [];
+    
+    // Sport filter (case-insensitive if provided)
     if (sport) {
-      const sportPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.sport, sport));
-      const activeSportPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(and(eq(props.isActive, true), eq(props.sport, sport)));
-      console.log(`[PROPS DEBUG] Total ${sport} props:`, sportPropsCount[0]?.count || 0);
-      console.log(`[PROPS DEBUG] Active ${sport} props:`, activeSportPropsCount[0]?.count || 0);
+      // Case-insensitive sport matching
+      conditions.push(sql`LOWER(${props.sport}) = LOWER(${sport})`);
     }
     
-    // Build query with minimal, safe filters (only use columns that exist)
-    // Explicitly select columns to avoid externalId (which doesn't exist in DB)
-    let results: Prop[];
-    const conditions: any[] = [eq(props.isActive, true)];
+    // Time-based filter: gameTime >= 7 days ago OR gameTime IS NULL (fallback to created_at check)
+    // Use created_at if game_time is null
+    conditions.push(
+      or(
+        sql`${props.gameTime} IS NULL`,
+        sql`${props.gameTime} >= ${sevenDaysAgo}`,
+        sql`${props.createdAt} >= ${sevenDaysAgo}` // Fallback to created_at
+      )
+    );
     
-    // Sport filter (if provided)
-    if (sport) {
-      conditions.push(eq(props.sport, sport));
-    }
+    // Opponent filter: defensive null-safe check
+    conditions.push(
+      or(
+        sql`${props.opponent} IS NOT NULL`,
+        sql`${props.opponent} = ''` // Allow empty string
+      )
+    );
     
-    // Select only columns that exist in the database (exclude externalId and raw)
-    // Cast to Prop[] since we're excluding columns that don't exist in DB
+    // Select ONLY columns that exist in actual DB (exclude externalId, updatedAt, raw, isActive)
     const selectedResults = await db
       .select({
         id: props.id,
@@ -1157,69 +1165,37 @@ class DbStorage implements IStorage {
         ev: props.ev,
         modelProbability: props.modelProbability,
         gameTime: props.gameTime,
-        isActive: props.isActive,
         createdAt: props.createdAt,
-        updatedAt: props.updatedAt,
       })
       .from(props)
-      .where(and(...conditions))
-      .orderBy(desc(props.createdAt)) // Use createdAt for ordering (guaranteed to exist)
-      .limit(10000); // Reasonable limit
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(props.createdAt)) // Use createdAt for ordering
+      .limit(10000);
     
-    // Add missing fields (externalId, raw) as null/undefined to match Prop type
-    results = selectedResults.map(row => ({
+    // Count rows after sport filter (if sport provided)
+    let rowsAfterSportFilter = totalRows;
+    if (sport) {
+      const sportCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(sql`LOWER(${props.sport}) = LOWER(${sport})`);
+      rowsAfterSportFilter = Number(sportCount[0]?.count || 0);
+    }
+    
+    // Add missing fields to match Prop type (externalId, raw, updatedAt, isActive)
+    const results = selectedResults.map(row => ({
       ...row,
       externalId: null,
       raw: null,
+      updatedAt: row.createdAt, // Use createdAt as fallback
+      isActive: true, // Default to true since column may not exist
     })) as Prop[];
     
-    // Simple debug summary (use counts to avoid selecting externalId)
-    const totalRows = totalPropsCount[0]?.count || 0;
-    const rowsAfterActiveFilter = activePropsCount[0]?.count || 0;
-    const rowsAfterSportFilter = sport 
-      ? (await db.select({ count: sql<number>`count(*)` }).from(props).where(and(eq(props.isActive, true), eq(props.sport, sport))))[0]?.count || 0
-      : rowsAfterActiveFilter;
-    const rowsAfterAllFilters = results.length;
+    const rowsReturned = results.length;
     
-    console.log('[PROPS DEBUG] Query summary:', {
+    // Single debug log as requested
+    console.log('[PROPS DEBUG]', {
       totalRows,
-      rowsAfterActiveFilter,
-      rowsAfterSportFilter: sport ? rowsAfterSportFilter : 'N/A (no sport filter)',
-      rowsAfterAllFilters,
+      rowsAfterSportFilter: sport ? rowsAfterSportFilter : 'N/A',
+      rowsReturned,
     });
-    
-    // Structured debug log with sample
-    const sample = results.slice(0, 3).map(p => ({
-      id: p.id,
-      player: p.player,
-      stat: p.stat,
-      line: p.line,
-      platform: p.platform,
-      gameTime: p.gameTime,
-    }));
-    
-    console.log('[PROPS DEBUG] Query result:', {
-      totalReturned: results.length,
-      sport: sport || 'ALL',
-      sample,
-    });
-    
-    console.log("[PROPS DEBUG] Returning props:", results.length);
-    
-    if (results.length === 0) {
-      console.warn("[PROPS WARNING] No props returned from DB");
-    }
-    
-    if (results.length === 0 && rowsAfterActiveFilter > 0) {
-      // Diagnostic: count by sport without filters
-      if (sport) {
-        const unfilteredCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.sport, sport));
-        console.log(`[PROPS DEBUG] Total ${sport} props in DB (no filters):`, unfilteredCount[0]?.count || 0);
-      }
-    }
-    
-    // Final row count debug log
-    console.log(`[PROPS DEBUG] Final row count before return: ${results.length}`);
     
     return normalizeDecimalsArray(results, propDecimalFields);
   }
