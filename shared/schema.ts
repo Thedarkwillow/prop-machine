@@ -38,15 +38,26 @@ export const props = pgTable("props", {
   direction: text("direction", { enum: ["over", "under"] }).notNull(),
   period: text("period", { enum: ["full_game", "1Q", "1H", "2H", "4Q"] }).notNull().default("full_game"), // Game period for NBA/NFL
   platform: text("platform").notNull(), // PrizePicks, Underdog, etc.
+  externalId: text("external_id"), // Provider-specific unique ID for deduplication
   fixtureId: text("fixture_id"), // OpticOdds fixture ID for accurate grading
   marketId: text("market_id"), // OpticOdds market ID (e.g., player_points, player_pts_asts)
   confidence: integer("confidence").notNull(), // 0-100
   ev: decimal("ev", { precision: 5, scale: 2 }).notNull(), // Expected value %
   modelProbability: decimal("model_probability", { precision: 5, scale: 4 }).notNull(),
-  gameTime: timestamp("game_time").notNull(),
+  gameTime: timestamp("game_time"), // Allow null for feeds without game times
   isActive: boolean("is_active").notNull().default(true),
+  raw: jsonb("raw"), // Store raw provider data for debugging
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  // Unique index on (platform, sport, externalId) for deduplication
+  platformSportExternalIdIdx: index("props_platform_sport_external_id_idx").on(table.platform, table.sport, table.externalId),
+  // Indexes for common queries
+  sportIdx: index("props_sport_idx").on(table.sport),
+  platformIdx: index("props_platform_idx").on(table.platform),
+  isActiveIdx: index("props_is_active_idx").on(table.isActive),
+  gameTimeIdx: index("props_game_time_idx").on(table.gameTime),
+}));
 
 export const insertPropSchema = createInsertSchema(props).omit({ id: true, createdAt: true });
 export type InsertProp = z.infer<typeof insertPropSchema>;

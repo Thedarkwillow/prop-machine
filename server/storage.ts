@@ -74,6 +74,7 @@ export interface IStorage {
   getActivePropsByFixtureId(fixtureId: string): Promise<Prop[]>; // Get active props for specific fixture
   createProp(prop: InsertProp): Promise<Prop>;
   upsertProp(prop: InsertProp): Promise<Prop>; // Upsert: create or update existing prop
+  upsertProps(props: InsertProp[]): Promise<{ inserted: number; updated: number }>; // Batch upsert
   updateProp(propId: number, updates: Partial<Pick<Prop, 'confidence' | 'ev' | 'modelProbability' | 'currentLine'>>): Promise<Prop>; // Update specific prop fields (e.g., for rescoring)
   deactivateProp(propId: number): Promise<void>;
   deactivatePropsBySportAndPlatform(sport: string, platform: string): Promise<number>;
@@ -1362,27 +1363,43 @@ class DbStorage implements IStorage {
   }
 
   async upsertProp(prop: InsertProp): Promise<Prop> {
-    // Try to find existing active prop with same attributes (including fixture_id for fixture-specific matching)
-    const conditions = [
-      eq(props.sport, prop.sport),
-      eq(props.player, prop.player),
-      eq(props.stat, prop.stat),
-      eq(props.line, prop.line),
-      eq(props.direction, prop.direction),
-      eq(props.platform, prop.platform),
-      eq(props.isActive, true)
-    ];
-
-    // Include fixture_id in matching if provided (critical for preventing cross-fixture conflicts)
-    if (prop.fixtureId) {
-      conditions.push(eq(props.fixtureId, prop.fixtureId));
+    // Try to find existing prop by externalId if provided (preferred method)
+    let existing: any[] = [];
+    
+    if (prop.externalId) {
+      existing = await db
+        .select()
+        .from(props)
+        .where(and(
+          eq(props.platform, prop.platform),
+          eq(props.sport, prop.sport),
+          eq(props.externalId, prop.externalId)
+        ))
+        .limit(1);
     }
+    
+    // Fallback to attribute matching if no externalId or no match found
+    if (existing.length === 0) {
+      const conditions = [
+        eq(props.sport, prop.sport),
+        eq(props.player, prop.player),
+        eq(props.stat, prop.stat),
+        eq(props.line, prop.line),
+        eq(props.direction, prop.direction),
+        eq(props.platform, prop.platform),
+        eq(props.isActive, true)
+      ];
 
-    const existing = await db
-      .select()
-      .from(props)
-      .where(and(...conditions))
-      .limit(1);
+      if (prop.fixtureId) {
+        conditions.push(eq(props.fixtureId, prop.fixtureId));
+      }
+
+      existing = await db
+        .select()
+        .from(props)
+        .where(and(...conditions))
+        .limit(1);
+    }
 
     if (existing.length > 0) {
       // Update existing prop with new data
@@ -1392,7 +1409,10 @@ class DbStorage implements IStorage {
           currentLine: prop.currentLine ?? null,
           gameTime: prop.gameTime,
           marketId: prop.marketId ?? null,
-          fixtureId: prop.fixtureId ?? null, // Update fixture ID when available from streaming
+          fixtureId: prop.fixtureId ?? null,
+          externalId: prop.externalId ?? null,
+          raw: prop.raw ?? null,
+          updatedAt: new Date(),
         })
         .where(eq(props.id, existing[0].id))
         .returning();
@@ -1401,8 +1421,35 @@ class DbStorage implements IStorage {
     }
 
     // Create new prop if none exists
-    const result = await db.insert(props).values(prop).returning();
+    const result = await db.insert(props).values({
+      ...prop,
+      updatedAt: new Date(),
+    }).returning();
     return result[0];
+  }
+
+  async upsertProps(propsToUpsert: InsertProp[]): Promise<{ inserted: number; updated: number }> {
+    let inserted = 0;
+    let updated = 0;
+
+    for (const prop of propsToUpsert) {
+      try {
+        const beforeCount = await db.select().from(props).where(eq(props.isActive, true));
+        await this.upsertProp(prop);
+        const afterCount = await db.select().from(props).where(eq(props.isActive, true));
+        
+        // Simple heuristic: if count increased, it was inserted
+        if (afterCount.length > beforeCount.length) {
+          inserted++;
+        } else {
+          updated++;
+        }
+      } catch (error) {
+        console.error(`[STORAGE] Error upserting prop:`, error);
+      }
+    }
+
+    return { inserted, updated };
   }
 
   async updateProp(propId: number, updates: Partial<Pick<Prop, 'confidence' | 'ev' | 'modelProbability' | 'currentLine'>>): Promise<Prop> {

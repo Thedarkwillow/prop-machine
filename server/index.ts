@@ -235,6 +235,27 @@ const server = app.listen(PORT, "0.0.0.0", async () => {
 
   // OpticOdds streaming: DISABLED (no longer used)
   console.log("⏸️ OpticOdds streaming disabled (not in use)");
+
+  // Bootstrap ingestion if enabled and DB is empty
+  if (process.env.ENABLE_PROP_BOOTSTRAP === "true") {
+    (async () => {
+      try {
+        const { storage } = await import("./storage.js");
+        const allProps = await storage.getAllActiveProps();
+        
+        if (allProps.length === 0) {
+          console.log("[BOOTSTRAP] Props table is empty, running bootstrap ingestion...");
+          const { ingestAllProps } = await import("./ingestion/propIngestion.js");
+          const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
+          console.log(`[BOOTSTRAP] ✅ Bootstrap completed: ${result.upserted} props inserted`);
+        } else {
+          console.log(`[BOOTSTRAP] Props table has ${allProps.length} props, skipping bootstrap`);
+        }
+      } catch (error) {
+        console.error("[BOOTSTRAP] Bootstrap ingestion failed (non-fatal):", error);
+      }
+    })();
+  }
 });
 
 /* ------------------------- ERRORS ------------------------- */

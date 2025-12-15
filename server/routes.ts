@@ -113,71 +113,53 @@ router.get("/props", async (req, res) => {
     const limitNum = limit ? parseInt(limit as string) : 100; // Default 100 props
     const offsetNum = offset ? parseInt(offset as string) : 0;
     
-    // Read props from filesystem cache first
-    const { propCacheService } = await import("./services/propCacheService.js");
+    // Query DB directly (no longer using OpticOdds cache)
     const { storage } = await import("./storage.js");
     
     let props: any[] = [];
     const normalizedSport = sport && typeof sport === 'string' ? normalizeSport(sport) : undefined;
     
-    // Try cache first
+    // Query DB directly
     if (normalizedSport) {
-      props = await propCacheService.getPropsBySport(normalizedSport);
+      props = await storage.getActiveProps(normalizedSport);
     } else {
-      props = await propCacheService.getAllProps();
+      props = await storage.getAllActiveProps();
     }
     
-    // Fallback to DB if cache is empty
+    // If DB returns 0, log diagnostic info
     if (props.length === 0) {
-      console.warn('[CACHE MISS] Falling back to DB for props', { sport: normalizedSport });
-      if (normalizedSport) {
-        console.log('[PROPS DEBUG] Calling getActiveProps() with sport filter:', normalizedSport);
-        props = await storage.getActiveProps(normalizedSport);
-        console.log('[PROPS DEBUG] getActiveProps() returned:', props.length, 'props');
-        
-        // Diagnostic: if still 0, check unfiltered count
-        if (props.length === 0) {
-          const { db } = await import("./db.js");
-          const { props: propsTable } = await import("../shared/schema.js");
-          const { eq } = await import("drizzle-orm");
-          const unfiltered = await db.select().from(propsTable).where(eq(propsTable.sport, normalizedSport));
-          console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, unfiltered.length);
-        }
-      } else {
-        console.log('[PROPS DEBUG] Calling getAllActiveProps() (no sport filter)');
-        props = await storage.getAllActiveProps();
-        console.log('[PROPS DEBUG] getAllActiveProps() returned:', props.length, 'props');
-      }
+      console.warn('[PROPS QUERY] No props found in DB', { sport: normalizedSport });
+      const { db } = await import("./db.js");
+      const { props: propsTable } = await import("../shared/schema.js");
+      const { eq } = await import("drizzle-orm");
       
-      // Only cache if DB returned results
-      if (props.length > 0) {
-        console.log(`[CACHE] Caching ${props.length} props from DB fallback`);
-        // Group by platform and cache
-        const propsByPlatform = new Map<string, any[]>();
-        for (const prop of props) {
-          const platform = normalizePlatform(prop.platform || 'Unknown');
-          if (!propsByPlatform.has(platform)) {
-            propsByPlatform.set(platform, []);
-          }
-          propsByPlatform.get(platform)!.push(prop);
-        }
-        
-        for (const [platform, platformProps] of propsByPlatform.entries()) {
-          await propCacheService.saveProps(normalizedSport || 'ALL', platform, platformProps, 3600, 'api', true);
-        }
+      if (normalizedSport) {
+        const unfiltered = await db.select().from(propsTable).where(eq(propsTable.sport, normalizedSport));
+        console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, unfiltered.length);
+      } else {
+        const total = await db.select().from(propsTable);
+        console.log(`[PROPS DEBUG] Total props in DB (unfiltered):`, total.length);
       }
     }
     
-    // Log query results
+    // Structured query log
+    const platform = props.length > 0 ? props[0].platform : undefined;
+    const activeOnly = true; // Always active props
+    const sample = props.slice(0, 3).map(p => ({
+      id: p.id,
+      player: p.player,
+      stat: p.stat,
+      line: p.line,
+      platform: p.platform,
+      gameTime: p.gameTime,
+    }));
+    
     console.log('[PROPS QUERY]', {
       sport: normalizedSport || 'ALL',
+      platform: platform || 'N/A',
+      activeOnly,
       count: props.length,
-      source: props.length > 0 && props[0].id ? 'DB' : 'cache',
-      sample: props.slice(0, 2).map(p => ({
-        player: p.player,
-        stat: p.stat,
-        platform: p.platform,
-      })),
+      sample,
     });
     
     // Apply limit and offset

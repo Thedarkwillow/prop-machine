@@ -764,22 +764,23 @@ export function adminRoutes(): Router {
     }
   });
 
-  // Prop ingestion endpoint
-  router.post("/ingest-props", requireAdmin, async (req, res) => {
+  // Prop ingestion endpoint (new ingestion service)
+  router.post("/ingest/props", requireAdmin, async (req, res) => {
     try {
       const { sport } = req.query;
       const sports = sport ? [sport as string] : ['NBA', 'NFL', 'NHL'];
       
       console.log('[INGEST] Manual ingestion triggered for sports:', sports);
       
-      const { propIngestionService } = await import("./services/propIngestionService.js");
-      const result = await propIngestionService.ingestProps(sports);
+      const { ingestAllProps } = await import("./ingestion/propIngestion.js");
+      const result = await ingestAllProps(sports);
       
       res.json({
         ok: true,
         totals: {
           fetched: result.fetched,
           upserted: result.upserted,
+          updated: result.updated,
           invalid: result.invalid,
         },
         byPlatform: result.byPlatform,
@@ -788,6 +789,86 @@ export function adminRoutes(): Router {
     } catch (error) {
       const err = error as Error;
       console.error('[INGEST] Ingestion error:', err);
+      res.status(500).json({
+        ok: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Props health endpoint
+  router.get("/props/health", requireAdmin, async (req, res) => {
+    try {
+      const { db } = await import("./db.js");
+      const { props: propsTable } = await import("../shared/schema.js");
+      const { eq, sql, desc } = await import("drizzle-orm");
+      
+      // Total counts
+      const totalProps = await db.select().from(propsTable);
+      const activeProps = await db.select().from(propsTable).where(eq(propsTable.isActive, true));
+      
+      // Count by sport
+      const sportCounts: Record<string, number> = {};
+      const activeSportCounts: Record<string, number> = {};
+      for (const prop of totalProps) {
+        sportCounts[prop.sport] = (sportCounts[prop.sport] || 0) + 1;
+        if (prop.isActive) {
+          activeSportCounts[prop.sport] = (activeSportCounts[prop.sport] || 0) + 1;
+        }
+      }
+      
+      // Count by platform
+      const platformCounts: Record<string, number> = {};
+      const activePlatformCounts: Record<string, number> = {};
+      for (const prop of totalProps) {
+        platformCounts[prop.platform] = (platformCounts[prop.platform] || 0) + 1;
+        if (prop.isActive) {
+          activePlatformCounts[prop.platform] = (activePlatformCounts[prop.platform] || 0) + 1;
+        }
+      }
+      
+      // Most recent updatedAt
+      const mostRecent = await db
+        .select()
+        .from(propsTable)
+        .orderBy(desc(propsTable.updatedAt))
+        .limit(1);
+      
+      // Last 5 rows
+      const last5 = await db
+        .select({
+          id: propsTable.id,
+          sport: propsTable.sport,
+          platform: propsTable.platform,
+          player: propsTable.player,
+          stat: propsTable.stat,
+          line: propsTable.line,
+          gameTime: propsTable.gameTime,
+          updatedAt: propsTable.updatedAt,
+        })
+        .from(propsTable)
+        .orderBy(desc(propsTable.updatedAt))
+        .limit(5);
+      
+      res.json({
+        summary: {
+          total: totalProps.length,
+          active: activeProps.length,
+          mostRecentUpdatedAt: mostRecent[0]?.updatedAt || null,
+        },
+        bySport: {
+          total: sportCounts,
+          active: activeSportCounts,
+        },
+        byPlatform: {
+          total: platformCounts,
+          active: activePlatformCounts,
+        },
+        last5Rows: last5,
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error('[HEALTH] Error fetching props health:', err);
       res.status(500).json({
         ok: false,
         error: err.message,
