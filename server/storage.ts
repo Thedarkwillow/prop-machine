@@ -1189,7 +1189,7 @@ class DbStorage implements IStorage {
       rowsAfterAllFilters,
     });
     
-    // Structured debug log with sample
+    // Structured debug log with sample (including external_id for validation)
     const sample = results.slice(0, 3).map(p => ({
       id: p.id,
       player: p.player,
@@ -1197,6 +1197,7 @@ class DbStorage implements IStorage {
       line: p.line,
       platform: p.platform,
       gameTime: p.gameTime,
+      externalId: (p as any).externalId || null, // Defensive: may not exist yet
     }));
     
     console.log('[PROPS DEBUG] Query result:', {
@@ -1204,6 +1205,17 @@ class DbStorage implements IStorage {
       sport: sport || 'ALL',
       sample,
     });
+    
+    // Log one sample prop row after query (id + external_id)
+    if (results.length > 0) {
+      const sampleProp = results[0];
+      console.log('[PROPS DEBUG] Sample prop row:', {
+        id: sampleProp.id,
+        externalId: (sampleProp as any).externalId || 'NULL (column may not exist yet)',
+        player: sampleProp.player,
+        platform: sampleProp.platform,
+      });
+    }
     
     if (results.length === 0 && activeProps.length > 0) {
       // Show sample of what's being filtered out
