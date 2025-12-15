@@ -1136,8 +1136,9 @@ class DbStorage implements IStorage {
       conditions.push(eq(props.sport, sport));
     }
     
-    // Select only columns that exist in the database (exclude externalId)
-    results = await db
+    // Select only columns that exist in the database (exclude externalId and raw)
+    // Cast to Prop[] since we're excluding columns that don't exist in DB
+    const selectedResults = await db
       .select({
         id: props.id,
         sport: props.sport,
@@ -1164,6 +1165,13 @@ class DbStorage implements IStorage {
       .where(and(...conditions))
       .orderBy(desc(props.createdAt)) // Use createdAt for ordering (guaranteed to exist)
       .limit(10000); // Reasonable limit
+    
+    // Add missing fields (externalId, raw) as null/undefined to match Prop type
+    results = selectedResults.map(row => ({
+      ...row,
+      externalId: null,
+      raw: null,
+    })) as Prop[];
     
     // Simple debug summary (use counts to avoid selecting externalId)
     const totalRows = totalPropsCount[0]?.count || 0;
