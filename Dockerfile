@@ -17,6 +17,16 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
+# Install system dependencies for Playwright
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
 # Install production dependencies only
 COPY package*.json ./
 RUN npm install --omit=dev
