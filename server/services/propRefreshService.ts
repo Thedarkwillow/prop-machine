@@ -6,6 +6,8 @@ import { propAnalysisService } from "./propAnalysisService";
 import { propCacheService } from "./propCacheService";
 import { normalizeStat } from "../utils/statNormalizer";
 import { resolveOpponent } from "../utils/opponentResolver";
+import type { InsertProp } from "@shared/schema";
+import { storage } from "../storage.js";
 
 interface RefreshResult {
   success: boolean;
@@ -333,6 +335,51 @@ export class PropRefreshService {
             console.error(`[ODDS API] ❌ Self-healing failed for ${platform}:`, healError);
           }
         }
+      }
+
+      // Additionally, upsert props into the database so the dashboard can query them
+      try {
+        const insertBatch: InsertProp[] = [];
+
+        for (const props of Array.from(propsByPlatform.values())) {
+          for (const p of props) {
+            insertBatch.push({
+              sport: p.sport,
+              player: p.player,
+              team: p.team || 'TBD',
+              opponent: p.opponent || 'TBD',
+              stat: p.stat,
+              // Drizzle DECIMAL expects strings on insert
+              line: p.line.toString(),
+              currentLine: (p.currentLine ?? p.line).toString(),
+              direction: p.direction,
+              period: p.period,
+              platform: p.platform,
+              fixtureId: null,
+              marketId: null,
+              confidence: p.confidence,
+              ev: p.ev.toString(),
+              modelProbability: p.modelProbability.toString(),
+              gameTime: p.gameTime,
+              // NOTE: We intentionally do NOT set externalId, isActive, raw, or updatedAt here,
+              // because those columns may not exist in the actual database schema.
+            });
+          }
+        }
+
+        if (insertBatch.length > 0) {
+          console.log(`[REFRESH] ${sport}/DB → Upserting ${insertBatch.length} props from The Odds API into database...`);
+          const { inserted, updated } = await storage.upsertProps(insertBatch);
+          console.log(`[REFRESH] ${sport}/DB → Upsert completed: ${inserted} inserted, ${updated} updated`);
+        } else {
+          console.warn(`[REFRESH] ${sport}/DB → No props to upsert into database for The Odds API`);
+        }
+      } catch (dbError) {
+        const err = dbError as Error;
+        console.error(`[REFRESH] ${sport}/DB → ❌ Failed to upsert props from The Odds API into database:`, err.message);
+        result.errors.push(`DB upsert error: ${err.message}`);
+        // Do not throw here — cache is still valid; just mark as partial failure.
+        result.success = false;
       }
       
       // Also handle platforms that had no props at all
