@@ -54,3 +54,6 @@ tmp/
 
 # File-based API cache
 cache/
+
+# Browser authentication cookies
+cookies/

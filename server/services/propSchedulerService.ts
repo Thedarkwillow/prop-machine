@@ -1,4 +1,4 @@
-import { propRefreshService } from './propRefreshService';
+import { ingestAllProps } from '../ingestion/propIngestion.js';
 
 class PropSchedulerService {
   private intervalId: NodeJS.Timeout | null = null;
@@ -124,31 +124,14 @@ class PropSchedulerService {
       console.log(`⏰ Time: ${new Date().toLocaleString()}`);
       console.log('========================================\n');
 
-      // Refresh props for major sports
+      // Use browser-based ingestion
       const sports = ['NBA', 'NFL', 'NHL'];
-      const result = await propRefreshService.refreshAllPlatforms(sports);
+      const result = await ingestAllProps(sports);
 
-      // Check if this was a real success (props fetched) or just no errors but also no data
-      // Detect rate limit errors: 401 (quota), 429 (rate limit), 403 (blocked/captcha)
-      const hasRateLimitErrors = result.results.some(r => 
-        r.errors.some(e => {
-          const errorLower = e.toLowerCase();
-          return errorLower.includes('429') || 
-                 errorLower.includes('401') || 
-                 errorLower.includes('403') ||
-                 errorLower.includes('quota') || 
-                 errorLower.includes('rate limit') ||
-                 errorLower.includes('usage quota') ||
-                 errorLower.includes('out_of_usage_credits') ||
-                 errorLower.includes('too many requests') ||
-                 errorLower.includes('forbidden') ||
-                 errorLower.includes('captcha');
-        })
-      );
-      const hasActualData = result.totalPropsFetched > 0;
-      const allPlatformsFailed = !result.success || result.results.every(r => !r.success);
+      const hasActualData = result.fetched > 0;
+      const hasErrors = result.errors.length > 0;
 
-      if (result.success && hasActualData) {
+      if (hasActualData && result.upserted + result.updated > 0) {
         // Real success - reset failure counter
         this.consecutiveFailures = 0;
         this.pausedUntil = null;
@@ -156,58 +139,51 @@ class PropSchedulerService {
         this.lastError = null;
         
         console.log('\n========================================');
-        console.log('✅ Scheduled prop refresh completed');
-        console.log(`📊 Total props fetched: ${result.totalPropsFetched}`);
-        console.log(`✨ Total props created: ${result.totalPropsCreated}`);
-        console.log(`❌ Total errors: ${result.totalErrors}`);
+        console.log('✅ Scheduled browser ingestion completed');
+        console.log(`📊 Total props scraped: ${result.fetched}`);
+        console.log(`✨ Total props inserted: ${result.upserted}`);
+        console.log(`🔄 Total props updated: ${result.updated}`);
+        console.log(`❌ Total errors: ${result.errors.length}`);
         console.log(`⏰ Next refresh: ${new Date(
           Date.now() + this.refreshIntervalMinutes * 60 * 1000
         ).toLocaleTimeString()}`);
         console.log('========================================\n');
 
-        // Log individual platform results
-        result.results.forEach((r) => {
-          console.log(
-            `  ${r.platform} (${r.sport}): ${r.propsCreated}/${r.propsFetched} props created`
-          );
-          if (r.errors.length > 0) {
-            console.log(`    ⚠️  Errors: ${r.errors.slice(0, 3).join(', ')}`);
-          }
-        });
-      } else if ((hasRateLimitErrors || allPlatformsFailed) && !hasActualData) {
-        // Rate limited or all platforms failed with no data - increment failure counter
+        // Log per-platform results
+        for (const [platform, stats] of Object.entries(result.byPlatform)) {
+          console.log(`  ${platform}: ${stats.fetched} scraped, ${stats.upserted} inserted, ${stats.updated} updated`);
+        }
+      } else if (!hasActualData && hasErrors) {
+        // Failed scraping - increment failure counter
         this.consecutiveFailures++;
-        const failureReason = hasRateLimitErrors ? 'API rate limits/quota exceeded' : 'All platforms failed';
-        this.lastError = `${failureReason}. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+        this.lastError = `Browser ingestion failed. Scraped: ${result.fetched}, Errors: ${result.errors.length}`;
         
         console.log('\n========================================');
-        console.log(`⚠️  Scheduled refresh failed: ${failureReason}`);
-        console.log(`📊 Total props fetched: ${result.totalPropsFetched}`);
-        console.log(`❌ Total errors: ${result.totalErrors}`);
+        console.log(`⚠️  Scheduled browser ingestion failed`);
+        console.log(`📊 Total props scraped: ${result.fetched}`);
+        console.log(`❌ Total errors: ${result.errors.length}`);
         console.log(`🔄 Consecutive failures: ${this.consecutiveFailures}`);
         
-        // Log error details for debugging
-        result.results.forEach(r => {
-          if (r.errors.length > 0) {
-            console.log(`  ${r.platform} (${r.sport}): ${r.errors.slice(0, 2).join('; ')}`);
-          }
-        });
+        // Log error details
+        if (result.errors.length > 0) {
+          console.log(`  Errors: ${result.errors.slice(0, 5).join('; ')}`);
+        }
         
         // Pause scheduler if we've had 3+ consecutive failures
         if (this.consecutiveFailures >= 3) {
-          const pauseMinutes = 30; // Pause for 30 minutes
+          const pauseMinutes = 30;
           this.pausedUntil = new Date(Date.now() + pauseMinutes * 60 * 1000);
-          console.log(`⏸️  Pausing scheduler for ${pauseMinutes} minutes due to repeated rate limits`);
+          console.log(`⏸️  Pausing scheduler for ${pauseMinutes} minutes due to repeated failures`);
           console.log(`⏰ Will resume at: ${this.pausedUntil.toLocaleTimeString()}`);
-          // Stop the interval to prevent further API calls
+          // Stop the interval
           if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
             this.isRunning = false;
-            console.log('⏸️  Scheduler interval stopped to prevent further API calls');
+            console.log('⏸️  Scheduler interval stopped');
             // Schedule automatic resume
             setTimeout(() => {
-              console.log('✅ Rate limit pause expired, restarting scheduler...');
+              console.log('✅ Pause expired, restarting scheduler...');
               this.pausedUntil = null;
               this.consecutiveFailures = 0;
               this.start(this.refreshIntervalMinutes);
@@ -220,13 +196,14 @@ class PropSchedulerService {
         }
         console.log('========================================\n');
       } else {
-        // Other failure or empty response
-        this.lastError = `Refresh failed. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+        // Other case (no data but no errors, or partial success)
+        this.lastError = `Ingestion completed. Scraped: ${result.fetched}, Inserted: ${result.upserted}, Errors: ${result.errors.length}`;
         console.log('\n========================================');
-        console.log('⚠️  Scheduled prop refresh completed with warnings');
-        console.log(`📊 Total props fetched: ${result.totalPropsFetched}`);
-        console.log(`✨ Total props created: ${result.totalPropsCreated}`);
-        console.log(`❌ Total errors: ${result.totalErrors}`);
+        console.log('⚠️  Scheduled browser ingestion completed with warnings');
+        console.log(`📊 Total props scraped: ${result.fetched}`);
+        console.log(`✨ Total props inserted: ${result.upserted}`);
+        console.log(`🔄 Total props updated: ${result.updated}`);
+        console.log(`❌ Total errors: ${result.errors.length}`);
         console.log(`⏰ Next refresh: ${new Date(
           Date.now() + this.refreshIntervalMinutes * 60 * 1000
         ).toLocaleTimeString()}`);
@@ -268,20 +245,23 @@ class PropSchedulerService {
    * Manually trigger a refresh (updates scheduler status)
    */
   async triggerManualRefresh(sports?: string[]): Promise<any> {
-    console.log('🔄 Manual prop refresh triggered');
+    console.log('🔄 Manual browser ingestion triggered');
     const targetSports = sports || ['NBA', 'NFL', 'NHL'];
     
     this.lastRefreshTime = new Date();
-    const result = await propRefreshService.refreshAllPlatforms(targetSports);
+    const result = await ingestAllProps(targetSports);
     
-    // Consider successful if API calls succeeded (even if no new props created due to duplicates)
-    if (result.success) {
+    // Consider successful if props were scraped and inserted
+    if (result.fetched > 0 && result.upserted + result.updated > 0) {
       this.lastSuccessfulRefresh = new Date();
       this.lastError = null;
-      console.log(`✅ Manual refresh completed - Fetched: ${result.totalPropsFetched}, Created: ${result.totalPropsCreated}`);
+      this.consecutiveFailures = 0;
+      console.log(`✅ Manual ingestion completed - Scraped: ${result.fetched}, Inserted: ${result.upserted}, Updated: ${result.updated}`);
     } else {
-      this.lastError = `Manual refresh failed. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
-      console.error('❌ Manual refresh failed - all platforms returned errors');
+      this.lastError = `Manual ingestion completed. Scraped: ${result.fetched}, Inserted: ${result.upserted}, Errors: ${result.errors.length}`;
+      if (result.errors.length > 0) {
+        console.error('❌ Manual ingestion had errors:', result.errors.slice(0, 3));
+      }
     }
     
     return result;
