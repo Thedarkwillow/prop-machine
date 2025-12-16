@@ -1,5 +1,5 @@
-import { ingestUnderdogProps } from '../scrapers/underdog.js';
-import { ingestPrizePicksProps } from '../scrapers/prizepicks.js';
+import { ingestUnderdog } from '../jobs/ingestUnderdog.js';
+import { ingestPrizePicks } from '../jobs/ingestPrizePicks.js';
 
 interface IngestionResult {
   fetched: number;
@@ -12,7 +12,7 @@ interface IngestionResult {
 
 /**
  * Ingest props using browser-based scraping (Playwright)
- * Runs separate scrapers for Underdog and PrizePicks
+ * Runs separate ingestion jobs for Underdog and PrizePicks
  * NO API calls, NO fallbacks, NO demo data
  */
 export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): Promise<IngestionResult> {
@@ -31,10 +31,10 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
   console.log('[INGESTION] Platforms: Underdog, PrizePicks');
   console.log('[INGESTION] ========================================\n');
 
-  // Run Underdog scraper
-  console.log('[INGESTION] Running Underdog scraper...');
+  // Run Underdog ingestion job
+  console.log('[INGESTION] Running Underdog ingestion job...');
   try {
-    const underdogResult = await ingestUnderdogProps();
+    const underdogResult = await ingestUnderdog();
     
     result.fetched += underdogResult.scraped;
     result.upserted += underdogResult.inserted;
@@ -53,14 +53,14 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     }
   } catch (error) {
     const err = error as Error;
-    console.error(`[INGESTION] ❌ Underdog scraper failed:`, err);
-    result.errors.push(`Underdog scraper failed: ${err.message}`);
+    console.error(`[INGESTION] ❌ Underdog ingestion failed:`, err);
+    result.errors.push(`Underdog ingestion failed: ${err.message}`);
   }
 
-  // Run PrizePicks scraper
-  console.log('\n[INGESTION] Running PrizePicks scraper...');
+  // Run PrizePicks ingestion job
+  console.log('\n[INGESTION] Running PrizePicks ingestion job...');
   try {
-    const prizePicksResult = await ingestPrizePicksProps();
+    const prizePicksResult = await ingestPrizePicks();
     
     result.fetched += prizePicksResult.scraped;
     result.upserted += prizePicksResult.inserted;
@@ -79,8 +79,8 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     }
   } catch (error) {
     const err = error as Error;
-    console.error(`[INGESTION] ❌ PrizePicks scraper failed:`, err);
-    result.errors.push(`PrizePicks scraper failed: ${err.message}`);
+    console.error(`[INGESTION] ❌ PrizePicks ingestion failed:`, err);
+    result.errors.push(`PrizePicks ingestion failed: ${err.message}`);
   }
 
   // Final summary

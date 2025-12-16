@@ -786,31 +786,94 @@ export function adminRoutes(): Router {
     }
   });
 
-  // Prop ingestion endpoint (new ingestion service)
-  router.post("/ingest/props", requireAdmin, async (req, res) => {
+  // Ingest Underdog props (browser scraping)
+  router.post("/ingest/underdog", requireAdmin, async (req, res) => {
     try {
-      const { sport } = req.query;
-      const sports = sport ? [sport as string] : ['NBA', 'NFL', 'NHL'];
+      console.log('[INGESTION] Manual Underdog ingestion triggered');
       
-      console.log('[INGEST] Manual ingestion triggered for sports:', sports);
-      
-      const { ingestAllProps } = await import("./ingestion/propIngestion.js");
-      const result = await ingestAllProps(sports);
+      const { ingestUnderdog } = await import("./jobs/ingestUnderdog.js");
+      const result = await ingestUnderdog();
       
       res.json({
-        ok: true,
-        totals: {
-          fetched: result.fetched,
-          upserted: result.upserted,
-          updated: result.updated,
-          invalid: result.invalid,
-        },
-        byPlatform: result.byPlatform,
-        errors: result.errors.slice(0, 10), // Limit error output
+        ok: result.success,
+        platform: 'Underdog',
+        scraped: result.scraped,
+        inserted: result.inserted,
+        errors: result.errors.slice(0, 10),
       });
     } catch (error) {
       const err = error as Error;
-      console.error('[INGEST] Ingestion error:', err);
+      console.error('[INGESTION] Underdog ingestion error:', err);
+      res.status(500).json({
+        ok: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Ingest PrizePicks props (browser scraping)
+  router.post("/ingest/prizepicks", requireAdmin, async (req, res) => {
+    try {
+      console.log('[INGESTION] Manual PrizePicks ingestion triggered');
+      
+      const { ingestPrizePicks } = await import("./jobs/ingestPrizePicks.js");
+      const result = await ingestPrizePicks();
+      
+      res.json({
+        ok: result.success,
+        platform: 'PrizePicks',
+        scraped: result.scraped,
+        inserted: result.inserted,
+        errors: result.errors.slice(0, 10),
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error('[INGESTION] PrizePicks ingestion error:', err);
+      res.status(500).json({
+        ok: false,
+        error: err.message,
+      });
+    }
+  });
+
+  // Ingest all platforms (browser scraping)
+  router.post("/ingest/all", requireAdmin, async (req, res) => {
+    try {
+      console.log('[INGESTION] Manual ingestion triggered for all platforms');
+      
+      const { ingestUnderdog } = await import("./jobs/ingestUnderdog.js");
+      const { ingestPrizePicks } = await import("./jobs/ingestPrizePicks.js");
+      
+      // Run both scrapers sequentially
+      const [underdogResult, prizePicksResult] = await Promise.all([
+        ingestUnderdog(),
+        ingestPrizePicks(),
+      ]);
+      
+      res.json({
+        ok: underdogResult.success && prizePicksResult.success,
+        platforms: {
+          Underdog: {
+            scraped: underdogResult.scraped,
+            inserted: underdogResult.inserted,
+            success: underdogResult.success,
+            errors: underdogResult.errors.slice(0, 5),
+          },
+          PrizePicks: {
+            scraped: prizePicksResult.scraped,
+            inserted: prizePicksResult.inserted,
+            success: prizePicksResult.success,
+            errors: prizePicksResult.errors.slice(0, 5),
+          },
+        },
+        totals: {
+          scraped: underdogResult.scraped + prizePicksResult.scraped,
+          inserted: underdogResult.inserted + prizePicksResult.inserted,
+        },
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error('[INGESTION] All platforms ingestion error:', err);
       res.status(500).json({
         ok: false,
         error: err.message,
