@@ -105,19 +105,28 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
           if (Array.isArray(cachedProps) && cachedProps.length > 0) {
             console.log(`[INGEST] Found ${cachedProps.length} cached PrizePicks props for ${sport}, converting to normalized format...`);
             // Convert cached props to NormalizedProp format
-            const normalizedFromCache: NormalizedProp[] = cachedProps.map(cp => ({
-              sport: cp.sport,
-              platform: 'PrizePicks',
-              externalId: `cached_${cp.player}_${cp.stat}_${cp.line}_${cp.gameTime?.toISOString().split('T')[0] || 'unknown'}`,
-              playerName: cp.player,
-              statType: cp.stat,
-              line: typeof cp.line === 'string' ? parseFloat(cp.line) : cp.line,
-              gameTime: cp.gameTime ? new Date(cp.gameTime) : null,
-              opponent: cp.opponent || null,
-              team: cp.team || null,
-              isActive: true,
-              raw: { cached: true, original: cp },
-            }));
+            console.log(`[INGEST] Converting ${cachedProps.length} cached PrizePicks props to normalized format...`);
+            const normalizedFromCache: NormalizedProp[] = [];
+            for (const cp of cachedProps) {
+              try {
+                normalizedFromCache.push({
+                  sport: cp.sport,
+                  platform: 'PrizePicks',
+                  externalId: `cached_${cp.player}_${cp.stat}_${cp.line}_${cp.gameTime?.toISOString().split('T')[0] || 'unknown'}`,
+                  playerName: cp.player,
+                  statType: cp.stat,
+                  line: typeof cp.line === 'string' ? parseFloat(cp.line) : cp.line,
+                  gameTime: cp.gameTime ? new Date(cp.gameTime) : null,
+                  opponent: cp.opponent || null,
+                  team: cp.team || null,
+                  isActive: true,
+                  raw: { cached: true, original: cp },
+                });
+              } catch (err) {
+                console.error(`[INGEST] Error converting cached prop:`, err, cp);
+              }
+            }
+            console.log(`[INGEST] Successfully converted ${normalizedFromCache.length} cached props`);
             allNormalized.push(...normalizedFromCache);
             if (!result.byPlatform['PrizePicks']) {
               result.byPlatform['PrizePicks'] = { fetched: 0, upserted: 0, updated: 0 };
@@ -157,19 +166,28 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
           if (Array.isArray(cachedProps) && cachedProps.length > 0) {
             console.log(`[INGEST] Found ${cachedProps.length} cached Underdog props for ${sport}, converting to normalized format...`);
             // Convert cached props to NormalizedProp format
-            const normalizedFromCache: NormalizedProp[] = cachedProps.map(cp => ({
-              sport: cp.sport,
-              platform: 'Underdog',
-              externalId: `cached_${cp.player}_${cp.stat}_${cp.line}_${cp.gameTime?.toISOString().split('T')[0] || 'unknown'}`,
-              playerName: cp.player,
-              statType: cp.stat,
-              line: typeof cp.line === 'string' ? parseFloat(cp.line) : cp.line,
-              gameTime: cp.gameTime ? new Date(cp.gameTime) : null,
-              opponent: cp.opponent || null,
-              team: cp.team || null,
-              isActive: true,
-              raw: { cached: true, original: cp, direction: cp.direction },
-            }));
+            console.log(`[INGEST] Converting ${cachedProps.length} cached Underdog props to normalized format...`);
+            const normalizedFromCache: NormalizedProp[] = [];
+            for (const cp of cachedProps) {
+              try {
+                normalizedFromCache.push({
+                  sport: cp.sport,
+                  platform: 'Underdog',
+                  externalId: `cached_${cp.player}_${cp.stat}_${cp.line}_${cp.gameTime?.toISOString().split('T')[0] || 'unknown'}`,
+                  playerName: cp.player,
+                  statType: cp.stat,
+                  line: typeof cp.line === 'string' ? parseFloat(cp.line) : cp.line,
+                  gameTime: cp.gameTime ? new Date(cp.gameTime) : null,
+                  opponent: cp.opponent || null,
+                  team: cp.team || null,
+                  isActive: true,
+                  raw: { cached: true, original: cp, direction: cp.direction },
+                });
+              } catch (err) {
+                console.error(`[INGEST] Error converting cached prop:`, err, cp);
+              }
+            }
+            console.log(`[INGEST] Successfully converted ${normalizedFromCache.length} cached props`);
             allNormalized.push(...normalizedFromCache);
             if (!result.byPlatform['Underdog']) {
               result.byPlatform['Underdog'] = { fetched: 0, upserted: 0, updated: 0 };
@@ -198,6 +216,14 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
 
   result.fetched = allNormalized.length;
   console.log(`[INGEST] Total normalized props: ${result.fetched}`);
+  
+  if (allNormalized.length === 0) {
+    console.warn(`[INGEST] ⚠️  WARNING: No props to insert! Reasons could be:`);
+    console.warn(`[INGEST]   - APIs returned 0 props (rate limited or quota exceeded)`);
+    console.warn(`[INGEST]   - Cache is empty (no previous successful fetches)`);
+    console.warn(`[INGEST]   - All providers failed`);
+    console.warn(`[INGEST]   - Check logs above for specific API errors`);
+  }
 
   // Upsert to database in batches
   console.log(`[INGEST] Upserting ${allNormalized.length} props to database...`);
@@ -222,7 +248,9 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     
         if (insertProps.length > 0) {
       try {
+        console.log(`[INGEST] Attempting to upsert batch ${Math.floor(i / batchSize) + 1} with ${insertProps.length} props...`);
         const upsertResult = await storage.upsertProps(insertProps);
+        console.log(`[INGEST] Upsert result: ${upsertResult.inserted} inserted, ${upsertResult.updated} updated`);
         
         // Log per sport/platform breakdown
         const platformCounts = new Map<string, { inserted: number; updated: number }>();
@@ -257,17 +285,28 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
         
         if (upsertResult.inserted === 0 && upsertResult.updated === 0) {
           console.error("[INGEST] ERROR: No props inserted — ingestion failed for this batch");
+          console.error("[INGEST] This could mean:");
+          console.error("[INGEST]   - All props already exist in database");
+          console.error("[INGEST]   - Database constraint violation");
+          console.error("[INGEST]   - Silent failure in upsertProps");
+          // Log a sample prop to help debug
+          if (insertProps.length > 0) {
+            console.error("[INGEST] Sample prop:", JSON.stringify(insertProps[0], null, 2));
+          }
         } else {
-          console.log(`[INGEST] Inserted props: ${upsertResult.inserted}`);
+          console.log(`[INGEST] ✅ Successfully inserted ${upsertResult.inserted} props in batch ${Math.floor(i / batchSize) + 1}`);
         }
         
         result.upserted += upsertResult.inserted;
         result.updated += upsertResult.updated;
       } catch (error) {
         const err = error as Error;
-        console.error(`[INGEST] Batch upsert error:`, err);
+        console.error(`[INGEST] ❌ Batch upsert error:`, err);
+        console.error(`[INGEST] Error stack:`, err.stack);
         result.errors.push(`Batch ${Math.floor(i / batchSize) + 1}: ${err.message}`);
       }
+    } else {
+      console.warn(`[INGEST] Batch ${Math.floor(i / batchSize) + 1} has 0 props to insert (all failed conversion)`);
     }
   }
 

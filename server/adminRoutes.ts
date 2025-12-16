@@ -289,6 +289,27 @@ export function adminRoutes(): Router {
       const dfsProps = allProps.filter(p => p.platform === 'PrizePicks' || p.platform === 'Underdog');
       const dfsPropsWithFixtureId = dfsProps.filter(p => p.fixtureId !== null && p.fixtureId !== undefined);
       
+      // Check cache state
+      const cacheInfo: Record<string, any> = {};
+      try {
+        const { propCacheService } = await import("./services/propCacheService.js");
+        for (const sport of ['NBA', 'NFL', 'NHL']) {
+          for (const platform of ['PrizePicks', 'Underdog']) {
+            try {
+              const cached = await propCacheService.getProps(sport, platform);
+              cacheInfo[`${sport}_${platform}`] = {
+                count: Array.isArray(cached) ? cached.length : 0,
+                hasData: Array.isArray(cached) && cached.length > 0,
+              };
+            } catch (err) {
+              cacheInfo[`${sport}_${platform}`] = { error: (err as Error).message };
+            }
+          }
+        }
+      } catch (err) {
+        cacheInfo.error = (err as Error).message;
+      }
+      
       res.json({
         success: true,
         stats: {
@@ -303,6 +324,7 @@ export function adminRoutes(): Router {
             dfsWithFixtureId: dfsPropsWithFixtureId.length,
             dfsPercentage: dfsProps.length > 0 ? Math.round((dfsPropsWithFixtureId.length / dfsProps.length) * 100) : 0,
           },
+          cache: cacheInfo,
         },
       });
     } catch (error) {
