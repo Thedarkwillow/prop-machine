@@ -7,6 +7,8 @@ class PropSchedulerService {
   private lastRefreshTime: Date | null = null;
   private lastSuccessfulRefresh: Date | null = null;
   private lastError: string | null = null;
+  private consecutiveFailures: number = 0;
+  private pausedUntil: Date | null = null;
 
   /**
    * Start the automatic prop refresh scheduler
@@ -56,12 +58,16 @@ class PropSchedulerService {
     lastSuccessfulRefresh: Date | null;
     lastError: string | null;
     nextRefresh: Date | null;
+    pausedUntil: Date | null;
+    consecutiveFailures: number;
   } {
     let nextRefresh: Date | null = null;
-    if (this.isRunning && this.lastRefreshTime) {
+    if (this.isRunning && this.lastRefreshTime && !this.pausedUntil) {
       nextRefresh = new Date(
         this.lastRefreshTime.getTime() + this.refreshIntervalMinutes * 60 * 1000
       );
+    } else if (this.pausedUntil) {
+      nextRefresh = this.pausedUntil;
     }
 
     return {
@@ -71,6 +77,8 @@ class PropSchedulerService {
       lastSuccessfulRefresh: this.lastSuccessfulRefresh,
       lastError: this.lastError,
       nextRefresh,
+      pausedUntil: this.pausedUntil,
+      consecutiveFailures: this.consecutiveFailures,
     };
   }
 
@@ -78,6 +86,20 @@ class PropSchedulerService {
    * Execute a prop refresh across all sports and platforms
    */
   private async runRefresh(): Promise<void> {
+    // Check if scheduler is paused due to rate limits
+    if (this.pausedUntil && this.pausedUntil > new Date()) {
+      const minutesRemaining = Math.ceil((this.pausedUntil.getTime() - Date.now()) / 60000);
+      console.log(`\n⏸️  Scheduler paused due to API rate limits. Resuming in ${minutesRemaining} minutes.`);
+      return;
+    }
+    
+    // Reset pause if time has passed
+    if (this.pausedUntil && this.pausedUntil <= new Date()) {
+      console.log('\n✅ Rate limit pause expired, resuming scheduler');
+      this.pausedUntil = null;
+      this.consecutiveFailures = 0;
+    }
+
     this.lastRefreshTime = new Date();
     
     try {
@@ -90,8 +112,16 @@ class PropSchedulerService {
       const sports = ['NBA', 'NFL', 'NHL'];
       const result = await propRefreshService.refreshAllPlatforms(sports);
 
-      // Consider successful if API calls succeeded (even if no new props created due to duplicates)
-      if (result.success) {
+      // Check if this was a real success (props fetched) or just no errors but also no data
+      const hasRateLimitErrors = result.results.some(r => 
+        r.errors.some(e => e.includes('429') || e.includes('401') || e.includes('quota') || e.includes('rate limit'))
+      );
+      const hasActualData = result.totalPropsFetched > 0;
+
+      if (result.success && hasActualData) {
+        // Real success - reset failure counter
+        this.consecutiveFailures = 0;
+        this.pausedUntil = null;
         this.lastSuccessfulRefresh = new Date();
         this.lastError = null;
         
@@ -114,15 +144,56 @@ class PropSchedulerService {
             console.log(`    ⚠️  Errors: ${r.errors.slice(0, 3).join(', ')}`);
           }
         });
+      } else if (hasRateLimitErrors && !hasActualData) {
+        // Rate limited with no data - increment failure counter
+        this.consecutiveFailures++;
+        this.lastError = `Rate limited. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+        
+        console.log('\n========================================');
+        console.log('⚠️  Scheduled refresh hit API rate limits');
+        console.log(`📊 Total props fetched: ${result.totalPropsFetched}`);
+        console.log(`❌ Total errors: ${result.totalErrors}`);
+        console.log(`🔄 Consecutive failures: ${this.consecutiveFailures}`);
+        
+        // Pause scheduler if we've had 3+ consecutive failures
+        if (this.consecutiveFailures >= 3) {
+          const pauseMinutes = 30; // Pause for 30 minutes
+          this.pausedUntil = new Date(Date.now() + pauseMinutes * 60 * 1000);
+          console.log(`⏸️  Pausing scheduler for ${pauseMinutes} minutes due to repeated rate limits`);
+          console.log(`⏰ Will resume at: ${this.pausedUntil.toLocaleTimeString()}`);
+        } else {
+          console.log(`⏰ Next refresh: ${new Date(
+            Date.now() + this.refreshIntervalMinutes * 60 * 1000
+          ).toLocaleTimeString()}`);
+        }
+        console.log('========================================\n');
       } else {
-        // All platforms failed
+        // Other failure or empty response
         this.lastError = `Refresh failed. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
-        console.error('❌ Prop refresh failed - all platforms returned errors');
+        console.log('\n========================================');
+        console.log('⚠️  Scheduled prop refresh completed with warnings');
+        console.log(`📊 Total props fetched: ${result.totalPropsFetched}`);
+        console.log(`✨ Total props created: ${result.totalPropsCreated}`);
+        console.log(`❌ Total errors: ${result.totalErrors}`);
+        console.log(`⏰ Next refresh: ${new Date(
+          Date.now() + this.refreshIntervalMinutes * 60 * 1000
+        ).toLocaleTimeString()}`);
+        console.log('========================================\n');
       }
     } catch (error) {
       const err = error as Error;
+      this.consecutiveFailures++;
       this.lastError = err.message;
+      console.error('\n========================================');
       console.error('❌ Scheduled prop refresh failed:', err.message);
+      console.error(`🔄 Consecutive failures: ${this.consecutiveFailures}`);
+      if (this.consecutiveFailures >= 3) {
+        const pauseMinutes = 30;
+        this.pausedUntil = new Date(Date.now() + pauseMinutes * 60 * 1000);
+        console.error(`⏸️  Pausing scheduler for ${pauseMinutes} minutes`);
+        console.error(`⏰ Will resume at: ${this.pausedUntil.toLocaleTimeString()}`);
+      }
+      console.error('========================================\n');
       console.error(error);
     }
   }
