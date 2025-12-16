@@ -179,8 +179,13 @@ if (process.env.NODE_ENV === "production") {
 /* ------------------------- BOOTSTRAP PROP INGESTION ------------------------- */
 
 async function maybeBootstrapProps() {
+  console.log('\n[BOOTSTRAP] ========================================');
+  console.log('[BOOTSTRAP] Checking bootstrap configuration...');
+  console.log(`[BOOTSTRAP] ENABLE_PROP_BOOTSTRAP: ${process.env.ENABLE_PROP_BOOTSTRAP || 'not set'}`);
+  
   if (process.env.ENABLE_PROP_BOOTSTRAP !== 'true') {
-    console.log('[BOOTSTRAP] ENABLE_PROP_BOOTSTRAP disabled');
+    console.log('[BOOTSTRAP] ⏸️  Bootstrap disabled (set ENABLE_PROP_BOOTSTRAP=true to enable)');
+    console.log('[BOOTSTRAP] ========================================\n');
     return;
   }
 
@@ -193,21 +198,33 @@ async function maybeBootstrapProps() {
     const countResult = await db.select({ count: sql<number>`count(*)` }).from(props);
     const propsCount = Number(countResult[0]?.count || 0);
     
-    console.log("[STARTUP] Props count:", propsCount);
-    console.log("[STARTUP] ENABLE_PROP_BOOTSTRAP:", process.env.ENABLE_PROP_BOOTSTRAP);
+    console.log(`[BOOTSTRAP] 📊 Current props count in database: ${propsCount}`);
     
     if (propsCount === 0) {
-      console.log("[BOOTSTRAP] Props table empty — running ingestion");
-      console.log('[INGEST] Starting prop ingestion');
+      console.log('[BOOTSTRAP] ⚠️  Props table is EMPTY — running ingestion');
+      console.log('[BOOTSTRAP] 🚀 Starting prop ingestion (this may take a while)...');
+      console.log('[BOOTSTRAP] ========================================\n');
+      
       const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
       const count = (result?.upserted ?? 0) + (result?.updated ?? 0);
-      console.log(`[INGEST] Completed — rows inserted: ${count}`);
-      console.log(`[BOOTSTRAP] Ingested ${count} props`);
+      
+      console.log('\n[BOOTSTRAP] ========================================');
+      console.log(`[BOOTSTRAP] ✅ Ingestion completed`);
+      console.log(`[BOOTSTRAP] 📊 Rows inserted: ${count}`);
+      console.log(`[BOOTSTRAP] 📊 Rows updated: ${result?.updated || 0}`);
+      console.log(`[BOOTSTRAP] ⚠️  Errors: ${result?.errors?.length || 0}`);
+      if (result?.errors && result.errors.length > 0) {
+        console.log(`[BOOTSTRAP] Error details:`, result.errors.slice(0, 3));
+      }
+      console.log('[BOOTSTRAP] ========================================\n');
     } else {
-      console.log(`[BOOTSTRAP] Props table has ${propsCount} rows, skipping ingestion`);
+      console.log(`[BOOTSTRAP] ✅ Props table already has ${propsCount} rows, skipping bootstrap ingestion`);
+      console.log('[BOOTSTRAP] ========================================\n');
     }
   } catch (err) {
-    console.error('[BOOTSTRAP] Prop ingestion failed:', err);
+    console.error('\n[BOOTSTRAP] ========================================');
+    console.error('[BOOTSTRAP] ❌ Prop ingestion failed:', err);
+    console.error('[BOOTSTRAP] ========================================\n');
   }
 }
 
