@@ -126,30 +126,14 @@ router.get("/props", async (req, res) => {
       props = await storage.getAllActiveProps();
     }
     
-    // If DB returns 0, log diagnostic info and suggest ingestion
+    // If DB returns 0 props, return 200 with empty array (not error)
     if (props.length === 0) {
-      console.warn("[CACHE MISS] Forcing DB read - no props found");
       console.warn('[PROPS QUERY] No props found in DB', { sport: normalizedSport });
-      const { db } = await import("./db.js");
-      const { props: propsTable } = await import("../shared/schema.js");
-      const { eq, sql } = await import("drizzle-orm");
-      
-      let totalCount = 0;
-      if (normalizedSport) {
-        const unfiltered = await db.select({ count: sql<number>`count(*)` }).from(propsTable).where(eq(propsTable.sport, normalizedSport));
-        totalCount = Number(unfiltered[0]?.count || 0);
-        console.log(`[PROPS DEBUG] Total ${normalizedSport} props in DB (unfiltered):`, totalCount);
-      } else {
-        const total = await db.select({ count: sql<number>`count(*)` }).from(propsTable);
-        totalCount = Number(total[0]?.count || 0);
-        console.log(`[PROPS DEBUG] Total props in DB (unfiltered):`, totalCount);
-      }
-      
-      if (totalCount === 0) {
-        console.warn('[PROPS QUERY] ⚠️  Props table is empty. Run ingestion to populate:');
-        console.warn('[PROPS QUERY]    POST /api/admin/ingest/props (requires admin auth)');
-        console.warn('[PROPS QUERY]    Or set ENABLE_PROP_BOOTSTRAP=true to auto-ingest on startup');
-      }
+      console.warn('[PROPS QUERY] ⚠️  Props table may be empty. Run ingestion to populate:');
+      console.warn('[PROPS QUERY]    POST /api/admin/ingest/props (requires admin auth)');
+      console.warn('[PROPS QUERY]    Or set ENABLE_PROP_BOOTSTRAP=true to auto-ingest on startup');
+      // Return 200 with empty array (do not throw error)
+      return res.json([]);
     }
     
     // Structured query log
@@ -179,7 +163,8 @@ router.get("/props", async (req, res) => {
     res.json(paginatedProps);
   } catch (error) {
     console.error("Error fetching props:", error);
-    res.status(500).json({ error: "Failed to fetch props" });
+    // Return 200 with empty array on error (don't crash)
+    res.json([]);
   }
 });
 

@@ -84,6 +84,7 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     byPlatform: {},
   };
 
+  console.log('[INGEST] Starting prop ingestion');
   console.log('[INGEST] Starting prop ingestion for sports:', sports);
 
   // Fetch from both providers
@@ -164,7 +165,7 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
         const totalOps = upsertResult.inserted + upsertResult.updated;
         if (totalOps > 0 && insertProps.length > 0) {
           const opsPerProp = totalOps / insertProps.length;
-          for (const [platform, counts] of platformCounts.entries()) {
+          for (const [platform, counts] of Array.from(platformCounts.entries())) {
             const platformProps = insertProps.filter(p => (p.platform || 'Unknown') === platform);
             counts.inserted = Math.round(platformProps.length * (upsertResult.inserted / insertProps.length));
             counts.updated = Math.round(platformProps.length * (upsertResult.updated / insertProps.length));
@@ -177,13 +178,15 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
         }
         
         // Log structured ingestion results per batch
-        console.log(`[INGESTION] Batch ${Math.floor(i / batchSize) + 1}: ${upsertResult.inserted} inserted, ${upsertResult.updated} updated`);
-        for (const [platform, counts] of Array.from(platformCounts.entries())) {
-          console.log(`[INGESTION] ${platform}: ${counts.inserted} inserted, ${counts.updated} updated`);
+        console.log(`[INGEST] Batch ${Math.floor(i / batchSize) + 1}: ${upsertResult.inserted} inserted, ${upsertResult.updated} updated`);
+        for (const [platform, counts] of platformCounts.entries()) {
+          console.log(`[INGEST] ${platform}: ${counts.inserted} inserted, ${counts.updated} updated`);
         }
         
         if (upsertResult.inserted === 0 && upsertResult.updated === 0) {
-          console.error("[INGESTION ERROR] No props inserted — ingestion failed for this batch");
+          console.error("[INGEST] ERROR: No props inserted — ingestion failed for this batch");
+        } else {
+          console.log(`[INGEST] Inserted props: ${upsertResult.inserted}`);
         }
         
         result.upserted += upsertResult.inserted;
@@ -198,6 +201,7 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
 
   // Final summary logging
   console.log(`[INGEST] ✅ Ingestion completed: ${result.fetched} fetched, ${result.upserted} inserted, ${result.updated} updated, ${result.invalid} invalid`);
+  console.log(`[INGEST] Completed — rows inserted: ${result.upserted}`);
   
   // Log per-platform summary
   for (const [platform, stats] of Object.entries(result.byPlatform)) {

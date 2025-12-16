@@ -292,13 +292,44 @@ class MemStorage implements IStorage {
     if (existing) {
       // Update existing prop with new data
       existing.currentLine = prop.currentLine ?? null;
-      existing.gameTime = prop.gameTime;
+      existing.gameTime = prop.gameTime ?? null;
       existing.marketId = prop.marketId ?? null;
       return existing;
     }
 
     // Create new prop if none exists
     return this.createProp(prop);
+  }
+
+  async upsertProps(propsToUpsert: InsertProp[]): Promise<{ inserted: number; updated: number }> {
+    let inserted = 0;
+    let updated = 0;
+
+    for (const prop of propsToUpsert) {
+      try {
+        const existing = Array.from(this.props.values()).find(p =>
+          p.sport === prop.sport &&
+          p.player === prop.player &&
+          p.stat === prop.stat &&
+          p.line === prop.line &&
+          p.direction === prop.direction &&
+          p.platform === prop.platform &&
+          p.isActive
+        );
+
+        if (existing) {
+          await this.upsertProp(prop);
+          updated++;
+        } else {
+          await this.createProp(prop);
+          inserted++;
+        }
+      } catch (error) {
+        console.error(`[STORAGE] Error upserting prop:`, error);
+      }
+    }
+
+    return { inserted, updated };
   }
 
   async updateProp(propId: number, updates: Partial<Pick<Prop, 'confidence' | 'ev' | 'modelProbability' | 'currentLine'>>): Promise<Prop> {
@@ -331,9 +362,12 @@ class MemStorage implements IStorage {
       confidence: prop.confidence,
       ev: prop.ev,
       modelProbability: prop.modelProbability,
-      gameTime: prop.gameTime,
+      gameTime: prop.gameTime ?? null,
       isActive: prop.isActive ?? true,
       createdAt: new Date(),
+      externalId: null,
+      raw: null,
+      updatedAt: new Date(),
     };
     this.props.set(newProp.id, newProp);
     return newProp;
@@ -383,7 +417,7 @@ class MemStorage implements IStorage {
     const cutoffTime = new Date(Date.now() - hoursAgo * 60 * 60 * 1000);
     let count = 0;
     for (const prop of Array.from(this.props.values())) {
-      if (prop.isActive && prop.gameTime < cutoffTime) {
+      if (prop.isActive && prop.gameTime && prop.gameTime < cutoffTime) {
         prop.isActive = false;
         count++;
       }
@@ -1107,112 +1141,114 @@ class DbStorage implements IStorage {
   async getActiveProps(sport?: string): Promise<Prop[]> {
     console.log("[PROPS DEBUG] getActiveProps() invoked", { sport });
     
-    const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
-    
-    // Time-based filtering: show props from last 7 days or future
-    const now = new Date();
-    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    
-    // Get total row count (defensive - no column assumptions)
-    const totalPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props);
-    const totalRows = Number(totalPropsCount[0]?.count || 0);
-    console.log('[PROPS DEBUG] Total props in DB:', totalRows);
-    
-    // Build conditions array - only use columns that definitely exist
-    const conditions: any[] = [];
-    
-    // Sport filter (case-insensitive if provided)
-    if (sport) {
-      // Case-insensitive sport matching
-      conditions.push(sql`LOWER(${props.sport}) = LOWER(${sport})`);
+    try {
+      const propDecimalFields: (keyof Prop)[] = ['line', 'currentLine', 'ev', 'modelProbability'];
+      
+      // Get total row count first - safe for empty tables
+      const totalPropsCount = await db.select({ count: sql<number>`count(*)` }).from(props);
+      const totalRows = Number(totalPropsCount[0]?.count || 0);
+      console.log('[PROPS DEBUG] Total props in DB:', totalRows);
+      
+      // If table is empty, return empty array safely
+      if (totalRows === 0) {
+        console.log('[PROPS DEBUG] Props table is empty, returning []');
+        return [];
+      }
+      
+      // Build conditions array - only use columns that definitely exist
+      const conditions: any[] = [];
+      
+      // Sport filter (optional, case-insensitive if provided)
+      if (sport) {
+        conditions.push(sql`LOWER(${props.sport}) = LOWER(${sport})`);
+      }
+      
+      // Time-based filtering: show props from last 7 days or future
+      // Skip gameTime filtering if gameTime is null (allow all props)
+      const now = new Date();
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      conditions.push(
+        or(
+          sql`${props.gameTime} IS NULL`,
+          sql`${props.gameTime} >= ${sevenDaysAgo}`,
+          sql`${props.createdAt} >= ${sevenDaysAgo}` // Fallback to created_at
+        )
+      );
+      
+      // Opponent filter: skip if opponent is null (don't filter out props with null opponent)
+      // This condition allows props with null opponent OR valid opponent
+      // Actually, we want to show all props regardless of opponent, so we don't filter by opponent
+      
+      // Select ONLY columns that exist in actual DB (exclude externalId, updatedAt, raw, isActive)
+      const selectedResults = await db
+        .select({
+          id: props.id,
+          sport: props.sport,
+          player: props.player,
+          team: props.team,
+          opponent: props.opponent,
+          stat: props.stat,
+          line: props.line,
+          currentLine: props.currentLine,
+          direction: props.direction,
+          period: props.period,
+          platform: props.platform,
+          fixtureId: props.fixtureId,
+          marketId: props.marketId,
+          confidence: props.confidence,
+          ev: props.ev,
+          modelProbability: props.modelProbability,
+          gameTime: props.gameTime,
+          createdAt: props.createdAt,
+        })
+        .from(props)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(props.createdAt)) // Use createdAt for ordering (not updatedAt)
+        .limit(10000);
+      
+      // Count rows after sport filter (if sport provided)
+      let rowsAfterSportFilter = totalRows;
+      if (sport) {
+        try {
+          const sportCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(sql`LOWER(${props.sport}) = LOWER(${sport})`);
+          rowsAfterSportFilter = Number(sportCount[0]?.count || 0);
+        } catch (err) {
+          console.warn('[PROPS DEBUG] Error counting sport props:', err);
+        }
+      }
+      
+      // Add missing fields to match Prop type (externalId, raw, updatedAt, isActive)
+      const results = selectedResults.map(row => ({
+        ...row,
+        externalId: null,
+        raw: null,
+        updatedAt: row.createdAt, // Use createdAt as fallback for updatedAt
+        isActive: true, // Default to true
+      })) as Prop[];
+      
+      const rowsReturned = results.length;
+      
+      // Structured debug logging
+      console.log('[PROPS DEBUG]', {
+        totalRows,
+        rowsAfterSportFilter: sport ? rowsAfterSportFilter : 'N/A',
+        rowsReturned,
+        sample: results.slice(0, 2).map(p => ({
+          id: p.id,
+          sport: p.sport,
+          player: p.player,
+          stat: p.stat,
+          line: p.line,
+          platform: p.platform,
+        })),
+      });
+      
+      return normalizeDecimalsArray(results, propDecimalFields);
+    } catch (error) {
+      console.error('[PROPS DEBUG] Error in getActiveProps():', error);
+      // Return empty array on error to prevent crashes
+      return [];
     }
-    
-    // Time-based filter: gameTime >= 7 days ago OR gameTime IS NULL (fallback to created_at check)
-    // Use created_at if game_time is null
-    conditions.push(
-      or(
-        sql`${props.gameTime} IS NULL`,
-        sql`${props.gameTime} >= ${sevenDaysAgo}`,
-        sql`${props.createdAt} >= ${sevenDaysAgo}` // Fallback to created_at
-      )
-    );
-    
-    // Opponent filter: defensive null-safe check
-    conditions.push(
-      or(
-        sql`${props.opponent} IS NOT NULL`,
-        sql`${props.opponent} = ''` // Allow empty string
-      )
-    );
-    
-    // Select ONLY columns that exist in actual DB (exclude externalId, updatedAt, raw, isActive)
-    const selectedResults = await db
-      .select({
-        id: props.id,
-        sport: props.sport,
-        player: props.player,
-        team: props.team,
-        opponent: props.opponent,
-        stat: props.stat,
-        line: props.line,
-        currentLine: props.currentLine,
-        direction: props.direction,
-        period: props.period,
-        platform: props.platform,
-        fixtureId: props.fixtureId,
-        marketId: props.marketId,
-        confidence: props.confidence,
-        ev: props.ev,
-        modelProbability: props.modelProbability,
-        gameTime: props.gameTime,
-        createdAt: props.createdAt,
-      })
-      .from(props)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(props.createdAt)) // Use createdAt for ordering
-      .limit(10000);
-    
-    // Count rows after sport filter (if sport provided)
-    let rowsAfterSportFilter = totalRows;
-    if (sport) {
-      const sportCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(sql`LOWER(${props.sport}) = LOWER(${sport})`);
-      rowsAfterSportFilter = Number(sportCount[0]?.count || 0);
-    }
-    
-    // Add missing fields to match Prop type (externalId, raw, updatedAt, isActive)
-    const results = selectedResults.map(row => ({
-      ...row,
-      externalId: null,
-      raw: null,
-      updatedAt: row.createdAt, // Use createdAt as fallback
-      isActive: true, // Default to true since column may not exist
-    })) as Prop[];
-    
-    const rowsReturned = results.length;
-    
-    // Structured debug logging as requested
-    console.log('[PROPS DEBUG]', {
-      totalRows,
-      rowsAfterSportFilter: sport ? rowsAfterSportFilter : 'N/A',
-      rowsAfterActiveFilter: 'N/A (isActive column may not exist)',
-      rowsReturned,
-      sample: results.slice(0, 2).map(p => ({
-        id: p.id,
-        sport: p.sport,
-        player: p.player,
-        stat: p.stat,
-        line: p.line,
-        platform: p.platform,
-      })),
-    });
-    
-    if (totalRows === 0) {
-      console.warn('[PROPS DEBUG] ⚠️  Props table is empty. Run ingestion to populate:');
-      console.warn('[PROPS DEBUG]    POST /api/admin/ingest/props (requires admin auth)');
-      console.warn('[PROPS DEBUG]    Or set ENABLE_PROP_BOOTSTRAP=true to auto-ingest on startup');
-    }
-    
-    return normalizeDecimalsArray(results, propDecimalFields);
   }
 
   async getActivePropsWithLineMovement(sport?: string, limit = 100, offset = 0): Promise<PropWithLineMovement[]> {
@@ -1310,6 +1346,9 @@ class DbStorage implements IStorage {
         gameTime: row.gameTime,
         isActive: row.isActive,
         createdAt: row.createdAt,
+        externalId: null,
+        raw: null,
+        updatedAt: row.createdAt, // Use createdAt as fallback
       };
       
       // Normalize decimal fields
@@ -1471,8 +1510,8 @@ class DbStorage implements IStorage {
           await this.upsertProp(prop);
           updated++;
         } else {
-          // Insert new
-          await this.upsertProp(prop);
+          // Insert new - use createProp directly to ensure insertion
+          await this.createProp(prop);
           inserted++;
         }
       } catch (error) {
@@ -1508,7 +1547,28 @@ class DbStorage implements IStorage {
   }
 
   async createProp(prop: InsertProp): Promise<Prop> {
-    const result = await db.insert(props).values(prop).returning();
+    // Filter out columns that don't exist in actual DB (externalId, updatedAt, raw, isActive)
+    const insertData: any = {
+      sport: prop.sport,
+      player: prop.player,
+      team: prop.team,
+      opponent: prop.opponent,
+      stat: prop.stat,
+      line: prop.line,
+      currentLine: prop.currentLine ?? null,
+      direction: prop.direction,
+      period: prop.period ?? 'full_game',
+      platform: prop.platform,
+      fixtureId: prop.fixtureId ?? null,
+      marketId: prop.marketId ?? null,
+      confidence: prop.confidence,
+      ev: prop.ev,
+      modelProbability: prop.modelProbability,
+      gameTime: prop.gameTime,
+      // Explicitly exclude: externalId, updatedAt, raw, isActive
+    };
+    
+    const result = await db.insert(props).values(insertData).returning();
     return result[0];
   }
 

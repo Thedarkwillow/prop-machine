@@ -22,6 +22,7 @@ import { propSchedulerService } from "./services/propSchedulerService.js";
 import { opticOddsStreamService } from "./services/opticOddsStreamService.js";
 import { runPermissionFix } from "./fixDbPermissions.js";
 import { verifyToken, getTokenFromRequest } from "./utils/jwt.js";
+import { ingestAllProps } from './ingestion/propIngestion.js';
 
 dotenv.config();
 
@@ -175,6 +176,41 @@ if (process.env.NODE_ENV === "production") {
 
 /* ------------------------- DATABASE SEED ------------------------- */
 
+/* ------------------------- BOOTSTRAP PROP INGESTION ------------------------- */
+
+async function maybeBootstrapProps() {
+  if (process.env.ENABLE_PROP_BOOTSTRAP !== 'true') {
+    console.log('[BOOTSTRAP] ENABLE_PROP_BOOTSTRAP disabled');
+    return;
+  }
+
+  try {
+    // Check if props table is empty
+    const { db } = await import("./db.js");
+    const { props } = await import("../shared/schema.js");
+    const { sql } = await import("drizzle-orm");
+    
+    const countResult = await db.select({ count: sql<number>`count(*)` }).from(props);
+    const propsCount = Number(countResult[0]?.count || 0);
+    
+    console.log("[STARTUP] Props count:", propsCount);
+    console.log("[STARTUP] ENABLE_PROP_BOOTSTRAP:", process.env.ENABLE_PROP_BOOTSTRAP);
+    
+    if (propsCount === 0) {
+      console.log("[BOOTSTRAP] Props table empty — running ingestion");
+      console.log('[INGEST] Starting prop ingestion');
+      const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
+      const count = (result?.upserted ?? 0) + (result?.updated ?? 0);
+      console.log(`[INGEST] Completed — rows inserted: ${count}`);
+      console.log(`[BOOTSTRAP] Ingested ${count} props`);
+    } else {
+      console.log(`[BOOTSTRAP] Props table has ${propsCount} rows, skipping ingestion`);
+    }
+  } catch (err) {
+    console.error('[BOOTSTRAP] Prop ingestion failed:', err);
+  }
+}
+
 /* ------------------------- SERVER START ------------------------- */
 
 const PORT = parseInt(process.env.PORT || "5000", 10);
@@ -215,78 +251,55 @@ async function startOpticOddsStreaming() {
   });
 }
 
-const server = app.listen(PORT, "0.0.0.0", async () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
+// Bootstrap props before server starts listening, then start server
+(async () => {
+  await maybeBootstrapProps();
 
-  // Database seed (non-production only)
+  const server = app.listen(PORT, "0.0.0.0", async () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🌐 Listening on 0.0.0.0:${PORT}`);
+
+    // Database seed (non-production only)
+    if (process.env.NODE_ENV !== "production") {
+      await seedDatabase();
+    } else {
+      console.log("🌱 Skipping database seed on startup (production mode).");
+    }
+
+    // Scheduler (5-minute refresh for fast prop updates)
+    if (process.env.DISABLE_PROP_SCHEDULER === "true") {
+      console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
+    } else {
+      propSchedulerService.start(5); // 5 minutes for frequent updates
+    }
+
+    // OpticOdds streaming: DISABLED (no longer used)
+    console.log("⏸️ OpticOdds streaming disabled (not in use)");
+  });
+
+  /* ------------------------- ERRORS ------------------------- */
+
+  server.on("error", (err: any) => {
+    console.error("❌ Server error:", err);
+    if (err.code === "EADDRINUSE") {
+      console.error(`Port ${PORT} is already in use`);
+    }
+    process.exit(1);
+  });
+
+  /* ------------------------- DEV: VITE ------------------------- */
+
   if (process.env.NODE_ENV !== "production") {
-    await seedDatabase();
-  } else {
-    console.log("🌱 Skipping database seed on startup (production mode).");
+    try {
+      const { setupVite } = await import("./vite.js");
+      await setupVite(app, server);
+      console.log("✨ Vite dev server ready");
+    } catch (error) {
+      console.error("❌ Failed to setup Vite:", error);
+      process.exit(1);
+    }
   }
-
-  // Scheduler (5-minute refresh for fast prop updates)
-  if (process.env.DISABLE_PROP_SCHEDULER === "true") {
-    console.log("⏸️ Scheduler disabled (DISABLE_PROP_SCHEDULER=true)");
-  } else {
-    propSchedulerService.start(5); // 5 minutes for frequent updates
-  }
-
-  // OpticOdds streaming: DISABLED (no longer used)
-  console.log("⏸️ OpticOdds streaming disabled (not in use)");
-
-  // Bootstrap ingestion if enabled and DB is empty
-  if (process.env.ENABLE_PROP_BOOTSTRAP === "true") {
-    (async () => {
-      try {
-        const { storage } = await import("./storage.js");
-        const allProps = await storage.getAllActiveProps();
-        
-        if (allProps.length === 0) {
-          console.log("[BOOTSTRAP] Props table is empty, running bootstrap ingestion...");
-          const { ingestAllProps } = await import("./ingestion/propIngestion.js");
-          const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
-          console.log(`[BOOTSTRAP] ✅ Inserted ${result.upserted} props, updated ${result.updated} props`);
-          
-          // Log per-platform breakdown
-          for (const [platform, stats] of Object.entries(result.byPlatform)) {
-            console.log(`[BOOTSTRAP] ${platform}: ${stats.inserted} inserted, ${stats.updated} updated`);
-          }
-        } else {
-          console.log(`[BOOTSTRAP] Props table has ${allProps.length} props, skipping bootstrap`);
-        }
-      } catch (error) {
-        console.error("[BOOTSTRAP] Bootstrap ingestion failed (non-fatal):", error);
-      }
-    })();
-  } else {
-    // Log helpful message if bootstrap is disabled and table might be empty
-    (async () => {
-      try {
-        const { storage } = await import("./storage.js");
-        const allProps = await storage.getAllActiveProps();
-        if (allProps.length === 0) {
-          console.log("[STARTUP] ⚠️  Props table is empty. To populate:");
-          console.log("[STARTUP]    1. Set ENABLE_PROP_BOOTSTRAP=true and restart");
-          console.log("[STARTUP]    2. Or POST /api/admin/ingest/props (requires admin auth)");
-        }
-      } catch (error) {
-        // Ignore - just a helpful log
-      }
-    })();
-  }
-});
-
-/* ------------------------- ERRORS ------------------------- */
-
-server.on("error", (err: any) => {
-  console.error("❌ Server error:", err);
-  if (err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use`);
-  }
-  process.exit(1);
-});
+})();
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("❌ Unhandled Rejection:", promise, "reason:", reason);
@@ -296,18 +309,3 @@ process.on("uncaughtException", (err) => {
   console.error("❌ Uncaught Exception:", err);
   process.exit(1);
 });
-
-/* ------------------------- DEV: VITE ------------------------- */
-
-if (process.env.NODE_ENV !== "production") {
-  (async () => {
-    try {
-      const { setupVite } = await import("./vite.js");
-      await setupVite(app, server);
-      console.log("✨ Vite dev server ready");
-    } catch (error) {
-      console.error("❌ Failed to setup Vite:", error);
-      process.exit(1);
-    }
-  })();
-}
