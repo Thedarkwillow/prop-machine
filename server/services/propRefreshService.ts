@@ -169,6 +169,7 @@ export class PropRefreshService {
       console.error(`[UNDERDOG] ❌ API call FAILED for ${sport}:`, err.message);
       console.error(`[UNDERDOG] Error details:`, err.stack || 'No stack trace');
       console.error(`[UNDERDOG] ========================================`);
+      result.success = false; // Mark as failed
       result.errors.push(`API error: ${err.message}`);
       
       // Self-healing: Write placeholder to prevent stale data
@@ -354,6 +355,7 @@ export class PropRefreshService {
     } catch (error) {
       const err = error as Error;
       console.error(`[ODDS API] ❌ API call FAILED for ${sport}:`, err.message);
+      result.success = false; // Mark as failed
       
       if (err.message.includes('INVALID_MARKET') || err.message.includes('Markets not supported')) {
         result.errors.push('Player props require paid API tier. Free tier detected.');
@@ -753,6 +755,7 @@ export class PropRefreshService {
       console.error(`[PRIZEPICKS] ❌ API call FAILED for ${sport}:`, err.message);
       console.error(`[PRIZEPICKS] Error details:`, err.stack || 'No stack trace');
       console.error(`[PRIZEPICKS] ========================================`);
+      result.success = false; // Mark as failed
       result.errors.push(err.message);
       
       // Self-healing: Write placeholder to prevent stale data

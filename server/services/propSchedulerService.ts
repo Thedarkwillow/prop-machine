@@ -90,14 +90,30 @@ class PropSchedulerService {
     if (this.pausedUntil && this.pausedUntil > new Date()) {
       const minutesRemaining = Math.ceil((this.pausedUntil.getTime() - Date.now()) / 60000);
       console.log(`\n⏸️  Scheduler paused due to API rate limits. Resuming in ${minutesRemaining} minutes.`);
+      // Stop the interval if it's still running
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.isRunning = false;
+        console.log('⏸️  Scheduler interval stopped. Will resume automatically when pause expires.');
+      }
       return;
     }
     
-    // Reset pause if time has passed
+    // Reset pause if time has passed and restart scheduler
     if (this.pausedUntil && this.pausedUntil <= new Date()) {
       console.log('\n✅ Rate limit pause expired, resuming scheduler');
       this.pausedUntil = null;
       this.consecutiveFailures = 0;
+      // Restart the scheduler if it was stopped
+      if (!this.isRunning && !this.intervalId) {
+        const intervalMs = this.refreshIntervalMinutes * 60 * 1000;
+        this.intervalId = setInterval(() => {
+          this.runRefresh();
+        }, intervalMs);
+        this.isRunning = true;
+        console.log(`✅ Scheduler restarted (every ${this.refreshIntervalMinutes} minutes)`);
+      }
     }
 
     this.lastRefreshTime = new Date();
@@ -113,10 +129,24 @@ class PropSchedulerService {
       const result = await propRefreshService.refreshAllPlatforms(sports);
 
       // Check if this was a real success (props fetched) or just no errors but also no data
+      // Detect rate limit errors: 401 (quota), 429 (rate limit), 403 (blocked/captcha)
       const hasRateLimitErrors = result.results.some(r => 
-        r.errors.some(e => e.includes('429') || e.includes('401') || e.includes('quota') || e.includes('rate limit'))
+        r.errors.some(e => {
+          const errorLower = e.toLowerCase();
+          return errorLower.includes('429') || 
+                 errorLower.includes('401') || 
+                 errorLower.includes('403') ||
+                 errorLower.includes('quota') || 
+                 errorLower.includes('rate limit') ||
+                 errorLower.includes('usage quota') ||
+                 errorLower.includes('out_of_usage_credits') ||
+                 errorLower.includes('too many requests') ||
+                 errorLower.includes('forbidden') ||
+                 errorLower.includes('captcha');
+        })
       );
       const hasActualData = result.totalPropsFetched > 0;
+      const allPlatformsFailed = !result.success || result.results.every(r => !r.success);
 
       if (result.success && hasActualData) {
         // Real success - reset failure counter
@@ -144,16 +174,24 @@ class PropSchedulerService {
             console.log(`    ⚠️  Errors: ${r.errors.slice(0, 3).join(', ')}`);
           }
         });
-      } else if (hasRateLimitErrors && !hasActualData) {
-        // Rate limited with no data - increment failure counter
+      } else if ((hasRateLimitErrors || allPlatformsFailed) && !hasActualData) {
+        // Rate limited or all platforms failed with no data - increment failure counter
         this.consecutiveFailures++;
-        this.lastError = `Rate limited. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
+        const failureReason = hasRateLimitErrors ? 'API rate limits/quota exceeded' : 'All platforms failed';
+        this.lastError = `${failureReason}. Fetched: ${result.totalPropsFetched}, Errors: ${result.totalErrors}`;
         
         console.log('\n========================================');
-        console.log('⚠️  Scheduled refresh hit API rate limits');
+        console.log(`⚠️  Scheduled refresh failed: ${failureReason}`);
         console.log(`📊 Total props fetched: ${result.totalPropsFetched}`);
         console.log(`❌ Total errors: ${result.totalErrors}`);
         console.log(`🔄 Consecutive failures: ${this.consecutiveFailures}`);
+        
+        // Log error details for debugging
+        result.results.forEach(r => {
+          if (r.errors.length > 0) {
+            console.log(`  ${r.platform} (${r.sport}): ${r.errors.slice(0, 2).join('; ')}`);
+          }
+        });
         
         // Pause scheduler if we've had 3+ consecutive failures
         if (this.consecutiveFailures >= 3) {
@@ -161,6 +199,20 @@ class PropSchedulerService {
           this.pausedUntil = new Date(Date.now() + pauseMinutes * 60 * 1000);
           console.log(`⏸️  Pausing scheduler for ${pauseMinutes} minutes due to repeated rate limits`);
           console.log(`⏰ Will resume at: ${this.pausedUntil.toLocaleTimeString()}`);
+          // Stop the interval to prevent further API calls
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+            this.isRunning = false;
+            console.log('⏸️  Scheduler interval stopped to prevent further API calls');
+            // Schedule automatic resume
+            setTimeout(() => {
+              console.log('✅ Rate limit pause expired, restarting scheduler...');
+              this.pausedUntil = null;
+              this.consecutiveFailures = 0;
+              this.start(this.refreshIntervalMinutes);
+            }, pauseMinutes * 60 * 1000);
+          }
         } else {
           console.log(`⏰ Next refresh: ${new Date(
             Date.now() + this.refreshIntervalMinutes * 60 * 1000
@@ -192,6 +244,20 @@ class PropSchedulerService {
         this.pausedUntil = new Date(Date.now() + pauseMinutes * 60 * 1000);
         console.error(`⏸️  Pausing scheduler for ${pauseMinutes} minutes`);
         console.error(`⏰ Will resume at: ${this.pausedUntil.toLocaleTimeString()}`);
+        // Stop the interval to prevent further API calls
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+          this.isRunning = false;
+          console.error('⏸️  Scheduler interval stopped to prevent further API calls');
+          // Schedule automatic resume
+          setTimeout(() => {
+            console.log('✅ Rate limit pause expired, restarting scheduler...');
+            this.pausedUntil = null;
+            this.consecutiveFailures = 0;
+            this.start(this.refreshIntervalMinutes);
+          }, pauseMinutes * 60 * 1000);
+        }
       }
       console.error('========================================\n');
       console.error(error);

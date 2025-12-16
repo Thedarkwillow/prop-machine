@@ -1480,13 +1480,30 @@ class DbStorage implements IStorage {
       // Removed isActive - column may not exist in actual DB
     };
     
-    const result = await db.insert(props).values(insertData).returning();
-    return result[0];
+    try {
+      const result = await db.insert(props).values(insertData).returning();
+      if (result.length === 0) {
+        throw new Error('Insert returned no rows');
+      }
+      return result[0];
+    } catch (error) {
+      console.error(`[STORAGE] ❌ Failed to insert prop:`, {
+        player: prop.player,
+        stat: prop.stat,
+        line: prop.line,
+        platform: prop.platform,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
   }
 
   async upsertProps(propsToUpsert: InsertProp[]): Promise<{ inserted: number; updated: number }> {
     let inserted = 0;
     let updated = 0;
+    const errors: string[] = [];
+
+    console.log(`[STORAGE] Starting upsert of ${propsToUpsert.length} props...`);
 
     for (const prop of propsToUpsert) {
       try {
@@ -1515,8 +1532,19 @@ class DbStorage implements IStorage {
           inserted++;
         }
       } catch (error) {
-        console.error(`[STORAGE] Error upserting prop:`, error);
+        const errMsg = error instanceof Error ? error.message : String(error);
+        errors.push(`${prop.player} ${prop.stat}: ${errMsg}`);
+        if (errors.length <= 5) {
+          console.error(`[STORAGE] Error upserting prop ${prop.player} ${prop.stat}:`, errMsg);
+        }
       }
+    }
+
+    console.log(`[STORAGE] ✅ Upsert completed: ${inserted} inserted, ${updated} updated, ${errors.length} errors`);
+    if (errors.length > 0 && errors.length <= 10) {
+      console.error(`[STORAGE] First ${errors.length} errors:`, errors);
+    } else if (errors.length > 10) {
+      console.error(`[STORAGE] ${errors.length} errors (showing first 5):`, errors.slice(0, 5));
     }
 
     return { inserted, updated };

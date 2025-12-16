@@ -208,13 +208,35 @@ async function maybeBootstrapProps() {
       const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
       const count = (result?.upserted ?? 0) + (result?.updated ?? 0);
       
+      // Verify props were actually inserted
+      const verifyCountResult = await db.select({ count: sql<number>`count(*)` }).from(props);
+      const verifyCount = Number(verifyCountResult[0]?.count || 0);
+      
       console.log('\n[BOOTSTRAP] ========================================');
       console.log(`[BOOTSTRAP] ✅ Ingestion completed`);
-      console.log(`[BOOTSTRAP] 📊 Rows inserted: ${count}`);
+      console.log(`[BOOTSTRAP] 📊 Props fetched: ${result?.fetched || 0}`);
+      console.log(`[BOOTSTRAP] 📊 Rows inserted: ${result?.upserted || 0}`);
       console.log(`[BOOTSTRAP] 📊 Rows updated: ${result?.updated || 0}`);
+      console.log(`[BOOTSTRAP] 📊 Total in DB now: ${verifyCount}`);
       console.log(`[BOOTSTRAP] ⚠️  Errors: ${result?.errors?.length || 0}`);
+      
+      if (count === 0) {
+        console.error('[BOOTSTRAP] ❌ WARNING: No props were inserted!');
+        console.error('[BOOTSTRAP] This usually means:');
+        console.error('[BOOTSTRAP]   1. APIs are rate-limited/quota exceeded (check for 401/429 errors)');
+        console.error('[BOOTSTRAP]   2. Cache is empty (no previous successful fetches)');
+        console.error('[BOOTSTRAP]   3. All providers failed');
+        console.error('[BOOTSTRAP] Solution: Wait for API quotas to reset, then manually trigger:');
+        console.error('[BOOTSTRAP]   POST /api/admin/ingest/props (requires admin auth)');
+      } else if (verifyCount === 0) {
+        console.error('[BOOTSTRAP] ❌ CRITICAL: Ingestion reported success but DB is still empty!');
+        console.error('[BOOTSTRAP] This indicates a database insertion problem.');
+      } else {
+        console.log(`[BOOTSTRAP] ✅ Successfully inserted ${verifyCount} props into database`);
+      }
+      
       if (result?.errors && result.errors.length > 0) {
-        console.log(`[BOOTSTRAP] Error details:`, result.errors.slice(0, 3));
+        console.log(`[BOOTSTRAP] Error details:`, result.errors.slice(0, 5));
       }
       console.log('[BOOTSTRAP] ========================================\n');
     } else {
