@@ -223,10 +223,11 @@ async function maybeBootstrapProps() {
       if (count === 0) {
         console.error('[BOOTSTRAP] ❌ WARNING: No props were inserted!');
         console.error('[BOOTSTRAP] This usually means:');
-        console.error('[BOOTSTRAP]   1. APIs are rate-limited/quota exceeded (check for 401/429 errors)');
-        console.error('[BOOTSTRAP]   2. Cache is empty (no previous successful fetches)');
-        console.error('[BOOTSTRAP]   3. All providers failed');
-        console.error('[BOOTSTRAP] Solution: Wait for API quotas to reset, then manually trigger:');
+        console.error('[BOOTSTRAP]   1. Browser scrapers failed to find prop cards');
+        console.error('[BOOTSTRAP]   2. Selectors need to be updated (sites may have changed)');
+        console.error('[BOOTSTRAP]   3. Authentication failed (check cookies)');
+        console.error('[BOOTSTRAP]   4. All scrapers returned 0 props');
+        console.error('[BOOTSTRAP] Solution: Check scraper logs above, then manually trigger:');
         console.error('[BOOTSTRAP]   POST /api/admin/ingest/props (requires admin auth)');
       } else if (verifyCount === 0) {
         console.error('[BOOTSTRAP] ❌ CRITICAL: Ingestion reported success but DB is still empty!');
