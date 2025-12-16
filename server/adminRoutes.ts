@@ -827,11 +827,11 @@ export function adminRoutes(): Router {
         }
       }
       
-      // Most recent updatedAt
+      // Most recent createdAt (using createdAt instead of updatedAt)
       const mostRecent = await db
         .select()
         .from(propsTable)
-        .orderBy(desc(propsTable.updatedAt))
+        .orderBy(desc(propsTable.createdAt))
         .limit(1);
       
       // Last 5 rows
@@ -844,17 +844,17 @@ export function adminRoutes(): Router {
           stat: propsTable.stat,
           line: propsTable.line,
           gameTime: propsTable.gameTime,
-          updatedAt: propsTable.updatedAt,
+          createdAt: propsTable.createdAt,
         })
         .from(propsTable)
-        .orderBy(desc(propsTable.updatedAt))
+        .orderBy(desc(propsTable.createdAt))
         .limit(5);
       
       res.json({
         summary: {
           total: totalProps.length,
           active: activeProps.length,
-          mostRecentUpdatedAt: mostRecent[0]?.updatedAt || null,
+          mostRecentCreatedAt: mostRecent[0]?.createdAt || null,
         },
         bySport: {
           total: sportCounts,

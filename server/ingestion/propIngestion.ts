@@ -95,12 +95,48 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     try {
       console.log(`[INGEST] Fetching PrizePicks props for ${sport}...`);
       const prizePicksProps = await prizePicksProvider.fetchProps(sport);
-      allNormalized.push(...prizePicksProps);
       
-      if (!result.byPlatform['PrizePicks']) {
-        result.byPlatform['PrizePicks'] = { fetched: 0, upserted: 0, updated: 0 };
+      // If API returned empty, try cache as fallback
+      if (prizePicksProps.length === 0) {
+        console.log(`[INGEST] PrizePicks API returned 0 props for ${sport}, checking cache...`);
+        try {
+          const { propCacheService } = await import("../services/propCacheService.js");
+          const cachedProps = await propCacheService.getProps(sport, 'PrizePicks');
+          if (Array.isArray(cachedProps) && cachedProps.length > 0) {
+            console.log(`[INGEST] Found ${cachedProps.length} cached PrizePicks props for ${sport}, converting to normalized format...`);
+            // Convert cached props to NormalizedProp format
+            const normalizedFromCache: NormalizedProp[] = cachedProps.map(cp => ({
+              sport: cp.sport,
+              platform: 'PrizePicks',
+              externalId: `cached_${cp.player}_${cp.stat}_${cp.line}_${cp.gameTime?.toISOString().split('T')[0] || 'unknown'}`,
+              playerName: cp.player,
+              statType: cp.stat,
+              line: typeof cp.line === 'string' ? parseFloat(cp.line) : cp.line,
+              gameTime: cp.gameTime ? new Date(cp.gameTime) : null,
+              opponent: cp.opponent || null,
+              team: cp.team || null,
+              isActive: true,
+              raw: { cached: true, original: cp },
+            }));
+            allNormalized.push(...normalizedFromCache);
+            if (!result.byPlatform['PrizePicks']) {
+              result.byPlatform['PrizePicks'] = { fetched: 0, upserted: 0, updated: 0 };
+            }
+            result.byPlatform['PrizePicks'].fetched += normalizedFromCache.length;
+            console.log(`[INGEST] Using ${normalizedFromCache.length} cached PrizePicks props for ${sport}`);
+          } else {
+            console.warn(`[INGEST] No cached PrizePicks props available for ${sport}`);
+          }
+        } catch (cacheError) {
+          console.error(`[INGEST] Error reading PrizePicks cache for ${sport}:`, cacheError);
+        }
+      } else {
+        allNormalized.push(...prizePicksProps);
+        if (!result.byPlatform['PrizePicks']) {
+          result.byPlatform['PrizePicks'] = { fetched: 0, upserted: 0, updated: 0 };
+        }
+        result.byPlatform['PrizePicks'].fetched += prizePicksProps.length;
       }
-      result.byPlatform['PrizePicks'].fetched += prizePicksProps.length;
     } catch (error) {
       const err = error as Error;
       result.errors.push(`PrizePicks ${sport}: ${err.message}`);
@@ -111,12 +147,48 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
     try {
       console.log(`[INGEST] Fetching Underdog props for ${sport}...`);
       const underdogProps = await underdogProvider.fetchProps(sport);
-      allNormalized.push(...underdogProps);
       
-      if (!result.byPlatform['Underdog']) {
-        result.byPlatform['Underdog'] = { fetched: 0, upserted: 0, updated: 0 };
+      // If API returned empty, try cache as fallback
+      if (underdogProps.length === 0) {
+        console.log(`[INGEST] Underdog API returned 0 props for ${sport}, checking cache...`);
+        try {
+          const { propCacheService } = await import("../services/propCacheService.js");
+          const cachedProps = await propCacheService.getProps(sport, 'Underdog');
+          if (Array.isArray(cachedProps) && cachedProps.length > 0) {
+            console.log(`[INGEST] Found ${cachedProps.length} cached Underdog props for ${sport}, converting to normalized format...`);
+            // Convert cached props to NormalizedProp format
+            const normalizedFromCache: NormalizedProp[] = cachedProps.map(cp => ({
+              sport: cp.sport,
+              platform: 'Underdog',
+              externalId: `cached_${cp.player}_${cp.stat}_${cp.line}_${cp.gameTime?.toISOString().split('T')[0] || 'unknown'}`,
+              playerName: cp.player,
+              statType: cp.stat,
+              line: typeof cp.line === 'string' ? parseFloat(cp.line) : cp.line,
+              gameTime: cp.gameTime ? new Date(cp.gameTime) : null,
+              opponent: cp.opponent || null,
+              team: cp.team || null,
+              isActive: true,
+              raw: { cached: true, original: cp, direction: cp.direction },
+            }));
+            allNormalized.push(...normalizedFromCache);
+            if (!result.byPlatform['Underdog']) {
+              result.byPlatform['Underdog'] = { fetched: 0, upserted: 0, updated: 0 };
+            }
+            result.byPlatform['Underdog'].fetched += normalizedFromCache.length;
+            console.log(`[INGEST] Using ${normalizedFromCache.length} cached Underdog props for ${sport}`);
+          } else {
+            console.warn(`[INGEST] No cached Underdog props available for ${sport}`);
+          }
+        } catch (cacheError) {
+          console.error(`[INGEST] Error reading Underdog cache for ${sport}:`, cacheError);
+        }
+      } else {
+        allNormalized.push(...underdogProps);
+        if (!result.byPlatform['Underdog']) {
+          result.byPlatform['Underdog'] = { fetched: 0, upserted: 0, updated: 0 };
+        }
+        result.byPlatform['Underdog'].fetched += underdogProps.length;
       }
-      result.byPlatform['Underdog'].fetched += underdogProps.length;
     } catch (error) {
       const err = error as Error;
       result.errors.push(`Underdog ${sport}: ${err.message}`);
@@ -179,7 +251,7 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
         
         // Log structured ingestion results per batch
         console.log(`[INGEST] Batch ${Math.floor(i / batchSize) + 1}: ${upsertResult.inserted} inserted, ${upsertResult.updated} updated`);
-        for (const [platform, counts] of platformCounts.entries()) {
+        for (const [platform, counts] of Array.from(platformCounts.entries())) {
           console.log(`[INGEST] ${platform}: ${counts.inserted} inserted, ${counts.updated} updated`);
         }
         
@@ -206,6 +278,14 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
   // Log per-platform summary
   for (const [platform, stats] of Object.entries(result.byPlatform)) {
     console.log(`[INGEST] ${platform}: ${stats.fetched} fetched, ${stats.upserted} inserted, ${stats.updated} updated`);
+  }
+  
+  // Warn if no props were inserted
+  if (result.upserted === 0 && result.updated === 0) {
+    console.warn(`[INGEST] ⚠️  WARNING: No props were inserted into database. This may be due to:`);
+    console.warn(`[INGEST]   - API rate limits (check logs for 429/401 errors)`);
+    console.warn(`[INGEST]   - Empty cache (no previous successful fetches)`);
+    console.warn(`[INGEST]   - All props already exist in database`);
   }
 
   return result;

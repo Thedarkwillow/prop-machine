@@ -11,7 +11,17 @@ export class UnderdogProvider {
       response = await underdogClient.getAppearances(sport);
     } catch (error) {
       const err = error as Error;
-      console.error(`[UNDERDOG PROVIDER] Error fetching ${sport}:`, err.message);
+      const isRateLimit = err.message.includes('429') || err.message.includes('rate limit');
+      const isQuotaExceeded = err.message.includes('401') || err.message.includes('quota');
+      
+      if (isRateLimit || isQuotaExceeded) {
+        console.warn(`[UNDERDOG PROVIDER] API ${isRateLimit ? 'rate limited' : 'quota exceeded'} for ${sport}. Will attempt to use cached data if available.`);
+      } else {
+        console.error(`[UNDERDOG PROVIDER] Error fetching ${sport}:`, err.message);
+      }
+      
+      // Note: Cache fallback is handled at ingestion level
+      // Returning empty array here - ingestion will check cache separately
       return [];
     }
 
