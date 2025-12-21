@@ -1,7 +1,8 @@
 /**
- * Normalized prop input for database insertion
+ * Normalized prop format for database insertion
+ * All scrapers must return this exact shape
  */
-export type PropInput = {
+export interface NormalizedProp {
   sport: 'NBA' | 'NHL' | 'NFL' | 'MLB';
   platform: 'Underdog' | 'PrizePicks';
   player: string;
@@ -9,12 +10,9 @@ export type PropInput = {
   opponent: string | null;
   stat: string;
   line: number;
-  currentLine: number;
   direction: 'over' | 'under';
   period: 'game';
   gameTime: Date | null;
   confidence: null;
   ev: null;
-  modelProbability: null;
-};
-
+}

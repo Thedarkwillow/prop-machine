@@ -57,3 +57,6 @@ cache/
 
 # Browser authentication cookies
 cookies/
+
+# Browser user data directories (persistent contexts)
+.browser/

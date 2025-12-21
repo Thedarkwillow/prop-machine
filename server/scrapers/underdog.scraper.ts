@@ -1,89 +1,100 @@
-import { Page } from 'playwright';
-import { BaseScraper, ScrapedProp } from './baseScraper.js';
+import { chromium, Browser, BrowserContext, Page } from 'playwright';
+import * as path from 'path';
+import * as fs from 'fs';
+import type { NormalizedProp } from './types.js';
 import { normalizeStat } from '../utils/statNormalizer.js';
 
-export class UnderdogScraper extends BaseScraper {
-  constructor() {
-    super({
-      platform: 'UNDERDOG',
-      cookieFileName: 'underdog.json',
-      loginUrl: 'https://underdogfantasy.com/pick-em',
+const UNDERDOG_URL = 'https://underdogfantasy.com/pick-em';
+const USER_DATA_DIR = path.resolve(process.cwd(), '.browser', 'underdog');
+
+/**
+ * Underdog scraper using Playwright with persistent browser context
+ */
+export async function scrapeUnderdogProps(): Promise<NormalizedProp[]> {
+  const headless = process.env.HEADLESS === 'true';
+  let browser: Browser | null = null;
+  let context: BrowserContext | null = null;
+  let page: Page | null = null;
+
+  console.log('[SCRAPER][UNDERDOG] Starting Underdog prop scraping...');
+  console.log(`[SCRAPER][UNDERDOG] Browser mode: ${headless ? 'headless' : 'headed'}`);
+  console.log(`[SCRAPER][UNDERDOG] User data dir: ${USER_DATA_DIR}`);
+
+  try {
+    // Ensure user data directory exists
+    if (!fs.existsSync(USER_DATA_DIR)) {
+      fs.mkdirSync(USER_DATA_DIR, { recursive: true });
+    }
+
+    // Launch browser with persistent context
+    browser = await chromium.launch({
+      headless,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
-  }
 
-  protected async isLoggedIn(page: Page): Promise<boolean> {
+    context = await browser.newContext({
+      userDataDir: USER_DATA_DIR,
+      viewport: { width: 1920, height: 1080 },
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    });
+
+    page = await context.newPage();
+    page.setDefaultTimeout(60000);
+
+    // Navigate to Underdog Pick'em page
+    console.log('[SCRAPER][UNDERDOG] Navigating to Underdog Pick\'em page...');
+    await page.goto(UNDERDOG_URL, {
+      waitUntil: 'networkidle',
+      timeout: 60000,
+    });
+
+    // Wait a bit for page to fully load
+    await page.waitForTimeout(3000);
+
+    // Wait for prop cards to appear
+    console.log('[SCRAPER][UNDERDOG] Waiting for prop cards to load...');
     try {
-      await page.waitForTimeout(2000);
-      
-      const loginButton = page.locator('text=/sign in|log in|login/i').first();
-      const userAvatar = page.locator('[class*="avatar"], [class*="user"], [class*="profile"]').first();
-      
-      if (await loginButton.isVisible().catch(() => false)) {
-        return false;
-      }
-      if (await userAvatar.isVisible().catch(() => false)) {
-        return true;
-      }
-      
-      const url = page.url();
-      return !url.includes('/login') && !url.includes('/signin');
+      await page.waitForSelector('div[data-testid="pick-em-prop"]', { timeout: 15000 });
     } catch (error) {
-      console.warn(`[SCRAPER][UNDERDOG] Error checking login status:`, error);
-      return false;
-    }
-  }
-
-  protected async scrapeProps(): Promise<ScrapedProp[]> {
-    if (!this.page) throw new Error('Page not initialized');
-
-    console.log(`[SCRAPER][UNDERDOG] Waiting for prop cards to render...`);
-    await this.page.waitForTimeout(3000);
-
-    // Wait for prop cards container
-    try {
-      await this.page.waitForSelector('div[data-testid="pick-em-prop"]', { timeout: 10000 });
-    } catch (error) {
-      console.warn(`[SCRAPER][UNDERDOG] Prop cards not found with exact selector, trying alternatives...`);
+      console.warn('[SCRAPER][UNDERDOG] Prop cards selector not found, continuing anyway...');
     }
 
-    const props: ScrapedProp[] = [];
+    // Scroll until no new cards appear
+    console.log('[SCRAPER][UNDERDOG] Scrolling to load all props...');
     let previousCount = 0;
-    let stableCount = 0;
+    let stableScrolls = 0;
     const maxScrolls = 50;
 
-    // Scroll to load all props
     for (let i = 0; i < maxScrolls; i++) {
-      // Get current prop cards
-      const cards = await this.page.locator('div[data-testid="pick-em-prop"]').all();
+      const cards = await page.locator('div[data-testid="pick-em-prop"]').all();
       const currentCount = cards.length;
 
-      console.log(`[SCRAPER][UNDERDOG] Scroll ${i + 1}: Found ${currentCount} prop cards`);
-
-      // Check if count stabilized
       if (currentCount === previousCount) {
-        stableCount++;
-        if (stableCount >= 2) {
-          console.log(`[SCRAPER][UNDERDOG] Prop count stabilized at ${currentCount}, stopping scroll`);
+        stableScrolls++;
+        if (stableScrolls >= 2) {
+          console.log(`[SCRAPER][UNDERDOG] Scrolled ${i + 1} times, found ${currentCount} props (count stabilized)`);
           break;
         }
       } else {
-        stableCount = 0;
+        stableScrolls = 0;
       }
 
       previousCount = currentCount;
 
       // Scroll down
-      await this.page.evaluate(() => {
+      await page.evaluate(() => {
         window.scrollBy(0, window.innerHeight);
       });
 
-      // Wait for new content to load
-      await this.page.waitForTimeout(750);
+      // Wait for content to load
+      await page.waitForTimeout(750);
     }
 
     // Extract props from all cards
-    const allCards = await this.page.locator('div[data-testid="pick-em-prop"]').all();
+    const allCards = await page.locator('div[data-testid="pick-em-prop"]').all();
     console.log(`[SCRAPER][UNDERDOG] Extracting data from ${allCards.length} prop cards...`);
+
+    const normalizedProps: NormalizedProp[] = [];
 
     for (let i = 0; i < allCards.length; i++) {
       try {
@@ -107,7 +118,7 @@ export class UnderdogScraper extends BaseScraper {
         const line = parseFloat(lineText.replace(/[^\d.]/g, ''));
         if (isNaN(line)) continue;
 
-        // Extract direction (check which button is selected/active)
+        // Extract direction (check which button is selected)
         const overButton = card.locator('button[data-testid="over"]').first();
         const underButton = card.locator('button[data-testid="under"]').first();
         
@@ -120,7 +131,7 @@ export class UnderdogScraper extends BaseScraper {
         } else if (overSelected === 'true') {
           direction = 'over';
         } else {
-          // Fallback: check button classes or text
+          // Fallback: check classes
           const overClasses = await overButton.getAttribute('class').catch(() => '');
           const underClasses = await underButton.getAttribute('class').catch(() => '');
           if (underClasses?.includes('active') || underClasses?.includes('selected')) {
@@ -128,7 +139,7 @@ export class UnderdogScraper extends BaseScraper {
           }
         }
 
-        // Extract game time
+        // Extract game time (if available)
         let gameTime: Date | null = null;
         try {
           const timeEl = card.locator('div[data-testid="game-time"]').first();
@@ -141,8 +152,9 @@ export class UnderdogScraper extends BaseScraper {
           gameTime = null;
         }
 
-        // Extract opponent (if available in card text)
+        // Extract opponent (if available in card)
         let opponent: string | null = null;
+        let team: string | null = null;
         try {
           const cardText = await card.textContent();
           const opponentMatch = cardText?.match(/(?:vs|@)\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
@@ -152,30 +164,44 @@ export class UnderdogScraper extends BaseScraper {
         }
 
         // Detect sport from page context
-        const pageText = await this.page!.textContent();
-        let sport: string | null = null;
-        if (pageText?.includes('NBA') || pageText?.includes('basketball')) sport = 'NBA';
-        else if (pageText?.includes('NFL') || pageText?.includes('football')) sport = 'NFL';
+        const pageText = await page.textContent();
+        let sport: 'NBA' | 'NHL' | 'NFL' | 'MLB' = 'NBA';
+        if (pageText?.includes('NFL') || pageText?.includes('football')) sport = 'NFL';
         else if (pageText?.includes('NHL') || pageText?.includes('hockey')) sport = 'NHL';
         else if (pageText?.includes('MLB') || pageText?.includes('baseball')) sport = 'MLB';
+        else if (pageText?.includes('NBA') || pageText?.includes('basketball')) sport = 'NBA';
 
-        props.push({
+        normalizedProps.push({
+          sport,
+          platform: 'Underdog',
           player: player.trim(),
+          team,
+          opponent,
           stat,
           line,
           direction,
+          period: 'game',
           gameTime,
-          opponent,
-          team: null, // Not available in Underdog cards
-          sport,
+          confidence: null,
+          ev: null,
         });
       } catch (error) {
-        console.warn(`[SCRAPER][UNDERDOG] Error extracting prop ${i}:`, error);
+        console.warn(`[SCRAPER][UNDERDOG] Error extracting prop ${i + 1}:`, error);
         continue;
       }
     }
 
-    return props;
+    console.log(`[SCRAPER][UNDERDOG] Successfully extracted ${normalizedProps.length} props`);
+    return normalizedProps;
+
+  } catch (error) {
+    const err = error as Error;
+    console.error('[SCRAPER][UNDERDOG] ❌ Scraping failed:', err.message);
+    throw err;
+  } finally {
+    if (page) await page.close().catch(() => {});
+    if (context) await context.close().catch(() => {});
+    if (browser) await browser.close().catch(() => {});
+    console.log('[SCRAPER][UNDERDOG] Browser closed');
   }
 }
-
