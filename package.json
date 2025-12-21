@@ -10,7 +10,7 @@
     "start": "NODE_ENV=production tsx server/index.ts",
     "check": "tsc --noEmit",
     "db:push": "drizzle-kit push",
-    "postinstall": "npx playwright install chromium --with-deps || true",
+    "postinstall": "npx playwright install chromium --with-deps",
     "auth:underdog": "tsx scripts/auth-underdog.ts",
     "auth:prizepicks": "tsx scripts/auth-prizepicks.ts"
   },

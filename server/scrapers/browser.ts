@@ -20,12 +20,15 @@ export interface DebugArtifacts {
  * Get browser configuration from environment variables
  */
 export function getBrowserConfig(platform: string): BrowserConfig {
-  const isProduction = process.env.RAILWAY_ENVIRONMENT === 'production';
+  const isProduction = process.env.RAILWAY_ENVIRONMENT === 'production' || process.env.NODE_ENV === 'production';
   const storageDir = process.env.SCRAPE_STORAGE_DIR || path.resolve(process.cwd(), '.storage');
   const storageStateFile = process.env[`${platform.toUpperCase()}_STORAGE_STATE`] || `${platform.toLowerCase()}.storage.json`;
 
+  // Enforce headless mode in production
+  const headless = isProduction ? true : (process.env.SCRAPE_HEADLESS === 'true');
+
   return {
-    headless: process.env.SCRAPE_HEADLESS === 'true' || isProduction,
+    headless,
     debug: process.env.SCRAPE_DEBUG === 'true',
     storageDir,
     storageStateFile: path.join(storageDir, storageStateFile),
@@ -77,25 +80,68 @@ export async function saveStorageState(context: BrowserContext, storageStateFile
 }
 
 /**
+ * Verify Chromium is installed and accessible
+ */
+async function verifyChromiumInstalled(): Promise<void> {
+  try {
+    const { chromium: chromiumType } = await import('playwright');
+    const executablePath = chromiumType.executablePath();
+    
+    if (!executablePath || !fs.existsSync(executablePath)) {
+      throw new Error(`Chromium executable not found at: ${executablePath}`);
+    }
+    
+    console.log(`[BROWSER] ✅ Chromium verified at: ${executablePath}`);
+  } catch (error) {
+    const err = error as Error;
+    console.error('[BROWSER] ❌ Chromium verification failed:', err.message);
+    console.error('[BROWSER] Please ensure Playwright browsers are installed:');
+    console.error('[BROWSER]   Run: npx playwright install chromium --with-deps');
+    throw new Error(`Chromium browser not available: ${err.message}`);
+  }
+}
+
+/**
  * Create browser context with storage state
  */
 export async function createBrowserContext(config: BrowserConfig): Promise<{ browser: Browser; context: BrowserContext }> {
+  // Verify browser is installed before attempting to launch
+  await verifyChromiumInstalled();
+  
   ensureStorageDir(config.storageDir);
 
-  const browser = await chromium.launch({
-    headless: config.headless,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  console.log(`[BROWSER] Launching Chromium (headless: ${config.headless})...`);
 
-  const storageState = loadStorageState(config.storageStateFile);
+  try {
+    const browser = await chromium.launch({
+      headless: config.headless,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
 
-  const context = await browser.newContext({
-    storageState: storageState || undefined,
-    viewport: { width: 1920, height: 1080 },
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  });
+    console.log('[BROWSER] ✅ Chromium browser launched successfully');
 
-  return { browser, context };
+    const storageState = loadStorageState(config.storageStateFile);
+
+    const context = await browser.newContext({
+      storageState: storageState || undefined,
+      viewport: { width: 1920, height: 1080 },
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    });
+
+    return { browser, context };
+  } catch (error) {
+    const err = error as Error;
+    console.error('[BROWSER] ❌ Failed to launch Chromium:', err.message);
+    
+    if (err.message.includes('Executable doesn\'t exist') || err.message.includes('chromium')) {
+      console.error('[BROWSER] Browser executable not found. This usually means:');
+      console.error('[BROWSER]   1. Playwright browsers were not installed during build');
+      console.error('[BROWSER]   2. postinstall script failed silently');
+      console.error('[BROWSER] Solution: Ensure package.json postinstall runs: npx playwright install chromium --with-deps');
+    }
+    
+    throw err;
+  }
 }
 
 /**

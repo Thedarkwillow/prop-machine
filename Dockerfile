@@ -29,7 +29,8 @@ RUN apk add --no-cache \
 
 # Install production dependencies only
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev && \
+    npx playwright install chromium --with-deps
 
 # Copy built app and source (without node_modules from builder)
 COPY --from=builder /app .

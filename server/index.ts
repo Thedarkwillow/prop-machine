@@ -300,6 +300,45 @@ async function startOpticOddsStreaming() {
 
 // Bootstrap props before server starts listening, then start server
 (async () => {
+  // Verify Playwright browsers are available
+  try {
+    const { chromium } = await import('playwright');
+    const executablePath = chromium.executablePath();
+    
+    // Try to get Playwright version (optional)
+    let playwrightVersion = 'unknown';
+    try {
+      const playwrightPkg = JSON.parse(
+        fs.readFileSync(
+          path.resolve(process.cwd(), 'node_modules/playwright/package.json'),
+          'utf-8'
+        )
+      );
+      playwrightVersion = playwrightPkg.version || 'unknown';
+    } catch {
+      // Version check is optional
+    }
+    
+    console.log('\n[STARTUP] ========================================');
+    console.log(`[STARTUP] Playwright version: ${playwrightVersion}`);
+    console.log(`[STARTUP] Chromium executable: ${executablePath}`);
+    
+    if (!executablePath || !fs.existsSync(executablePath)) {
+      console.error('[STARTUP] ❌ WARNING: Chromium executable not found!');
+      console.error('[STARTUP] Browser-based ingestion will fail.');
+      console.error('[STARTUP] Ensure postinstall script ran: npx playwright install chromium --with-deps');
+      console.error('[STARTUP] Or check Dockerfile includes: RUN npx playwright install chromium --with-deps');
+    } else {
+      console.log('[STARTUP] ✅ Chromium browser available');
+    }
+    console.log('[STARTUP] ========================================\n');
+  } catch (error) {
+    const err = error as Error;
+    console.error('[STARTUP] ❌ Failed to verify Playwright browsers:', err.message);
+    console.error('[STARTUP] Browser-based ingestion may fail.');
+    console.error('[STARTUP] This is expected if Playwright is not installed yet.');
+  }
+
   await maybeBootstrapProps();
 
   const server = app.listen(PORT, "0.0.0.0", async () => {
