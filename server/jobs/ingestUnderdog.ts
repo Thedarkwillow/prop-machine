@@ -38,7 +38,7 @@ function normalizeProp(scraped: ScrapedProp, platform: 'Underdog' | 'PrizePicks'
     line: scraped.line,
     currentLine: scraped.line,
     direction: scraped.direction,
-    period: 'full_game',
+    period: 'game',
     gameTime: scraped.gameTime || null,
     confidence: null,
     ev: null,

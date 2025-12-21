@@ -11,7 +11,7 @@ export type PropInput = {
   line: number;
   currentLine: number;
   direction: 'over' | 'under';
-  period: 'full_game';
+  period: 'game';
   gameTime: Date | null;
   confidence: null;
   ev: null;
