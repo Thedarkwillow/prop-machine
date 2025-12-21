@@ -60,3 +60,7 @@ cookies/
 
 # Browser user data directories (persistent contexts)
 .browser/
+
+# Storage state files (contains authentication data)
+.storage/
+scrape_debug/

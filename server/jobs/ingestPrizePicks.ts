@@ -1,73 +1,17 @@
-import { PrizePicksScraper } from '../scrapers/prizepicks.scraper.js';
-import { ScrapedProp } from '../scrapers/baseScraper.js';
-import { PropInput } from '../scrapers/types.js';
+import { scrapePrizePicksProps } from '../scrapers/prizepicks.js';
+import { normalizeToPropRow, generateNaturalKey } from '../scrapers/normalize.js';
 import { db } from '../db.js';
 import { props } from '@shared/schema.js';
-import { eq, and } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import type { InsertProp } from '@shared/schema.js';
 
 export interface IngestionResult {
-  success: boolean;
-  scraped: number;
+  platform: string;
+  sportCounts: Record<string, number>;
   inserted: number;
+  updated: number;
+  totalNormalized: number;
   errors: string[];
-}
-
-/**
- * Normalize scraped prop to PropInput format
- */
-function normalizeProp(scraped: ScrapedProp, platform: 'Underdog' | 'PrizePicks'): PropInput | null {
-  // Validate required fields
-  if (!scraped.player || !scraped.stat || !scraped.line || !scraped.sport) {
-    return null;
-  }
-
-  // Validate sport
-  const validSports: ('NBA' | 'NHL' | 'NFL' | 'MLB')[] = ['NBA', 'NHL', 'NFL', 'MLB'];
-  if (!validSports.includes(scraped.sport as any)) {
-    return null;
-  }
-
-  return {
-    sport: scraped.sport as 'NBA' | 'NHL' | 'NFL' | 'MLB',
-    platform,
-    player: scraped.player.trim(),
-    team: scraped.team || null,
-    opponent: scraped.opponent || null,
-    stat: scraped.stat,
-    line: scraped.line,
-    currentLine: scraped.line,
-    direction: scraped.direction,
-    period: 'game',
-    gameTime: scraped.gameTime || null,
-    confidence: null,
-    ev: null,
-    modelProbability: null,
-  };
-}
-
-/**
- * Convert PropInput to InsertProp for database
- */
-function toInsertProp(prop: PropInput): InsertProp {
-  return {
-    sport: prop.sport,
-    player: prop.player,
-    team: prop.team || 'TBD',
-    opponent: prop.opponent || 'TBD',
-    stat: prop.stat,
-    line: prop.line.toString(),
-    currentLine: prop.currentLine.toString(),
-    direction: prop.direction,
-    period: 'full_game',
-    platform: prop.platform,
-    fixtureId: null,
-    marketId: null,
-    gameTime: prop.gameTime || new Date(),
-    confidence: 50, // Default confidence
-    ev: "0",
-    modelProbability: "0.5",
-  };
 }
 
 /**
@@ -75,9 +19,11 @@ function toInsertProp(prop: PropInput): InsertProp {
  */
 export async function ingestPrizePicks(): Promise<IngestionResult> {
   const result: IngestionResult = {
-    success: false,
-    scraped: 0,
+    platform: 'PrizePicks',
+    sportCounts: {},
     inserted: 0,
+    updated: 0,
+    totalNormalized: 0,
     errors: [],
   };
 
@@ -86,65 +32,75 @@ export async function ingestPrizePicks(): Promise<IngestionResult> {
   console.log('[INGESTION][PRIZEPICKS] ========================================\n');
 
   try {
-    // Run scraper
-    const scraper = new PrizePicksScraper();
-    const scrapedProps = await scraper.scrape();
-    result.scraped = scrapedProps.length;
+    // Scrape props
+    const rawProps = await scrapePrizePicksProps();
+    console.log(`[INGESTION][PRIZEPICKS] Scraped ${rawProps.length} raw props`);
 
-    console.log(`[INGESTION][PRIZEPICKS] Scraped ${result.scraped} props`);
-
-    if (result.scraped === 0) {
-      console.warn('[INGESTION][PRIZEPICKS] ⚠️  Scraper returned 0 props — scraper may have failed');
+    if (rawProps.length === 0) {
+      console.warn('[INGESTION][PRIZEPICKS] ⚠️  No props scraped');
       return result;
     }
 
     // Normalize props
-    console.log('[INGESTION][PRIZEPICKS] Normalizing props...');
-    const normalizedProps: PropInput[] = [];
-    for (const scraped of scrapedProps) {
-      const normalized = normalizeProp(scraped, 'PrizePicks');
-      if (normalized) {
-        normalizedProps.push(normalized);
-      } else {
-        result.errors.push(`Failed to normalize prop: ${scraped.player} ${scraped.stat}`);
+    const normalizedProps: InsertProp[] = [];
+    const naturalKeys = new Set<string>();
+
+    for (const raw of rawProps) {
+      try {
+        const normalized = normalizeToPropRow(raw, 'PrizePicks');
+        const naturalKey = generateNaturalKey(
+          'PrizePicks',
+          normalized.sport,
+          normalized.player,
+          normalized.stat,
+          parseFloat(normalized.line),
+          normalized.gameTime || null,
+          normalized.team,
+          normalized.opponent
+        );
+
+        // Deduplicate by natural key
+        if (!naturalKeys.has(naturalKey)) {
+          naturalKeys.add(naturalKey);
+          normalizedProps.push(normalized);
+        }
+      } catch (error) {
+        const err = error as Error;
+        result.errors.push(`Normalization error: ${err.message}`);
+        console.warn(`[INGESTION][PRIZEPICKS] Normalization error:`, err);
       }
     }
 
-    console.log(`[INGESTION][PRIZEPICKS] Normalized ${normalizedProps.length} props`);
+    result.totalNormalized = normalizedProps.length;
+    console.log(`[INGESTION][PRIZEPICKS] Normalized ${result.totalNormalized} props (after deduplication)`);
 
     if (normalizedProps.length === 0) {
       console.warn('[INGESTION][PRIZEPICKS] ⚠️  No props to insert after normalization');
       return result;
     }
 
-    // Delete existing PrizePicks props (grouped by sport for efficiency)
-    console.log('[INGESTION][PRIZEPICKS] Clearing old PrizePicks props from database...');
-    const sports = ['NBA', 'NFL', 'NHL', 'MLB'] as const;
-    
-    await db.transaction(async (tx) => {
-      for (const sport of sports) {
-        await tx.delete(props).where(and(
-          eq(props.platform, 'PrizePicks'),
-          eq(props.sport, sport)
-        ));
-      }
-    });
-    console.log('[INGESTION][PRIZEPICKS] Cleared old props');
+    // Delete existing PrizePicks props
+    console.log('[INGESTION][PRIZEPICKS] Deleting existing PrizePicks props...');
+    await db.delete(props).where(eq(props.platform, 'PrizePicks'));
 
-    // Insert new props in transaction
-    console.log(`[INGESTION][PRIZEPICKS] Inserting ${normalizedProps.length} props into database...`);
-    
-    await db.transaction(async (tx) => {
-      const insertProps: InsertProp[] = normalizedProps.map(toInsertProp);
-      
-      // Bulk insert
-      await tx.insert(props).values(insertProps);
-    });
-
+    // Insert new props
+    console.log(`[INGESTION][PRIZEPICKS] Inserting ${normalizedProps.length} props...`);
+    await db.insert(props).values(normalizedProps);
     result.inserted = normalizedProps.length;
-    result.success = true;
 
-    console.log(`[INGESTION][PRIZEPICKS] ✅ Successfully inserted ${result.inserted} props`);
+    // Count by sport
+    for (const prop of normalizedProps) {
+      result.sportCounts[prop.sport] = (result.sportCounts[prop.sport] || 0) + 1;
+    }
+
+    // Sanity query
+    const totalCount = await db.select({ count: sql<number>`count(*)` }).from(props);
+    const prizepicksCount = await db.select({ count: sql<number>`count(*)` }).from(props).where(eq(props.platform, 'PrizePicks'));
+
+    console.log(`[INGESTION][PRIZEPICKS] ✅ Inserted ${result.inserted} props`);
+    console.log(`[INGESTION][PRIZEPICKS] Total props in DB: ${totalCount[0]?.count || 0}`);
+    console.log(`[INGESTION][PRIZEPICKS] Total PrizePicks props in DB: ${prizepicksCount[0]?.count || 0}`);
+    console.log(`[INGESTION][PRIZEPICKS] Sport breakdown:`, result.sportCounts);
 
   } catch (error) {
     const err = error as Error;
@@ -152,18 +108,6 @@ export async function ingestPrizePicks(): Promise<IngestionResult> {
     result.errors.push(`Ingestion failed: ${err.message}`);
   }
 
-  // Final summary
-  console.log('\n[INGESTION][PRIZEPICKS] ========================================');
-  console.log(`[INGESTION][PRIZEPICKS] Summary:`);
-  console.log(`[INGESTION][PRIZEPICKS]   - Props scraped: ${result.scraped}`);
-  console.log(`[INGESTION][PRIZEPICKS]   - Props inserted: ${result.inserted}`);
-  console.log(`[INGESTION][PRIZEPICKS]   - Success: ${result.success ? '✅' : '❌'}`);
-  console.log(`[INGESTION][PRIZEPICKS]   - Errors: ${result.errors.length}`);
-  if (result.errors.length > 0 && result.errors.length <= 5) {
-    result.errors.forEach(err => console.log(`[INGESTION][PRIZEPICKS]     - ${err}`));
-  }
   console.log('[INGESTION][PRIZEPICKS] ========================================\n');
-
   return result;
 }
-

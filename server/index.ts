@@ -205,8 +205,10 @@ async function maybeBootstrapProps() {
       console.log('[BOOTSTRAP] 🚀 Starting prop ingestion (this may take a while)...');
       console.log('[BOOTSTRAP] ========================================\n');
       
-      const result = await ingestAllProps(['NBA', 'NFL', 'NHL']);
-      const count = (result?.upserted ?? 0) + (result?.updated ?? 0);
+      const { ingestAllProps } = await import("./jobs/ingestAllProps.js");
+      const results = await ingestAllProps();
+      
+      const totalInserted = Object.values(results).reduce((sum, r) => sum + r.inserted, 0);
       
       // Verify props were actually inserted
       const verifyCountResult = await db.select({ count: sql<number>`count(*)` }).from(props);
@@ -214,18 +216,22 @@ async function maybeBootstrapProps() {
       
       console.log('\n[BOOTSTRAP] ========================================');
       console.log(`[BOOTSTRAP] ✅ Ingestion completed`);
-      console.log(`[BOOTSTRAP] 📊 Props fetched: ${result?.fetched || 0}`);
-      console.log(`[BOOTSTRAP] 📊 Rows inserted: ${result?.upserted || 0}`);
-      console.log(`[BOOTSTRAP] 📊 Rows updated: ${result?.updated || 0}`);
+      console.log(`[BOOTSTRAP] 📊 Total props inserted: ${totalInserted}`);
       console.log(`[BOOTSTRAP] 📊 Total in DB now: ${verifyCount}`);
-      console.log(`[BOOTSTRAP] ⚠️  Errors: ${result?.errors?.length || 0}`);
       
-      if (count === 0) {
+      for (const [platform, result] of Object.entries(results)) {
+        console.log(`[BOOTSTRAP] 📊 ${platform}: ${result.inserted} inserted`);
+        if (result.errors.length > 0) {
+          console.log(`[BOOTSTRAP] ⚠️  ${platform} errors: ${result.errors.length}`);
+        }
+      }
+      
+      if (totalInserted === 0) {
         console.error('[BOOTSTRAP] ❌ WARNING: No props were inserted!');
         console.error('[BOOTSTRAP] This usually means:');
         console.error('[BOOTSTRAP]   1. Browser scrapers failed to find prop cards');
         console.error('[BOOTSTRAP]   2. Selectors need to be updated (sites may have changed)');
-        console.error('[BOOTSTRAP]   3. Authentication failed (check cookies)');
+        console.error('[BOOTSTRAP]   3. Authentication failed (check storage state files)');
         console.error('[BOOTSTRAP]   4. All scrapers returned 0 props');
         console.error('[BOOTSTRAP] Solution: Check scraper logs above, then manually trigger:');
         console.error('[BOOTSTRAP]   POST /api/admin/ingest/props (requires admin auth)');
@@ -236,8 +242,9 @@ async function maybeBootstrapProps() {
         console.log(`[BOOTSTRAP] ✅ Successfully inserted ${verifyCount} props into database`);
       }
       
-      if (result?.errors && result.errors.length > 0) {
-        console.log(`[BOOTSTRAP] Error details:`, result.errors.slice(0, 5));
+      const allErrors = Object.values(results).flatMap(r => r.errors);
+      if (allErrors.length > 0) {
+        console.log(`[BOOTSTRAP] Error details:`, allErrors.slice(0, 5));
       }
       console.log('[BOOTSTRAP] ========================================\n');
     } else {
