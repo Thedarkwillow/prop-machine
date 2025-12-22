@@ -786,86 +786,34 @@ export function adminRoutes(): Router {
     }
   });
 
-  // Ingest Underdog props
-  router.post("/ingest/underdog", requireAdmin, async (req, res) => {
-    try {
-      console.log('[INGESTION] Manual Underdog ingestion triggered');
-      
-      const { ingestUnderdog } = await import("./jobs/ingestUnderdog.js");
-      const result = await ingestUnderdog();
-      
-      res.json({
-        ok: result.errors.length === 0 && result.inserted > 0,
-        platform: result.platform,
-        sportCounts: result.sportCounts,
-        inserted: result.inserted,
-        updated: result.updated,
-        totalNormalized: result.totalNormalized,
-        errors: result.errors.slice(0, 10),
-      });
-    } catch (error) {
-      const err = error as Error;
-      console.error('[INGESTION] Underdog ingestion error:', err);
-      res.status(500).json({
-        ok: false,
-        error: err.message,
-      });
-    }
-  });
-
-  // Ingest PrizePicks props
-  router.post("/ingest/prizepicks", requireAdmin, async (req, res) => {
-    try {
-      console.log('[INGESTION] Manual PrizePicks ingestion triggered');
-      
-      const { ingestPrizePicks } = await import("./jobs/ingestPrizePicks.js");
-      const result = await ingestPrizePicks();
-      
-      res.json({
-        ok: result.errors.length === 0 && result.inserted > 0,
-        platform: result.platform,
-        sportCounts: result.sportCounts,
-        inserted: result.inserted,
-        updated: result.updated,
-        totalNormalized: result.totalNormalized,
-        errors: result.errors.slice(0, 10),
-      });
-    } catch (error) {
-      const err = error as Error;
-      console.error('[INGESTION] PrizePicks ingestion error:', err);
-      res.status(500).json({
-        ok: false,
-        error: err.message,
-      });
-    }
-  });
-
   // Ingest props from all platforms
   router.post("/ingest/props", requireAdmin, async (req, res) => {
     try {
       console.log('[INGESTION] Manual prop ingestion triggered');
       
-      const { ingestAllProps } = await import("./jobs/ingestAllProps.js");
-      const results = await ingestAllProps();
+      const { ingestUnderdog } = await import("./ingestion/ingestUnderdog.js");
+      const { ingestPrizePicks } = await import("./ingestion/ingestPrizePicks.js");
       
-      // Calculate totals
-      const totals = Object.values(results).reduce(
-        (acc, result) => ({
-          inserted: acc.inserted + result.inserted,
-          updated: acc.updated + result.updated,
-          totalNormalized: acc.totalNormalized + result.totalNormalized,
-        }),
-        { inserted: 0, updated: 0, totalNormalized: 0 }
-      );
-      
-      const allSuccess = Object.values(results).every(
-        (result) => result.errors.length === 0 && result.inserted > 0
-      );
+      // Run both scrapers sequentially
+      const [underdogResult, prizepicksResult] = await Promise.all([
+        ingestUnderdog(),
+        ingestPrizePicks(),
+      ]);
       
       res.json({
-        ok: allSuccess,
-        platforms: results,
-        totals,
+        ok: underdogResult.errors.length === 0 && prizepicksResult.errors.length === 0,
+        underdog: {
+          found: underdogResult.found,
+          inserted: underdogResult.inserted,
+        },
+        prizepicks: {
+          found: prizepicksResult.found,
+          inserted: prizepicksResult.inserted,
+        },
+        errors: [
+          ...underdogResult.errors,
+          ...prizepicksResult.errors,
+        ].slice(0, 10),
       });
     } catch (error) {
       const err = error as Error;

@@ -1,5 +1,5 @@
-import { ingestUnderdog } from '../jobs/ingestUnderdog.js';
-import { ingestPrizePicks } from '../jobs/ingestPrizePicks.js';
+import { ingestUnderdog } from './ingestUnderdog.js';
+import { ingestPrizePicks } from './ingestPrizePicks.js';
 
 interface IngestionResult {
   fetched: number;
@@ -36,20 +36,20 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
   try {
     const underdogResult = await ingestUnderdog();
     
-    result.fetched += underdogResult.scraped;
+    result.fetched += underdogResult.found;
     result.upserted += underdogResult.inserted;
     result.errors.push(...underdogResult.errors.map(e => `Underdog: ${e}`));
     
     result.byPlatform['Underdog'] = {
-      fetched: underdogResult.scraped,
+      fetched: underdogResult.found,
       upserted: underdogResult.inserted,
       updated: 0, // We delete and re-insert, so no updates
     };
 
-    if (underdogResult.scraped === 0) {
+    if (underdogResult.found === 0) {
       console.warn('[INGESTION] ⚠️  Underdog returned 0 props — scraper failed');
     } else {
-      console.log(`[INGESTION] ✅ Underdog: ${underdogResult.scraped} scraped, ${underdogResult.inserted} inserted`);
+      console.log(`[INGESTION] ✅ Underdog: ${underdogResult.found} found, ${underdogResult.inserted} inserted`);
     }
   } catch (error) {
     const err = error as Error;
@@ -62,20 +62,20 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
   try {
     const prizePicksResult = await ingestPrizePicks();
     
-    result.fetched += prizePicksResult.scraped;
+    result.fetched += prizePicksResult.found;
     result.upserted += prizePicksResult.inserted;
     result.errors.push(...prizePicksResult.errors.map(e => `PrizePicks: ${e}`));
     
     result.byPlatform['PrizePicks'] = {
-      fetched: prizePicksResult.scraped,
+      fetched: prizePicksResult.found,
       upserted: prizePicksResult.inserted,
       updated: 0, // We delete and re-insert, so no updates
     };
 
-    if (prizePicksResult.scraped === 0) {
+    if (prizePicksResult.found === 0) {
       console.warn('[INGESTION] ⚠️  PrizePicks returned 0 props — scraper failed');
     } else {
-      console.log(`[INGESTION] ✅ PrizePicks: ${prizePicksResult.scraped} scraped, ${prizePicksResult.inserted} inserted`);
+      console.log(`[INGESTION] ✅ PrizePicks: ${prizePicksResult.found} found, ${prizePicksResult.inserted} inserted`);
     }
   } catch (error) {
     const err = error as Error;
@@ -121,6 +121,3 @@ export async function ingestAllProps(sports: string[] = ['NBA', 'NFL', 'NHL']): 
 
   return result;
 }
-
-
-

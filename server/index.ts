@@ -205,10 +205,16 @@ async function maybeBootstrapProps() {
       console.log('[BOOTSTRAP] 🚀 Starting prop ingestion (this may take a while)...');
       console.log('[BOOTSTRAP] ========================================\n');
       
-      const { ingestAllProps } = await import("./jobs/ingestAllProps.js");
-      const results = await ingestAllProps();
+      const { ingestUnderdog } = await import("./ingestion/ingestUnderdog.js");
+      const { ingestPrizePicks } = await import("./ingestion/ingestPrizePicks.js");
       
-      const totalInserted = Object.values(results).reduce((sum, r) => sum + r.inserted, 0);
+      // Run both scrapers sequentially
+      const [underdogResult, prizepicksResult] = await Promise.all([
+        ingestUnderdog(),
+        ingestPrizePicks(),
+      ]);
+      
+      const totalInserted = underdogResult.inserted + prizepicksResult.inserted;
       
       // Verify props were actually inserted
       const verifyCountResult = await db.select({ count: sql<number>`count(*)` }).from(props);
@@ -216,14 +222,16 @@ async function maybeBootstrapProps() {
       
       console.log('\n[BOOTSTRAP] ========================================');
       console.log(`[BOOTSTRAP] ✅ Ingestion completed`);
+      console.log(`[BOOTSTRAP] 📊 Underdog: ${underdogResult.found} found, ${underdogResult.inserted} inserted`);
+      console.log(`[BOOTSTRAP] 📊 PrizePicks: ${prizepicksResult.found} found, ${prizepicksResult.inserted} inserted`);
       console.log(`[BOOTSTRAP] 📊 Total props inserted: ${totalInserted}`);
       console.log(`[BOOTSTRAP] 📊 Total in DB now: ${verifyCount}`);
       
-      for (const [platform, result] of Object.entries(results)) {
-        console.log(`[BOOTSTRAP] 📊 ${platform}: ${result.inserted} inserted`);
-        if (result.errors.length > 0) {
-          console.log(`[BOOTSTRAP] ⚠️  ${platform} errors: ${result.errors.length}`);
-        }
+      if (underdogResult.errors.length > 0) {
+        console.log(`[BOOTSTRAP] ⚠️  Underdog errors:`, underdogResult.errors.slice(0, 3));
+      }
+      if (prizepicksResult.errors.length > 0) {
+        console.log(`[BOOTSTRAP] ⚠️  PrizePicks errors:`, prizepicksResult.errors.slice(0, 3));
       }
       
       if (totalInserted === 0) {
@@ -231,7 +239,7 @@ async function maybeBootstrapProps() {
         console.error('[BOOTSTRAP] This usually means:');
         console.error('[BOOTSTRAP]   1. Browser scrapers failed to find prop cards');
         console.error('[BOOTSTRAP]   2. Selectors need to be updated (sites may have changed)');
-        console.error('[BOOTSTRAP]   3. Authentication failed (check storage state files)');
+        console.error('[BOOTSTRAP]   3. Authentication failed (PrizePicks may need login)');
         console.error('[BOOTSTRAP]   4. All scrapers returned 0 props');
         console.error('[BOOTSTRAP] Solution: Check scraper logs above, then manually trigger:');
         console.error('[BOOTSTRAP]   POST /api/admin/ingest/props (requires admin auth)');
@@ -240,11 +248,6 @@ async function maybeBootstrapProps() {
         console.error('[BOOTSTRAP] This indicates a database insertion problem.');
       } else {
         console.log(`[BOOTSTRAP] ✅ Successfully inserted ${verifyCount} props into database`);
-      }
-      
-      const allErrors = Object.values(results).flatMap(r => r.errors);
-      if (allErrors.length > 0) {
-        console.log(`[BOOTSTRAP] Error details:`, allErrors.slice(0, 5));
       }
       console.log('[BOOTSTRAP] ========================================\n');
     } else {
